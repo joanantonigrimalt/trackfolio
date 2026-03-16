@@ -3,9 +3,9 @@
 // Source priority:  EODHD (keyed, reliable EU/LSE ETFs)
 //                → Yahoo Finance chart events (free)
 //                → TwelveData (keyed, fallback)
-//                → Digrin/StockAnalysis scraper (final fallback via _lib/dividends.js)
+//                → Digrin/StockAnalysis scraper (final fallback)
 //
-// Pay months derived 100% from actual historical payment dates — no hardcoding.
+// Pay months + amounts derived 100% from actual historical payment dates.
 // GBp (pence) → GBP → EUR via live GBPEUR=X from Yahoo.
 
 const portfolioSeed = require('../../portfolio-seed.json');
@@ -13,13 +13,12 @@ const { fetchDividendHistory } = require('../_lib/dividends');
 const { getGbpEur, toEur } = require('../_lib/fx');
 
 // ── ETF symbol map (only distributing assets) ─────────────────────────────
-// Lists the correct symbol per API. No payMonths here — derived from data.
 const DIV_ASSETS = {
-  'DE000A0F5UH1': { eodhd: 'EXW1.DE',  yahoo: 'EXW1.DE',  td: null        },
-  'IE00BZ4BMM98': { eodhd: 'EUHD.L',   yahoo: 'EUHD.L',   td: null        },
-  'IE00B9CQXS71': { eodhd: 'GBDV.L',   yahoo: 'GBDV.L',   td: null        },
-  'NL0011683594': { eodhd: 'TDIV.AS',  yahoo: 'TDIV.AS',  td: 'TDIV'     },
-  'IE000QAZP7L2': { eodhd: 'EIMI.L',   yahoo: 'EIMI.L',   td: null        },
+  'DE000A0F5UH1': { eodhd: 'EXW1.DE',  yahoo: 'EXW1.DE',  td: null    },
+  'IE00BZ4BMM98': { eodhd: 'EUHD.L',   yahoo: 'EUHD.L',   td: null    },
+  'IE00B9CQXS71': { eodhd: 'GBDV.L',   yahoo: 'GBDV.L',   td: null    },
+  'NL0011683594': { eodhd: 'TDIV.AS',  yahoo: 'TDIV.AS',  td: 'TDIV'  },
+  'IE000QAZP7L2': { eodhd: 'EIMI.L',   yahoo: 'EIMI.L',   td: null    },
 };
 
 // ── Cache ─────────────────────────────────────────────────────────────────
@@ -27,8 +26,6 @@ const CACHE = new Map();
 const TTL = 4 * 60 * 60 * 1000;
 const cget = k => { const e = CACHE.get(k); if (!e || Date.now() > e.x) { CACHE.delete(k); return null; } return e.v; };
 const cset = (k, v) => CACHE.set(k, { v, x: Date.now() + TTL });
-
-// getGbpEur and toEur imported from ../_lib/fx.js
 
 // ── EODHD /api/div/ ────────────────────────────────────────────────────────
 const EODHD_KEYS = [
@@ -50,10 +47,11 @@ async function eodhdDiv(symbol) {
       if (!Array.isArray(rows) || !rows.length) continue;
       const divs = rows
         .map(row => ({
-          date: String(row.date || '').slice(0, 10),
-          amount: Number(row.value ?? row.unadjustedValue ?? 0),
-          currency: String(row.currency || 'EUR'),
-          period: String(row.period || ''),
+          date:        String(row.date        || '').slice(0, 10),  // ex-dividend date
+          paymentDate: String(row.paymentDate || '').slice(0, 10) || null,
+          amount:      Number(row.value ?? row.unadjustedValue ?? 0),
+          currency:    String(row.currency || 'EUR'),
+          period:      String(row.period   || ''),
         }))
         .filter(d => d.date && d.amount > 0)
         .sort((a, b) => a.date.localeCompare(b.date));
@@ -61,7 +59,7 @@ async function eodhdDiv(symbol) {
       return divs;
     } catch (_) {}
   }
-  return [];
+  return [];  // do NOT cache empty — allow retry next request
 }
 
 // ── Yahoo chart events=div ─────────────────────────────────────────────────
@@ -80,15 +78,18 @@ async function yahooDiv(symbol) {
       const currency = result.meta?.currency || 'EUR';
       const raw = result.events?.dividends || {};
       const divs = Object.values(raw)
-        .map(d => ({ date: new Date(d.date * 1000).toISOString().slice(0, 10), amount: Number(d.amount), currency }))
+        .map(d => ({
+          date: new Date(d.date * 1000).toISOString().slice(0, 10),
+          paymentDate: null,
+          amount: Number(d.amount),
+          currency,
+        }))
         .filter(d => d.date && d.amount > 0)
         .sort((a, b) => a.date.localeCompare(b.date));
-      cset(k, divs);
-      return divs;
+      if (divs.length) { cset(k, divs); return divs; }
     } catch (_) {}
   }
-  cset(k, []);
-  return [];
+  return [];  // do NOT cache empty
 }
 
 // ── TwelveData /dividends ──────────────────────────────────────────────────
@@ -112,18 +113,17 @@ async function tdDiv(symbol) {
       if (!rows.length) continue;
       const divs = rows
         .map(row => ({
-          date: String(row.ex_date || row.date || '').slice(0, 10),
-          amount: Number(row.amount ?? 0),
-          currency: String(row.currency || 'EUR'),
+          date:        String(row.ex_date || row.date || '').slice(0, 10),
+          paymentDate: String(row.payment_date || '').slice(0, 10) || null,
+          amount:      Number(row.amount ?? 0),
+          currency:    String(row.currency || 'EUR'),
         }))
         .filter(d => d.date && d.amount > 0)
         .sort((a, b) => a.date.localeCompare(b.date));
-      cset(k, divs);
-      return divs;
+      if (divs.length) { cset(k, divs); return divs; }
     } catch (_) {}
   }
-  cset(k, []);
-  return [];
+  return [];  // do NOT cache empty
 }
 
 // ── Fetch with fallback chain ─────────────────────────────────────────────
@@ -138,14 +138,20 @@ async function fetchDivs(isin) {
   try {
     const hist = await fetchDividendHistory(isin);
     if (hist.payments?.length) {
-      return hist.payments.map(p => ({ date: p.exDate, amount: p.amount, currency: p.currency || 'EUR' }));
+      return hist.payments.map(p => ({
+        date: p.exDate,
+        paymentDate: null,
+        amount: p.amount,
+        currency: p.currency || 'EUR',
+      }));
     }
   } catch (_) {}
   return [];
 }
 
 // ── Helpers ───────────────────────────────────────────────────────────────
-// Sum last-12-month dividends in EUR
+
+// Sum last-12-month dividends in EUR per share (for annual yield calculation)
 async function annualEurPerShare(divs, gbpRate) {
   if (!divs.length) return 0;
   const cutoff = new Date(); cutoff.setFullYear(cutoff.getFullYear() - 1);
@@ -173,11 +179,67 @@ function derivePayMonths(divs) {
   return [...set].sort((a, b) => a - b);
 }
 
-// Recent dividend events for display (last 8, with EUR amount)
+// Build 12-entry schedule of EUR/share amounts per calendar month (index 0=Jan..11=Dec).
+// For each month, uses the most recent historical payment in that month (last 2 years).
+// This gives real per-month amounts instead of a uniform average.
+async function buildPaySchedule(divs, gbpRate) {
+  const cutoff = new Date(); cutoff.setFullYear(cutoff.getFullYear() - 2);
+  const cut = cutoff.toISOString().slice(0, 10);
+  const recent = divs.filter(d => d.date >= cut);
+  const byMonth = Array.from({ length: 12 }, () => []);
+  for (const d of recent) {
+    const m = new Date(d.date + 'T12:00:00Z').getMonth();
+    const eur = await toEur(d.amount, d.currency, gbpRate);
+    byMonth[m].push({ eur, date: d.date });
+  }
+  // Use the most recent payment for each month
+  return byMonth.map(arr => {
+    if (!arr.length) return 0;
+    arr.sort((a, b) => b.date.localeCompare(a.date));
+    return arr[0].eur;
+  });
+}
+
+// Estimate upcoming ex-date and payment date for the next payMonth.
+// Based on the typical day-of-month from historical data in that month.
+function estimateNextDates(divs, nextMonth, nextYear) {
+  if (nextMonth == null) return { exDate: null, payDate: null };
+
+  // Find all historical payments in nextMonth
+  const inMonth = divs.filter(d => new Date(d.date + 'T12:00:00Z').getMonth() === nextMonth);
+  if (!inMonth.length) return { exDate: null, payDate: null };
+
+  // Typical day-of-month for ex-date
+  const exDays = inMonth.map(d => new Date(d.date + 'T12:00:00Z').getDate());
+  const avgExDay = Math.round(exDays.reduce((s, v) => s + v, 0) / exDays.length);
+
+  // Typical gap between ex-date and payment-date (days)
+  const gaps = inMonth
+    .filter(d => d.paymentDate)
+    .map(d => {
+      const ex = new Date(d.date + 'T12:00:00Z');
+      const pay = new Date(d.paymentDate + 'T12:00:00Z');
+      return Math.round((pay - ex) / 86400000);
+    })
+    .filter(g => g > 0 && g < 60);
+  const avgGap = gaps.length ? Math.round(gaps.reduce((s, v) => s + v, 0) / gaps.length) : 7;
+
+  const exDate = new Date(Date.UTC(nextYear, nextMonth, Math.min(avgExDay, 28)));
+  const payDate = new Date(exDate.getTime() + avgGap * 86400000);
+
+  return {
+    exDate:  exDate.toISOString().slice(0, 10),
+    payDate: payDate.toISOString().slice(0, 10),
+  };
+}
+
+// Recent dividend events for display (last 8, with EUR total amount per payment)
 async function recentForDisplay(divs, gbpRate) {
   const recent = divs.slice(-8);
   const out = [];
-  for (const d of recent) out.push({ ...d, amountEur: await toEur(d.amount, d.currency, gbpRate) });
+  for (const d of recent) {
+    out.push({ ...d, amountEur: await toEur(d.amount, d.currency, gbpRate) });
+  }
   return out;
 }
 
@@ -199,38 +261,50 @@ module.exports = async (req, res) => {
     const seed = portfolioSeed.positions.find(p => p.isin === isin);
 
     if (!syms || !seed) {
-      results.push({ isin, annualPerShare: 0, annualIncome: 0, yieldPct: 0, yieldOnCostPct: 0, payMonths: [] });
+      results.push({ isin, annualPerShare: 0, annualIncome: 0, yieldPct: 0, yieldOnCostPct: 0, payMonths: [], paySchedule: Array(12).fill(0) });
       continue;
     }
 
     try {
       const divs = await fetchDivs(isin);
-      const aps = await annualEurPerShare(divs, gbpRate);
-      const pm = derivePayMonths(divs);
+      const aps  = await annualEurPerShare(divs, gbpRate);
+      const pm   = derivePayMonths(divs);
+      const ps   = await buildPaySchedule(divs, gbpRate);
       const recent = await recentForDisplay(divs, gbpRate);
 
-      const cp = seed.currentPrice ?? 0;
+      const cp  = seed.currentPrice ?? 0;
       const qty = seed.quantity ?? 0;
-      const bp = seed.buyPrice ?? cp;
+      const bp  = seed.buyPrice ?? cp;
+
+      const today = new Date();
+      const cm = today.getMonth();
+      const nextM = pm.find(m => m > cm) ?? pm[0];
+      const nextYear = today.getFullYear() + (nextM != null && nextM <= cm ? 1 : 0);
+      const { exDate: nextExDate, payDate: nextPayDate } = estimateNextDates(divs, nextM, nextYear);
 
       results.push({
         isin,
-        symbol: syms.eodhd || syms.yahoo,
-        source: divs.length ? 'live' : 'no_data',
-        gbpEurRate: gbpRate,
+        symbol:         syms.eodhd || syms.yahoo,
+        source:         divs.length ? 'live' : 'no_data',
+        gbpEurRate:     gbpRate,
         annualPerShare: aps,
-        annualIncome: aps * qty,
-        yieldPct: aps > 0 && cp > 0 ? aps / cp : 0,
+        annualIncome:   aps * qty,
+        yieldPct:       aps > 0 && cp > 0 ? aps / cp : 0,
         yieldOnCostPct: aps > 0 && bp > 0 ? aps / bp : 0,
-        payMonths: pm,
-        payCount: divs.length,
+        payMonths:      pm,
+        paySchedule:    ps,        // 12-entry array: EUR/share for each calendar month
+        nextExDate,                // estimated next ex-dividend date (YYYY-MM-DD)
+        nextPayDate,               // estimated next payment date (YYYY-MM-DD)
+        payCount:       divs.length,
         recentDividends: recent,
       });
     } catch (err) {
       results.push({
         isin, symbol: DIV_ASSETS[isin]?.eodhd,
         annualPerShare: 0, annualIncome: 0, yieldPct: 0, yieldOnCostPct: 0,
-        payMonths: [], recentDividends: [], error: err.message,
+        payMonths: [], paySchedule: Array(12).fill(0),
+        nextExDate: null, nextPayDate: null,
+        recentDividends: [], error: err.message,
       });
     }
   }
