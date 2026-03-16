@@ -1,0 +1,102 @@
+// Persistent cache for historical price data
+// L1: in-memory Map (warm requests, 30 min TTL)
+// L2: Supabase REST API (persistent, survives cold starts)
+//
+// Supabase is disabled gracefully when SUPABASE_URL is empty.
+// To enable: set SUPABASE_URL and SUPABASE_ANON_KEY in .env.local / Vercel env vars.
+// Run supabase-schema.sql once to create the required tables.
+
+const MAX_STALE_DAYS = 1; // re-fetch if last data point is older than this
+
+function isSupabaseEnabled() {
+  return !!(process.env.SUPABASE_URL && process.env.SUPABASE_ANON_KEY);
+}
+
+function sbUrl(path) {
+  return `${process.env.SUPABASE_URL}/rest/v1${path}`;
+}
+
+function sbHeaders(extra = {}) {
+  return {
+    'apikey': process.env.SUPABASE_ANON_KEY,
+    'Authorization': `Bearer ${process.env.SUPABASE_ANON_KEY}`,
+    'Content-Type': 'application/json',
+    ...extra
+  };
+}
+
+// Read all cached price history for an ISIN from Supabase
+async function dbGetHistory(isin) {
+  if (!isSupabaseEnabled()) return null;
+  try {
+    const res = await fetch(
+      sbUrl(`/price_history?isin=eq.${encodeURIComponent(isin)}&select=date,close&order=date.asc&limit=5000`),
+      { headers: sbHeaders() }
+    );
+    if (!res.ok) return null;
+    const rows = await res.json();
+    if (!Array.isArray(rows) || rows.length === 0) return null;
+    return rows.map(r => ({ date: r.date, close: Number(r.close) }));
+  } catch { return null; }
+}
+
+// Check if the cached data is fresh enough (last data point ≤ MAX_STALE_DAYS old)
+async function dbIsStale(isin) {
+  if (!isSupabaseEnabled()) return true; // no DB → always stale
+  try {
+    const res = await fetch(
+      sbUrl(`/price_history?isin=eq.${encodeURIComponent(isin)}&select=date&order=date.desc&limit=1`),
+      { headers: sbHeaders() }
+    );
+    if (!res.ok) return true;
+    const rows = await res.json();
+    if (!Array.isArray(rows) || rows.length === 0) return true;
+    const lastDate = new Date(rows[0].date);
+    const ageDays = (Date.now() - lastDate.getTime()) / (1000 * 60 * 60 * 24);
+    return ageDays > MAX_STALE_DAYS;
+  } catch { return true; }
+}
+
+// Upsert price history for an ISIN into Supabase (batches of 500)
+async function dbSaveHistory(isin, points, provider = 'unknown') {
+  if (!isSupabaseEnabled()) return false;
+  if (!Array.isArray(points) || points.length === 0) return false;
+  try {
+    // Deduplicate by date — keep last occurrence (most recent fetch wins)
+    const seen = new Map();
+    for (const p of points) seen.set(p.date, p);
+    const rows = [...seen.values()].map(p => ({ isin, date: p.date, close: p.close, provider }));
+    for (let i = 0; i < rows.length; i += 500) {
+      const chunk = rows.slice(i, i + 500);
+      const res = await fetch(sbUrl('/price_history?on_conflict=isin,date'), {
+        method: 'POST',
+        headers: sbHeaders({ 'Prefer': 'resolution=merge-duplicates,return=minimal' }),
+        body: JSON.stringify(chunk)
+      });
+      if (!res.ok) {
+        const err = await res.text().catch(() => res.status);
+        console.error('[cache] dbSaveHistory error:', err);
+        return false;
+      }
+    }
+    return true;
+  } catch (e) {
+    console.error('[cache] dbSaveHistory exception:', e.message);
+    return false;
+  }
+}
+
+// Save asset metadata (name, type, provider) to Supabase
+async function dbSaveMetadata(isin, name, type, recommendedProvider) {
+  if (!isSupabaseEnabled()) return false;
+  try {
+    const res = await fetch(sbUrl('/assets_metadata'), {
+      method: 'POST',
+      headers: sbHeaders({ 'Prefer': 'resolution=merge-duplicates,return=minimal' }),
+      body: JSON.stringify({ isin, name, tipo: type || 'unknown', recommended_provider: recommendedProvider || null })
+    });
+    return res.ok;
+  } catch { return false; }
+}
+
+module.exports = { dbGetHistory, dbSaveHistory, dbIsStale, dbSaveMetadata, isSupabaseEnabled };

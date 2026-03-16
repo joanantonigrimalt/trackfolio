@@ -1,0 +1,23 @@
+{
+  "owner": "Grigom",
+  "currency": "EUR",
+  "positions": [
+    { "isin": "IE00BYX5NK04", "name": "MSCI World Index Fund P-ACC-USD", "shortName": "MSCI World", "quantity": 1772.96, "buyPrice": 8.30, "currentPrice": 10.15 },
+    { "isin": "ES0146309002", "name": "Horos Value Internacional FI", "shortName": "Horos Intl", "quantity": 33.51, "buyPrice": 205.96, "currentPrice": 202.97 },
+    { "isin": "IE00B4ND3602", "name": "ETC iShares Physical Gold", "shortName": "Oro físico (IGLN)", "quantity": 59.00, "buyPrice": 63.78, "currentPrice": 85.52 },
+    { "isin": "ES0112611001", "name": "AzValor International FI", "shortName": "AzValor Intl", "quantity": 14.81, "buyPrice": 337.52, "currentPrice": 336.38 },
+    { "isin": "ES0146311008", "name": "Horos Value Iberia FI", "shortName": "Horos Iberia", "quantity": 27.66, "buyPrice": 177.19, "currentPrice": 182.42 },
+    { "isin": "LU1598719752", "name": "Cobas International Fund P-Acc EUR", "shortName": "Cobas Intl", "quantity": 24.84, "buyPrice": 165.70, "currentPrice": 166.66 },
+    { "isin": "IE00BYX5P602", "name": "MSCI World Index Fund P-ACC-EUR Hedged", "shortName": "MSCI World EUR Hdg", "quantity": 288.28, "buyPrice": 10.81, "currentPrice": 10.57 },
+    { "isin": "ES0173311103", "name": "Renta 4 Numantia Patrimonio Global", "shortName": "Numantia", "quantity": 106.44, "buyPrice": 28.18, "currentPrice": 27.46 },
+    { "isin": "IE000QAZP7L2", "name": "iShares Emerging Markets Index Fund", "shortName": "MSCI EM IMI", "quantity": 157.78, "buyPrice": 12.08, "currentPrice": 12.03 },
+    { "isin": "ES0159259011", "name": "Magallanes European Equity M FI", "shortName": "Magallanes", "quantity": 10.04, "buyPrice": 268.94, "currentPrice": 258.95 },
+    { "isin": "ES0174115057", "name": "Cinvest Tercio Capital B FI", "shortName": "Cinvest Tercio", "quantity": 115.70, "buyPrice": 21.61, "currentPrice": 20.92 },
+    { "isin": "LU0084617165", "name": "Robeco Asia Pacific Equities D AC EUR", "shortName": "Robeco Asia", "quantity": 9.38, "buyPrice": 299.82, "currentPrice": 300.27 },
+    { "isin": "IE00B579F325", "name": "Invesco Physical Gold ETC", "shortName": "Oro físico (SGLD)", "quantity": 5.00, "buyPrice": 429.60, "currentPrice": 424.72 },
+    { "isin": "DE000A0F5UH1", "name": "ETF iShares STOXX Europe Global", "shortName": "Euro Stoxx 50", "quantity": 28.00, "buyPrice": 36.41, "currentPrice": 35.96 },
+    { "isin": "IE00BZ4BMM98", "name": "Invesco EuroStoxx High Div Low Vol ETF", "shortName": "High Div Low Vol", "quantity": 30.00, "buyPrice": 33.91, "currentPrice": 33.43 },
+    { "isin": "IE00B9CQXS71", "name": "ETF SPDR Global Dividend Aristocrats", "shortName": "Div Aristocrats", "quantity": 29.00, "buyPrice": 33.45, "currentPrice": 32.60 },
+    { "isin": "NL0011683594", "name": "VanEck Dev Mkt Dividend Leaders ETF", "shortName": "VanEck TDIV", "quantity": 18.00, "buyPrice": 51.98, "currentPrice": 52.10 }
+  ]
+}

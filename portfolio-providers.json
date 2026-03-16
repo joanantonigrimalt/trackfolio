@@ -1,0 +1,186 @@
+{
+  "generatedAt": "2026-03-16",
+  "policy": {
+    "noFakeSeries": true,
+    "ifNoRealHistory": "show_unavailable",
+    "fallbackOrder": [
+      "yahoo",
+      "eodhd",
+      "twelvedata",
+      "fund-source",
+      "fmp"
+    ]
+  },
+  "assets": [
+    {
+      "isin": "IE00BYX5NK04",
+      "name": "iShares Core MSCI World UCITS ETF USD (Acc)",
+      "type": "etf",
+      "status": "mapped",
+      "recommendedProvider": "twelvedata",
+      "providerSymbol": "SWDA",
+      "yahooSymbol": "IWDA.AS",
+      "notes": "Yahoo: try ISIN direct first, then IWDA.AS (Amsterdam). TwelveData SWDA as secondary."
+    },
+    {
+      "isin": "ES0146309002",
+      "name": "Horos Value Internacional",
+      "type": "fund",
+      "status": "mapped",
+      "recommendedProvider": "yahoo",
+      "providerSymbol": null,
+      "yahooSymbol": "0P0001DFE8.F",
+      "notes": "Available on Yahoo Finance as Morningstar fund symbol 0P0001DFE8.F (MUTUALFUND)."
+    },
+    {
+      "isin": "IE00B4ND3602",
+      "name": "iShares Physical Gold ETC",
+      "type": "etc",
+      "status": "mapped",
+      "recommendedProvider": "eodhd",
+      "providerSymbol": "IGLN.L",
+      "yahooSymbol": "IGLN.L",
+      "notes": "Yahoo and EODHD both support IGLN.L (London). Yahoo ISIN direct may also work."
+    },
+    {
+      "isin": "ES0112611001",
+      "name": "AzValor Internacional",
+      "type": "fund",
+      "status": "mapped",
+      "recommendedProvider": "yahoo",
+      "providerSymbol": null,
+      "yahooSymbol": "0P00016YQ5.F",
+      "notes": "Available on Yahoo Finance as 0P00016YQ5.F (MUTUALFUND)."
+    },
+    {
+      "isin": "ES0146311008",
+      "name": "Horos Value Iberia",
+      "type": "fund",
+      "status": "mapped",
+      "recommendedProvider": "yahoo",
+      "providerSymbol": null,
+      "yahooSymbol": "0P0001DFE7.F",
+      "notes": "Yahoo Finance: 0P0001DFE7.F (MUTUALFUND)."
+    },
+    {
+      "isin": "LU1598719752",
+      "name": "Cobas International",
+      "type": "fund",
+      "status": "mapped",
+      "recommendedProvider": "yahoo",
+      "providerSymbol": null,
+      "yahooSymbol": "0P0001A94B.F",
+      "notes": "Yahoo Finance: 0P0001A94B.F (MUTUALFUND). 1260+ daily NAV points."
+    },
+    {
+      "isin": "IE00BYX5P602",
+      "name": "iShares Core MSCI World UCITS ETF EUR Hedged (Acc)",
+      "type": "etf",
+      "status": "mapped",
+      "recommendedProvider": "eodhd",
+      "providerSymbol": "IWDE.L",
+      "yahooSymbol": "IWDE.L",
+      "notes": "EUR-hedged share class. IWDE.L on LSE. Yahoo ISIN direct may also resolve."
+    },
+    {
+      "isin": "ES0173311103",
+      "name": "Numantia Patrimonio",
+      "type": "fund",
+      "status": "mapped",
+      "recommendedProvider": "yahoo",
+      "providerSymbol": null,
+      "yahooSymbol": "0P000168OI.F",
+      "notes": "Yahoo Finance: 0P000168OI.F (MUTUALFUND). 1260+ daily NAV points."
+    },
+    {
+      "isin": "IE000QAZP7L2",
+      "name": "iShares Core MSCI EM IMI UCITS ETF USD (Dist)",
+      "type": "etf",
+      "status": "mapped",
+      "recommendedProvider": "eodhd",
+      "providerSymbol": "EIMI.L",
+      "yahooSymbol": "EIMI.L",
+      "notes": "EIMI.L on LSE. Yahoo ISIN direct may also resolve."
+    },
+    {
+      "isin": "ES0159259011",
+      "name": "Magallanes European",
+      "type": "fund",
+      "status": "mapped",
+      "recommendedProvider": "yahoo",
+      "providerSymbol": null,
+      "yahooSymbol": "0P0001572X.F",
+      "notes": "Yahoo Finance: 0P0001572X.F (MUTUALFUND). 1260+ daily NAV points."
+    },
+    {
+      "isin": "ES0174115057",
+      "name": "Cinvest Tercio B",
+      "type": "fund",
+      "status": "mapped",
+      "recommendedProvider": "yahoo",
+      "providerSymbol": null,
+      "yahooSymbol": "0P0001OR4H.F",
+      "notes": "Yahoo Finance: 0P0001OR4H.F (MUTUALFUND). 1260+ daily NAV points."
+    },
+    {
+      "isin": "LU0084617165",
+      "name": "Robeco Asia Pacific Equities",
+      "type": "fund",
+      "status": "mapped",
+      "recommendedProvider": "yahoo",
+      "providerSymbol": null,
+      "yahooSymbol": "FHQI.F",
+      "notes": "Yahoo Finance: FHQI.F (ETF). Limited history, weekly data only."
+    },
+    {
+      "isin": "IE00B579F325",
+      "name": "Invesco Physical Gold ETC",
+      "type": "etc",
+      "status": "mapped",
+      "recommendedProvider": "eodhd",
+      "providerSymbol": "SGLD.L",
+      "yahooSymbol": "SGLD.L",
+      "notes": "SGLD.L on LSE. Yahoo and EODHD both support it."
+    },
+    {
+      "isin": "DE000A0F5UH1",
+      "name": "iShares Core EURO STOXX 50 UCITS ETF (DE)",
+      "type": "etf",
+      "status": "mapped",
+      "recommendedProvider": "eodhd",
+      "providerSymbol": "EXW1.DE",
+      "yahooSymbol": "EXW1.DE",
+      "notes": "EXW1.DE on XETRA. Yahoo and EODHD both support it."
+    },
+    {
+      "isin": "IE00BZ4BMM98",
+      "name": "Invesco S&P 500 High Dividend Low Volatility UCITS ETF",
+      "type": "etf",
+      "status": "mapped",
+      "recommendedProvider": "yahoo",
+      "providerSymbol": "HDLG.L",
+      "yahooSymbol": "EUHD.L",
+      "notes": "Yahoo Finance: EUHD.L — Invesco EURO STOXX High Dividend Low Volatility ETF."
+    },
+    {
+      "isin": "IE00B9CQXS71",
+      "name": "SPDR S&P Global Dividend Aristocrats UCITS ETF",
+      "type": "etf",
+      "status": "mapped",
+      "recommendedProvider": "eodhd",
+      "providerSymbol": "GBDV.L",
+      "yahooSymbol": "GBDV.L",
+      "notes": "GBDV.L on LSE. Yahoo and EODHD both support it."
+    },
+    {
+      "isin": "NL0011683594",
+      "name": "VanEck Morningstar Developed Markets Dividend Leaders UCITS ETF",
+      "type": "etf",
+      "status": "mapped",
+      "recommendedProvider": "twelvedata",
+      "providerSymbol": "TDIV",
+      "yahooSymbol": "TDIV.AS",
+      "notes": "TDIV.AS on Euronext Amsterdam. Yahoo ISIN direct may also resolve."
+    }
+  ]
+}
