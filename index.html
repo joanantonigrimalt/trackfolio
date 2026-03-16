@@ -12,22 +12,26 @@
 .top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:14px;gap:10px}.title{font-size:28px;font-weight:800;letter-spacing:-.03em;line-height:1.1}.sub{font-size:12px;color:#7d9080;margin-top:5px;line-height:1.4}.badge{padding:7px 12px;border-radius:999px;background:rgba(21,128,61,.09);color:#15803d;font-size:11px;font-weight:700;border:1px solid rgba(21,128,61,.13);white-space:nowrap}
 /* Cards */
 .card{background:rgba(255,255,255,.82);border:1px solid rgba(20,32,24,.06);border-radius:26px;padding:18px;margin-bottom:12px;backdrop-filter:blur(12px)}.hero{background:linear-gradient(160deg,#1a3f2c 0%,#0f2a1e 100%);border:none;color:#f5fbf6;box-shadow:0 20px 48px rgba(12,36,22,.3)}.hero .sectionEyebrow{color:rgba(239,249,242,.6)}.hero .valueLarge{font-size:44px;font-weight:800;letter-spacing:-.045em;margin-top:2px;line-height:1}.hero .valueSub{margin-top:12px;display:flex;flex-wrap:wrap;gap:8px}
-/* Pills */
-.pill{display:inline-flex;align-items:center;gap:5px;padding:7px 13px;border-radius:999px;font-size:12px;font-weight:700;border:1px solid transparent;letter-spacing:-.01em}.pill.pos{background:rgba(74,222,128,.13);color:#a7f3c0;border-color:rgba(167,243,192,.15)}.pill.neg{background:rgba(248,113,113,.15);color:#fca5a5;border-color:rgba(252,165,165,.18)}.pill.info{background:rgba(255,255,255,.08);color:rgba(239,249,242,.8);border-color:rgba(255,255,255,.1)}
+/* Pills — inside .hero always white */
+.pill{display:inline-flex;align-items:center;gap:5px;padding:7px 13px;border-radius:999px;font-size:12px;font-weight:700;border:1px solid transparent;letter-spacing:-.01em}.pill.pos{background:rgba(74,222,128,.13);color:#a7f3c0;border-color:rgba(167,243,192,.15)}.pill.neg{background:rgba(248,113,113,.15);color:#fca5a5;border-color:rgba(252,165,165,.18)}.pill.info{background:rgba(255,255,255,.08);color:rgba(239,249,242,.8);border-color:rgba(255,255,255,.1)}.hero .pill{background:rgba(255,255,255,.1);color:rgba(255,255,255,.92);border-color:rgba(255,255,255,.14)}
 /* Hero metrics */
-.heroMetrics{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:14px}.metricCard{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.08);border-radius:16px;padding:11px 10px}.metricCard .l{font-size:10px;color:rgba(239,249,242,.58);text-transform:uppercase;letter-spacing:.08em;font-weight:600}.metricCard .n{font-size:16px;font-weight:700;margin-top:4px;letter-spacing:-.02em}
+.heroMetrics{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:14px}.metricCard{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.08);border-radius:16px;padding:11px 10px}.metricCard .l{font-size:10px;color:rgba(239,249,242,.58);text-transform:uppercase;letter-spacing:.08em;font-weight:600}.metricCard .n{font-size:16px;font-weight:700;margin-top:4px;letter-spacing:-.02em;color:rgba(255,255,255,.95)}
 /* Chart */
-.chartShell{margin-top:14px;padding:14px;border-radius:22px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.07)}.chartHeader{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;margin-bottom:10px}.sectionEyebrow{font-size:10px;text-transform:uppercase;letter-spacing:.1em;font-weight:700;color:#819184}.chartValue{font-size:20px;font-weight:800;margin-top:3px;letter-spacing:-.03em}.chartMeta{font-size:12px;line-height:1.45;text-align:right;color:rgba(239,249,242,.7);font-weight:600}.timeframes{display:flex;gap:6px;overflow:auto;padding-bottom:2px;margin-bottom:10px}.timeframes::-webkit-scrollbar{width:0;height:0}.tfBtn{border:none;background:rgba(255,255,255,.07);color:rgba(239,249,242,.6);padding:7px 11px;border-radius:999px;font:inherit;font-size:11px;font-weight:700;cursor:pointer;white-space:nowrap;border:1px solid rgba(255,255,255,.07);transition:all .15s ease}.tfBtn:hover{background:rgba(255,255,255,.1);color:rgba(239,249,242,.85)}.tfBtn.active{background:#d1fae5;color:#065f46;border-color:#a7f3d0;box-shadow:0 4px 14px rgba(167,243,208,.25)}.chartWrap{position:relative;height:200px}.chartPlaceholder{height:180px;display:flex;align-items:center;justify-content:center;color:rgba(239,249,242,.5);font-size:13px;background:rgba(255,255,255,.03);border:1px dashed rgba(255,255,255,.1);border-radius:14px;padding:16px;text-align:center}.note{font-size:11px;line-height:1.5;margin-top:10px;color:rgba(239,249,242,.5)}
+.chartShell{margin-top:14px;padding:14px;border-radius:22px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.07)}.chartHeader{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;margin-bottom:10px}.sectionEyebrow{font-size:10px;text-transform:uppercase;letter-spacing:.1em;font-weight:700;color:#819184}.chartValue{font-size:20px;font-weight:800;margin-top:3px;letter-spacing:-.03em;color:rgba(255,255,255,.95)}.chartMeta{font-size:12px;line-height:1.45;text-align:right;color:rgba(239,249,242,.7);font-weight:600}.timeframes{display:flex;gap:6px;overflow:auto;padding-bottom:2px;margin-bottom:10px}.timeframes::-webkit-scrollbar{width:0;height:0}.tfBtn{border:none;background:rgba(255,255,255,.07);color:rgba(239,249,242,.6);padding:7px 11px;border-radius:999px;font:inherit;font-size:11px;font-weight:700;cursor:pointer;white-space:nowrap;border:1px solid rgba(255,255,255,.07);transition:all .15s ease}.tfBtn:hover{background:rgba(255,255,255,.1);color:rgba(239,249,242,.85)}.tfBtn.active{background:rgba(255,255,255,.18);color:rgba(255,255,255,.95);border-color:rgba(255,255,255,.2)}.chartWrap{position:relative;height:200px}.chartPlaceholder{height:180px;display:flex;align-items:center;justify-content:center;color:rgba(239,249,242,.5);font-size:13px;background:rgba(255,255,255,.03);border:1px dashed rgba(255,255,255,.1);border-radius:14px;padding:16px;text-align:center}.note{font-size:11px;line-height:1.5;margin-top:10px;color:rgba(239,249,242,.45)}
 /* Summary grid */
 .summaryGrid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}.summaryBox{background:rgba(255,255,255,.82);border:1px solid rgba(20,32,24,.06);border-radius:20px;padding:14px;backdrop-filter:blur(8px)}.summaryBox .label{font-size:10px;text-transform:uppercase;letter-spacing:.09em;color:#8fa090;font-weight:700}.summaryBox .value{font-size:22px;font-weight:800;margin-top:5px;letter-spacing:-.03em;color:#142018}.summaryBox .delta{font-size:12px;margin-top:4px;color:#6d7e72;font-weight:500}
 /* Asset list */
-.sectionTitle{font-size:15px;font-weight:800;margin-bottom:12px;color:#142018;letter-spacing:-.01em}.asset{display:flex;gap:12px;align-items:flex-start;padding:13px 0;border-bottom:1px solid rgba(20,32,24,.06)}.asset:last-child{border-bottom:none}.icon{width:42px;height:42px;border-radius:13px;background:linear-gradient(135deg,#1c7c45,#2ecc71);color:#fff;display:grid;place-items:center;font-weight:800;font-size:13px;flex-shrink:0;box-shadow:0 6px 18px rgba(30,130,76,.18)}.icon.etf{background:linear-gradient(135deg,#1d6fa8,#38bdf8)}.icon.fund{background:linear-gradient(135deg,#7c3aed,#a78bfa)}.icon.etc{background:linear-gradient(135deg,#b45309,#fbbf24)}.name{font-size:14px;font-weight:700;color:#142018;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.meta{font-size:11px;color:#8fa090;margin-top:2px;font-weight:500}.right{margin-left:auto;text-align:right;flex-shrink:0}.right .money{font-weight:700;font-size:14px;color:#142018}.right .pct{font-size:12px;margin-top:3px;font-weight:600}
-/* Tags */
-.tagrow{display:flex;gap:5px;flex-wrap:wrap;margin-top:6px}.tag{font-size:10px;padding:3px 7px;border-radius:6px;background:#eef3ef;color:#55675b;border:1px solid rgba(20,32,24,.05);font-weight:600}.tag.ok{background:rgba(22,163,74,.09);color:#166534;border-color:rgba(21,128,61,.11)}.tag.partial{background:rgba(245,158,11,.1);color:#92400e;border-color:rgba(180,83,9,.15)}.tag.missing{background:rgba(239,68,68,.09);color:#991b1b;border-color:rgba(185,28,28,.13)}
+.sectionTitle{font-size:15px;font-weight:800;margin-bottom:12px;color:#142018;letter-spacing:-.01em}.asset{display:flex;gap:12px;align-items:center;padding:12px 0;border-bottom:1px solid rgba(20,32,24,.06);cursor:pointer;transition:opacity .12s}.asset:last-child{border-bottom:none}.asset:active{opacity:.7}.icon{width:42px;height:42px;border-radius:13px;background:linear-gradient(135deg,#1c7c45,#2ecc71);color:#fff;display:grid;place-items:center;font-weight:800;font-size:13px;flex-shrink:0;box-shadow:0 6px 18px rgba(30,130,76,.18)}.icon.etf{background:linear-gradient(135deg,#1d6fa8,#38bdf8)}.icon.fund{background:linear-gradient(135deg,#7c3aed,#a78bfa)}.icon.etc{background:linear-gradient(135deg,#b45309,#fbbf24)}.name{font-size:14px;font-weight:700;color:#142018;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.meta{font-size:11px;color:#8fa090;margin-top:2px;font-weight:500}.right{margin-left:auto;text-align:right;flex-shrink:0}.right .money{font-weight:700;font-size:14px;color:#142018}.right .pct{font-size:12px;margin-top:3px;font-weight:600}
 /* Misc */
-.empty{font-size:13px;color:#6d7e72;line-height:1.55}.kv{display:flex;justify-content:space-between;gap:10px;padding:11px 0;border-bottom:1px solid rgba(20,32,24,.06)}.kv:last-child{border-bottom:none}.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-top:14px}.mini{background:#f4f7f5;border:1px solid rgba(20,32,24,.05);border-radius:16px;padding:12px}.mini .l{font-size:10px;color:#819184;text-transform:uppercase;font-weight:700}.mini .n{font-size:17px;font-weight:700;margin-top:4px}.monthGrid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:12px}.month{background:#f1f5f2;border-radius:12px;padding:10px;text-align:center;font-size:12px}
+.empty{font-size:13px;color:#6d7e72;line-height:1.55}.kv{display:flex;justify-content:space-between;gap:10px;padding:11px 0;border-bottom:1px solid rgba(20,32,24,.06)}.kv:last-child{border-bottom:none}
 /* Tab bar — 5 tabs */
 .tab{position:absolute;left:12px;right:12px;bottom:12px;background:rgba(255,255,255,.94);backdrop-filter:blur(20px);border:1px solid rgba(20,32,24,.07);border-radius:22px;padding:10px 4px 16px;display:flex;justify-content:space-around;box-shadow:0 12px 32px rgba(20,32,24,.09)}.tab button{background:none;border:none;text-align:center;font-size:10px;color:#8fa090;font-family:inherit;cursor:pointer;font-weight:500;transition:color .15s;flex:1;min-width:0}.tab b{display:block;font-size:18px;color:#b0c0b5;margin-bottom:2px;transition:color .15s}.tab button.active b,.tab button.active{color:#15803d}
+/* === Asset Detail Screen === */
+.adNav{display:flex;align-items:center;gap:12px;margin-bottom:16px;margin-top:4px}.backBtn{background:rgba(20,32,24,.07);border:1px solid rgba(20,32,24,.08);width:36px;height:36px;border-radius:12px;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;color:#142018;flex-shrink:0;font-family:inherit;transition:background .12s}.backBtn:active{background:rgba(20,32,24,.14)}.adNavTitle{font-size:16px;font-weight:700;color:#142018;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.adHeroCard{padding:20px 20px 18px}.adHeroTop{display:flex;justify-content:space-between;align-items:flex-start;gap:12px}.adIsin{font-size:11px;color:#8fa090;font-weight:600;letter-spacing:.06em;margin-bottom:6px}.adPrice{font-size:42px;font-weight:800;letter-spacing:-.045em;color:#142018;line-height:1}.adGainBadge{display:inline-flex;align-items:center;gap:4px;margin-top:10px;padding:5px 11px;border-radius:999px;font-size:12px;font-weight:700;background:rgba(22,163,74,.1);color:#15803d;border:1px solid rgba(21,128,61,.14)}.adGainBadge.neg{background:rgba(239,68,68,.08);color:#b91c1c;border-color:rgba(185,28,28,.12)}.adIconLg{width:52px;height:52px;border-radius:16px;flex-shrink:0;font-size:15px}
+.adMetricGrid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}.adMetricBox{background:rgba(255,255,255,.82);border:1px solid rgba(20,32,24,.06);border-radius:18px;padding:14px;backdrop-filter:blur(8px)}.adMetricBox .aml{font-size:9px;text-transform:uppercase;letter-spacing:.1em;color:#8fa090;font-weight:700}.adMetricBox .amv{font-size:20px;font-weight:800;margin-top:5px;letter-spacing:-.03em;color:#142018}.adMetricBox .amv.pos{color:#15803d}.adMetricBox .amv.neg{color:#b91c1c}
+.adChartTop{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}.adChartMeta{font-size:12px;font-weight:700}.adTfRow{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:10px}.tfBtnA{border:1px solid rgba(20,32,24,.1);background:rgba(20,32,24,.04);color:#6d7e72;padding:5px 10px;border-radius:999px;font:inherit;font-size:11px;font-weight:700;cursor:pointer;transition:all .12s}.tfBtnA.on{background:#142018;color:#f5fbf6;border-color:#142018}
+.addPosBtn{display:block;width:100%;padding:16px;background:linear-gradient(135deg,#1a3f2c,#15803d);color:#fff;border:none;border-radius:18px;font-size:15px;font-weight:700;font-family:inherit;cursor:pointer;margin-top:4px;letter-spacing:-.01em;box-shadow:0 8px 24px rgba(21,128,61,.28)}
 /* === Analysis tab === */
 .healthRow{display:flex;align-items:center;gap:16px;margin-top:4px}.healthDonutWrap{position:relative;width:110px;height:110px;flex-shrink:0}.healthDonutWrap canvas{width:110px!important;height:110px!important}.healthCenter{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center;pointer-events:none}.healthCenter .hs{font-size:26px;font-weight:800;letter-spacing:-.04em;color:#142018;line-height:1}.healthCenter .hsl{font-size:10px;color:#8fa090;font-weight:600}.subscores{display:flex;flex-direction:column;gap:8px;flex:1}.subscoreRow{display:flex;align-items:center;justify-content:space-between;gap:8px}.subscoreLabel{font-size:12px;font-weight:600;color:#5a6e5e;min-width:72px}.subscoreBar{flex:1;height:6px;background:#e8f0e9;border-radius:3px;overflow:hidden}.subscoreBarFill{height:100%;border-radius:3px;transition:width .6s ease}.subscoreVal{font-size:13px;font-weight:800;color:#142018;min-width:28px;text-align:right}
 .chartWrap2{position:relative;height:160px;margin-top:8px}.distLegend{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}.legendItem{display:flex;align-items:center;gap:5px;font-size:12px;font-weight:600;color:#4a5f4e}.legendDot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
@@ -75,7 +79,6 @@
         </div>
         <div class="chartMeta" id="chartMeta"></div>
       </div>
-
       <div class="timeframes">
         <button class="tfBtn" data-range="1W">1S</button>
         <button class="tfBtn" data-range="1M">1M</button>
@@ -84,7 +87,6 @@
         <button class="tfBtn active" data-range="1Y">1A</button>
         <button class="tfBtn" data-range="5Y">5A</button>
       </div>
-
       <div class="chartWrap">
         <canvas id="chart"></canvas>
         <div id="chartFallback" class="chartPlaceholder" style="display:none">Histórico insuficiente para construir una curva.</div>
@@ -118,8 +120,6 @@
 <!-- ============ ANÁLISIS ============ -->
 <div id="screen-analysis" class="screen">
   <div class="top"><div><div class="title">Análisis</div><div class="sub">Salud, distribución y rendimiento</div></div></div>
-
-  <!-- Health score -->
   <div class="card">
     <div class="sectionTitle">Score de salud</div>
     <div class="healthRow">
@@ -130,21 +130,15 @@
       <div class="subscores" id="subscoreList"></div>
     </div>
   </div>
-
-  <!-- Distribution -->
   <div class="card">
     <div class="sectionTitle">Distribución por tipo</div>
     <div class="chartWrap2"><canvas id="distPie"></canvas></div>
     <div class="distLegend" id="distLegend"></div>
   </div>
-
-  <!-- Performance per asset -->
   <div class="card">
     <div class="sectionTitle">Rentabilidad por activo</div>
     <div style="position:relative;height:220px;margin-top:6px"><canvas id="perfBar"></canvas></div>
   </div>
-
-  <!-- Portfolio vs MSCI World -->
   <div class="card">
     <div class="sectionTitle">Portfolio vs MSCI World</div>
     <div style="position:relative;height:180px;margin-top:6px"><canvas id="vsWorldBar"></canvas></div>
@@ -154,7 +148,6 @@
 <!-- ============ DIVIDENDOS ============ -->
 <div id="screen-dividends" class="screen">
   <div class="top"><div><div class="title">Dividendos</div><div class="sub">Ingresos pasivos estimados del portfolio</div></div></div>
-
   <div class="card divHero">
     <div class="divHeroTop">
       <div class="divBig" id="divAnnual">€0</div>
@@ -166,12 +159,10 @@
       <div class="divMetricBox"><div class="dl">Activos</div><div class="dn" id="divCount">0</div></div>
     </div>
   </div>
-
   <div class="card">
     <div class="sectionTitle">Próximos pagos</div>
     <div id="upcomingPayments"></div>
   </div>
-
   <div class="card">
     <div class="sectionTitle">Calendario anual</div>
     <div class="calGrid" id="divCalendar"></div>
@@ -181,17 +172,51 @@
 <!-- ============ IA ============ -->
 <div id="screen-ia" class="screen">
   <div class="top"><div><div class="title">IA</div><div class="sub">Análisis inteligente de tu portfolio</div></div></div>
-
   <div class="card iaHeader" style="border:none;box-shadow:0 20px 48px rgba(45,26,74,.3)">
     <div class="sectionEyebrow" style="color:rgba(245,240,251,.5)">Asistente Trackfolio</div>
     <div style="font-size:24px;font-weight:800;color:#f5f0fb;margin-top:4px;letter-spacing:-.03em">Insights del portfolio</div>
     <div style="font-size:12px;color:rgba(245,240,251,.6);margin-top:6px">Basado en tus posiciones actuales</div>
   </div>
-
   <div id="iaInsightsList"></div>
 </div>
 
-<!-- TAB BAR (5 tabs) -->
+<!-- ============ DETALLE ACTIVO ============ -->
+<div id="screen-asset" class="screen">
+  <div class="adNav">
+    <button class="backBtn" id="btnAssetBack">‹</button>
+    <div class="adNavTitle" id="adNavTitle">Activo</div>
+  </div>
+
+  <div class="card adHeroCard">
+    <div class="adHeroTop">
+      <div>
+        <div class="adIsin" id="adIsin"></div>
+        <div class="adPrice" id="adPrice">€0</div>
+        <div class="adGainBadge" id="adGainBadge">+0%</div>
+      </div>
+      <div class="icon adIconLg" id="adIcon"></div>
+    </div>
+  </div>
+
+  <div class="adMetricGrid" id="adMetrics"></div>
+
+  <div class="card">
+    <div class="adChartTop">
+      <div class="sectionTitle" style="margin-bottom:0">Evolución del precio</div>
+      <div class="adChartMeta" id="adChartMeta"></div>
+    </div>
+    <div class="adTfRow" id="adTfRow" style="margin-top:10px"></div>
+    <div style="position:relative;height:190px">
+      <canvas id="assetChart"></canvas>
+      <div id="assetChartFallback" class="chartPlaceholder" style="display:none;background:#f4f7f5;color:#8fa090;border-color:#dde6de">Sin histórico disponible para este activo.</div>
+    </div>
+    <div class="note" id="adChartNote" style="color:#9aada0;margin-top:8px"></div>
+  </div>
+
+  <button class="addPosBtn">+ Añadir posición</button>
+</div>
+
+<!-- TAB BAR -->
 <div class="tab">
   <button class="active" data-screen="home"><b>⌂</b>Inicio</button>
   <button data-screen="portfolio"><b>◫</b>Cartera</button>
@@ -204,14 +229,17 @@
 <script>
 let chart;
 let analysisCharts = {};
+let assetChart;
 let assets = [];
 let selectedRange = '1Y';
+let selectedAsset = null;
+let assetRange = '1Y';
+let prevScreen = 'home';
 let dataReady = false;
 
-const RANGE_LABELS = { '1W': '1 semana', '1M': '1 mes', '3M': '3 meses', '6M': '6 meses', '1Y': '1 año', '5Y': '5 años' };
 const RANGE_DAYS = { '1W': 7, '1M': 30, '3M': 91, '6M': 183, '1Y': 365, '5Y': 365 * 5 };
+const MONTH_ES = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
 
-// Dividend config: ISINs that pay dividends with estimated annual yield and payment months (0=Jan)
 const DIVIDEND_CFG = {
   'DE000A0F5UH1': { yield: 0.028, payMonths: [1, 4, 7, 10], label: 'iShares STOXX Europe' },
   'IE00BZ4BMM98': { yield: 0.042, payMonths: [1, 4, 7, 10], label: 'Invesco High Div Low Vol' },
@@ -219,10 +247,7 @@ const DIVIDEND_CFG = {
   'NL0011683594': { yield: 0.052, payMonths: [2, 5, 8, 11], label: 'VanEck TDIV' },
 };
 
-// MSCI World annual returns (%) — MSCI World Net Total Return EUR
 const MSCI_WORLD_ANNUAL = { '2021': 31.1, '2022': -17.7, '2023': 24.0, '2024': 18.0, '2025': 2.4 };
-
-const MONTH_ES = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
 
 const fe = n => new Intl.NumberFormat('es-ES', { style:'currency', currency:'EUR', maximumFractionDigits: 2 }).format(Number.isFinite(n) ? n : 0);
 const fn = n => new Intl.NumberFormat('es-ES', { maximumFractionDigits: 2 }).format(Number.isFinite(n) ? n : 0);
@@ -230,9 +255,7 @@ const fn = n => new Intl.NumberFormat('es-ES', { maximumFractionDigits: 2 }).for
 async function getJson(url){ const r = await fetch(url); if(!r.ok) throw new Error('HTTP ' + r.status); return r.json(); }
 function tick(){ document.getElementById('clock').textContent = new Date().toLocaleTimeString('es-ES',{hour:'2-digit',minute:'2-digit'}); }
 
-function coverageStatus(a){
-  return a.coverageStatus || (a.coverage?.status) || (a.coverage?.history ? 'OK' : a.coverage?.quote ? 'PARTIAL' : 'MISSING');
-}
+function coverageStatus(a){ return a.coverageStatus || (a.coverage?.status) || 'MISSING'; }
 
 function counts(){
   return {
@@ -240,8 +263,7 @@ function counts(){
     ok: assets.filter(a => coverageStatus(a) === 'OK').length,
     partial: assets.filter(a => coverageStatus(a) === 'PARTIAL').length,
     missing: assets.filter(a => coverageStatus(a) === 'MISSING').length,
-    withHistory: assets.filter(a => a.hasRealHistory).length,
-    approx: assets.filter(a => !a.hasRealHistory).length
+    withHistory: assets.filter(a => a.hasRealHistory).length
   };
 }
 
@@ -253,33 +275,23 @@ function assetType(a) {
 }
 
 function iconInitials(a) {
-  const name = a.name || a.isin;
-  return name.replace(/^i([A-Z])/, 'I$1').slice(0, 2).toUpperCase();
+  return (a.name || a.isin).replace(/^i([A-Z])/, 'I$1').slice(0, 2).toUpperCase();
 }
 
-function tag(a){
-  const s = coverageStatus(a);
-  const src = a.provider ? ` · ${a.provider}` : '';
-  if (s === 'OK') return `<span class="tag ok">datos reales${src}</span>`;
-  if (s === 'PARTIAL') return `<span class="tag partial">parcial${src}</span>`;
-  return `<span class="tag missing">sin datos</span>`;
-}
-
-// Asset category for pie chart
 function assetCategory(a) {
-  const goldIsins = ['IE00B4ND3602', 'IE00B579F325'];
-  const etfIsins = Object.keys(DIVIDEND_CFG).concat(['DE000A0F5UH1']);
-  if (goldIsins.includes(a.isin)) return 'Oro físico';
+  if (['IE00B4ND3602','IE00B579F325'].includes(a.isin)) return 'Oro físico';
   if (Object.keys(DIVIDEND_CFG).includes(a.isin)) return 'ETFs';
   if (a.mapping?.type === 'etc') return 'Oro físico';
   if (a.mapping?.type === 'etf') return 'ETFs';
   return 'Fondos';
 }
 
-function showScreen(name){
+function showScreen(name, keepTab = false) {
   document.querySelectorAll('.screen').forEach(el => el.classList.remove('active'));
   document.getElementById('screen-' + name).classList.add('active');
-  document.querySelectorAll('.tab button').forEach(b => b.classList.toggle('active', b.dataset.screen === name));
+  if (!keepTab) {
+    document.querySelectorAll('.tab button').forEach(b => b.classList.toggle('active', b.dataset.screen === name));
+  }
   if (name === 'analysis' && dataReady) renderAnalysisCharts();
   if (name === 'dividends' && dataReady) renderDividends();
   if (name === 'ia' && dataReady) renderIA();
@@ -287,87 +299,70 @@ function showScreen(name){
 
 function normalizeHistory(history){
   return (Array.isArray(history) ? history : [])
-    .map(point => ({ date: String(point.date).slice(0,10), close: Number(point.close) }))
-    .filter(point => point.date && Number.isFinite(point.close) && point.close > 0)
+    .map(p => ({ date: String(p.date).slice(0,10), close: Number(p.close) }))
+    .filter(p => p.date && Number.isFinite(p.close) && p.close > 0)
     .sort((a,b) => a.date.localeCompare(b.date));
 }
 
-function getPriceOnOrBefore(sortedHistory, date){
-  if (!sortedHistory.length) return null;
-  let lo = 0, hi = sortedHistory.length - 1, best = -1;
-  while (lo <= hi) {
-    const mid = Math.floor((lo + hi) / 2);
-    if (sortedHistory[mid].date <= date) { best = mid; lo = mid + 1; }
-    else hi = mid - 1;
-  }
-  return best >= 0 ? sortedHistory[best].close : null;
+function getPriceOnOrBefore(sorted, date){
+  if (!sorted.length) return null;
+  let lo = 0, hi = sorted.length - 1, best = -1;
+  while (lo <= hi) { const mid = Math.floor((lo+hi)/2); if (sorted[mid].date <= date) { best = mid; lo = mid+1; } else hi = mid-1; }
+  return best >= 0 ? sorted[best].close : null;
 }
 
 function buildPortfolioTimeSeries(){
-  const realAssets = assets.filter(asset => asset.hasRealHistory);
+  const realAssets = assets.filter(a => a.hasRealHistory);
   if (!realAssets.length) return null;
-
-  const scaledAssets = realAssets.map(asset => {
-    const lastClose = asset.history[asset.history.length - 1].close;
-    const factor = (lastClose > 0 && asset.currentPrice > 0) ? asset.currentPrice / lastClose : 1;
-    if (factor > 20 || factor < 0.05) {
-      console.warn(`[trackfolio] currency scale: ${asset.isin} factor=${factor.toFixed(4)}`);
-    }
-    return { asset, factor };
+  const scaledAssets = realAssets.map(a => {
+    const lastClose = a.history[a.history.length-1].close;
+    const factor = (lastClose > 0 && a.currentPrice > 0) ? a.currentPrice / lastClose : 1;
+    if (factor > 20 || factor < 0.05) console.warn(`[trackfolio] scale ${a.isin} factor=${factor.toFixed(4)}`);
+    return { asset: a, factor };
   });
-
   const dateSet = new Set();
-  realAssets.forEach(asset => asset.history.forEach(point => dateSet.add(point.date)));
+  realAssets.forEach(a => a.history.forEach(p => dateSet.add(p.date)));
   const allDates = [...dateSet].sort();
   if (allDates.length < 2) return null;
-
   const fullSeries = allDates.map(date => {
-    let realValue = 0;
-    for (const { asset, factor } of scaledAssets) {
-      const price = getPriceOnOrBefore(asset.history, date);
-      if (price != null) realValue += asset.quantity * price * factor;
-    }
-    return { date, realValue };
-  }).filter(point => point.realValue > 0);
-
+    let rv = 0;
+    for (const { asset, factor } of scaledAssets) { const p = getPriceOnOrBefore(asset.history, date); if (p != null) rv += asset.quantity * p * factor; }
+    return { date, realValue: rv };
+  }).filter(p => p.realValue > 0);
   if (fullSeries.length < 2) return null;
-
-  const firstRealValue = fullSeries[0].realValue;
-  const approximateAssets = assets.filter(asset => !asset.hasRealHistory);
-  const approximateCurrent = approximateAssets.reduce((sum, asset) => sum + asset.value, 0);
-  const totalCurrent = assets.reduce((sum, asset) => sum + asset.value, 0);
-
-  return fullSeries.map(point => {
-    const ratio = firstRealValue > 0 ? point.realValue / firstRealValue : 1;
-    const approximatedValue = approximateAssets.reduce((sum, asset) => {
-      const base = asset.buyPrice > 0 ? asset.invested : asset.value;
-      const target = asset.value;
-      const scaled = base * ratio;
-      return sum + Math.min(Math.max(base, target) > scaled ? Math.max(base, target) : scaled, Math.max(Math.min(base, target), scaled));
+  const firstRV = fullSeries[0].realValue;
+  const approxAssets = assets.filter(a => !a.hasRealHistory);
+  const approxCurrent = approxAssets.reduce((s,a) => s + a.value, 0);
+  const totalCurrent = assets.reduce((s,a) => s + a.value, 0);
+  return fullSeries.map(p => {
+    const ratio = firstRV > 0 ? p.realValue / firstRV : 1;
+    const approxVal = approxAssets.reduce((s,a) => {
+      const base = a.buyPrice > 0 ? a.invested : a.value;
+      const sc = base * ratio;
+      return s + Math.min(Math.max(base, a.value), Math.max(Math.min(base, a.value), sc));
     }, 0);
-    return { date: point.date, totalValue: point.realValue + approximatedValue, realValue: point.realValue, approximatedValue, totalCurrent, approximateCurrent };
+    return { date: p.date, totalValue: p.realValue + approxVal, realValue: p.realValue, approximatedValue: approxVal, totalCurrent, approximateCurrent: approxCurrent };
   });
 }
 
-function filterSeriesByRange(series, range){
+function filterByRange(series, range){
   if (!Array.isArray(series) || !series.length) return [];
   const days = RANGE_DAYS[range] || 365;
-  const lastDate = new Date(series[series.length - 1].date + 'T00:00:00');
-  const cutoff = new Date(lastDate);
-  cutoff.setDate(cutoff.getDate() - days);
-  let filtered = series.filter(point => new Date(point.date + 'T00:00:00') >= cutoff);
-  if (filtered.length < 2) filtered = series.slice(Math.max(0, series.length - 30));
-  return filtered;
+  const lastDate = new Date(series[series.length-1].date + 'T00:00:00');
+  const cutoff = new Date(lastDate); cutoff.setDate(cutoff.getDate() - days);
+  let f = series.filter(p => new Date(p.date+'T00:00:00') >= cutoff);
+  if (f.length < 2) f = series.slice(Math.max(0, series.length-30));
+  return f;
 }
 
-function compactDateLabel(date, range){
-  const d = new Date(date + 'T00:00:00');
-  if (range === '1W') return d.toLocaleDateString('es-ES', { day:'2-digit', month:'short' });
-  if (range === '1M') return d.toLocaleDateString('es-ES', { day:'2-digit', month:'short' });
-  if (range === '5Y') return d.toLocaleDateString('es-ES', { month:'short', year:'2-digit' });
-  return d.toLocaleDateString('es-ES', { month:'short', year:'numeric' });
+function dateLabel(date, range){
+  const d = new Date(date+'T00:00:00');
+  if (range === '1W' || range === '1M') return d.toLocaleDateString('es-ES',{day:'2-digit',month:'short'});
+  if (range === '5Y') return d.toLocaleDateString('es-ES',{month:'short',year:'2-digit'});
+  return d.toLocaleDateString('es-ES',{month:'short',year:'numeric'});
 }
 
+// ========== HOME CHART ==========
 function renderChart(){
   const note = document.getElementById('chartNote');
   const fallback = document.getElementById('chartFallback');
@@ -378,432 +373,356 @@ function renderChart(){
 
   const fullSeries = buildPortfolioTimeSeries();
   if (!fullSeries) {
-    canvas.style.display = 'none';
-    fallback.style.display = 'flex';
-    note.textContent = '';
-    chartMeta.textContent = 'Sin datos suficientes';
-    rangeValue.textContent = fe(assets.reduce((sum, a) => sum + a.value, 0));
+    canvas.style.display='none'; fallback.style.display='flex';
+    chartMeta.textContent='Sin datos suficientes';
+    rangeValue.textContent = fe(assets.reduce((s,a) => s+a.value, 0));
     return;
   }
-
-  const series = filterSeriesByRange(fullSeries, selectedRange);
-  const labels = series.map(p => compactDateLabel(p.date, selectedRange));
+  const series = filterByRange(fullSeries, selectedRange);
   const values = series.map(p => p.totalValue);
-  const first = values[0], last = values[values.length - 1];
-  const delta = last - first, pct = first > 0 ? (delta / first) * 100 : 0;
+  const first = values[0], last = values[values.length-1];
+  const delta = last - first, pct = first > 0 ? (delta/first)*100 : 0;
   const isUp = delta >= 0;
-  const lineColor = isUp ? '#22c55e' : '#f87171';
-  const gradientTop = isUp ? 'rgba(74,222,128,.28)' : 'rgba(248,113,113,.22)';
-  const gradientBot = isUp ? 'rgba(74,222,128,0)' : 'rgba(248,113,113,0)';
+  const lc = isUp ? '#22c55e' : '#f87171';
 
-  fallback.style.display = 'none';
-  canvas.style.display = 'block';
-
+  fallback.style.display='none'; canvas.style.display='block';
   const ctx = canvas.getContext('2d');
-  const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height || 200);
-  gradient.addColorStop(0, gradientTop);
-  gradient.addColorStop(.6, isUp ? 'rgba(74,222,128,.08)' : 'rgba(248,113,113,.07)');
-  gradient.addColorStop(1, gradientBot);
+  const grad = ctx.createLinearGradient(0,0,0,canvas.height||200);
+  grad.addColorStop(0, isUp ? 'rgba(74,222,128,.28)' : 'rgba(248,113,113,.22)');
+  grad.addColorStop(.6, isUp ? 'rgba(74,222,128,.08)' : 'rgba(248,113,113,.07)');
+  grad.addColorStop(1, 'rgba(0,0,0,0)');
 
   chart = new Chart(canvas, {
-    type: 'line',
-    data: { labels, datasets: [{ data: values, borderColor: lineColor, backgroundColor: gradient, borderWidth: 2.5, pointRadius: 0, pointHoverRadius: 4, pointHoverBackgroundColor: lineColor, pointHoverBorderColor: '#fff', pointHoverBorderWidth: 2, fill: true, tension: 0.3 }] },
-    options: {
-      responsive: true, maintainAspectRatio: false,
-      interaction: { intersect: false, mode: 'index' },
-      plugins: {
-        legend: { display: false },
-        tooltip: { displayColors: false, backgroundColor: 'rgba(12,30,20,.94)', borderColor: 'rgba(220,252,231,.1)', borderWidth: 1, titleColor: '#f0fdf4', bodyColor: '#a7f3d0', padding: 10, callbacks: { title: i => i[0]?.label || '', label: c => fe(c.parsed.y) } }
-      },
-      scales: {
-        x: { grid: { display: false }, border: { display: false }, ticks: { color: 'rgba(239,249,242,.5)', maxTicksLimit: 5, font: { size: 10, weight: '600' } } },
-        y: { grid: { color: 'rgba(220,252,231,.07)' }, border: { display: false }, ticks: { color: 'rgba(239,249,242,.5)', maxTicksLimit: 4, font: { size: 10, weight: '600' }, callback: v => Math.abs(v) >= 1000 ? '€' + fn(v / 1000) + 'k' : '€' + fn(v) } }
-      }
-    }
+    type:'line',
+    data:{labels: series.map(p => dateLabel(p.date, selectedRange)), datasets:[{data:values,borderColor:lc,backgroundColor:grad,borderWidth:2.5,pointRadius:0,pointHoverRadius:4,pointHoverBackgroundColor:lc,pointHoverBorderColor:'#fff',pointHoverBorderWidth:2,fill:true,tension:.3}]},
+    options:{responsive:true,maintainAspectRatio:false,interaction:{intersect:false,mode:'index'},plugins:{legend:{display:false},tooltip:{displayColors:false,backgroundColor:'rgba(12,30,20,.94)',borderColor:'rgba(220,252,231,.1)',borderWidth:1,titleColor:'#f0fdf4',bodyColor:'#a7f3d0',padding:10,callbacks:{title:i=>i[0]?.label||'',label:c=>fe(c.parsed.y)}}},scales:{x:{grid:{display:false},border:{display:false},ticks:{color:'rgba(239,249,242,.5)',maxTicksLimit:5,font:{size:10,weight:'600'}}},y:{grid:{color:'rgba(220,252,231,.07)'},border:{display:false},ticks:{color:'rgba(239,249,242,.5)',maxTicksLimit:4,font:{size:10,weight:'600'},callback:v=>Math.abs(v)>=1000?'€'+fn(v/1000)+'k':'€'+fn(v)}}}}
   });
 
   rangeValue.textContent = fe(last);
-  chartMeta.textContent = `${isUp ? '+' : ''}${fe(delta)}  ${isUp ? '+' : ''}${pct.toFixed(2)}%`;
-  const lastPoint = series[series.length - 1];
-  const approxPct = lastPoint.totalCurrent > 0 ? (lastPoint.approximateCurrent / lastPoint.totalCurrent * 100) : 0;
-  note.textContent = approxPct > 0.5 ? `Histórico real · ${series.length} pts · ${approxPct.toFixed(0)}% estimado sin NAV` : `Histórico real · ${series.length} puntos`;
+  chartMeta.textContent = `${isUp?'+':''}${fe(delta)}  ${isUp?'+':''}${pct.toFixed(2)}%`;
+  const lp = series[series.length-1];
+  const aPct = lp.totalCurrent > 0 ? lp.approximateCurrent/lp.totalCurrent*100 : 0;
+  note.textContent = aPct > 0.5 ? `Histórico real · ${series.length} pts · ${aPct.toFixed(0)}% estimado sin NAV` : `Histórico real · ${series.length} puntos`;
+}
+
+// ========== ASSET DETAIL ==========
+function showAssetDetail(asset, from) {
+  selectedAsset = asset;
+  prevScreen = from || 'home';
+  assetRange = '1Y';
+
+  document.getElementById('adNavTitle').textContent = asset.name;
+  document.getElementById('adIsin').textContent = asset.isin;
+  document.getElementById('adPrice').textContent = fe(asset.currentPrice);
+
+  const gain = asset.value - asset.invested;
+  const badge = document.getElementById('adGainBadge');
+  badge.textContent = `${asset.gainPct >= 0 ? '▲' : '▼'} ${asset.gainPct >= 0 ? '+' : ''}${asset.gainPct.toFixed(2)}% total`;
+  badge.className = 'adGainBadge' + (asset.gainPct < 0 ? ' neg' : '');
+
+  const icon = document.getElementById('adIcon');
+  icon.textContent = iconInitials(asset);
+  icon.className = 'icon adIconLg ' + assetType(asset);
+
+  const total = assets.reduce((s,a) => s+a.value, 0);
+  const weight = total > 0 ? (asset.value/total*100) : 0;
+
+  const mets = [
+    { l:'Valor posición', v:fe(asset.value), cls:'' },
+    { l:'Total invertido', v:fe(asset.invested), cls:'' },
+    { l:'Participaciones', v:fn(asset.quantity), cls:'' },
+    { l:'Precio medio', v:fe(asset.buyPrice), cls:'' },
+    { l:'Ganancia €', v:(gain>=0?'+':'')+fe(gain), cls:gain>=0?'pos':'neg' },
+    { l:'Peso cartera', v:weight.toFixed(1)+'%', cls:'' }
+  ];
+  document.getElementById('adMetrics').innerHTML = mets.map(m =>
+    `<div class="adMetricBox"><div class="aml">${m.l}</div><div class="amv ${m.cls}">${m.v}</div></div>`
+  ).join('');
+
+  showScreen('asset', true);
+  renderAssetChart();
+}
+
+function renderAssetChart() {
+  if (assetChart) { assetChart.destroy(); assetChart = null; }
+
+  const canvas = document.getElementById('assetChart');
+  const fallback = document.getElementById('assetChartFallback');
+  const metaEl = document.getElementById('adChartMeta');
+  const noteEl = document.getElementById('adChartNote');
+
+  // Timeframe buttons
+  const tfRow = document.getElementById('adTfRow');
+  tfRow.innerHTML = [['1W','1S'],['1M','1M'],['3M','3M'],['6M','6M'],['1Y','1A'],['5Y','5A']].map(([r,l]) =>
+    `<button class="tfBtnA${r===assetRange?' on':''}" data-r="${r}">${l}</button>`
+  ).join('');
+  tfRow.querySelectorAll('.tfBtnA').forEach(btn => btn.addEventListener('click', () => {
+    assetRange = btn.dataset.r;
+    renderAssetChart();
+  }));
+
+  if (!selectedAsset?.hasRealHistory) {
+    canvas.style.display='none'; fallback.style.display='flex'; metaEl.textContent=''; noteEl.textContent='';
+    return;
+  }
+
+  canvas.style.display='block'; fallback.style.display='none';
+
+  const hist = selectedAsset.history;
+  const lastClose = hist[hist.length-1].close;
+  // priceFactor normalises native currency/units → EUR using seed currentPrice as anchor
+  const factor = (lastClose > 0 && selectedAsset.currentPrice > 0) ? selectedAsset.currentPrice / lastClose : 1;
+
+  let series = filterByRange(hist.map(p => ({ date:p.date, close:p.close })), assetRange);
+  if (series.length < 2) series = hist.slice(Math.max(0, hist.length-30));
+
+  const values = series.map(p => p.close * factor);
+  const first = values[0], last2 = values[values.length-1];
+  const delta = last2-first, pct = first>0 ? (delta/first)*100 : 0;
+  const isUp = delta >= 0;
+  const lc = isUp ? '#22c55e' : '#f87171';
+
+  metaEl.textContent = `${isUp?'▲':'▼'} ${isUp?'+':''}${pct.toFixed(2)}%`;
+  metaEl.style.color = isUp ? '#15803d' : '#b91c1c';
+  noteEl.textContent = `${hist.length} puntos históricos · ${selectedAsset.provider || 'local'}`;
+
+  const ctx = canvas.getContext('2d');
+  const grad = ctx.createLinearGradient(0,0,0,190);
+  grad.addColorStop(0, isUp ? 'rgba(34,197,94,.18)' : 'rgba(248,113,113,.16)');
+  grad.addColorStop(1, 'rgba(0,0,0,0)');
+
+  assetChart = new Chart(canvas, {
+    type:'line',
+    data:{labels: series.map(p => dateLabel(p.date, assetRange)), datasets:[{data:values,borderColor:lc,backgroundColor:grad,borderWidth:2,pointRadius:0,pointHoverRadius:3,pointHoverBackgroundColor:lc,pointHoverBorderColor:'#fff',pointHoverBorderWidth:2,fill:true,tension:.3}]},
+    options:{responsive:true,maintainAspectRatio:false,interaction:{intersect:false,mode:'index'},plugins:{legend:{display:false},tooltip:{displayColors:false,backgroundColor:'rgba(20,32,24,.92)',padding:9,titleColor:'#f5fbf6',bodyColor:'#a7f3d0',callbacks:{title:i=>i[0]?.label||'',label:c=>fe(c.parsed.y)}}},scales:{x:{grid:{display:false},border:{display:false},ticks:{color:'#9aada0',maxTicksLimit:5,font:{size:10,weight:'600'}}},y:{grid:{color:'rgba(20,32,24,.05)'},border:{display:false},ticks:{color:'#9aada0',maxTicksLimit:4,font:{size:10},callback:v=>'€'+fn(v)}}}}
+  });
 }
 
 // ========== ANALYSIS CHARTS ==========
-
-function destroyAnalysisCharts() {
-  Object.values(analysisCharts).forEach(c => { try { c.destroy(); } catch(_){} });
-  analysisCharts = {};
-}
+function destroyAnalysisCharts() { Object.values(analysisCharts).forEach(c => { try { c.destroy(); } catch(_){} }); analysisCharts = {}; }
 
 function computeHealthScore() {
-  const total = assets.reduce((s, a) => s + a.value, 0);
-  if (!total) return { score: 0, diversif: 0, riesgo: 0, rentab: 0 };
-
-  // Diversification (HHI-based): perfect = 100/n, worst = 100
-  const hhi = assets.reduce((s, a) => s + Math.pow((a.value / total) * 100, 2), 0) / 100;
+  const total = assets.reduce((s,a) => s+a.value, 0);
+  if (!total) return { score:0, diversif:0, riesgo:0, rentab:0 };
+  const hhi = assets.reduce((s,a) => s + Math.pow((a.value/total)*100, 2), 0) / 100;
   const n = assets.length;
-  const hhiMin = 1 / n;
-  const diversif = Math.round(Math.max(0, Math.min(100, (1 - (hhi - hhiMin) / (1 - hhiMin)) * 100)));
-
-  // Risk score: higher gold % = lower risk (better score for defensive), more diversification = better
-  const goldValue = assets.filter(a => assetCategory(a) === 'Oro físico').reduce((s, a) => s + a.value, 0);
-  const goldPct = goldValue / total;
-  const riesgo = Math.round(Math.min(100, 55 + goldPct * 60 + (n > 10 ? 15 : n * 1.5)));
-
-  // Return score: based on overall gain %
-  const invested = assets.reduce((s, a) => s + a.invested, 0);
-  const gainPct = invested > 0 ? ((total - invested) / invested) * 100 : 0;
-  const rentab = Math.round(Math.max(0, Math.min(100, 50 + gainPct * 2)));
-
-  const score = Math.round((diversif * 0.35 + riesgo * 0.30 + rentab * 0.35));
-  return { score, diversif, riesgo, rentab };
+  const diversif = Math.round(Math.max(0, Math.min(100, (1-(hhi-1/n)/(1-1/n))*100)));
+  const goldPct = assets.filter(a => assetCategory(a)==='Oro físico').reduce((s,a)=>s+a.value,0) / total;
+  const riesgo = Math.round(Math.min(100, 55 + goldPct*60 + (n>10?15:n*1.5)));
+  const invested = assets.reduce((s,a)=>s+a.invested,0);
+  const gainPct = invested > 0 ? ((total-invested)/invested)*100 : 0;
+  const rentab = Math.round(Math.max(0, Math.min(100, 50+gainPct*2)));
+  return { score: Math.round(diversif*0.35 + riesgo*0.30 + rentab*0.35), diversif, riesgo, rentab };
 }
 
 function renderAnalysisCharts() {
   destroyAnalysisCharts();
-
   const { score, diversif, riesgo, rentab } = computeHealthScore();
   document.getElementById('healthScoreNum').textContent = score;
 
-  // Health donut
-  const hCtx = document.getElementById('healthDonut').getContext('2d');
-  const scoreColor = score >= 70 ? '#22c55e' : score >= 50 ? '#f59e0b' : '#f87171';
-  analysisCharts.health = new Chart(hCtx, {
-    type: 'doughnut',
-    data: { datasets: [{ data: [score, 100 - score], backgroundColor: [scoreColor, '#e8f0e9'], borderWidth: 0, cutout: '74%' }] },
-    options: { responsive: false, plugins: { legend: { display: false }, tooltip: { enabled: false } } }
+  const sc = score >= 70 ? '#22c55e' : score >= 50 ? '#f59e0b' : '#f87171';
+  analysisCharts.health = new Chart(document.getElementById('healthDonut').getContext('2d'), {
+    type:'doughnut',
+    data:{datasets:[{data:[score,100-score],backgroundColor:[sc,'#e8f0e9'],borderWidth:0,cutout:'74%'}]},
+    options:{responsive:false,plugins:{legend:{display:false},tooltip:{enabled:false}}}
   });
 
-  // Subscores
-  const subscoRes = [
-    { label: 'Diversif.', val: diversif, color: '#3b82f6' },
-    { label: 'Riesgo', val: riesgo, color: '#22c55e' },
-    { label: 'Rentab.', val: rentab, color: '#f59e0b' }
-  ];
-  document.getElementById('subscoreList').innerHTML = subscoRes.map(s => `
-    <div class="subscoreRow">
-      <div class="subscoreLabel">${s.label}</div>
-      <div class="subscoreBar"><div class="subscoreBarFill" style="width:${s.val}%;background:${s.color}"></div></div>
-      <div class="subscoreVal">${s.val}</div>
-    </div>`).join('');
+  document.getElementById('subscoreList').innerHTML = [
+    {label:'Diversif.',val:diversif,color:'#3b82f6'},
+    {label:'Riesgo',val:riesgo,color:'#22c55e'},
+    {label:'Rentab.',val:rentab,color:'#f59e0b'}
+  ].map(s=>`<div class="subscoreRow"><div class="subscoreLabel">${s.label}</div><div class="subscoreBar"><div class="subscoreBarFill" style="width:${s.val}%;background:${s.color}"></div></div><div class="subscoreVal">${s.val}</div></div>`).join('');
 
-  // Distribution pie
-  const total = assets.reduce((s, a) => s + a.value, 0);
-  const catMap = {};
-  assets.forEach(a => {
-    const cat = assetCategory(a);
-    catMap[cat] = (catMap[cat] || 0) + a.value;
+  const total = assets.reduce((s,a)=>s+a.value,0);
+  const catMap = {}; assets.forEach(a => { const c=assetCategory(a); catMap[c]=(catMap[c]||0)+a.value; });
+  const cats = Object.keys(catMap).sort((a,b)=>catMap[b]-catMap[a]);
+  const catColors = {'Fondos':'#7c3aed','ETFs':'#1d6fa8','Oro físico':'#b45309'};
+  const pieColors = cats.map(c=>catColors[c]||'#666');
+  const piePcts = cats.map(c=>Math.round(catMap[c]/total*100));
+
+  analysisCharts.pie = new Chart(document.getElementById('distPie').getContext('2d'), {
+    type:'doughnut',
+    data:{labels:cats,datasets:[{data:cats.map(c=>catMap[c]),backgroundColor:pieColors,borderWidth:3,borderColor:'#fff'}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>` ${c.label}: ${fe(c.raw)} (${piePcts[c.dataIndex]}%)`}}}}
   });
-  const cats = Object.keys(catMap).sort((a, b) => catMap[b] - catMap[a]);
-  const catColors = { 'Fondos': '#7c3aed', 'ETFs': '#1d6fa8', 'Oro físico': '#b45309' };
-  const pieColors = cats.map(c => catColors[c] || '#666');
-  const piePcts = cats.map(c => Math.round((catMap[c] / total) * 100));
+  document.getElementById('distLegend').innerHTML = cats.map((c,i)=>`<div class="legendItem"><div class="legendDot" style="background:${pieColors[i]}"></div>${c} ${piePcts[i]}%</div>`).join('');
 
-  const pCtx = document.getElementById('distPie').getContext('2d');
-  analysisCharts.pie = new Chart(pCtx, {
-    type: 'doughnut',
-    data: { labels: cats, datasets: [{ data: cats.map(c => catMap[c]), backgroundColor: pieColors, borderWidth: 3, borderColor: '#fff', hoverBorderColor: '#fff' }] },
-    options: {
-      responsive: true, maintainAspectRatio: false,
-      plugins: {
-        legend: { display: false },
-        tooltip: { callbacks: { label: c => ` ${c.label}: ${fe(c.raw)} (${piePcts[c.dataIndex]}%)` } }
-      }
-    }
+  const top = [...assets].sort((a,b)=>b.value-a.value).slice(0,10).sort((a,b)=>b.gainPct-a.gainPct);
+  analysisCharts.perf = new Chart(document.getElementById('perfBar').getContext('2d'), {
+    type:'bar',
+    data:{labels:top.map(a=>a.name.length>14?a.name.slice(0,13)+'…':a.name),datasets:[{data:top.map(a=>a.gainPct),backgroundColor:top.map(a=>a.gainPct>=0?'rgba(34,197,94,.75)':'rgba(248,113,113,.75)'),borderRadius:4,borderSkipped:false}]},
+    options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>` ${c.parsed.x>=0?'+':''}${c.parsed.x.toFixed(2)}%`}}},scales:{x:{grid:{color:'rgba(20,32,24,.05)'},border:{display:false},ticks:{color:'#8fa090',font:{size:10},callback:v=>v+'%'}},y:{grid:{display:false},border:{display:false},ticks:{color:'#4a5f4e',font:{size:10,weight:'600'}}}}}
   });
 
-  document.getElementById('distLegend').innerHTML = cats.map((c, i) => `
-    <div class="legendItem"><div class="legendDot" style="background:${pieColors[i]}"></div>${c} ${piePcts[i]}%</div>`).join('');
-
-  // Performance bar (horizontal) — top 10 by absolute value, sorted by gainPct
-  const topAssets = [...assets].sort((a, b) => Math.abs(b.gainPct) - Math.abs(a.gainPct)).slice(0, 10);
-  const sortedPerf = [...topAssets].sort((a, b) => b.gainPct - a.gainPct);
-  const bCtx = document.getElementById('perfBar').getContext('2d');
-  analysisCharts.perf = new Chart(bCtx, {
-    type: 'bar',
-    data: {
-      labels: sortedPerf.map(a => a.name.length > 14 ? a.name.slice(0, 13) + '…' : a.name),
-      datasets: [{
-        data: sortedPerf.map(a => a.gainPct),
-        backgroundColor: sortedPerf.map(a => a.gainPct >= 0 ? 'rgba(34,197,94,.75)' : 'rgba(248,113,113,.75)'),
-        borderRadius: 4,
-        borderSkipped: false
-      }]
-    },
-    options: {
-      indexAxis: 'y', responsive: true, maintainAspectRatio: false,
-      plugins: { legend: { display: false }, tooltip: { callbacks: { label: c => ` ${c.parsed.x >= 0 ? '+' : ''}${c.parsed.x.toFixed(2)}%` } } },
-      scales: {
-        x: { grid: { color: 'rgba(20,32,24,.05)' }, border: { display: false }, ticks: { color: '#8fa090', font: { size: 10 }, callback: v => v + '%' } },
-        y: { grid: { display: false }, border: { display: false }, ticks: { color: '#4a5f4e', font: { size: 10, weight: '600' } } }
-      }
-    }
-  });
-
-  // Portfolio vs MSCI World annual bar chart
   const fullSeries = buildPortfolioTimeSeries();
   const years = Object.keys(MSCI_WORLD_ANNUAL).sort();
-  const portfolioAnnual = years.map(year => {
+  const portAnnual = years.map(yr => {
     if (!fullSeries) return 0;
-    const janFirst = year + '-01-01';
-    const decLast = year + '-12-31';
-    const startPt = fullSeries.find(p => p.date >= janFirst);
-    const endPts = fullSeries.filter(p => p.date <= decLast);
-    if (!startPt || !endPts.length) return 0;
-    const endPt = endPts[endPts.length - 1];
-    if (startPt.totalValue <= 0) return 0;
-    return ((endPt.totalValue - startPt.totalValue) / startPt.totalValue) * 100;
+    const s = fullSeries.find(p=>p.date>=yr+'-01-01');
+    const ends = fullSeries.filter(p=>p.date<=yr+'-12-31');
+    if (!s||!ends.length||s.totalValue<=0) return 0;
+    return ((ends[ends.length-1].totalValue-s.totalValue)/s.totalValue)*100;
   });
-
-  const vCtx = document.getElementById('vsWorldBar').getContext('2d');
-  analysisCharts.vs = new Chart(vCtx, {
-    type: 'bar',
-    data: {
-      labels: years,
-      datasets: [
-        { label: 'Portfolio', data: portfolioAnnual, backgroundColor: 'rgba(21,128,61,.7)', borderRadius: 4, borderSkipped: false },
-        { label: 'MSCI World', data: years.map(y => MSCI_WORLD_ANNUAL[y] || 0), backgroundColor: 'rgba(59,130,246,.6)', borderRadius: 4, borderSkipped: false }
-      ]
-    },
-    options: {
-      responsive: true, maintainAspectRatio: false,
-      plugins: { legend: { position: 'bottom', labels: { font: { size: 11, weight: '600' }, color: '#4a5f4e', usePointStyle: true, pointStyleWidth: 8 } }, tooltip: { callbacks: { label: c => ` ${c.dataset.label}: ${c.parsed.y >= 0 ? '+' : ''}${c.parsed.y.toFixed(1)}%` } } },
-      scales: {
-        x: { grid: { display: false }, border: { display: false }, ticks: { color: '#8fa090', font: { size: 10 } } },
-        y: { grid: { color: 'rgba(20,32,24,.05)' }, border: { display: false }, ticks: { color: '#8fa090', font: { size: 10 }, callback: v => v + '%' } }
-      }
-    }
+  analysisCharts.vs = new Chart(document.getElementById('vsWorldBar').getContext('2d'), {
+    type:'bar',
+    data:{labels:years,datasets:[{label:'Portfolio',data:portAnnual,backgroundColor:'rgba(21,128,61,.7)',borderRadius:4,borderSkipped:false},{label:'MSCI World',data:years.map(y=>MSCI_WORLD_ANNUAL[y]||0),backgroundColor:'rgba(59,130,246,.6)',borderRadius:4,borderSkipped:false}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{font:{size:11,weight:'600'},color:'#4a5f4e',usePointStyle:true,pointStyleWidth:8}},tooltip:{callbacks:{label:c=>` ${c.dataset.label}: ${c.parsed.y>=0?'+':''}${c.parsed.y.toFixed(1)}%`}}},scales:{x:{grid:{display:false},border:{display:false},ticks:{color:'#8fa090',font:{size:10}}},y:{grid:{color:'rgba(20,32,24,.05)'},border:{display:false},ticks:{color:'#8fa090',font:{size:10},callback:v=>v+'%'}}}}
   });
 }
 
 // ========== DIVIDENDS ==========
-
 function renderDividends() {
-  const today = new Date();
-  const currentMonth = today.getMonth(); // 0-indexed
-
-  // Compute per-asset dividend info
+  const today = new Date(); const cm = today.getMonth();
   const divAssets = assets.filter(a => DIVIDEND_CFG[a.isin]);
   const divItems = divAssets.map(a => {
     const cfg = DIVIDEND_CFG[a.isin];
     const annual = a.value * cfg.yield;
-    const perPayment = annual / cfg.payMonths.length;
-    // Find next upcoming payment month
-    const nextM = cfg.payMonths.find(m => m > currentMonth) ?? cfg.payMonths[0];
-    return { ...a, cfg, annual, perPayment, nextMonth: nextM };
+    const perPay = annual / cfg.payMonths.length;
+    const nextM = cfg.payMonths.find(m=>m>cm) ?? cfg.payMonths[0];
+    return { ...a, cfg, annual, perPay, nextMonth: nextM };
   });
-
-  const totalAnnual = divItems.reduce((s, d) => s + d.annual, 0);
-  const totalPortfolio = assets.reduce((s, a) => s + a.value, 0);
-  const yieldPct = totalPortfolio > 0 ? (totalAnnual / totalPortfolio) * 100 : 0;
-
+  const totalAnnual = divItems.reduce((s,d)=>s+d.annual,0);
+  const totalPortfolio = assets.reduce((s,a)=>s+a.value,0);
+  const yieldPct = totalPortfolio > 0 ? (totalAnnual/totalPortfolio)*100 : 0;
   document.getElementById('divAnnual').textContent = fe(totalAnnual);
-  document.getElementById('divMonthly').textContent = fe(totalAnnual / 12);
-  document.getElementById('divYield').textContent = yieldPct.toFixed(2) + '%';
-  document.getElementById('divCount').textContent = divItems.length + ' activos';
-
-  // Upcoming payments: sort by next month
-  const upcoming = [...divItems].sort((a, b) => a.nextMonth - b.nextMonth);
+  document.getElementById('divMonthly').textContent = fe(totalAnnual/12);
+  document.getElementById('divYield').textContent = yieldPct.toFixed(2)+'%';
+  document.getElementById('divCount').textContent = divItems.length+' activos';
+  const upcoming = [...divItems].sort((a,b)=>a.nextMonth-b.nextMonth);
   document.getElementById('upcomingPayments').innerHTML = upcoming.length
-    ? upcoming.map(d => `
-      <div class="payRow">
-        <div class="payIcon" style="background:linear-gradient(135deg,#1d6fa8,#38bdf8)">${d.name.slice(0,2).toUpperCase()}</div>
-        <div class="payInfo">
-          <div class="payName">${d.name}</div>
-          <div class="payDate">${MONTH_ES[d.nextMonth]} ${today.getFullYear()}${d.nextMonth <= currentMonth ? ' → ' + (today.getFullYear()+1) : ''} · pago trimestral</div>
-        </div>
-        <div class="payRight">
-          <div class="payAmt">${fe(d.perPayment)}</div>
-          <div class="payShares">${fn(d.quantity)} participaciones</div>
-        </div>
-      </div>`).join('')
+    ? upcoming.map(d=>`<div class="payRow"><div class="payIcon">${d.name.slice(0,2).toUpperCase()}</div><div class="payInfo"><div class="payName">${d.name}</div><div class="payDate">${MONTH_ES[d.nextMonth]} ${today.getFullYear()+(d.nextMonth<=cm?1:0)} · pago trimestral</div></div><div class="payRight"><div class="payAmt">${fe(d.perPay)}</div><div class="payShares">${fn(d.quantity)} participaciones</div></div></div>`).join('')
     : '<div class="empty">No hay activos distribuidores en cartera.</div>';
-
-  // Annual calendar: sum by month
-  const monthlyTotals = Array(12).fill(0);
-  divItems.forEach(d => {
-    d.cfg.payMonths.forEach(m => { monthlyTotals[m] += d.perPayment; });
-  });
-
-  document.getElementById('divCalendar').innerHTML = MONTH_ES.map((m, i) => {
-    const amt = monthlyTotals[i];
-    const hasPay = amt > 0.5;
-    return `<div class="calCell ${hasPay ? 'hasPay' : ''}">
-      <div class="cm">${m}</div>
-      <div class="ca">${hasPay ? fe(amt) : '—'}</div>
-    </div>`;
+  const monthlyT = Array(12).fill(0);
+  divItems.forEach(d => d.cfg.payMonths.forEach(m => { monthlyT[m] += d.perPay; }));
+  document.getElementById('divCalendar').innerHTML = MONTH_ES.map((m,i)=>{
+    const amt=monthlyT[i], has=amt>0.5;
+    return `<div class="calCell${has?' hasPay':''}"><div class="cm">${m}</div><div class="ca">${has?fe(amt):'—'}</div></div>`;
   }).join('');
 }
 
 // ========== IA ==========
-
 function renderIA() {
-  const total = assets.reduce((s, a) => s + a.value, 0);
-  const invested = assets.reduce((s, a) => s + a.invested, 0);
-  const gainPct = invested > 0 ? ((total - invested) / invested) * 100 : 0;
-  const sorted = [...assets].sort((a, b) => b.value - a.value);
-  const topAsset = sorted[0];
-  const topPct = total > 0 ? (topAsset?.value / total * 100) : 0;
+  const total = assets.reduce((s,a)=>s+a.value,0);
+  const invested = assets.reduce((s,a)=>s+a.invested,0);
+  const gainPct = invested>0 ? ((total-invested)/invested)*100 : 0;
+  const sorted = [...assets].sort((a,b)=>b.value-a.value);
+  const top = sorted[0]; const topPct = total>0?top?.value/total*100:0;
   const { score, diversif, riesgo, rentab } = computeHealthScore();
+  const catMap={}; assets.forEach(a=>{const c=assetCategory(a);catMap[c]=(catMap[c]||0)+a.value;});
+  const fondPct = total>0?(catMap['Fondos']||0)/total*100:0;
+  const negA = assets.filter(a=>a.gainPct<-5).sort((a,b)=>a.gainPct-b.gainPct);
 
-  // Category distribution
-  const catMap = {};
-  assets.forEach(a => { const c = assetCategory(a); catMap[c] = (catMap[c] || 0) + a.value; });
-  const fondosPct = total > 0 ? ((catMap['Fondos'] || 0) / total * 100) : 0;
-  const goldPct = total > 0 ? ((catMap['Oro físico'] || 0) / total * 100) : 0;
-
-  // Underperforming assets
-  const negAssets = assets.filter(a => a.gainPct < -5).sort((a, b) => a.gainPct - b.gainPct);
-
-  const insights = [
-    {
-      cat: 'Resumen general',
-      icon: '📊',
-      txt: `Tu portfolio de ${assets.length} activos vale ${fe(total)} con una rentabilidad acumulada de ${gainPct >= 0 ? '+' : ''}${gainPct.toFixed(2)}% sobre el capital invertido (${fe(invested)}).`,
-      tag: gainPct > 5 ? { txt: 'Rendimiento positivo', cls: 'good' } : gainPct < 0 ? { txt: 'En pérdidas', cls: 'warn' } : { txt: 'Rendimiento moderado', cls: 'info' }
-    },
-    {
-      cat: 'Concentración',
-      icon: '⚖️',
-      txt: `Tu mayor posición es ${topAsset?.name} con el ${topPct.toFixed(1)}% del portfolio (${fe(topAsset?.value)}). ${topPct > 30 ? 'Alta concentración: considera diversificar para reducir riesgo específico.' : 'Concentración razonable.'}`,
-      tag: topPct > 30 ? { txt: 'Concentración elevada', cls: 'warn' } : { txt: 'Bien diversificado', cls: 'good' }
-    },
-    {
-      cat: 'Tipo de activos',
-      icon: '🗂️',
-      txt: `${fondosPct.toFixed(0)}% fondos, ${((catMap['ETFs'] || 0) / total * 100).toFixed(0)}% ETFs, ${goldPct.toFixed(0)}% oro físico. ${fondosPct > 70 ? 'Alta exposición a fondos — sin ingresos por dividendos en la mayor parte.' : 'Mix equilibrado.'}`,
-      tag: { txt: 'Cartera mixta', cls: 'info' }
-    },
-    {
-      cat: 'Cobertura de datos',
-      icon: '📡',
-      txt: `${counts().ok}/${assets.length} activos con histórico de precios real. ${counts().ok === assets.length ? 'Cobertura completa — todos los activos tienen datos históricos.' : `${counts().missing} activos sin datos — el gráfico de evolución puede ser impreciso.`}`,
-      tag: counts().ok === assets.length ? { txt: 'Cobertura 100%', cls: 'good' } : { txt: 'Cobertura parcial', cls: 'warn' }
-    },
-    negAssets.length > 0 ? {
-      cat: 'Posiciones en pérdidas',
-      icon: '📉',
-      txt: `${negAssets.length} posición${negAssets.length > 1 ? 'es' : ''} con más de -5%: ${negAssets.slice(0, 3).map(a => `${a.name} (${a.gainPct.toFixed(1)}%)`).join(', ')}. Valora si el tesis de inversión sigue vigente.`,
-      tag: { txt: 'Revisar posiciones', cls: 'warn' }
-    } : {
-      cat: 'Posiciones en pérdidas',
-      icon: '✅',
-      txt: `Ninguna posición tiene pérdidas superiores al 5%. El portfolio se mantiene en terreno positivo en todas las posiciones principales.`,
-      tag: { txt: 'Sin alertas', cls: 'good' }
-    },
-    {
-      cat: 'Score de salud',
-      icon: '❤️',
-      txt: `Score de salud: ${score}/100 (Diversif. ${diversif} · Riesgo ${riesgo} · Rentab. ${rentab}). ${score >= 70 ? 'Portfolio bien equilibrado.' : score >= 50 ? 'Hay margen de mejora en la estructura.' : 'Considera revisar la composición del portfolio.'}`,
-      tag: score >= 70 ? { txt: 'Salud alta', cls: 'good' } : score >= 50 ? { txt: 'Salud media', cls: 'info' } : { txt: 'Mejorable', cls: 'warn' }
-    }
+  const ins=[
+    {icon:'📊',cat:'Resumen general',txt:`Portfolio de ${assets.length} activos valorado en ${fe(total)}. Rentabilidad acumulada ${gainPct>=0?'+':''}${gainPct.toFixed(2)}% sobre ${fe(invested)} invertido.`,tag:gainPct>5?{t:'Rendimiento positivo',c:'good'}:gainPct<0?{t:'En pérdidas',c:'warn'}:{t:'Rendimiento moderado',c:'info'}},
+    {icon:'⚖️',cat:'Concentración',txt:`Mayor posición: ${top?.name} (${topPct.toFixed(1)}% · ${fe(top?.value)}). ${topPct>30?'Alta concentración, considera diversificar.':'Concentración razonable.'}`,tag:topPct>30?{t:'Concentración elevada',c:'warn'}:{t:'Bien diversificado',c:'good'}},
+    {icon:'🗂️',cat:'Tipo de activos',txt:`${fondPct.toFixed(0)}% fondos · ${((catMap['ETFs']||0)/total*100).toFixed(0)}% ETFs · ${((catMap['Oro físico']||0)/total*100).toFixed(0)}% oro. ${fondPct>70?'Alta exposición a fondos acumulantes — sin ingresos por dividendos en la mayor parte.':'Mix equilibrado.'}`,tag:{t:'Cartera mixta',c:'info'}},
+    {icon:'📡',cat:'Cobertura de datos',txt:`${counts().ok}/${assets.length} activos con histórico real. ${counts().ok===assets.length?'Cobertura completa.':counts().missing+' activos sin histórico — la curva puede ser parcialmente estimada.'}`,tag:counts().ok===assets.length?{t:'Cobertura 100%',c:'good'}:{t:'Cobertura parcial',c:'warn'}},
+    negA.length>0?{icon:'📉',cat:'Posiciones en pérdidas',txt:`${negA.length} posición${negA.length>1?'es':''} con >-5%: ${negA.slice(0,3).map(a=>`${a.name} (${a.gainPct.toFixed(1)}%)`).join(', ')}.`,tag:{t:'Revisar posiciones',c:'warn'}}:{icon:'✅',cat:'Posiciones en pérdidas',txt:'Ninguna posición con pérdidas superiores al 5%. Portfolio en terreno positivo.',tag:{t:'Sin alertas',c:'good'}},
+    {icon:'❤️',cat:'Score de salud',txt:`Score ${score}/100 (Diversif. ${diversif} · Riesgo ${riesgo} · Rentab. ${rentab}). ${score>=70?'Portfolio bien equilibrado.':score>=50?'Hay margen de mejora.':'Considera revisar la composición.'}`,tag:score>=70?{t:'Salud alta',c:'good'}:score>=50?{t:'Salud media',c:'info'}:{t:'Mejorable',c:'warn'}}
   ];
-
-  document.getElementById('iaInsightsList').innerHTML = insights.map(ins => `
-    <div class="iaInsightCard">
-      <div class="iaStar">${ins.icon}</div>
-      <div class="icat">${ins.cat}</div>
-      <div class="itxt">${ins.txt}</div>
-      ${ins.tag ? `<span class="iaTag ${ins.tag.cls}">${ins.tag.txt}</span>` : ''}
-    </div>`).join('');
+  document.getElementById('iaInsightsList').innerHTML = ins.map(i=>`<div class="iaInsightCard"><div class="iaStar">${i.icon}</div><div class="icat">${i.cat}</div><div class="itxt">${i.txt}</div>${i.tag?`<span class="iaTag ${i.tag.c}">${i.tag.t}</span>`:''}</div>`).join('');
 }
 
-// ========== LISTS & RENDER ==========
-
+// ========== LISTS ==========
 function renderLists(){
-  const html = [...assets].sort((a, b) => b.value - a.value).map(a => `
-    <div class="asset">
+  const html = [...assets].sort((a,b)=>b.value-a.value).map(a=>`
+    <div class="asset" data-isin="${a.isin}">
       <div class="icon ${assetType(a)}">${iconInitials(a)}</div>
       <div style="min-width:0;flex:1">
-        <div class="name" title="${a.fullName || a.name}">${a.name}</div>
+        <div class="name" title="${a.fullName||a.name}">${a.name}</div>
         <div class="meta">${fn(a.quantity)} uds · ${fe(a.currentPrice)}</div>
-        <div class="tagrow">${tag(a)}</div>
       </div>
       <div class="right">
         <div class="money">${fe(a.value)}</div>
-        <div class="pct" style="color:${a.gainPct >= 0 ? '#15803d' : '#b91c1c'}">${a.gainPct >= 0 ? '+' : ''}${a.gainPct.toFixed(2)}%</div>
+        <div class="pct" style="color:${a.gainPct>=0?'#15803d':'#b91c1c'}">${a.gainPct>=0?'+':''}${a.gainPct.toFixed(2)}%</div>
       </div>
     </div>`).join('');
   document.getElementById('list').innerHTML = html;
   document.getElementById('portfolioList').innerHTML = html;
+
+  // Tap → open asset detail
+  document.querySelectorAll('#list .asset, #portfolioList .asset').forEach(el => {
+    el.addEventListener('click', () => {
+      const a = assets.find(x => x.isin === el.dataset.isin);
+      if (a) showAssetDetail(a, document.querySelector('.tab button.active')?.dataset?.screen || 'home');
+    });
+  });
 }
 
+// ========== MAIN RENDER ==========
 function render(){
-  const total = assets.reduce((s, a) => s + a.value, 0);
-  const invested = assets.reduce((s, a) => s + a.invested, 0);
-  const gain = total - invested;
-  const gainPct = invested > 0 ? gain / invested * 100 : 0;
+  const total = assets.reduce((s,a)=>s+a.value,0);
+  const invested = assets.reduce((s,a)=>s+a.invested,0);
+  const gain = total-invested;
+  const gainPct = invested>0 ? gain/invested*100 : 0;
   const c = counts();
   const gainEl = document.getElementById('totalGainPill');
 
   document.getElementById('total').textContent = fe(total);
   document.getElementById('investedTotal').textContent = fe(invested);
-  document.getElementById('profitPercent').textContent = `${gainPct >= 0 ? '+' : ''}${gainPct.toFixed(2)}%`;
-  gainEl.textContent = `${gain >= 0 ? '+' : ''}${fe(gain)} · ${gainPct >= 0 ? '+' : ''}${gainPct.toFixed(2)}%`;
-  gainEl.className = `pill ${gain >= 0 ? 'pos' : 'neg'}`;
+  document.getElementById('profitPercent').textContent = `${gainPct>=0?'+':''}${gainPct.toFixed(2)}%`;
+  gainEl.textContent = `${gain>=0?'+':''}${fe(gain)} · ${gainPct>=0?'+':''}${gainPct.toFixed(2)}%`;
+  gainEl.className = `pill ${gain>=0?'pos':'neg'}`;
   document.getElementById('coveragePill').textContent = `${c.total} activos`;
-  document.getElementById('coverageBadge').textContent = `${c.ok}/${c.total} real`;
+  document.getElementById('coverageBadge').textContent = `${c.ok}/${c.total} OK`;
   document.getElementById('count').textContent = c.total;
   document.getElementById('summaryInvested').textContent = fe(invested);
-  document.getElementById('summaryGainAbs').textContent = `${gain >= 0 ? '+' : ''}${fe(gain)} ganancia`;
-  document.getElementById('summaryGainPct').textContent = `${gainPct >= 0 ? '+' : ''}${gainPct.toFixed(2)}%`;
+  document.getElementById('summaryGainAbs').textContent = `${gain>=0?'+':''}${fe(gain)} ganancia`;
+  document.getElementById('summaryGainPct').textContent = `${gainPct>=0?'+':''}${gainPct.toFixed(2)}%`;
   document.getElementById('summaryAssetCount').textContent = `${c.total} posiciones · ${c.ok} con histórico`;
 
   renderLists();
   renderChart();
 }
 
+// ========== BOOT ==========
 async function boot(){
   const seed = await getJson('/api/portfolio/seed');
-  const isinList = seed.positions.map(p => p.isin).join(',');
-  const coverage = await getJson('/api/portfolio/coverage?isin=' + encodeURIComponent(isinList));
-  const coverageMap = Object.fromEntries((coverage.results || []).map(entry => [entry.isin, entry]));
+  const isinList = seed.positions.map(p=>p.isin).join(',');
+  const coverage = await getJson('/api/portfolio/coverage?isin='+encodeURIComponent(isinList));
+  const cvMap = Object.fromEntries((coverage.results||[]).map(e=>[e.isin,e]));
 
-  assets = seed.positions.map(position => {
-    const entry = coverageMap[position.isin] || {};
-    const mapping = entry.mapping || position.provider || null;
-    // Seed price is authoritative — Yahoo prices are different scales (IWDA.AS≠broker)
-    const currentPrice = Number(position.currentPrice) || 0;
-    const buyPrice = Number(position.buyPrice) || 0;
-    const quantity = Number(position.quantity) || 0;
+  assets = seed.positions.map(pos => {
+    const entry = cvMap[pos.isin] || {};
+    const mapping = entry.mapping || null;
+    // Seed price is authoritative — Yahoo prices use different scales/currencies
+    const currentPrice = Number(pos.currentPrice) || 0;
+    const buyPrice = Number(pos.buyPrice) || 0;
+    const quantity = Number(pos.quantity) || 0;
     const value = quantity * currentPrice;
     const invested = quantity * buyPrice;
-    const gainPct = buyPrice ? ((currentPrice - buyPrice) / buyPrice) * 100 : 0;
-    const covStatus = entry.data?.coverage?.status || 'MISSING';
+    const gainPct = buyPrice ? ((currentPrice-buyPrice)/buyPrice)*100 : 0;
     const history = normalizeHistory(entry.data?.history || []);
-    const hasRealHistory = history.length > 1;
-
     return {
-      isin: position.isin,
-      name: position.shortName || position.name || mapping?.name || position.isin,
-      fullName: position.name || mapping?.name || position.isin,
-      quantity, buyPrice, currentPrice, invested, value, gainPct,
-      mapping,
+      isin: pos.isin,
+      name: pos.shortName || pos.name || mapping?.name || pos.isin,
+      fullName: pos.name || mapping?.name || pos.isin,
+      quantity, buyPrice, currentPrice, invested, value, gainPct, mapping,
       provider: entry.data?.provider || null,
-      coverageStatus: covStatus,
-      coverage: entry.data?.coverage || { quote: false, history: false, status: 'MISSING' },
+      coverageStatus: entry.data?.coverage?.status || 'MISSING',
+      coverage: entry.data?.coverage || { status:'MISSING' },
       history,
-      hasRealHistory
+      hasRealHistory: history.length > 1
     };
   });
 
   dataReady = true;
   render();
-
-  // Pre-render active tab content
-  const activeScreen = document.querySelector('.tab button.active')?.dataset?.screen;
-  if (activeScreen === 'analysis') renderAnalysisCharts();
-  if (activeScreen === 'dividends') renderDividends();
-  if (activeScreen === 'ia') renderIA();
 }
 
+// ========== EVENT LISTENERS ==========
 document.querySelectorAll('.tab button').forEach(btn => btn.addEventListener('click', () => showScreen(btn.dataset.screen)));
+
 document.querySelectorAll('.tfBtn').forEach(btn => btn.addEventListener('click', () => {
   selectedRange = btn.dataset.range;
   document.querySelectorAll('.tfBtn').forEach(el => el.classList.toggle('active', el === btn));
   renderChart();
 }));
+
+document.getElementById('btnAssetBack').addEventListener('click', () => {
+  if (assetChart) { assetChart.destroy(); assetChart = null; }
+  showScreen(prevScreen);
+});
 
 tick(); setInterval(tick, 30000);
 boot().catch(err => {

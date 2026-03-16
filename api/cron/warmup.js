@@ -14,6 +14,7 @@ module.exports = async (req, res) => {
     const auth = req.headers['authorization'] || '';
     if (auth !== `Bearer ${secret}`) {
       res.statusCode = 401;
+      res.setHeader('Content-Type', 'application/json; charset=utf-8');
       res.end(JSON.stringify({ error: 'Unauthorized' }));
       return;
     }
