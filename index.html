@@ -771,7 +771,10 @@ const KNOWN_PAY_MONTHS = {
 };
 
 let _divDataCache = null;
+const _DIV_CACHE_VER = 'v20260316c'; // bump on every deploy to bust stale frontend cache
+function _checkDivCacheVer(){if(sessionStorage.getItem('_divCacheVer')!==_DIV_CACHE_VER){_divDataCache=null;sessionStorage.setItem('_divCacheVer',_DIV_CACHE_VER);}}
 async function renderDividends(){
+  _checkDivCacheVer();
   // Show loading state
   document.getElementById('divLoadingCard').style.display='';
   document.getElementById('divChartCard').style.display='none';
