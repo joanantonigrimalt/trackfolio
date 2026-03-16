@@ -104,11 +104,6 @@
     </div>
     <div class="badge" id="coverageBadge">...</div>
   </div>
-  <div class="addTrigger" id="btnOpenSearch">
-    <span class="at-icon">🔍</span>
-    <span class="at-text">Buscar o añadir activo…</span>
-    <span class="at-pill">+ Añadir</span>
-  </div>
 
   <div class="card hero">
     <div class="sectionEyebrow" data-i18n="heroTitle">Valor total del portfolio</div>
@@ -1753,7 +1748,6 @@ async function saveNewAsset(){
 }
 
 // Event listeners for search
-document.getElementById('btnOpenSearch').addEventListener('click',openSearch);
 document.getElementById('btnOpenSearch2').addEventListener('click',openSearch);
 document.getElementById('btnSearchClose').addEventListener('click',closeSearch);
 document.getElementById('searchOverlay').addEventListener('click',e=>{if(e.target===document.getElementById('searchOverlay'))closeSearch();});
