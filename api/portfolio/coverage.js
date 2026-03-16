@@ -8,10 +8,10 @@ module.exports = async (req, res) => {
     const skipCache = req.query.refresh === '1';
     const uniqueIsins = [...new Set(isins)];
 
-    const results = [];
-    for (const isin of uniqueIsins) {
-      results.push(await resolveAssetData(isin, { skipCache }));
-    }
+    // Run in parallel — sequential was causing Vercel timeout with large portfolios
+    const results = await Promise.all(
+      uniqueIsins.map(isin => resolveAssetData(isin, { skipCache }))
+    );
 
     // Summary with OK / PARTIAL / MISSING counts
     const summary = {

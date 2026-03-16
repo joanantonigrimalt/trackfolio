@@ -3,11 +3,14 @@
 // Source priority:  EODHD (keyed, reliable EU/LSE ETFs)
 //                → Yahoo Finance chart events (free)
 //                → TwelveData (keyed, fallback)
+//                → Digrin/StockAnalysis scraper (final fallback via _lib/dividends.js)
 //
 // Pay months derived 100% from actual historical payment dates — no hardcoding.
 // GBp (pence) → GBP → EUR via live GBPEUR=X from Yahoo.
 
 const portfolioSeed = require('../../portfolio-seed.json');
+const { fetchDividendHistory } = require('../_lib/dividends');
+const { getGbpEur, toEur } = require('../_lib/fx');
 
 // ── ETF symbol map (only distributing assets) ─────────────────────────────
 // Lists the correct symbol per API. No payMonths here — derived from data.
@@ -25,30 +28,7 @@ const TTL = 4 * 60 * 60 * 1000;
 const cget = k => { const e = CACHE.get(k); if (!e || Date.now() > e.x) { CACHE.delete(k); return null; } return e.v; };
 const cset = (k, v) => CACHE.set(k, { v, x: Date.now() + TTL });
 
-// ── GBPEUR exchange rate ───────────────────────────────────────────────────
-async function getGbpEur() {
-  const cached = cget('fx:GBPEUR');
-  if (cached) return cached;
-  try {
-    const r = await fetch('https://query1.finance.yahoo.com/v8/finance/chart/GBPEUR=X?range=5d&interval=1d', {
-      headers: { 'User-Agent': 'Mozilla/5.0', Accept: 'application/json' }
-    });
-    const d = await r.json();
-    const closes = (d?.chart?.result?.[0]?.indicators?.quote?.[0]?.close || []).filter(Boolean);
-    const rate = Number(closes[closes.length - 1]);
-    if (rate > 0.5 && rate < 2.5) { cset('fx:GBPEUR', rate); return rate; }
-  } catch (_) {}
-  return 1.18;
-}
-
-async function toEur(amount, currency, gbpRate) {
-  if (!Number.isFinite(amount) || amount <= 0) return 0;
-  if (currency === 'EUR') return amount;
-  if (currency === 'GBp') return (amount / 100) * gbpRate;   // pence → GBP → EUR
-  if (currency === 'GBP') return amount * gbpRate;
-  if (currency === 'USD') return amount * 0.93;
-  return amount;
-}
+// getGbpEur and toEur imported from ../_lib/fx.js
 
 // ── EODHD /api/div/ ────────────────────────────────────────────────────────
 const EODHD_KEYS = [
@@ -81,7 +61,6 @@ async function eodhdDiv(symbol) {
       return divs;
     } catch (_) {}
   }
-  cset(k, []);
   return [];
 }
 
@@ -150,10 +129,18 @@ async function tdDiv(symbol) {
 // ── Fetch with fallback chain ─────────────────────────────────────────────
 async function fetchDivs(isin) {
   const s = DIV_ASSETS[isin];
-  if (!s) return [];
-  if (s.eodhd) { const d = await eodhdDiv(s.eodhd); if (d.length) return d; }
-  if (s.yahoo)  { const d = await yahooDiv(s.yahoo);  if (d.length) return d; }
-  if (s.td)     { const d = await tdDiv(s.td);         if (d.length) return d; }
+  if (s) {
+    if (s.eodhd) { const d = await eodhdDiv(s.eodhd); if (d.length) return d; }
+    if (s.yahoo)  { const d = await yahooDiv(s.yahoo);  if (d.length) return d; }
+    if (s.td)     { const d = await tdDiv(s.td);         if (d.length) return d; }
+  }
+  // Final fallback: Digrin / StockAnalysis scraper
+  try {
+    const hist = await fetchDividendHistory(isin);
+    if (hist.payments?.length) {
+      return hist.payments.map(p => ({ date: p.exDate, amount: p.amount, currency: p.currency || 'EUR' }));
+    }
+  } catch (_) {}
   return [];
 }
 
