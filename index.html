@@ -518,12 +518,60 @@ let currentModalIsin = null, txType = 'buy';
 let dataReady = false;
 
 const RANGE_DAYS = {'1W':7,'1M':30,'3M':91,'6M':183,'1Y':365,'5Y':365*5};
-const TF_RANGES = [['1W','1S'],['1M','1M'],['3M','3M'],['6M','6M'],['1Y','1A'],['5Y','5A']];
-const TF_RANGES_EN = [['1W','1W'],['1M','1M'],['3M','3M'],['6M','6M'],['1Y','1Y'],['5Y','5Y']];
+const TF_RANGES    = [['1D','1D'],['1W','1S'],['1M','1M'],['3M','3M'],['6M','6M'],['1Y','1A'],['5Y','5A']];
+const TF_RANGES_EN = [['1D','1D'],['1W','1W'],['1M','1M'],['3M','3M'],['6M','6M'],['1Y','1Y'],['5Y','5Y']];
 const MONTH_ES = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
 const MONTH_EN = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 const months = () => currentLang === 'es' ? MONTH_ES : MONTH_EN;
 const tfLabels = () => currentLang === 'es' ? TF_RANGES : TF_RANGES_EN;
+
+// ── Intraday (1D) state ────────────────────────────────────────────────────
+let _intradayCache = null, _intradayCacheAt = 0, _intradayRenderSeq = 0;
+const INTRADAY_TTL = 5 * 60 * 1000;
+
+// Yahoo symbol for an asset: seed assets have mapping.yahooSymbol; custom have .symbol
+function assetYahooSym(a) { return a.mapping?.yahooSymbol || (a.isCustom ? a.symbol : null) || null; }
+
+async function buildIntraday1D() {
+  const now = Date.now();
+  if (_intradayCache && now - _intradayCacheAt < INTRADAY_TTL) return _intradayCache;
+
+  const withSym = assets.filter(a => a.quantity > 0 && assetYahooSym(a));
+  if (!withSym.length) return null;
+
+  const symbols = [...new Set(withSym.map(a => assetYahooSym(a)))];
+  let data;
+  try {
+    data = await getJson('/api/portfolio/intraday?symbols=' + encodeURIComponent(symbols.join(',')));
+  } catch (_) { return null; }
+  if (!data?.symbols) return null;
+
+  // Build unified ms timestamp axis
+  const tsSet = new Set();
+  for (const sym of symbols) (data.symbols[sym]?.points || []).forEach(p => tsSet.add(p.ts));
+  const allTs = [...tsSet].sort((a, b) => a - b);
+  if (!allTs.length) return null;
+
+  const series = allTs.map(ts => {
+    let total = 0;
+    for (const a of assets) {
+      if (!a.quantity) continue;
+      const sym = assetYahooSym(a);
+      const pts = sym ? (data.symbols[sym]?.points || []) : [];
+      let price = null;
+      for (const p of pts) { if (p.ts <= ts) price = p.close; else break; }
+      if (price === null && pts.length) price = pts[0].close;
+      total += a.quantity * (price !== null ? price : a.currentPrice);
+    }
+    const d = new Date(ts);
+    const time = d.toLocaleTimeString(currentLang === 'es' ? 'es-ES' : 'en-GB', { hour: '2-digit', minute: '2-digit' });
+    return { ts, time, totalValue: Math.round(total * 100) / 100 };
+  }).filter(p => p.totalValue > 0);
+
+  _intradayCache = series.length >= 2 ? series : null;
+  _intradayCacheAt = now;
+  return _intradayCache;
+}
 
 // Dividend data now fetched live from /api/dividends/history
 const MSCI_WORLD_ANNUAL = {'2021':31.1,'2022':-17.7,'2023':24.0,'2024':18.0,'2025':2.4};
@@ -586,21 +634,48 @@ function buildTfRow(){
   row.innerHTML=tfLabels().map(([r,l])=>`<button class="tfBtn${r===selectedRange?' active':''}" data-range="${r}">${l}</button>`).join('');
   row.querySelectorAll('.tfBtn').forEach(btn=>btn.addEventListener('click',()=>{selectedRange=btn.dataset.range;buildTfRow();renderChart();}));
 }
-function renderChart(){
+function _drawChart(canvas,labels,values,note,meta,rv,noteText){
+  const first=values[0],last=values[values.length-1],delta=last-first,pct=first>0?(delta/first)*100:0,isUp=delta>=0;
+  const lc=isUp?'#22c55e':'#f87171';
+  const ctx=canvas.getContext('2d'),g=ctx.createLinearGradient(0,0,0,canvas.height||200);
+  g.addColorStop(0,isUp?'rgba(74,222,128,.28)':'rgba(248,113,113,.22)');g.addColorStop(.6,isUp?'rgba(74,222,128,.08)':'rgba(248,113,113,.07)');g.addColorStop(1,'rgba(0,0,0,0)');
+  chart=new Chart(canvas,{type:'line',data:{labels,datasets:[{data:values,borderColor:lc,backgroundColor:g,borderWidth:2.5,pointRadius:0,pointHoverRadius:4,pointHoverBackgroundColor:lc,pointHoverBorderColor:'#fff',pointHoverBorderWidth:2,fill:true,tension:.3}]},options:{responsive:true,maintainAspectRatio:false,interaction:{intersect:false,mode:'index'},plugins:{legend:{display:false},tooltip:{displayColors:false,backgroundColor:'rgba(12,30,20,.94)',borderColor:'rgba(220,252,231,.1)',borderWidth:1,titleColor:'#f0fdf4',bodyColor:'#a7f3d0',padding:10,callbacks:{title:i=>i[0]?.label||'',label:c=>fe(c.parsed.y)}}},scales:{x:{grid:{display:false},border:{display:false},ticks:{color:'rgba(239,249,242,.5)',maxTicksLimit:6,font:{size:10,weight:'600'}}},y:{grid:{color:'rgba(220,252,231,.07)'},border:{display:false},ticks:{color:'rgba(239,249,242,.5)',maxTicksLimit:4,font:{size:10,weight:'600'},callback:v=>Math.abs(v)>=1000?'€'+fn(v/1000)+'k':'€'+fn(v)}}}}});
+  rv.textContent=fe(last);meta.textContent=`${isUp?'+':''}${fe(delta)}  ${isUp?'+':''}${pct.toFixed(2)}%`;
+  note.textContent=noteText;
+}
+async function renderChart(){
   const note=document.getElementById('chartNote'),fallback=document.getElementById('chartFallback'),canvas=document.getElementById('chart'),meta=document.getElementById('chartMeta'),rv=document.getElementById('chartRangeValue');
   if(chart){chart.destroy();chart=null;}
+
+  // ── 1D intraday mode ──────────────────────────────────────────────────────
+  if(selectedRange==='1D'){
+    const seq=++_intradayRenderSeq;
+    canvas.style.display='none';fallback.style.display='none';
+    note.textContent=currentLang==='es'?'Cargando datos intradía…':'Loading intraday data…';
+    rv.textContent=fe(assets.reduce((s,a)=>s+a.value,0));meta.textContent='';
+    const series=await buildIntraday1D();
+    if(seq!==_intradayRenderSeq)return; // superseded
+    if(!series||series.length<2){
+      canvas.style.display='none';fallback.style.display='flex';meta.textContent='';
+      note.textContent=currentLang==='es'?'Intradía no disponible (mercado cerrado o sin datos)':'Intraday unavailable (market closed or no data)';
+      return;
+    }
+    fallback.style.display='none';canvas.style.display='block';
+    const noteText=currentLang==='es'
+      ?`Intradía · ${series.length} puntos · retardo ~15 min`
+      :`Intraday · ${series.length} pts · ~15 min delay`;
+    _drawChart(canvas,series.map(p=>p.time),series.map(p=>p.totalValue),note,meta,rv,noteText);
+    return;
+  }
+
+  // ── Multi-day historical mode ─────────────────────────────────────────────
   const full=buildPortfolioTimeSeries();
   if(!full){canvas.style.display='none';fallback.style.display='flex';meta.textContent='';rv.textContent=fe(assets.reduce((s,a)=>s+a.value,0));return;}
   const series=filterByRange(full,selectedRange),values=series.map(p=>p.totalValue);
-  const first=values[0],last=values[values.length-1],delta=last-first,pct=first>0?(delta/first)*100:0,isUp=delta>=0;
-  const lc=isUp?'#22c55e':'#f87171';
   fallback.style.display='none';canvas.style.display='block';
-  const ctx=canvas.getContext('2d'),g=ctx.createLinearGradient(0,0,0,canvas.height||200);
-  g.addColorStop(0,isUp?'rgba(74,222,128,.28)':'rgba(248,113,113,.22)');g.addColorStop(.6,isUp?'rgba(74,222,128,.08)':'rgba(248,113,113,.07)');g.addColorStop(1,'rgba(0,0,0,0)');
-  chart=new Chart(canvas,{type:'line',data:{labels:series.map(p=>dateLabel(p.date,selectedRange)),datasets:[{data:values,borderColor:lc,backgroundColor:g,borderWidth:2.5,pointRadius:0,pointHoverRadius:4,pointHoverBackgroundColor:lc,pointHoverBorderColor:'#fff',pointHoverBorderWidth:2,fill:true,tension:.3}]},options:{responsive:true,maintainAspectRatio:false,interaction:{intersect:false,mode:'index'},plugins:{legend:{display:false},tooltip:{displayColors:false,backgroundColor:'rgba(12,30,20,.94)',borderColor:'rgba(220,252,231,.1)',borderWidth:1,titleColor:'#f0fdf4',bodyColor:'#a7f3d0',padding:10,callbacks:{title:i=>i[0]?.label||'',label:c=>fe(c.parsed.y)}}},scales:{x:{grid:{display:false},border:{display:false},ticks:{color:'rgba(239,249,242,.5)',maxTicksLimit:5,font:{size:10,weight:'600'}}},y:{grid:{color:'rgba(220,252,231,.07)'},border:{display:false},ticks:{color:'rgba(239,249,242,.5)',maxTicksLimit:4,font:{size:10,weight:'600'},callback:v=>Math.abs(v)>=1000?'€'+fn(v/1000)+'k':'€'+fn(v)}}}}});
-  rv.textContent=fe(last);meta.textContent=`${isUp?'+':''}${fe(delta)}  ${isUp?'+':''}${pct.toFixed(2)}%`;
   const lp=series[series.length-1],aPct=lp.totalCurrent>0?lp.approximateCurrent/lp.totalCurrent*100:0;
-  note.textContent=aPct>0.5?`${t('histPts').replace('puntos históricos','')}: ${series.length} pts · ${aPct.toFixed(0)}% estimado`:t('histPts').replace('historical points',`${series.length} pts`).replace('puntos históricos',`${series.length} pts`);
+  const noteText=aPct>0.5?`${t('histPts').replace('puntos históricos','')}: ${series.length} pts · ${aPct.toFixed(0)}% estimado`:t('histPts').replace('historical points',`${series.length} pts`).replace('puntos históricos',`${series.length} pts`);
+  _drawChart(canvas,series.map(p=>dateLabel(p.date,selectedRange)),values,note,meta,rv,noteText);
 }
 
 // ========== Asset Detail ==========
