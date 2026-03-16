@@ -52,7 +52,8 @@
 .healthRow{display:flex;align-items:center;gap:16px;margin-top:4px}.healthDonutWrap{position:relative;width:110px;height:110px;flex-shrink:0}.healthDonutWrap canvas{width:110px!important;height:110px!important}.healthCenter{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center;pointer-events:none}.healthCenter .hs{font-size:26px;font-weight:800;letter-spacing:-.04em;color:#142018;line-height:1}.healthCenter .hsl{font-size:10px;color:#8fa090;font-weight:600}.subscores{display:flex;flex-direction:column;gap:8px;flex:1}.subscoreRow{display:flex;align-items:center;justify-content:space-between;gap:8px}.subscoreLabel{font-size:12px;font-weight:600;color:#5a6e5e;min-width:72px}.subscoreBar{flex:1;height:6px;background:#e8f0e9;border-radius:3px;overflow:hidden}.subscoreBarFill{height:100%;border-radius:3px;transition:width .6s}.subscoreVal{font-size:13px;font-weight:800;color:#142018;min-width:28px;text-align:right}
 .chartWrap2{position:relative;height:160px;margin-top:8px}.distLegend{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}.legendItem{display:flex;align-items:center;gap:5px;font-size:12px;font-weight:600;color:#4a5f4e}.legendDot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
 /* === Dividends === */
-.divHero{background:linear-gradient(160deg,#1a3f2c 0%,#0f2a1e 100%);color:#f5fbf6}.divHeroTop{display:flex;align-items:flex-end;gap:16px;margin-bottom:14px}.divBig{font-size:48px;font-weight:800;letter-spacing:-.05em;line-height:1}.divBigSub{font-size:14px;color:rgba(239,249,242,.6);font-weight:600;padding-bottom:8px}.divMetrics{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.divMetricBox{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.09);border-radius:14px;padding:10px}.divMetricBox .dl{font-size:10px;color:rgba(239,249,242,.5);text-transform:uppercase;letter-spacing:.08em;font-weight:600}.divMetricBox .dn{font-size:16px;font-weight:700;margin-top:3px;letter-spacing:-.02em}
+.divHero{background:linear-gradient(160deg,#1a3f2c 0%,#0f2a1e 100%);color:#f5fbf6}.divHeroTop{display:flex;align-items:flex-end;gap:16px;margin-bottom:14px}.divBig{font-size:48px;font-weight:800;letter-spacing:-.05em;line-height:1}.divBigSub{font-size:14px;color:rgba(239,249,242,.6);font-weight:600;padding-bottom:8px}.divMetrics{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}.divMetricBox{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.09);border-radius:14px;padding:10px}.divMetricBox .dl{font-size:10px;color:rgba(239,249,242,.5);text-transform:uppercase;letter-spacing:.08em;font-weight:600}.divMetricBox .dn{font-size:16px;font-weight:700;margin-top:3px;letter-spacing:-.02em}
+.divHoldingRow{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid rgba(20,32,24,.06)}.divHoldingRow:last-child{border-bottom:none}.divHoldingLeft{flex:1;min-width:0}.divHoldingName{font-size:13px;font-weight:700;color:#142018;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.divHoldingMeta{font-size:11px;color:#8fa090;margin-top:2px;font-weight:500}.divHoldingRight{text-align:right;flex-shrink:0}.divHoldingAmt{font-size:15px;font-weight:800;color:#142018}.divHoldingYield{font-size:11px;color:#15803d;margin-top:2px;font-weight:700}
 .payRow{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid rgba(20,32,24,.06)}.payRow:last-child{border-bottom:none}.payIcon{width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,#1d6fa8,#38bdf8);display:grid;place-items:center;font-size:11px;font-weight:800;color:#fff;flex-shrink:0}.payInfo{flex:1;min-width:0}.payName{font-size:13px;font-weight:700;color:#142018;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.payDate{font-size:11px;color:#8fa090;margin-top:2px;font-weight:500}.payRight{text-align:right;flex-shrink:0}.payAmt{font-size:15px;font-weight:800;color:#142018}.payShares{font-size:11px;color:#8fa090;margin-top:1px}
 .calGrid{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:10px}.calCell{background:#f1f5f2;border-radius:12px;padding:9px 6px;text-align:center}.calCell.hasPay{background:rgba(21,128,61,.09);border:1px solid rgba(21,128,61,.12)}.calCell .cm{font-size:10px;font-weight:700;color:#8fa090;text-transform:uppercase;letter-spacing:.05em}.calCell .ca{font-size:13px;font-weight:800;color:#142018;margin-top:3px}.calCell.hasPay .cm{color:#166534}.calCell.hasPay .ca{color:#15803d}
 /* === IA === */
@@ -155,18 +156,32 @@
 <div id="screen-dividends" class="screen">
   <div class="top"><div>
     <div class="title" data-i18n="tabDividends">Dividendos</div>
-    <div class="sub" data-i18n="dividendsSub">Ingresos pasivos estimados del portfolio</div>
+    <div class="sub" data-i18n="dividendsSub">Ingresos pasivos reales del portfolio</div>
   </div></div>
   <div class="card divHero">
-    <div class="divHeroTop"><div class="divBig" id="divAnnual">€0</div><div class="divBigSub" data-i18n="perYear">al año</div></div>
+    <div class="divHeroTop"><div class="divBig" id="divAnnual">€—</div><div class="divBigSub" data-i18n="perYear">al año</div></div>
     <div class="divMetrics">
-      <div class="divMetricBox"><div class="dl" data-i18n="monthly">Mensual</div><div class="dn" id="divMonthly">€0</div></div>
-      <div class="divMetricBox"><div class="dl">Yield</div><div class="dn" id="divYield">0%</div></div>
-      <div class="divMetricBox"><div class="dl" data-i18n="assets">Activos</div><div class="dn" id="divCount">0</div></div>
+      <div class="divMetricBox"><div class="dl" data-i18n="monthly">Mensual</div><div class="dn" id="divMonthly">€—</div></div>
+      <div class="divMetricBox"><div class="dl">Yield</div><div class="dn" id="divYield">—</div></div>
+      <div class="divMetricBox"><div class="dl">Yield s/coste</div><div class="dn" id="divYieldCost">—</div></div>
     </div>
   </div>
-  <div class="card"><div class="sectionTitle" data-i18n="upcoming">Próximos pagos</div><div id="upcomingPayments"></div></div>
-  <div class="card"><div class="sectionTitle" data-i18n="annualCalendar">Calendario anual</div><div class="calGrid" id="divCalendar"></div></div>
+  <div class="card" id="divLoadingCard" style="text-align:center;padding:28px 18px;color:#8fa090;font-size:13px;font-weight:600">
+    <div style="font-size:22px;margin-bottom:8px">⏳</div>
+    <span data-i18n="loadingDiv">Cargando dividendos reales…</span>
+  </div>
+  <div class="card" id="divHoldingsCard" style="display:none">
+    <div class="sectionTitle" data-i18n="divHoldings">Holdings con dividendos</div>
+    <div id="divHoldingsList"></div>
+  </div>
+  <div class="card" id="divUpcomingCard" style="display:none">
+    <div class="sectionTitle" data-i18n="upcoming">Próximos pagos</div>
+    <div id="upcomingPayments"></div>
+  </div>
+  <div class="card" id="divCalendarCard" style="display:none">
+    <div class="sectionTitle" data-i18n="annualCalendar">Calendario anual</div>
+    <div class="calGrid" id="divCalendar"></div>
+  </div>
 </div>
 
 <!-- ============ IA ============ -->
@@ -329,7 +344,7 @@ const I18N = {
     tabHome:'Inicio',tabPortfolio:'Cartera',tabAnalysis:'Análisis',tabDividends:'Dividendos',tabIA:'IA',
     portfolioSub:'Detalle completo de posiciones',positions:'Posiciones',
     analysisSub:'Salud, distribución y rendimiento',healthScore:'Score de salud',distribution:'Distribución por tipo',performance:'Rentabilidad por activo',vsWorld:'Portfolio vs MSCI World',
-    dividendsSub:'Ingresos pasivos estimados del portfolio',perYear:'al año',monthly:'Mensual',assets:'Activos',upcoming:'Próximos pagos',annualCalendar:'Calendario anual',
+    dividendsSub:'Ingresos pasivos reales del portfolio',perYear:'al año',monthly:'Mensual',assets:'Activos',upcoming:'Próximos pagos',annualCalendar:'Calendario anual',loadingDiv:'Cargando dividendos reales…',divHoldings:'Holdings con dividendos',
     iaSub:'Análisis inteligente de tu portfolio',iaAssistant:'Asistente Trackfolio',iaInsights:'Insights del portfolio',iaBased:'Basado en tus posiciones actuales',
     priceEvolution:'Evolución del precio',noHistory:'Sin histórico disponible.',addPosition:'+ Añadir posición',
     modeSimple:'Simple',modeTx:'Transacciones',shares:'Participaciones',avgCost:'Precio medio (Avg Cost)',avgCostHint:'Precio medio por participación',
@@ -348,7 +363,7 @@ const I18N = {
     tabHome:'Home',tabPortfolio:'Portfolio',tabAnalysis:'Analysis',tabDividends:'Dividends',tabIA:'AI',
     portfolioSub:'Full position details',positions:'Positions',
     analysisSub:'Health, distribution & performance',healthScore:'Health score',distribution:'Distribution by type',performance:'Performance by asset',vsWorld:'Portfolio vs MSCI World',
-    dividendsSub:'Estimated passive income',perYear:'per year',monthly:'Monthly',assets:'Assets',upcoming:'Upcoming payments',annualCalendar:'Annual calendar',
+    dividendsSub:'Real passive income from portfolio',perYear:'per year',monthly:'Monthly',assets:'Assets',upcoming:'Upcoming payments',annualCalendar:'Annual calendar',loadingDiv:'Loading real dividends…',divHoldings:'Dividend holdings',
     iaSub:'Smart analysis of your portfolio',iaAssistant:'Trackfolio Assistant',iaInsights:'Portfolio Insights',iaBased:'Based on your current positions',
     priceEvolution:'Price evolution',noHistory:'No history available.',addPosition:'+ Add position',
     modeSimple:'Simple',modeTx:'Transactions',shares:'Shares',avgCost:'Avg Cost per Share',avgCostHint:'Average cost per share',
@@ -387,12 +402,7 @@ const MONTH_EN = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','N
 const months = () => currentLang === 'es' ? MONTH_ES : MONTH_EN;
 const tfLabels = () => currentLang === 'es' ? TF_RANGES : TF_RANGES_EN;
 
-const DIVIDEND_CFG = {
-  'DE000A0F5UH1':{yield:0.028,payMonths:[1,4,7,10]},
-  'IE00BZ4BMM98':{yield:0.042,payMonths:[1,4,7,10]},
-  'IE00B9CQXS71':{yield:0.035,payMonths:[2,5,8,11]},
-  'NL0011683594':{yield:0.052,payMonths:[2,5,8,11]},
-};
+// Dividend data now fetched live from /api/dividends/history
 const MSCI_WORLD_ANNUAL = {'2021':31.1,'2022':-17.7,'2023':24.0,'2024':18.0,'2025':2.4};
 
 const fe = n => new Intl.NumberFormat(currentLang==='es'?'es-ES':'en-GB',{style:'currency',currency:'EUR',maximumFractionDigits:2}).format(Number.isFinite(n)?n:0);
@@ -627,14 +637,105 @@ function renderAnalysisCharts(){
 }
 
 // ========== Dividends ==========
-function renderDividends(){
+let _divDataCache = null;
+async function renderDividends(){
+  // Show loading state
+  document.getElementById('divLoadingCard').style.display='';
+  document.getElementById('divHoldingsCard').style.display='none';
+  document.getElementById('divUpcomingCard').style.display='none';
+  document.getElementById('divCalendarCard').style.display='none';
+
+  if(!_divDataCache){
+    try{
+      const allIsins=assets.map(a=>a.isin).join(',');
+      const r=await getJson(`/api/dividends/history?isins=${allIsins}`);
+      _divDataCache=r.results||[];
+    }catch(e){
+      document.getElementById('divLoadingCard').innerHTML=`<div style="font-size:22px;margin-bottom:8px">⚠️</div><span style="color:#b91c1c">Error cargando dividendos: ${e.message}</span>`;
+      return;
+    }
+  }
+
+  document.getElementById('divLoadingCard').style.display='none';
+
   const today=new Date(),cm=today.getMonth();
-  const divA=assets.filter(a=>DIVIDEND_CFG[a.isin]),divItems=divA.map(a=>{const cfg=DIVIDEND_CFG[a.isin],annual=a.value*cfg.yield,perPay=annual/cfg.payMonths.length,nextM=cfg.payMonths.find(m=>m>cm)??cfg.payMonths[0];return{...a,cfg,annual,perPay,nextMonth:nextM};});
-  const totalA=divItems.reduce((s,d)=>s+d.annual,0),totalP=assets.reduce((s,a)=>s+a.value,0),yp=totalP>0?(totalA/totalP)*100:0;
-  document.getElementById('divAnnual').textContent=fe(totalA);document.getElementById('divMonthly').textContent=fe(totalA/12);document.getElementById('divYield').textContent=yp.toFixed(2)+'%';document.getElementById('divCount').textContent=divItems.length;
-  document.getElementById('upcomingPayments').innerHTML=divItems.length?[...divItems].sort((a,b)=>a.nextMonth-b.nextMonth).map(d=>`<div class="payRow"><div class="payIcon">${d.name.slice(0,2).toUpperCase()}</div><div class="payInfo"><div class="payName">${d.name}</div><div class="payDate">${months()[d.nextMonth]} ${today.getFullYear()+(d.nextMonth<=cm?1:0)} · ${t('txQuarterly')}</div></div><div class="payRight"><div class="payAmt">${fe(d.perPay)}</div><div class="payShares">${fn(d.quantity)} ${t('shares').toLowerCase()}</div></div></div>`).join(''):(`<div class="empty">${t('noDiv')}</div>`);
-  const mt=Array(12).fill(0);divItems.forEach(d=>d.cfg.payMonths.forEach(m=>{mt[m]+=d.perPay;}));
-  document.getElementById('divCalendar').innerHTML=months().map((m,i)=>{const a=mt[i],h=a>0.5;return`<div class="calCell${h?' hasPay':''}"><div class="cm">${m}</div><div class="ca">${h?fe(a):'—'}</div></div>`;}).join('');
+  // Join API results with current asset positions
+  const divItems=_divDataCache
+    .filter(d=>d.annualPerShare>0)
+    .map(d=>{
+      const a=assets.find(x=>x.isin===d.isin);
+      if(!a)return null;
+      const qty=a.quantity;
+      const annualIncome=d.annualPerShare*qty;
+      const payFreq=d.payMonths.length||4;
+      const perPay=annualIncome/payFreq;
+      const nextM=d.payMonths.find(m=>m>cm)??d.payMonths[0];
+      const nextYear=today.getFullYear()+(nextM!=null&&nextM<=cm?1:0);
+      return{...a,divData:d,annualIncome,perPay,nextMonth:nextM,nextYear,yieldPct:d.yieldPct,yieldOnCostPct:d.yieldOnCostPct};
+    }).filter(Boolean);
+
+  const totalAnnual=divItems.reduce((s,d)=>s+d.annualIncome,0);
+  const totalPortfolio=assets.reduce((s,a)=>s+a.value,0);
+  const totalInvested=assets.reduce((s,a)=>s+a.invested,0);
+  const yieldPortfolio=totalPortfolio>0?(totalAnnual/totalPortfolio)*100:0;
+  const yieldOnCost=totalInvested>0?(totalAnnual/totalInvested)*100:0;
+
+  document.getElementById('divAnnual').textContent=fe(totalAnnual);
+  document.getElementById('divMonthly').textContent=fe(totalAnnual/12);
+  document.getElementById('divYield').textContent=yieldPortfolio.toFixed(2)+'%';
+  document.getElementById('divYieldCost').textContent=yieldOnCost.toFixed(2)+'%';
+
+  // Holdings list
+  if(divItems.length){
+    document.getElementById('divHoldingsCard').style.display='';
+    document.getElementById('divHoldingsList').innerHTML=[...divItems]
+      .sort((a,b)=>b.annualIncome-a.annualIncome)
+      .map(d=>`<div class="divHoldingRow">
+        <div class="icon ${assetType(d)} " style="width:36px;height:36px;border-radius:10px;font-size:11px">${iconInitials(d)}</div>
+        <div class="divHoldingLeft">
+          <div class="divHoldingName">${d.name}</div>
+          <div class="divHoldingMeta">${fn(d.quantity)} ${t('shares').toLowerCase()} · ${d.divData.symbol}</div>
+        </div>
+        <div class="divHoldingRight">
+          <div class="divHoldingAmt">${fe(d.annualIncome)}</div>
+          <div class="divHoldingYield">${(d.yieldPct*100).toFixed(2)}% yield</div>
+        </div>
+      </div>`).join('');
+  }
+
+  // Upcoming payments
+  document.getElementById('divUpcomingCard').style.display='';
+  const upcomingSorted=[...divItems].sort((a,b)=>{
+    const am=a.nextMonth??12,bm=b.nextMonth??12;
+    const ay=a.nextYear,by=b.nextYear;
+    return ay!==by?ay-by:am-bm;
+  });
+  document.getElementById('upcomingPayments').innerHTML=upcomingSorted.length
+    ?upcomingSorted.map(d=>`<div class="payRow">
+        <div class="payIcon">${iconInitials(d)}</div>
+        <div class="payInfo">
+          <div class="payName">${d.name}</div>
+          <div class="payDate">${d.nextMonth!=null?months()[d.nextMonth]+' '+d.nextYear:'—'} · ${fe(d.divData.annualPerShare)} ${t('shares').toLowerCase()=='participaciones'?'p.acción':'/ share'}</div>
+        </div>
+        <div class="payRight">
+          <div class="payAmt">${fe(d.perPay)}</div>
+          <div class="payShares">${fn(d.quantity)} ${t('shares').toLowerCase()}</div>
+        </div>
+      </div>`).join('')
+    :`<div class="empty">${t('noDiv')}</div>`;
+
+  // Monthly calendar — sum income by month
+  const mt=Array(12).fill(0);
+  divItems.forEach(d=>{
+    const freq=d.divData.payMonths.length||4;
+    const perPay=d.annualIncome/freq;
+    d.divData.payMonths.forEach(m=>{ mt[m]+=perPay; });
+  });
+  document.getElementById('divCalendarCard').style.display='';
+  document.getElementById('divCalendar').innerHTML=months().map((m,i)=>{
+    const a=mt[i],h=a>0.5;
+    return`<div class="calCell${h?' hasPay':''}"><div class="cm">${m}</div><div class="ca">${h?fe(a):'—'}</div></div>`;
+  }).join('');
 }
 
 // ========== IA ==========
