@@ -565,10 +565,19 @@ async function buildIntraday1D() {
       if (!a.quantity) continue;
       const sym = assetYahooSym(a);
       const pts = sym ? (data.symbols[sym]?.points || []) : [];
-      let price = null;
-      for (const p of pts) { if (p.ts <= ts) price = p.close; else break; }
-      if (price === null && pts.length) price = pts[0].close;
-      total += a.quantity * (price !== null ? price : a.currentPrice);
+      if (pts.length > 0) {
+        // Normalize: use ratio of intraday price to last intraday price, scaled by EUR currentPrice.
+        // This is currency-agnostic (handles GBp, USD, etc.) and always produces a correct EUR total.
+        const lastClose = pts[pts.length - 1].close;
+        let price = null;
+        for (const p of pts) { if (p.ts <= ts) price = p.close; else break; }
+        if (price === null) price = pts[0].close;
+        const ratio = lastClose > 0 ? price / lastClose : 1;
+        total += a.quantity * a.currentPrice * ratio;
+      } else {
+        // No intraday data for this asset — hold constant at known EUR value
+        total += a.quantity * a.currentPrice;
+      }
     }
     const d = new Date(ts);
     const time = d.toLocaleTimeString(currentLang === 'es' ? 'es-ES' : 'en-GB', { hour: '2-digit', minute: '2-digit' });
