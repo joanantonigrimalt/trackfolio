@@ -487,7 +487,9 @@ function showAssetDetail(asset,from){
   document.getElementById('adIsin').textContent=asset.isin;
   document.getElementById('adPrice').textContent=fe(asset.currentPrice);
   const g=asset.value-asset.invested,badge=document.getElementById('adGainBadge');
-  badge.textContent=`${asset.gainPct>=0?'▲':'▼'} ${asset.gainPct>=0?'+':''}${asset.gainPct.toFixed(2)}% total`;
+  const dp=getDayPct(asset);
+  const dayStr=dp!=null?` · ${dp>=0?'+':''}${dp.toFixed(2)}% ${currentLang==='es'?'hoy':'1D'}`:'';
+  badge.textContent=`${asset.gainPct>=0?'▲':'▼'} ${asset.gainPct>=0?'+':''}${asset.gainPct.toFixed(2)}% total${dayStr}`;
   badge.className='adGainBadge'+(asset.gainPct<0?' neg':'');
   const icon=document.getElementById('adIcon');icon.textContent=iconInitials(asset);icon.className='icon adIconLg '+assetType(asset);
   const total=assets.reduce((s,a)=>s+a.value,0),w=total>0?asset.value/total*100:0;
@@ -756,9 +758,19 @@ function renderIA(){
 }
 
 // ========== Lists ==========
+function getDayPct(a){
+  if(!a.hasRealHistory||a.history.length<2)return null;
+  const last=a.history[a.history.length-1].close,prev=a.history[a.history.length-2].close;
+  return prev>0?(last-prev)/prev*100:null;
+}
 function renderLists(){
-  const html=[...assets].sort((a,b)=>b.value-a.value).map(a=>`
-    <div class="asset" data-isin="${a.isin}">
+  const html=[...assets].sort((a,b)=>b.value-a.value).map(a=>{
+    const dp=getDayPct(a);
+    const dayHtml=dp!=null
+      ?`<span style="color:${dp>=0?'#15803d':'#b91c1c'}">${dp>=0?'+':''}${dp.toFixed(2)}%</span><span style="color:#b0c0b5;font-size:10px;margin-left:2px">${currentLang==='es'?'hoy':'1D'}</span>`
+      :'';
+    const totalColor=a.gainPct>=0?'#15803d':'#b91c1c';
+    return`<div class="asset" data-isin="${a.isin}">
       <div class="icon ${assetType(a)}">${iconInitials(a)}</div>
       <div style="min-width:0;flex:1">
         <div class="name" title="${a.fullName||a.name}">${a.name}</div>
@@ -766,9 +778,13 @@ function renderLists(){
       </div>
       <div class="right">
         <div class="money">${fe(a.value)}</div>
-        <div class="pct" style="color:${a.gainPct>=0?'#15803d':'#b91c1c'}">${a.gainPct>=0?'+':''}${a.gainPct.toFixed(2)}%</div>
+        <div class="pct" style="display:flex;gap:7px;justify-content:flex-end;align-items:baseline;flex-wrap:wrap">
+          ${dayHtml}
+          <span style="color:${totalColor}">${a.gainPct>=0?'+':''}${a.gainPct.toFixed(2)}%</span>
+        </div>
       </div>
-    </div>`).join('');
+    </div>`;
+  }).join('');
   document.getElementById('list').innerHTML=html;
   document.getElementById('portfolioList').innerHTML=html;
   document.querySelectorAll('#list .asset, #portfolioList .asset').forEach(el=>{
