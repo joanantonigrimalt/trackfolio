@@ -85,6 +85,34 @@
 #divDetailContent details>summary::-webkit-details-marker{display:none}#divDetailContent details>summary::marker{display:none}#divDetailContent details[open]>summary{margin-bottom:4px}#divDetailContent details>summary:hover{opacity:.8}
 /* === IA === */
 .iaHeader{background:linear-gradient(160deg,#2d1a4a 0%,#1a0f2a 100%);color:#f5f0fb}.iaInsightCard{background:#faf8fd;border:1px solid rgba(90,30,140,.08);border-radius:18px;padding:14px;margin-bottom:10px}.iaInsightCard .icat{font-size:10px;text-transform:uppercase;letter-spacing:.1em;font-weight:700;color:#7c5fa8;margin-bottom:6px}.iaInsightCard .itxt{font-size:13px;line-height:1.6;color:#2d1a4a;font-weight:500}.iaTag{display:inline-block;padding:3px 8px;border-radius:6px;font-size:10px;font-weight:700;margin-top:8px}.iaTag.warn{background:rgba(245,158,11,.12);color:#92400e}.iaTag.good{background:rgba(22,163,74,.1);color:#166534}.iaTag.info{background:rgba(90,30,140,.08);color:#5a1e8c}.iaStar{font-size:22px;margin-bottom:6px}
+/* === Auth modal === */
+.authOverlay{position:absolute;inset:0;background:rgba(20,32,24,.4);z-index:60;opacity:0;pointer-events:none;visibility:hidden;transition:opacity .25s,visibility 0s .25s}
+.authOverlay.open{opacity:1;pointer-events:auto;visibility:visible;transition:opacity .25s,visibility 0s}
+.authSheet{position:absolute;bottom:0;left:0;right:0;background:#fff;border-radius:24px 24px 0 0;padding:0 0 32px;z-index:61;transform:translateY(100%);visibility:hidden;transition:transform .28s cubic-bezier(.32,.72,0,1),visibility 0s .28s}
+.authSheet.open{transform:translateY(0);visibility:visible;transition:transform .28s cubic-bezier(.32,.72,0,1),visibility 0s}
+.authTabs{display:flex;margin:12px 20px 0;background:#f1f5f2;border-radius:12px;padding:3px;gap:3px}
+.authTabBtn{flex:1;padding:9px;border:none;border-radius:9px;font:inherit;font-size:13px;font-weight:700;cursor:pointer;color:#6d7e72;background:transparent;transition:all .15s}
+.authTabBtn.active{background:#fff;color:#142018;box-shadow:0 2px 8px rgba(20,32,24,.1)}
+.authField{margin:12px 20px 0}
+.authFieldLabel{font-size:11px;font-weight:700;color:#4a5f4e;margin-bottom:6px;text-transform:uppercase;letter-spacing:.06em}
+.authFieldRow{border:1.5px solid #e0e8e2;border-radius:12px;overflow:hidden;background:#fff;transition:border-color .15s}
+.authFieldRow:focus-within{border-color:#15803d}
+.authFieldRow input{width:100%;border:none;outline:none;padding:12px 14px;font:inherit;font-size:15px;color:#142018;background:transparent;box-sizing:border-box}
+.authSubmitBtn{display:block;width:calc(100% - 40px);margin:16px 20px 0;padding:15px;background:#142018;color:#f5fbf6;border:none;border-radius:14px;font:inherit;font-size:15px;font-weight:700;cursor:pointer;transition:opacity .15s}
+.authSubmitBtn:active{opacity:.8}
+.authMsg{margin:10px 20px 0;font-size:13px;font-weight:600;padding:10px 14px;border-radius:10px;text-align:center}
+.authMsg.err{background:rgba(185,28,28,.08);color:#b91c1c}
+.authMsg.ok{background:rgba(21,128,61,.09);color:#15803d}
+/* Account section in settings */
+.sheetDivider{height:1px;background:rgba(20,32,24,.07);margin:16px 0}
+.accountRow{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.accountEmail{font-size:13px;font-weight:700;color:#142018;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.accountSub{font-size:11px;color:#8fa090;margin-top:2px;font-weight:500}
+.accountBtn{background:none;border:1.5px solid rgba(20,32,24,.1);border-radius:10px;padding:7px 12px;font:inherit;font-size:12px;font-weight:700;color:#4a5f4e;cursor:pointer;white-space:nowrap;transition:all .15s}
+.accountBtn:active{background:rgba(20,32,24,.06)}
+.accountBtn.green{background:#22c55e;color:#fff;border-color:#22c55e}
+.accountLoginBtn{display:block;width:100%;padding:13px;background:#f4f7f5;border:1.5px solid rgba(20,32,24,.08);border-radius:14px;font:inherit;font-size:14px;font-weight:700;color:#142018;cursor:pointer;text-align:center;transition:all .15s}
+.accountLoginBtn:active{background:rgba(20,32,24,.08)}
 @media (max-width:430px){body{padding:0;background:#f2f5f3}.shell{width:100vw}.phone{width:100vw;height:100dvh;max-width:none;border-radius:0;border:none;box-shadow:none}.notch{top:0;border-radius:0 0 16px 16px}.screen{padding:10px 14px 112px}.tab{left:10px;right:10px;bottom:10px;border-radius:20px}}
 </style>
 </head>
@@ -447,6 +475,47 @@
     <button class="langBtn active" data-lang="es" id="btnLangEs">🇪🇸 Español</button>
     <button class="langBtn" data-lang="en" id="btnLangEn">🇬🇧 English</button>
   </div>
+  <div class="sheetDivider"></div>
+  <div class="sheetTitle">Cuenta</div>
+  <div id="accountSection">
+    <button class="accountLoginBtn" id="btnOpenAuth">Entrar o registrarse</button>
+  </div>
+</div>
+
+<!-- ============ AUTH SHEET ============ -->
+<div class="authOverlay" id="authOverlay"></div>
+<div class="authSheet" id="authSheet">
+  <div class="sheetHandle" style="margin-top:14px"></div>
+  <div style="display:flex;justify-content:space-between;align-items:center;padding:14px 20px 0">
+    <div style="font-size:17px;font-weight:800;color:#142018">Cuenta</div>
+    <button class="modalIconBtn" id="btnCloseAuth">✕</button>
+  </div>
+  <div class="authTabs">
+    <button class="authTabBtn active" id="authTabLogin">Entrar</button>
+    <button class="authTabBtn" id="authTabRegister">Registro</button>
+  </div>
+  <div id="authFormWrap">
+    <div class="authField" id="authNameField" style="display:none">
+      <div class="authFieldLabel">Nombre</div>
+      <div class="authFieldRow"><input type="text" id="authName" placeholder="Tu nombre" autocomplete="name"></div>
+    </div>
+    <div class="authField">
+      <div class="authFieldLabel">Email</div>
+      <div class="authFieldRow"><input type="email" id="authEmail" placeholder="correo@ejemplo.com" autocomplete="email"></div>
+    </div>
+    <div class="authField">
+      <div class="authFieldLabel">Contraseña</div>
+      <div class="authFieldRow"><input type="password" id="authPassword" placeholder="Mínimo 8 caracteres" autocomplete="current-password"></div>
+    </div>
+    <button class="authSubmitBtn" id="authSubmitBtn">Entrar</button>
+    <div class="authMsg" id="authMsg" style="display:none"></div>
+  </div>
+  <div id="authVerifyState" style="display:none;text-align:center;padding:24px 24px 8px">
+    <div style="font-size:40px;margin-bottom:12px">📧</div>
+    <div style="font-size:17px;font-weight:800;color:#142018;margin-bottom:8px">Revisa tu email</div>
+    <div style="font-size:13px;color:#6d7e72;line-height:1.6;margin:0 auto;max-width:260px" id="authVerifyMsg"></div>
+    <button style="margin-top:14px;background:none;border:none;color:#15803d;font:inherit;font-size:13px;font-weight:700;cursor:pointer" id="btnResendVerify">Reenviar email</button>
+  </div>
 </div>
 
 <!-- TAB BAR -->
@@ -595,7 +664,7 @@ function tick(){document.getElementById('clock').textContent=new Date().toLocale
 
 // ========== localStorage positions ==========
 function getOverrides(){try{return JSON.parse(localStorage.getItem('tf_positions')||'{}');}catch{return {};}}
-function saveOverrides(o){localStorage.setItem('tf_positions',JSON.stringify(o));}
+function saveOverrides(o){localStorage.setItem('tf_positions',JSON.stringify(o));_debouncedSync();}
 function applyOverridesToAssets(rawAssets){
   const ov=getOverrides();
   return rawAssets.map(a=>{
@@ -1601,7 +1670,7 @@ document.querySelectorAll('.langBtn').forEach(btn=>btn.addEventListener('click',
 
 // ========== Custom Assets (localStorage) ==========
 function getCustomAssets(){try{return JSON.parse(localStorage.getItem('tf_custom_assets')||'{}');}catch{return {};}}
-function saveCustomAssets(o){localStorage.setItem('tf_custom_assets',JSON.stringify(o));}
+function saveCustomAssets(o){localStorage.setItem('tf_custom_assets',JSON.stringify(o));_debouncedSync();}
 
 // Type → icon style
 const TYPE_COLORS={stock:'linear-gradient(135deg,#1d6fa8,#38bdf8)',etf:'linear-gradient(135deg,#1d6fa8,#38bdf8)',fund:'linear-gradient(135deg,#7c3aed,#a78bfa)',crypto:'linear-gradient(135deg,#d97706,#fbbf24)',index:'linear-gradient(135deg,#475569,#94a3b8)',fx:'linear-gradient(135deg,#059669,#34d399)',unknown:'linear-gradient(135deg,#475569,#64748b)'};
@@ -1748,8 +1817,159 @@ async function saveNewAsset(){
   showScreen('portfolio');
 }
 
+// ========== Supabase Auth ==========
+let _sb=null,_sbUser=null,_syncTimer=null;
+
+async function initSupabase(){
+  try{
+    const cfg=await getJson('/api/auth/config');
+    if(!cfg.supabaseUrl||!cfg.supabaseAnonKey)return;
+    _sb=supabase.createClient(cfg.supabaseUrl,cfg.supabaseAnonKey);
+    _sb.auth.onAuthStateChange(async(event,session)=>{
+      _sbUser=session?.user||null;
+      renderAccountSection();
+      if(event==='SIGNED_IN'){await syncFromCloud();}
+    });
+    const{data:{session}}=await _sb.auth.getSession();
+    _sbUser=session?.user||null;
+    renderAccountSection();
+    if(_sbUser)await syncFromCloud();
+  }catch(e){console.warn('[auth]',e.message);}
+}
+
+function renderAccountSection(){
+  const sec=document.getElementById('accountSection');if(!sec)return;
+  if(_sbUser){
+    const ts=localStorage.getItem('tf_last_sync');
+    const ago=ts?'Sync '+new Date(ts).toLocaleDateString('es-ES',{day:'2-digit',month:'2-digit'}):'Sin sync';
+    sec.innerHTML=`<div class="accountRow">
+      <div style="min-width:0"><div class="accountEmail">${_sbUser.email}</div><div class="accountSub">${ago}</div></div>
+      <div style="display:flex;gap:6px;flex-shrink:0">
+        <button class="accountBtn green" id="btnSyncCloud">↑↓</button>
+        <button class="accountBtn" id="btnLogout">Salir</button>
+      </div>
+    </div>`;
+    document.getElementById('btnSyncCloud').onclick=async()=>{
+      const b=document.getElementById('btnSyncCloud');b.textContent='…';
+      await syncToCloud();await syncFromCloud();b.textContent='↑↓';
+    };
+    document.getElementById('btnLogout').onclick=async()=>{await _sb.auth.signOut();renderAccountSection();};
+  }else{
+    sec.innerHTML=`<button class="accountLoginBtn" id="btnOpenAuth">Entrar o registrarse</button>`;
+    document.getElementById('btnOpenAuth').onclick=()=>{closeSettings();openAuthModal();};
+  }
+}
+
+async function syncToCloud(){
+  if(!_sb||!_sbUser)return;
+  try{
+    await _sb.from('user_positions').upsert({user_id:_sbUser.id,overrides:getOverrides(),custom_assets:getCustomAssets(),updated_at:new Date().toISOString()},{onConflict:'user_id'});
+    localStorage.setItem('tf_last_sync',new Date().toISOString());
+    renderAccountSection();
+  }catch(e){console.warn('[sync↑]',e.message);}
+}
+
+async function syncFromCloud(){
+  if(!_sb||!_sbUser)return;
+  try{
+    const{data}=await _sb.from('user_positions').select('overrides,custom_assets,updated_at').eq('user_id',_sbUser.id).single();
+    if(!data){await syncToCloud();return;}
+    const cloudTs=new Date(data.updated_at).getTime();
+    const localTs=new Date(localStorage.getItem('tf_last_sync')||0).getTime();
+    if(cloudTs>localTs){
+      saveOverrides({...getOverrides(),...(data.overrides||{})});
+      saveCustomAssets({...getCustomAssets(),...(data.custom_assets||{})});
+      loadCustomIntoAssets();render();
+    }
+    localStorage.setItem('tf_last_sync',new Date().toISOString());
+    renderAccountSection();
+  }catch(e){console.warn('[sync↓]',e.message);}
+}
+
+function _debouncedSync(){
+  if(!_sbUser)return;
+  clearTimeout(_syncTimer);
+  _syncTimer=setTimeout(()=>syncToCloud().catch(()=>{}),3000);
+}
+
+// Auth modal
+let _authMode='login';
+function openAuthModal(){
+  document.getElementById('authSheet').classList.add('open');
+  document.getElementById('authOverlay').classList.add('open');
+  _setAuthMode('login');
+}
+function closeAuthModal(){
+  document.getElementById('authSheet').classList.remove('open');
+  document.getElementById('authOverlay').classList.remove('open');
+  document.getElementById('authVerifyState').style.display='none';
+  document.getElementById('authFormWrap').style.display='';
+  document.getElementById('authMsg').style.display='none';
+  document.getElementById('authTabs').style.display='';
+}
+function _setAuthMode(mode){
+  _authMode=mode;
+  document.getElementById('authTabLogin').classList.toggle('active',mode==='login');
+  document.getElementById('authTabRegister').classList.toggle('active',mode==='register');
+  document.getElementById('authNameField').style.display=mode==='register'?'':'none';
+  document.getElementById('authSubmitBtn').textContent=mode==='login'?'Entrar':'Crear cuenta';
+  document.getElementById('authMsg').style.display='none';
+}
+async function _submitAuth(){
+  if(!_sb){_showAuthMsg('Servicio no disponible.','err');return;}
+  const email=document.getElementById('authEmail').value.trim();
+  const pass=document.getElementById('authPassword').value;
+  const name=document.getElementById('authName').value.trim();
+  if(!email||!pass){_showAuthMsg('Email y contraseña obligatorios.','err');return;}
+  if(pass.length<8){_showAuthMsg('Contraseña mínimo 8 caracteres.','err');return;}
+  const btn=document.getElementById('authSubmitBtn');
+  btn.textContent='…';btn.disabled=true;
+  try{
+    if(_authMode==='login'){
+      const{error}=await _sb.auth.signInWithPassword({email,password:pass});
+      if(error)throw error;
+      closeAuthModal();
+    }else{
+      const{error}=await _sb.auth.signUp({email,password:pass,options:{data:{full_name:name},emailRedirectTo:'https://finasset.app'}});
+      if(error)throw error;
+      document.getElementById('authFormWrap').style.display='none';
+      document.getElementById('authTabs').style.display='none';
+      document.getElementById('authVerifyState').style.display='';
+      document.getElementById('authVerifyMsg').textContent=`Enlace enviado a ${email}. Confirma tu cuenta y vuelve a entrar.`;
+    }
+  }catch(e){
+    const m=e.message?.includes('Invalid login credentials')?'Email o contraseña incorrectos.':
+             e.message?.includes('not confirmed')?'Confirma tu email antes de entrar.':
+             e.message?.includes('already registered')?'Email ya registrado.':
+             e.message||'Error desconocido.';
+    _showAuthMsg(m,'err');
+    if(e.message?.includes('already registered'))_setAuthMode('login');
+  }finally{
+    btn.disabled=false;
+    btn.textContent=_authMode==='login'?'Entrar':'Crear cuenta';
+  }
+}
+function _showAuthMsg(txt,type){
+  const el=document.getElementById('authMsg');
+  el.textContent=txt;el.className='authMsg '+type;el.style.display=txt?'':'none';
+}
+
 // Event listeners for search
 document.getElementById('btnOpenSearch2').addEventListener('click',openSearch);
+document.getElementById('authTabLogin').addEventListener('click',()=>_setAuthMode('login'));
+document.getElementById('authTabRegister').addEventListener('click',()=>_setAuthMode('register'));
+document.getElementById('authSubmitBtn').addEventListener('click',_submitAuth);
+document.getElementById('authOverlay').addEventListener('click',closeAuthModal);
+document.getElementById('btnCloseAuth').addEventListener('click',closeAuthModal);
+document.getElementById('btnResendVerify').addEventListener('click',async()=>{
+  const email=document.getElementById('authEmail').value.trim();
+  if(!email||!_sb)return;
+  await _sb.auth.resend({type:'signup',email});
+  document.getElementById('btnResendVerify').textContent='✓ Enviado';
+});
+['authEmail','authPassword','authName'].forEach(id=>{
+  document.getElementById(id)?.addEventListener('keydown',e=>{if(e.key==='Enter')_submitAuth();});
+});
 document.getElementById('btnSearchClose').addEventListener('click',closeSearch);
 document.getElementById('searchOverlay').addEventListener('click',e=>{if(e.target===document.getElementById('searchOverlay'))closeSearch();});
 document.getElementById('searchInput').addEventListener('input',onSearchInput);
@@ -1760,6 +1980,7 @@ document.getElementById('btnCancelAddAsset').addEventListener('click',closeSearc
 applyTranslations();
 tick();setInterval(tick,30000);
 boot().catch(err=>{document.getElementById('chartNote').textContent='Error: '+err.message;});
+initSupabase().catch(e=>console.warn('[auth init]',e));
 </script>
 </body>
 </html>
