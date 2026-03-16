@@ -759,19 +759,8 @@ function renderAnalysisCharts(){
 }
 
 // ========== Dividends ==========
-// Validated ex-date months per ISIN — from Digrin / StockAnalysis confirmed data.
-// These override EODHD/Yahoo payMonths which can be shifted by 1-2 months
-// (EODHD uses payment/record dates, not ex-dates).
-// ISPA pays JAN/APR/JUL/OCT but EODHD returns MAR/JUN/SEP/DEC → always use this map.
-const KNOWN_PAY_MONTHS = {
-  'DE000A0F5UH1': [0, 3, 6, 9],   // ISPA  (EXW1.DE)  : JAN / APR / JUL / OCT
-  'IE00BZ4BMM98': [2, 5, 8, 11],  // EUHD  (EUHD.L)   : MAR / JUN / SEP / DEC
-  'IE00B9CQXS71': [1, 4, 7, 10],  // ZPRG  (GBDV.L)   : FEB / MAY / AUG / NOV
-  'NL0011683594': [2, 5, 8, 11],  // TDIV  (TDIV.AS)  : MAR / JUN / SEP / DEC
-};
-
 let _divDataCache = null;
-const _DIV_CACHE_VER = 'v20260316d'; // bump on every deploy to bust stale frontend cache
+const _DIV_CACHE_VER = 'v20260316e'; // bump on every deploy to bust stale frontend cache
 function _checkDivCacheVer(){if(sessionStorage.getItem('_divCacheVer')!==_DIV_CACHE_VER){_divDataCache=null;sessionStorage.setItem('_divCacheVer',_DIV_CACHE_VER);}}
 async function renderDividends(){
   _checkDivCacheVer();
@@ -805,8 +794,7 @@ async function renderDividends(){
       if(!a)return null;
       const qty=a.quantity;
       const annualIncome=d.annualPerShare*qty;
-      // Use validated pay months; fall back to API only for unknown ISINs
-      const pm=KNOWN_PAY_MONTHS[d.isin]||d.payMonths;
+      const pm=d.payMonths||[];
       const payFreq=pm.length||4;
       const perPay=annualIncome/payFreq;
       const nextM=pm.find(m=>m>cm)??pm[0];
@@ -868,7 +856,7 @@ async function renderDividends(){
   document.getElementById('upcomingPayments').innerHTML=upcomingSorted.length
     ?upcomingSorted.map(d=>{
         const ps=d.divData.paySchedule||[];
-        const pm=KNOWN_PAY_MONTHS[d.isin]||d.divData.payMonths;
+        const pm=d.divData.payMonths||[];
         const nextPerShare=d.nextMonth!=null&&ps[d.nextMonth]>0?ps[d.nextMonth]:d.divData.annualPerShare/(pm.length||4);
         const nextTotal=nextPerShare*d.quantity;
         const exStr=fmt(d.divData.nextExDate);
@@ -925,11 +913,10 @@ async function renderDividends(){
     }).join('');
   }
 
-  // Monthly totals — use paySchedule (real per-month EUR/share) × qty per asset
-  // KNOWN_PAY_MONTHS assigns correct calendar months; paySchedule gives actual amounts
+  // Monthly totals — payMonths and paySchedule both 100% from live API data
   const mt=Array(12).fill(0);
   divItems.forEach(d=>{
-    const pm=KNOWN_PAY_MONTHS[d.isin]||d.divData.payMonths;
+    const pm=d.divData.payMonths||[];
     if(!pm.length) return;
     const ps=d.divData.paySchedule||[];
     pm.forEach(m=>{
@@ -1144,8 +1131,8 @@ async function loadDividendDetail(isins){
 }
 
 // ── Refine calendar amounts from Digrin real ex-date data ────────────────────
-// Uses actual per-payment amounts from Digrin (same logic as renderDividends paySchedule).
-// Per-month real amounts: most recent payment in each KNOWN_PAY_MONTH × qty.
+// 100% from live API data — no hardcoded months or amounts.
+// Pay months derived from actual Digrin ex-dates; amounts from most recent payment per month.
 function updateCalendarFromDetail(){
   if(!_divDataCache||!_divDataCache.length)return;
   const todayS=new Date().toISOString().slice(0,10);
@@ -1154,85 +1141,50 @@ function updateCalendarFromDetail(){
 
   const mt=Array(12).fill(0);
   let hasData=false;
+  const processedIsins=new Set();
 
-  // Phase 1: ISINs with known pay months — use real per-month amounts from Digrin
-  for(const [isin,pm] of Object.entries(KNOWN_PAY_MONTHS)){
-    const histEntry=_divDataCache.find(d=>d.isin===isin);
-    if(!histEntry)continue;
-
-    const detailEntry=_divDetailCache&&_divDetailCache.find(r=>r.isin===isin&&r.payments&&r.payments.length>0);
-    const qty=(detailEntry?.quantity)||assets.find(a=>a.isin===isin)?.quantity||0;
-    if(!qty)continue;
-
-    if(detailEntry){
-      // Build real per-month schedule from Digrin payment history
-      const recent=detailEntry.payments.filter(p=>p.exDate>=cut2ys&&p.exDate<=todayS);
-      const byMonth=Array(12).fill(0);
-      pm.forEach(m=>{
-        const inMonth=recent.filter(p=>new Date(p.exDate+'T12:00:00Z').getMonth()===m);
-        if(inMonth.length){
-          inMonth.sort((a,b)=>b.exDate.localeCompare(a.exDate));
-          const amt=inMonth[0].amountEur??inMonth[0].amount;
-          byMonth[m]=amt*qty;
-        }
-      });
-      // If real data covers all pay months, use it
-      if(pm.every(m=>byMonth[m]>0)){
-        pm.forEach(m=>{mt[m]+=byMonth[m];});
-        hasData=true;
-        continue;
-      }
-    }
-
-    // Fallback: use paySchedule from history API (already has real per-month amounts)
-    const ps=histEntry.paySchedule||[];
-    if(ps.some(v=>v>0)){
-      pm.forEach(m=>{
-        const perShare=ps[m]>0?ps[m]:histEntry.annualPerShare/(pm.length||1);
-        mt[m]+=perShare*qty;
-      });
-      hasData=true;
-      continue;
-    }
-
-    // Last resort: equal split of annual income
-    const annualIncome=histEntry.annualIncome||0;
-    if(!annualIncome)continue;
-    pm.forEach(m=>{mt[m]+=annualIncome/pm.length;});
-    hasData=true;
-  }
-
-  // Phase 2: non-KNOWN ISINs with real Digrin data — use real per-month amounts
+  // Phase 1: use Digrin real ex-dates — derive months AND amounts directly from payments
   if(_divDetailCache){
     for(const r of _divDetailCache){
-      if(KNOWN_PAY_MONTHS[r.isin])continue;
       if(!r.payments||!r.payments.length)continue;
       const qty=r.quantity||assets.find(a=>a.isin===r.isin)?.quantity||0;
       if(!qty)continue;
       const recent=r.payments.filter(p=>p.exDate>=cut2ys&&p.exDate<=todayS);
       if(!recent.length)continue;
+      // Derive pay months from actual ex-dates
       const pmSet=new Set(recent.map(p=>new Date(p.exDate+'T12:00:00Z').getMonth()));
       const pmDerived=[...pmSet].sort((a,b)=>a-b);
-      if(!pmDerived.length)continue;
-      // Build per-month amounts
+      // Per-month: most recent actual payment in that month × qty
       pmDerived.forEach(m=>{
         const inMonth=recent.filter(p=>new Date(p.exDate+'T12:00:00Z').getMonth()===m);
         if(!inMonth.length)return;
         inMonth.sort((a,b)=>b.exDate.localeCompare(a.exDate));
-        const amt=inMonth[0].amountEur??inMonth[0].amount;
-        mt[m]+=amt*qty;
+        mt[m]+=(inMonth[0].amountEur??inMonth[0].amount)*qty;
       });
+      processedIsins.add(r.isin);
       hasData=true;
     }
   }
 
+  // Phase 2: ISINs not covered by Digrin → paySchedule + payMonths from history API
+  for(const d of _divDataCache){
+    if(processedIsins.has(d.isin))continue;
+    if(!d.annualPerShare||!d.payMonths?.length)continue;
+    const a=assets.find(x=>x.isin===d.isin);
+    if(!a)continue;
+    const ps=d.paySchedule||[];
+    d.payMonths.forEach(m=>{
+      const perShare=ps[m]>0?ps[m]:d.annualPerShare/(d.payMonths.length||1);
+      mt[m]+=perShare*a.quantity;
+    });
+    hasData=true;
+  }
+
   if(!hasData)return;
-  // Update calendar grid with refined amounts
   document.getElementById('divCalendar').innerHTML=months().map((m,i)=>{
     const a=mt[i],h=a>0.5;
     return`<div class="calCell${h?' hasPay':''}"><div class="cm">${m}</div><div class="ca">${h?fe(a):'—'}</div></div>`;
   }).join('');
-  // Patch monthly bar chart in place
   if(analysisCharts._div){
     analysisCharts._div.data.datasets[0].data=mt;
     analysisCharts._div.data.datasets[0].backgroundColor=mt.map(v=>v>0?'rgba(234,179,8,.85)':'rgba(234,179,8,.15)');
