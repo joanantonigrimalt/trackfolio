@@ -21,9 +21,10 @@
 .empty{font-size:13px;color:#6d7e72;line-height:1.55}.kv{display:flex;justify-content:space-between;gap:10px;padding:11px 0;border-bottom:1px solid rgba(20,32,24,.06)}.kv:last-child{border-bottom:none}
 /* Tab bar */
 .tab{position:absolute;left:12px;right:12px;bottom:12px;background:rgba(255,255,255,.94);backdrop-filter:blur(20px);border:1px solid rgba(20,32,24,.07);border-radius:22px;padding:10px 4px 16px;display:flex;justify-content:space-around;box-shadow:0 12px 32px rgba(20,32,24,.09)}.tab button{background:none;border:none;text-align:center;font-size:10px;color:#8fa090;font-family:inherit;cursor:pointer;font-weight:500;transition:color .15s;flex:1;min-width:0}.tab b{display:block;font-size:18px;color:#b0c0b5;margin-bottom:2px;transition:color .15s}.tab button.active b,.tab button.active{color:#15803d}
-/* Settings + Add buttons */
-.settingsBtn{background:none;border:none;font-size:16px;cursor:pointer;padding:2px 4px;color:#688071;line-height:1;border-radius:6px;transition:background .12s}.settingsBtn:active{background:rgba(20,32,24,.08)}
-.addAssetBtn{background:#142018;border:none;color:#f5fbf6;width:28px;height:28px;border-radius:9px;font-size:18px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;line-height:1;transition:opacity .15s;font-family:inherit}.addAssetBtn:active{opacity:.75}
+/* Settings button */
+.settingsBtn{background:none;border:none;font-size:18px;cursor:pointer;padding:5px;color:#688071;line-height:1;border-radius:8px;transition:background .12s}.settingsBtn:active{background:rgba(20,32,24,.08)}
+/* Add asset trigger bar */
+.addTrigger{display:flex;align-items:center;gap:10px;background:#fff;border:1.5px solid #e0e8e2;border-radius:16px;padding:12px 14px;cursor:pointer;margin-bottom:14px;transition:all .15s;box-shadow:0 2px 8px rgba(20,32,24,.05)}.addTrigger:active{border-color:#15803d;background:#f7faf8}.addTrigger .at-icon{font-size:16px;color:#9aada0;flex-shrink:0}.addTrigger .at-text{flex:1;font-size:14px;color:#b0c0b5;font-weight:500}.addTrigger .at-pill{background:#142018;color:#f5fbf6;padding:5px 12px;border-radius:10px;font-size:13px;font-weight:700;flex-shrink:0}
 /* Search overlay */
 .searchOverlay{position:absolute;inset:0;background:rgba(20,32,24,.45);z-index:30;opacity:0;pointer-events:none;transition:opacity .25s}.searchOverlay.open{opacity:1;pointer-events:auto}
 .searchSheet{position:absolute;bottom:0;left:0;right:0;background:#f7faf8;border-radius:26px 26px 0 0;max-height:94%;display:flex;flex-direction:column;transform:translateY(100%);transition:transform .3s cubic-bezier(.32,.72,0,1);z-index:31}.searchOverlay.open .searchSheet{transform:translateY(0)}
@@ -44,7 +45,7 @@
 .addAssetInfo{flex:1;min-width:0}.addAssetName{font-size:15px;font-weight:800;color:#142018;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.addAssetMeta{font-size:12px;color:#8fa090;margin-top:2px;font-weight:500}
 .addAssetPrice{font-size:22px;font-weight:800;color:#142018;letter-spacing:-.03em;text-align:right;flex-shrink:0}
 /* Settings sheet */
-.settingsSheet{position:absolute;bottom:0;left:0;right:0;background:#fff;border-radius:22px 22px 0 0;padding:20px 20px 32px;box-shadow:0 -12px 40px rgba(20,32,24,.14);z-index:10;transform:translateY(100%);transition:transform .28s cubic-bezier(.32,.72,0,1)}.settingsSheet.open{transform:translateY(0)}.settingsOverlay{position:absolute;inset:0;background:rgba(20,32,24,.32);z-index:9;opacity:0;pointer-events:none;transition:opacity .28s}.settingsOverlay.open{opacity:1;pointer-events:auto}.sheetHandle{width:36px;height:4px;background:#e0e6e2;border-radius:2px;margin:0 auto 18px}.sheetTitle{font-size:13px;font-weight:700;color:#8fa090;text-transform:uppercase;letter-spacing:.1em;margin-bottom:14px}.langRow{display:flex;gap:10px}.langBtn{flex:1;padding:13px;border-radius:14px;border:2px solid rgba(20,32,24,.08);background:#f4f7f5;font:inherit;font-size:14px;font-weight:700;color:#4a5f4e;cursor:pointer;transition:all .15s;text-align:center}.langBtn.active{background:#142018;color:#f5fbf6;border-color:#142018}
+.settingsSheet{position:absolute;bottom:0;left:0;right:0;background:#fff;border-radius:22px 22px 0 0;padding:20px 20px 32px;box-shadow:0 -12px 40px rgba(20,32,24,.14);z-index:50;transform:translateY(100%);visibility:hidden;transition:transform .28s cubic-bezier(.32,.72,0,1),visibility 0s .28s}.settingsSheet.open{transform:translateY(0);visibility:visible;transition:transform .28s cubic-bezier(.32,.72,0,1),visibility 0s}.settingsOverlay{position:absolute;inset:0;background:rgba(20,32,24,.32);z-index:49;opacity:0;pointer-events:none;visibility:hidden;transition:opacity .28s,visibility 0s .28s}.settingsOverlay.open{opacity:1;pointer-events:auto;visibility:visible;transition:opacity .28s,visibility 0s}.sheetHandle{width:36px;height:4px;background:#e0e6e2;border-radius:2px;margin:0 auto 18px}.sheetTitle{font-size:13px;font-weight:700;color:#8fa090;text-transform:uppercase;letter-spacing:.1em;margin-bottom:14px}.langRow{display:flex;gap:10px}.langBtn{flex:1;padding:13px;border-radius:14px;border:2px solid rgba(20,32,24,.08);background:#f4f7f5;font:inherit;font-size:14px;font-weight:700;color:#4a5f4e;cursor:pointer;transition:all .15s;text-align:center}.langBtn.active{background:#142018;color:#f5fbf6;border-color:#142018}
 /* === Asset Detail === */
 .adNav{display:flex;align-items:center;gap:12px;margin-bottom:16px;margin-top:4px}.backBtn{background:rgba(20,32,24,.07);border:1px solid rgba(20,32,24,.08);width:36px;height:36px;border-radius:12px;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;color:#142018;flex-shrink:0;font-family:inherit;transition:background .12s}.backBtn:active{background:rgba(20,32,24,.14)}.adNavTitle{font-size:16px;font-weight:700;color:#142018;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .adHeroCard{padding:20px 20px 18px}.adHeroTop{display:flex;justify-content:space-between;align-items:flex-start;gap:12px}.adIsin{font-size:11px;color:#8fa090;font-weight:600;letter-spacing:.06em;margin-bottom:6px}.adPrice{font-size:42px;font-weight:800;letter-spacing:-.045em;color:#142018;line-height:1}.adGainBadge{display:inline-flex;align-items:center;gap:4px;margin-top:10px;padding:5px 11px;border-radius:999px;font-size:12px;font-weight:700;background:rgba(22,163,74,.1);color:#15803d;border:1px solid rgba(21,128,61,.14)}.adGainBadge.neg{background:rgba(239,68,68,.08);color:#b91c1c;border-color:rgba(185,28,28,.12)}.adIconLg{width:52px;height:52px;border-radius:16px;flex-shrink:0;font-size:15px}
@@ -90,12 +91,8 @@
 <div class="shell"><div class="phone">
 <div class="notch"></div>
 <div class="status">
-  <span id="clock">9:41</span>
-  <div style="display:flex;align-items:center;gap:8px">
-    <button class="settingsBtn" id="btnSettings" title="Settings">⚙</button>
-    <button class="addAssetBtn" id="btnOpenSearch" title="Añadir activo">+</button>
-    <span style="font-weight:600">Finasset</span>
-  </div>
+  <span style="font-size:15px;font-weight:800;letter-spacing:-.02em;color:#142018">Finasset</span>
+  <button class="settingsBtn" id="btnSettings" title="Configuración">⚙</button>
 </div>
 
 <!-- ============ INICIO ============ -->
@@ -106,6 +103,11 @@
       <div class="sub" data-i18n="homeSub">Cartera propia · ETFs, fondos y metales preciosos</div>
     </div>
     <div class="badge" id="coverageBadge">...</div>
+  </div>
+  <div class="addTrigger" id="btnOpenSearch">
+    <span class="at-icon">🔍</span>
+    <span class="at-text">Buscar o añadir activo…</span>
+    <span class="at-pill">+ Añadir</span>
   </div>
 
   <div class="card hero">
@@ -158,6 +160,11 @@
     <div class="title" data-i18n="tabPortfolio">Cartera</div>
     <div class="sub" data-i18n="portfolioSub">Detalle completo de posiciones</div>
   </div></div>
+  <div class="addTrigger" id="btnOpenSearch2">
+    <span class="at-icon">🔍</span>
+    <span class="at-text">Buscar o añadir activo…</span>
+    <span class="at-pill">+ Añadir</span>
+  </div>
   <div class="card"><div class="sectionTitle" data-i18n="positions">Posiciones</div><div id="portfolioList"></div></div>
 </div>
 
@@ -1617,7 +1624,12 @@ function loadCustomIntoAssets(){
 // ========== Search Sheet ==========
 let _searchTimer=null,_searchResult=null;
 
-function openSearch(){closeSettings();
+function openSearch(){
+  // Force-hide settings immediately (no animation) before search opens
+  const ss=document.getElementById('settingsSheet'),so=document.getElementById('settingsOverlay');
+  ss.style.transition='none';so.style.transition='none';
+  ss.classList.remove('open');so.classList.remove('open');
+  requestAnimationFrame(()=>{ss.style.transition='';so.style.transition='';});
   document.getElementById('searchOverlay').classList.add('open');
   document.getElementById('searchInput').focus();
   showSearchResults();
@@ -1733,6 +1745,7 @@ async function saveNewAsset(){
 
 // Event listeners for search
 document.getElementById('btnOpenSearch').addEventListener('click',openSearch);
+document.getElementById('btnOpenSearch2').addEventListener('click',openSearch);
 document.getElementById('btnSearchClose').addEventListener('click',closeSearch);
 document.getElementById('searchOverlay').addEventListener('click',e=>{if(e.target===document.getElementById('searchOverlay'))closeSearch();});
 document.getElementById('searchInput').addEventListener('input',onSearchInput);
