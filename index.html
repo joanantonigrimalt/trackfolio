@@ -187,6 +187,10 @@
       <div class="divMetricBox"><div class="dl">Yield s/coste</div><div class="dn" id="divYieldCost">—</div></div>
     </div>
   </div>
+  <div class="card" id="divChartCard" style="display:none">
+    <div class="sectionTitle">Ingresos mensuales estimados</div>
+    <div style="position:relative;height:140px;margin-top:8px"><canvas id="divMonthlyChart"></canvas></div>
+  </div>
   <div class="card" id="divLoadingCard" style="text-align:center;padding:28px 18px;color:#8fa090;font-size:13px;font-weight:600">
     <div style="font-size:22px;margin-bottom:8px">⏳</div>
     <span data-i18n="loadingDiv">Cargando dividendos reales…</span>
@@ -690,7 +694,7 @@ function renderAnalysisCharts(){
   const{score,diversif,riesgo,rentab}=computeHealthScore();
   document.getElementById('healthScoreNum').textContent=score;
   const sc=score>=70?'#22c55e':score>=50?'#f59e0b':'#f87171';
-  analysisCharts.h=new Chart(document.getElementById('healthDonut').getContext('2d'),{type:'doughnut',data:{datasets:[{data:[score,100-score],backgroundColor:[sc,'#e8f0e9'],borderWidth:0,cutout:'74%'}]},options:{responsive:false,plugins:{legend:{display:false},tooltip:{enabled:false}}}});
+  analysisCharts.h=new Chart(document.getElementById('healthDonut').getContext('2d'),{type:'doughnut',data:{datasets:[{data:[score,100-score],backgroundColor:[sc,'#e8f0e9'],borderWidth:0}]},options:{cutout:'74%',responsive:false,plugins:{legend:{display:false},tooltip:{enabled:false}}}});
   document.getElementById('subscoreList').innerHTML=[{l:t('distribution').slice(0,5)+'.',v:diversif,c:'#3b82f6'},{l:currentLang==='es'?'Riesgo':'Risk',v:riesgo,c:'#22c55e'},{l:currentLang==='es'?'Rentab.':'Return',v:rentab,c:'#f59e0b'}].map(s=>`<div class="subscoreRow"><div class="subscoreLabel">${s.l}</div><div class="subscoreBar"><div class="subscoreBarFill" style="width:${s.v}%;background:${s.c}"></div></div><div class="subscoreVal">${s.v}</div></div>`).join('');
   const total=assets.reduce((s,a)=>s+a.value,0),catMap={};assets.forEach(a=>{const c=assetCategory(a);catMap[c]=(catMap[c]||0)+a.value;});
   const cats=Object.keys(catMap).sort((a,b)=>catMap[b]-catMap[a]),catColors={'Fondos':'#7c3aed','ETFs':'#1d6fa8','Oro':'#475569'},pieColors=cats.map(c=>catColors[c]||'#666'),piePcts=cats.map(c=>Math.round(catMap[c]/total*100));
@@ -708,6 +712,7 @@ let _divDataCache = null;
 async function renderDividends(){
   // Show loading state
   document.getElementById('divLoadingCard').style.display='';
+  document.getElementById('divChartCard').style.display='none';
   document.getElementById('divHoldingsCard').style.display='none';
   document.getElementById('divUpcomingCard').style.display='none';
   document.getElementById('divCalendarCard').style.display='none';
@@ -791,13 +796,43 @@ async function renderDividends(){
       </div>`).join('')
     :`<div class="empty">${t('noDiv')}</div>`;
 
-  // Monthly calendar — sum income by month
+  // Monthly totals — from real API payMonths per asset
   const mt=Array(12).fill(0);
   divItems.forEach(d=>{
-    const freq=d.divData.payMonths.length||4;
-    const perPay=d.annualIncome/freq;
-    d.divData.payMonths.forEach(m=>{ mt[m]+=perPay; });
+    const pm=d.divData.payMonths;
+    if(!pm.length) return;
+    const perPay=d.annualIncome/pm.length;
+    pm.forEach(m=>{ mt[m]+=perPay; });
   });
+
+  // Monthly bar chart
+  if(divItems.length){
+    document.getElementById('divChartCard').style.display='';
+    const maxV=Math.max(...mt,0.01);
+    if(analysisCharts._div){try{analysisCharts._div.destroy();}catch(_){}}
+    analysisCharts._div=new Chart(document.getElementById('divMonthlyChart').getContext('2d'),{
+      type:'bar',
+      data:{
+        labels:months().map(m=>m.slice(0,3)),
+        datasets:[{
+          data:mt,
+          backgroundColor:mt.map(v=>v>0?'rgba(234,179,8,.85)':'rgba(234,179,8,.15)'),
+          borderRadius:5,
+          borderSkipped:false,
+        }]
+      },
+      options:{
+        responsive:true,maintainAspectRatio:false,
+        plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>fe(c.parsed.y)}}},
+        scales:{
+          x:{grid:{display:false},border:{display:false},ticks:{color:'#8fa090',font:{size:10,weight:'600'}}},
+          y:{grid:{color:'rgba(20,32,24,.05)'},border:{display:false},ticks:{color:'#8fa090',font:{size:10},callback:v=>v>0?'€'+Math.round(v):''}}
+        }
+      }
+    });
+  }
+
+  // Calendar grid
   document.getElementById('divCalendarCard').style.display='';
   document.getElementById('divCalendar').innerHTML=months().map((m,i)=>{
     const a=mt[i],h=a>0.5;
