@@ -2,6 +2,7 @@
 // Multi-source asset search: Yahoo + EODHD + TwelveData + known providers
 // Features: scoring, dedup by ISIN/symbol, encoding fix, clean type labels
 
+const { setupApi, sanitizeQuery, validateSymbol, sendError } = require('../../lib/security');
 const { search: eodhdSearch } = require('../../lib/eodhd');
 const { searchSymbol: twelveSearch } = require('../../lib/twelvedata');
 
@@ -297,12 +298,12 @@ function dedup(sorted) {
 
 // ── Main handler ───────────────────────────────────────────────────────────
 module.exports = async (req, res) => {
-  res.setHeader('Content-Type', 'application/json; charset=utf-8');
-  res.setHeader('Access-Control-Allow-Origin', '*');
+  if (!setupApi(req, res, { maxRequests: 60 })) return;
 
   // ── ?symbol=XX — chart data mode (unchanged behaviour) ──────────────────
   const symbol = String(req.query?.symbol || '').trim();
   if (symbol) {
+    if (!validateSymbol(symbol)) return sendError(res, 400, 'Invalid symbol format');
     const ck = `quote:${symbol}`;
     const cached = cget(ck);
     if (cached) { res.statusCode = 200; return res.end(JSON.stringify(cached)); }
@@ -344,10 +345,9 @@ module.exports = async (req, res) => {
   }
 
   // ── ?q=XX — search mode ────────────────────────────────────────────────
-  const q = String(req.query?.q || '').trim();
+  const q = sanitizeQuery(String(req.query?.q || ''));
   if (!q || q.length < 2) {
-    res.statusCode = 400;
-    return res.end(JSON.stringify({ error: 'query_too_short' }));
+    return sendError(res, 400, 'query_too_short');
   }
 
   const ck = `search3:${q.toLowerCase()}`;

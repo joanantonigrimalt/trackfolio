@@ -5,6 +5,8 @@
 //
 // Response: { updatedAt, symbols: { [sym]: { points:[{ts,time,close}], currency } | null } }
 
+const { setupApi, validateSymbol, sendError } = require('../../lib/security');
+
 const CACHE = new Map();
 const TTL   = 5 * 60 * 1000; // 5-min intraday cache
 const cget  = k => { const e = CACHE.get(k); if (!e || Date.now() > e.x) { CACHE.delete(k); return null; } return e.v; };
@@ -48,16 +50,15 @@ async function fetchIntraday(symbol) {
 }
 
 module.exports = async (req, res) => {
-  res.setHeader('Content-Type', 'application/json; charset=utf-8');
-  res.setHeader('Access-Control-Allow-Origin', '*');
+  if (!setupApi(req, res, { maxRequests: 30 })) return;
 
   const raw = String(req.query?.symbols || '').trim();
-  if (!raw) {
-    res.statusCode = 400;
-    return res.end(JSON.stringify({ error: 'symbols param required' }));
-  }
+  if (!raw) return sendError(res, 400, 'symbols param required');
 
-  const symbols = raw.split(',').map(s => s.trim()).filter(Boolean);
+  const symbols = raw.split(',').map(s => s.trim()).filter(Boolean).slice(0, 30);
+  const invalid = symbols.filter(s => !validateSymbol(s));
+  if (invalid.length > 0) return sendError(res, 400, `Invalid symbol format: ${invalid[0]}`);
+
   const out = {};
   await Promise.all(symbols.map(async sym => {
     out[sym] = await fetchIntraday(sym);
