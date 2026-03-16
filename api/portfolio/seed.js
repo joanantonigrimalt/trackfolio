@@ -7,7 +7,7 @@
 
 const portfolioSeed = require('../../portfolio-seed.json');
 const portfolioProviders = require('../../portfolio-providers.json');
-const { resolveAssetData } = require('../_lib/providers');
+const { resolveAssetData } = require('../../lib/providers');
 
 module.exports = async (req, res) => {
   const live = req.query.live === '1';

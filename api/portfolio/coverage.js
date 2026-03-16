@@ -1,4 +1,4 @@
-const { resolveAssetData } = require('../_lib/providers');
+const { resolveAssetData } = require('../../lib/providers');
 
 module.exports = async (req, res) => {
   try {

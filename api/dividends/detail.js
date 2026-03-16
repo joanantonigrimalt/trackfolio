@@ -10,8 +10,9 @@
 //     yearly:   [{ year, totalPerShare, totalUser, payments }] }
 
 const portfolioSeed = require('../../portfolio-seed.json');
-const { fetchDividendHistory } = require('../_lib/dividends');
-const { getGbpEur, toEur } = require('../_lib/fx');
+const { fetchDividendHistory } = require('../../lib/dividends');
+const { getGbpEur, toEur } = require('../../lib/fx');
+const { fetchExtraETFAnnual, validateAnnual } = require('../../lib/extraetf');
 
 // FIX #11: throttle parallel scrapes to avoid hammering Digrin
 async function runThrottled(tasks, concurrency = 2) {
@@ -41,7 +42,12 @@ module.exports = async (req, res) => {
 
   const tasks = isins.map(isin => async () => {
     try {
-      const hist = await fetchDividendHistory(isin, { force });
+      // Fetch Digrin detail + extraETF validation in parallel
+      const [hist, extraETF] = await Promise.all([
+        fetchDividendHistory(isin, { force }),
+        fetchExtraETFAnnual(isin),
+      ]);
+
       const seed = portfolioSeed.positions.find(p => p.isin === isin);
       const quantity = seed?.quantity ?? 0;
       const name = seed?.name ?? hist.ticker ?? isin;
@@ -54,7 +60,7 @@ module.exports = async (req, res) => {
         }))
       );
 
-      // Rebuild yearly using EUR amounts
+      // Rebuild yearly using EUR amounts + attach extraETF validation per year
       const yearlyEur = {};
       for (const p of paymentsEur) {
         if (!yearlyEur[p.year]) yearlyEur[p.year] = { year: p.year, totalPerShare: 0, payments: [] };
@@ -63,10 +69,29 @@ module.exports = async (req, res) => {
       }
       const yearly = Object.values(yearlyEur)
         .sort((a, b) => a.year - b.year)
-        .map(y => ({
-          ...y,
-          totalUser: quantity > 0 ? Math.round(y.totalPerShare * quantity * 100) / 100 : null,
-        }));
+        .map(y => {
+          const extraTotal = extraETF.annual[String(y.year)] ?? null;
+          const validation = validateAnnual(y.totalPerShare, extraTotal);
+          return {
+            ...y,
+            totalUser: quantity > 0 ? Math.round(y.totalPerShare * quantity * 100) / 100 : null,
+            extraEtfTotal: extraTotal,
+            validation: validation.status,         // 'validated' | 'partially_validated' | 'inconsistent' | 'unvalidated'
+            validationDiffPct: validation.diffPct, // numeric % or null
+          };
+        });
+
+      // Overall validation status = worst year among last 2 COMPLETE years
+      // Exclude current year — it's always partial (not all quarterly payments received yet)
+      const currentYear = new Date().getFullYear();
+      const recentYears = yearly.filter(y => y.year >= currentYear - 2 && y.year < currentYear);
+      const overallStatus = recentYears.some(y => y.validation === 'inconsistent')
+        ? 'inconsistent'
+        : recentYears.some(y => y.validation === 'partially_validated')
+          ? 'partially_validated'
+          : recentYears.some(y => y.validation === 'validated')
+            ? 'validated'
+            : 'unvalidated';
 
       return {
         isin,
@@ -79,6 +104,8 @@ module.exports = async (req, res) => {
         quantity,
         payments: paymentsEur,
         yearly,
+        validationStatus: overallStatus,  // top-level flag for the UI
+        validationSource: extraETF.source,
       };
     } catch (e) {
       return {

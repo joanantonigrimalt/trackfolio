@@ -9,14 +9,14 @@
 // GBp (pence) → GBP → EUR via live GBPEUR=X from Yahoo.
 
 const portfolioSeed = require('../../portfolio-seed.json');
-const { fetchDividendHistory } = require('../_lib/dividends');
-const { getGbpEur, toEur } = require('../_lib/fx');
+const { fetchDividendHistory } = require('../../lib/dividends');
+const { getGbpEur, toEur } = require('../../lib/fx');
 
 // ── ETF symbol map (only distributing assets) ─────────────────────────────
 const DIV_ASSETS = {
-  'DE000A0F5UH1': { eodhd: 'EXW1.DE',  yahoo: 'EXW1.DE',  td: null    },
-  'IE00BZ4BMM98': { eodhd: 'EUHD.L',   yahoo: 'EUHD.L',   td: null    },
-  'IE00B9CQXS71': { eodhd: 'GBDV.L',   yahoo: 'GBDV.L',   td: null    },
+  'DE000A0F5UH1': { eodhd: 'ISPA.DE',  yahoo: 'ISPA.DE',  td: null    },  // was EXW1.DE (wrong 3-month offset)
+  'IE00BZ4BMM98': { eodhd: 'EHDV.DE',  yahoo: 'EHDV.DE',  td: null    },  // was EUHD.L (GBp, shifted dates)
+  'IE00B9CQXS71': { eodhd: 'ZPRG.DE',  yahoo: 'ZPRG.DE',  td: null    },  // was GBDV.L (GBp duplicates)
   'NL0011683594': { eodhd: 'TDIV.AS',  yahoo: 'TDIV.AS',  td: 'TDIV'  },
   'IE000QAZP7L2': { eodhd: 'EIMI.L',   yahoo: 'EIMI.L',   td: null    },
 };
@@ -133,6 +133,10 @@ async function fetchDivs(isin) {
     if (s.eodhd) { const d = await eodhdDiv(s.eodhd); if (d.length) return d; }
     if (s.yahoo)  { const d = await yahooDiv(s.yahoo);  if (d.length) return d; }
     if (s.td)     { const d = await tdDiv(s.td);         if (d.length) return d; }
+  } else {
+    // Custom/unknown asset — try Yahoo directly with the symbol/ISIN
+    const d = await yahooDiv(isin);
+    if (d.length) return d;
   }
   // Final fallback: Digrin / StockAnalysis scraper
   try {
@@ -157,16 +161,11 @@ async function annualEurPerShare(divs, gbpRate) {
   const cutoff = new Date(); cutoff.setFullYear(cutoff.getFullYear() - 1);
   const cut = cutoff.toISOString().slice(0, 10);
   const last12 = divs.filter(d => d.date >= cut);
+  // Use last 12 months if available; otherwise last 6 payments — no extrapolation multiplier
   const src = last12.length >= 2 ? last12 : divs.slice(-6);
   if (!src.length) return 0;
   let total = 0;
   for (const d of src) total += await toEur(d.amount, d.currency, gbpRate);
-  if (src !== last12 && src.length >= 1) {
-    const span = Math.max(30,
-      (new Date(src[src.length - 1].date + 'T12:00:00Z') - new Date(src[0].date + 'T12:00:00Z')) / 86400000
-    );
-    total = total * Math.min(365 / span, 4);
-  }
   return total;
 }
 
@@ -260,11 +259,6 @@ module.exports = async (req, res) => {
     const syms = DIV_ASSETS[isin];
     const seed = portfolioSeed.positions.find(p => p.isin === isin);
 
-    if (!syms || !seed) {
-      results.push({ isin, annualPerShare: 0, annualIncome: 0, yieldPct: 0, yieldOnCostPct: 0, payMonths: [], paySchedule: Array(12).fill(0) });
-      continue;
-    }
-
     try {
       const divs = await fetchDivs(isin);
       const aps  = await annualEurPerShare(divs, gbpRate);
@@ -272,9 +266,9 @@ module.exports = async (req, res) => {
       const ps   = await buildPaySchedule(divs, gbpRate);
       const recent = await recentForDisplay(divs, gbpRate);
 
-      const cp  = seed.currentPrice ?? 0;
-      const qty = seed.quantity ?? 0;
-      const bp  = seed.buyPrice ?? cp;
+      const cp  = seed?.currentPrice ?? 0;
+      const qty = seed?.quantity ?? 0;
+      const bp  = seed?.buyPrice ?? cp;
 
       const today = new Date();
       const cm = today.getMonth();
@@ -284,7 +278,7 @@ module.exports = async (req, res) => {
 
       results.push({
         isin,
-        symbol:         syms.eodhd || syms.yahoo,
+        symbol:         syms?.eodhd || syms?.yahoo || isin,
         source:         divs.length ? 'live' : 'no_data',
         gbpEurRate:     gbpRate,
         annualPerShare: aps,

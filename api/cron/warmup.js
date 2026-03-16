@@ -5,7 +5,7 @@
 // Schedule: every day at 07:00 UTC (configured in vercel.json)
 
 const portfolioSeed = require('../../portfolio-seed.json');
-const { resolveAssetData } = require('../_lib/providers');
+const { resolveAssetData } = require('../../lib/providers');
 
 module.exports = async (req, res) => {
   // Verify cron secret (Vercel sets Authorization header automatically for crons)

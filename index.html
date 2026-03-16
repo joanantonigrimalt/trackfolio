@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, viewport-fit=cover">
-<title>Trackfolio</title>
+<title>Finasset</title>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 <style>
@@ -48,9 +48,12 @@
 /* === Asset Detail === */
 .adNav{display:flex;align-items:center;gap:12px;margin-bottom:16px;margin-top:4px}.backBtn{background:rgba(20,32,24,.07);border:1px solid rgba(20,32,24,.08);width:36px;height:36px;border-radius:12px;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;color:#142018;flex-shrink:0;font-family:inherit;transition:background .12s}.backBtn:active{background:rgba(20,32,24,.14)}.adNavTitle{font-size:16px;font-weight:700;color:#142018;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .adHeroCard{padding:20px 20px 18px}.adHeroTop{display:flex;justify-content:space-between;align-items:flex-start;gap:12px}.adIsin{font-size:11px;color:#8fa090;font-weight:600;letter-spacing:.06em;margin-bottom:6px}.adPrice{font-size:42px;font-weight:800;letter-spacing:-.045em;color:#142018;line-height:1}.adGainBadge{display:inline-flex;align-items:center;gap:4px;margin-top:10px;padding:5px 11px;border-radius:999px;font-size:12px;font-weight:700;background:rgba(22,163,74,.1);color:#15803d;border:1px solid rgba(21,128,61,.14)}.adGainBadge.neg{background:rgba(239,68,68,.08);color:#b91c1c;border-color:rgba(185,28,28,.12)}.adIconLg{width:52px;height:52px;border-radius:16px;flex-shrink:0;font-size:15px}
-.adMetricGrid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}.adMetricBox{background:rgba(255,255,255,.82);border:1px solid rgba(20,32,24,.06);border-radius:18px;padding:14px;backdrop-filter:blur(8px)}.adMetricBox .aml{font-size:9px;text-transform:uppercase;letter-spacing:.1em;color:#8fa090;font-weight:700}.adMetricBox .amv{font-size:20px;font-weight:800;margin-top:5px;letter-spacing:-.03em;color:#142018}.adMetricBox .amv.pos{color:#15803d}.adMetricBox .amv.neg{color:#b91c1c}
+.adMetricGrid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}.adMetricBox{background:rgba(255,255,255,.82);border:1px solid rgba(20,32,24,.06);border-radius:18px;padding:14px;backdrop-filter:blur(8px)}.adMetricBox .aml{font-size:9px;text-transform:uppercase;letter-spacing:.1em;color:#8fa090;font-weight:700}.adMetricBox .amv{font-size:17px;font-weight:800;margin-top:4px;letter-spacing:-.02em;color:#142018}.adMetricBox .amv.pos{color:#15803d}.adMetricBox .amv.neg{color:#b91c1c}
 .adChartTop{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}.adChartMeta{font-size:12px;font-weight:700}.adTfRow{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:10px}.tfBtnA{border:1px solid rgba(20,32,24,.1);background:rgba(20,32,24,.04);color:#6d7e72;padding:5px 10px;border-radius:999px;font:inherit;font-size:11px;font-weight:700;cursor:pointer;transition:all .12s}.tfBtnA.on{background:#142018;color:#f5fbf6;border-color:#142018}
 .addPosBtn{display:block;width:100%;padding:16px;background:linear-gradient(135deg,#1a3f2c,#15803d);color:#fff;border:none;border-radius:18px;font-size:15px;font-weight:700;font-family:inherit;cursor:pointer;margin-top:4px;letter-spacing:-.01em;box-shadow:0 8px 24px rgba(21,128,61,.28);transition:opacity .15s}.addPosBtn:active{opacity:.8}
+.etfInfoRow{display:flex;justify-content:space-between;align-items:baseline;padding:8px 0;border-bottom:1px solid rgba(20,32,24,.05)}.etfInfoRow:last-child{border-bottom:none}.etfInfoLabel{font-size:11px;color:#8fa090;font-weight:600;text-transform:uppercase;letter-spacing:.07em;flex-shrink:0;margin-right:12px}.etfInfoValue{font-size:13px;font-weight:700;color:#142018;text-align:right;word-break:break-word}
+.etfHoldingRow{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid rgba(20,32,24,.05)}.etfHoldingRow:last-child{border-bottom:none}.etfHoldingBar{height:4px;border-radius:2px;background:linear-gradient(90deg,#15803d,#22c55e);flex-shrink:0}.etfHoldingName{font-size:13px;font-weight:600;color:#142018;flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.etfHoldingWeight{font-size:12px;font-weight:700;color:#15803d;white-space:nowrap}
+.etfValidBadge{display:inline-flex;align-items:center;gap:4px;padding:3px 8px;border-radius:999px;font-size:10px;font-weight:700;margin-top:6px}.etfValidBadge.ok{background:rgba(21,128,61,.1);color:#15803d}.etfValidBadge.warn{background:rgba(234,179,8,.1);color:#92400e}.etfValidBadge.bad{background:rgba(185,28,28,.08);color:#b91c1c}.etfValidBadge.na{background:rgba(20,32,24,.06);color:#8fa090}
 /* === Add Position Modal === */
 .modalOverlay{position:absolute;inset:0;background:rgba(20,32,24,.4);z-index:20;display:flex;align-items:flex-end;opacity:0;pointer-events:none;transition:opacity .25s}.modalOverlay.open{opacity:1;pointer-events:auto}.modalSheet{background:#fff;border-radius:26px 26px 0 0;width:100%;max-height:90%;overflow-y:auto;transform:translateY(100%);transition:transform .3s cubic-bezier(.32,.72,0,1);padding:0 0 32px}.modalOverlay.open .modalSheet{transform:translateY(0)}.modalSheet::-webkit-scrollbar{width:0}
 .modalHandle{width:36px;height:4px;background:#e0e6e2;border-radius:2px;margin:14px auto 0}
@@ -91,7 +94,7 @@
   <div style="display:flex;align-items:center;gap:8px">
     <button class="settingsBtn" id="btnSettings" title="Settings">⚙</button>
     <button class="addAssetBtn" id="btnOpenSearch" title="Añadir activo">+</button>
-    <span style="font-weight:600">Trackfolio</span>
+    <span style="font-weight:600">Finasset</span>
   </div>
 </div>
 
@@ -99,7 +102,7 @@
 <div id="screen-home" class="screen active">
   <div class="top">
     <div>
-      <div class="title" data-i18n="appTitle">Trackfolio</div>
+      <div class="title" data-i18n="appTitle">Finasset</div>
       <div class="sub" data-i18n="homeSub">Cartera propia · ETFs, fondos y metales preciosos</div>
     </div>
     <div class="badge" id="coverageBadge">...</div>
@@ -107,21 +110,21 @@
 
   <div class="card hero">
     <div class="sectionEyebrow" data-i18n="heroTitle">Valor total del portfolio</div>
-    <div class="valueLarge" id="total">€0</div>
+    <div class="valueLarge" id="total">—</div>
     <div class="valueSub">
-      <div class="pill pos" id="totalGainPill">+€0 · 0%</div>
+      <div class="pill pos" id="totalGainPill">—</div>
       <div class="pill info" id="coveragePill">cargando...</div>
     </div>
     <div class="heroMetrics">
-      <div class="metricCard"><div class="l" data-i18n="mInvested">Invertido</div><div class="n" id="investedTotal">€0</div></div>
-      <div class="metricCard"><div class="l" data-i18n="mReturn">Rentabilidad</div><div class="n" id="profitPercent">0%</div></div>
-      <div class="metricCard"><div class="l" data-i18n="mPositions">Posiciones</div><div class="n" id="count">0</div></div>
+      <div class="metricCard"><div class="l" data-i18n="mInvested">Invertido</div><div class="n" id="investedTotal">—</div></div>
+      <div class="metricCard"><div class="l" data-i18n="mReturn">Rentabilidad</div><div class="n" id="profitPercent">—</div></div>
+      <div class="metricCard"><div class="l" data-i18n="mPositions">Posiciones</div><div class="n" id="count">—</div></div>
     </div>
     <div class="chartShell">
       <div class="chartHeader">
         <div>
           <div class="sectionEyebrow" style="color:rgba(239,249,242,.55)" data-i18n="mEvolution">Evolución</div>
-          <div class="chartValue" id="chartRangeValue">€0</div>
+          <div class="chartValue" id="chartRangeValue">—</div>
         </div>
         <div class="chartMeta" id="chartMeta"></div>
       </div>
@@ -137,12 +140,12 @@
   <div class="summaryGrid">
     <div class="summaryBox">
       <div class="label" data-i18n="sumInvested">Capital invertido</div>
-      <div class="value" id="summaryInvested">€0</div>
+      <div class="value" id="summaryInvested">—</div>
       <div class="delta" id="summaryGainAbs"></div>
     </div>
     <div class="summaryBox">
       <div class="label" data-i18n="sumGain">Ganancia acumulada</div>
-      <div class="value" id="summaryGainPct">0%</div>
+      <div class="value" id="summaryGainPct">—</div>
       <div class="delta" id="summaryAssetCount"></div>
     </div>
   </div>
@@ -171,7 +174,7 @@
     </div>
   </div>
   <div class="card"><div class="sectionTitle" data-i18n="distribution">Distribución por tipo</div><div class="chartWrap2"><canvas id="distPie"></canvas></div><div class="distLegend" id="distLegend"></div></div>
-  <div class="card"><div class="sectionTitle" data-i18n="performance">Rentabilidad por activo</div><div style="position:relative;height:220px;margin-top:6px"><canvas id="perfBar"></canvas></div></div>
+  <div class="card"><div class="sectionTitle" data-i18n="performance">Rentabilidad por activo</div><div id="perfBarWrap" style="position:relative;height:220px;margin-top:6px"><canvas id="perfBar"></canvas></div></div>
   <div class="card"><div class="sectionTitle" data-i18n="vsWorld">Portfolio vs MSCI World</div><div style="position:relative;height:180px;margin-top:6px"><canvas id="vsWorldBar"></canvas></div><div id="vsWorldNote" style="display:none;font-size:11px;color:#8fa090;text-align:center;margin-top:8px"></div></div>
   <div class="card" id="analysisCoverageCard"><div id="analysisCoverageContent"></div></div>
 </div>
@@ -249,7 +252,7 @@
     <div class="sub" data-i18n="iaSub">Análisis inteligente de tu portfolio</div>
   </div></div>
   <div class="card iaHeader" style="border:none;box-shadow:0 20px 48px rgba(45,26,74,.3)">
-    <div class="sectionEyebrow" style="color:rgba(245,240,251,.5)" data-i18n="iaAssistant">Asistente Trackfolio</div>
+    <div class="sectionEyebrow" style="color:rgba(245,240,251,.5)" data-i18n="iaAssistant">Asistente Finasset</div>
     <div style="font-size:24px;font-weight:800;color:#f5f0fb;margin-top:4px;letter-spacing:-.03em" data-i18n="iaInsights">Insights del portfolio</div>
     <div style="font-size:12px;color:rgba(245,240,251,.6);margin-top:6px" data-i18n="iaBased">Basado en tus posiciones actuales</div>
   </div>
@@ -266,13 +269,20 @@
     <div class="adHeroTop">
       <div>
         <div class="adIsin" id="adIsin"></div>
-        <div class="adPrice" id="adPrice">€0</div>
-        <div class="adGainBadge" id="adGainBadge">+0%</div>
+        <div class="adPrice" id="adPrice">—</div>
+        <div class="adGainBadge" id="adGainBadge">—</div>
       </div>
       <div class="icon adIconLg" id="adIcon"></div>
     </div>
   </div>
-  <div class="adMetricGrid" id="adMetrics"></div>
+  <div class="card" id="adPositionCard" style="display:none">
+    <div class="adPosHeader">
+      <span class="sectionTitle" style="margin-bottom:0" id="adPositionTitle">Mi posición</span>
+      <span id="adPosTypeBadge" style="font-size:10px;font-weight:700;padding:3px 8px;border-radius:6px;background:rgba(21,128,61,.1);color:#15803d"></span>
+    </div>
+    <div class="adMetricGrid" id="adMetrics" style="margin-top:12px;margin-bottom:0"></div>
+    <div id="adDivRow" style="display:none"></div>
+  </div>
   <div class="card">
     <div class="adChartTop">
       <div class="sectionTitle" style="margin-bottom:0" data-i18n="priceEvolution">Evolución del precio</div>
@@ -285,7 +295,18 @@
     </div>
     <div class="note" id="adChartNote" style="color:#9aada0;margin-top:8px"></div>
   </div>
-  <button class="addPosBtn" id="btnOpenModal" data-i18n="addPosition">+ Añadir posición</button>
+  <!-- ETF profile cards — shown only for ETFs with extraETF data -->
+  <div id="etfProfileSection" style="display:none">
+    <div class="card" id="etfOverviewCard">
+      <div class="sectionTitle" id="etfOverviewTitle">ETF Info</div>
+      <div id="etfOverviewContent"></div>
+    </div>
+    <div class="card" id="etfHoldingsCard">
+      <div class="sectionTitle">Top Holdings</div>
+      <div id="etfHoldingsContent"></div>
+    </div>
+  </div>
+  <button class="addPosBtn" id="btnOpenModal">+ Añadir posición</button>
 </div>
 
 <!-- ============ ADD POSITION MODAL ============ -->
@@ -293,7 +314,7 @@
   <div class="modalSheet" id="modalSheet">
     <div class="modalHandle"></div>
     <div class="modalHeader">
-      <div class="modalTitle" id="modalAssetName">Holdings</div>
+      <div><div class="modalTitle" id="modalAssetName">Holdings</div><div id="modalEditHint" style="font-size:11px;color:#8fa090;font-weight:600;margin-top:2px"></div></div>
       <div class="modalHeaderBtns">
         <button class="modalIconBtn" id="btnCloseModal">✕</button>
       </div>
@@ -439,15 +460,15 @@
 // ========== i18n ==========
 const I18N = {
   es:{
-    appTitle:'Trackfolio',homeSub:'Cartera propia · ETFs, fondos y metales preciosos',
+    appTitle:'Finasset',homeSub:'Cartera propia · ETFs, fondos y metales preciosos',
     heroTitle:'Valor total del portfolio',mInvested:'Invertido',mReturn:'Rentabilidad',mPositions:'Posiciones',mEvolution:'Evolución',
     chartNoData:'Histórico insuficiente para construir una curva.',
     sumInvested:'Capital invertido',sumGain:'Ganancia acumulada',myPortfolio:'Mi cartera',
     tabHome:'Inicio',tabPortfolio:'Cartera',tabAnalysis:'Análisis',tabDividends:'Dividendos',tabIA:'IA',
     portfolioSub:'Detalle completo de posiciones',positions:'Posiciones',
     analysisSub:'Salud, distribución y rendimiento',healthScore:'Score de salud',distribution:'Distribución por tipo',performance:'Rentabilidad por activo',vsWorld:'Portfolio vs MSCI World',
-    dividendsSub:'Ingresos pasivos reales del portfolio',perYear:'al año',monthly:'Mensual',assets:'Activos',upcoming:'Próximos pagos',pastPayments:'Pagos recibidos',annualCalendar:'Calendario anual',loadingDiv:'Cargando dividendos reales…',divHoldings:'Holdings con dividendos',exDiv:'Ex-Dividendo',payDate:'Pago',divDetailTitle:'Historial detallado',loadingDivDetail:'Cargando historial…',divDetailSource:'Fuente',divDetailYear:'Año',divDetailPerShare:'€/acción',divDetailTotal:'Total',divDetailPayments:'Pagos',divNoDetail:'Sin historial disponible.',nextPay:'Próx. cobro',divAnnualChartTitle:'Total cobrado por año',divDelisted:'Sin pagos recientes — posiblemente liquidado o fusionado',verDetalle:'Ver detalle',
-    iaSub:'Análisis inteligente de tu portfolio',iaAssistant:'Asistente Trackfolio',iaInsights:'Insights del portfolio',iaBased:'Basado en tus posiciones actuales',
+    dividendsSub:'Ingresos pasivos reales del portfolio',annualDividends:'al año',perYear:'al año',monthly:'Mensual',daily:'Diario',hourly:'Por hora',assets:'Activos',upcoming:'Próximos pagos',pastPayments:'Pagos recibidos',annualCalendar:'Calendario anual',loadingDiv:'Cargando dividendos reales…',divHoldings:'Holdings con dividendos',exDiv:'Ex-Dividendo',payDate:'Pago',divDetailTitle:'Historial detallado',loadingDivDetail:'Cargando historial…',divDetailSource:'Fuente',divDetailYear:'Año',divDetailPerShare:'€/acción',divDetailTotal:'Total',divDetailPayments:'Pagos',divNoDetail:'Sin historial disponible.',nextPay:'Próx. cobro',divAnnualChartTitle:'Total cobrado por año',divDelisted:'Sin pagos recientes — posiblemente liquidado o fusionado',verDetalle:'Ver detalle',validated:'Validado',partially_validated:'Parcial',inconsistent:'Inconsistente',
+    iaSub:'Análisis inteligente de tu portfolio',iaAssistant:'Asistente Finasset',iaInsights:'Insights del portfolio',iaBased:'Basado en tus posiciones actuales',
     priceEvolution:'Evolución del precio',noHistory:'Sin histórico disponible.',addPosition:'+ Añadir posición',
     modeSimple:'Simple',modeTx:'Transacciones',shares:'Participaciones',avgCost:'Precio medio (Avg Cost)',avgCostHint:'Precio medio por participación',
     removePos:'Eliminar posición',save:'Guardar',cancel:'Cancelar',
@@ -458,15 +479,15 @@ const I18N = {
     histPts:'puntos históricos',
   },
   en:{
-    appTitle:'Trackfolio',homeSub:'My portfolio · ETFs, funds & precious metals',
+    appTitle:'Finasset',homeSub:'My portfolio · ETFs, funds & precious metals',
     heroTitle:'Total portfolio value',mInvested:'Invested',mReturn:'Return',mPositions:'Positions',mEvolution:'Evolution',
     chartNoData:'Insufficient history to build a chart.',
     sumInvested:'Invested capital',sumGain:'Accumulated gain',myPortfolio:'My portfolio',
     tabHome:'Home',tabPortfolio:'Portfolio',tabAnalysis:'Analysis',tabDividends:'Dividends',tabIA:'AI',
     portfolioSub:'Full position details',positions:'Positions',
     analysisSub:'Health, distribution & performance',healthScore:'Health score',distribution:'Distribution by type',performance:'Performance by asset',vsWorld:'Portfolio vs MSCI World',
-    dividendsSub:'Real passive income from portfolio',perYear:'per year',monthly:'Monthly',assets:'Assets',upcoming:'Upcoming payments',pastPayments:'Past payments',annualCalendar:'Annual calendar',loadingDiv:'Loading real dividends…',divHoldings:'Dividend holdings',exDiv:'Ex-Dividend',payDate:'Payment',divDetailTitle:'Detailed history',loadingDivDetail:'Loading history…',divDetailSource:'Source',divDetailYear:'Year',divDetailPerShare:'€/share',divDetailTotal:'Total',divDetailPayments:'Payments',divNoDetail:'No history available.',nextPay:'Next payment',divAnnualChartTitle:'Total received per year',divDelisted:'No recent payments — possibly delisted or merged',verDetalle:'See detail',
-    iaSub:'Smart analysis of your portfolio',iaAssistant:'Trackfolio Assistant',iaInsights:'Portfolio Insights',iaBased:'Based on your current positions',
+    dividendsSub:'Real passive income from portfolio',annualDividends:'per year',perYear:'per year',monthly:'Monthly',daily:'Daily',hourly:'Hourly',assets:'Assets',upcoming:'Upcoming payments',pastPayments:'Past payments',annualCalendar:'Annual calendar',loadingDiv:'Loading real dividends…',divHoldings:'Dividend holdings',exDiv:'Ex-Dividend',payDate:'Payment',divDetailTitle:'Detailed history',loadingDivDetail:'Loading history…',divDetailSource:'Source',divDetailYear:'Year',divDetailPerShare:'€/share',divDetailTotal:'Total',divDetailPayments:'Payments',divNoDetail:'No history available.',nextPay:'Next payment',divAnnualChartTitle:'Total received per year',divDelisted:'No recent payments — possibly delisted or merged',verDetalle:'See detail',validated:'Validated',partially_validated:'Partial',inconsistent:'Inconsistent',
+    iaSub:'Smart analysis of your portfolio',iaAssistant:'Finasset Assistant',iaInsights:'Portfolio Insights',iaBased:'Based on your current positions',
     priceEvolution:'Price evolution',noHistory:'No history available.',addPosition:'+ Add position',
     modeSimple:'Simple',modeTx:'Transactions',shares:'Shares',avgCost:'Avg Cost per Share',avgCostHint:'Average cost per share',
     removePos:'Remove position',save:'Save',cancel:'Cancel',
@@ -585,26 +606,172 @@ function renderChart(){
 // ========== Asset Detail ==========
 function showAssetDetail(asset,from){
   selectedAsset=asset;prevScreen=from||'home';assetRange='1Y';
+  const isEs=currentLang==='es';
   document.getElementById('adNavTitle').textContent=asset.name;
-  document.getElementById('adIsin').textContent=asset.isin;
-  document.getElementById('adPrice').textContent=fe(asset.currentPrice);
-  const g=asset.value-asset.invested,badge=document.getElementById('adGainBadge');
+
+  // ISIN + type label in subheader
+  const _tp=assetType(asset);
+  const _tpLabel={etf:'ETF',fund:isEs?'Fondo':'Fund',etc:'ETC',stock:isEs?'Acción':'Stock'}[_tp]||'';
+  document.getElementById('adIsin').textContent=asset.isin+(_tpLabel?' · '+_tpLabel:'');
+
+  // Hero price + gain badge
+  const _ccy=asset.customCurrency&&asset.customCurrency!=='EUR'?asset.customCurrency:null;
+  document.getElementById('adPrice').textContent=fe(asset.currentPrice)+(_ccy?' '+_ccy:'');
+  const g=asset.value-asset.invested;
+  const badge=document.getElementById('adGainBadge');
   const dp=getDayPct(asset);
-  const dayStr=dp!=null?` · ${dp>=0?'+':''}${dp.toFixed(2)}% ${currentLang==='es'?'hoy':'1D'}`:'';
-  badge.textContent=`${asset.gainPct>=0?'▲':'▼'} ${asset.gainPct>=0?'+':''}${asset.gainPct.toFixed(2)}% total${dayStr}`;
+  const dayStr=dp!=null?` · ${dp>=0?'+':''}${dp.toFixed(2)}% ${isEs?'hoy':'1D'}`:'';
+  badge.textContent=`${asset.gainPct>=0?'▲':'▼'} ${g>=0?'+':''}${fe(g)} (${asset.gainPct>=0?'+':''}${asset.gainPct.toFixed(2)}%)${dayStr}`;
   badge.className='adGainBadge'+(asset.gainPct<0?' neg':'');
-  const icon=document.getElementById('adIcon');icon.textContent=iconInitials(asset);icon.className='icon adIconLg '+assetType(asset);
+  const icon=document.getElementById('adIcon');
+  icon.textContent=iconInitials(asset);icon.className='icon adIconLg '+_tp;
+
+  // Type badge in position card header
+  const tpBadge=document.getElementById('adPosTypeBadge');
+  if(tpBadge)tpBadge.textContent=_tpLabel;
+
   const total=assets.reduce((s,a)=>s+a.value,0),w=total>0?asset.value/total*100:0;
-  document.getElementById('adMetrics').innerHTML=[
-    {l:t('valPos'),v:fe(asset.value),c:''},
-    {l:t('totalInv'),v:fe(asset.invested),c:''},
-    {l:t('parts'),v:fn(asset.quantity),c:''},
-    {l:t('avgPrice'),v:fe(asset.buyPrice),c:''},
-    {l:t('gainEur'),v:(g>=0?'+':'')+fe(g),c:g>=0?'pos':'neg'},
-    {l:t('weight'),v:w.toFixed(1)+'%',c:''}
-  ].map(m=>`<div class="adMetricBox"><div class="aml">${m.l}</div><div class="amv ${m.c}">${m.v}</div></div>`).join('');
+
+  // Position card — visible only when qty > 0
+  const posCard=document.getElementById('adPositionCard');
+  const hasPos=asset.quantity>0;
+  posCard.style.display=hasPos?'':'none';
+  if(hasPos){
+    const pt=document.getElementById('adPositionTitle');
+    if(pt)pt.textContent=isEs?'Mi posición':'My Position';
+    document.getElementById('adMetrics').innerHTML=[
+      {l:isEs?'Valor posición':'Position value',  v:fe(asset.value),                               c:''},
+      {l:isEs?'Total invertido':'Total invested',  v:fe(asset.invested),                            c:''},
+      {l:isEs?'Ganancia €':'Gain €',               v:(g>=0?'+':'')+fe(g),                           c:g>=0?'pos':'neg'},
+      {l:isEs?'Rentabilidad':'Return',             v:(asset.gainPct>=0?'+':'')+asset.gainPct.toFixed(2)+'%', c:asset.gainPct>=0?'pos':'neg'},
+      {l:isEs?'Participaciones':'Shares',          v:fn(asset.quantity),                            c:''},
+      {l:isEs?'Precio medio':'Avg cost',           v:fe(asset.buyPrice),                            c:''},
+      {l:isEs?'Peso en cartera':'Port. weight',    v:w.toFixed(1)+'%',                              c:''},
+      {l:isEs?'Precio actual':'Current price',     v:fe(asset.currentPrice),                        c:''},
+    ].map(m=>`<div class="adMetricBox"><div class="aml">${m.l}</div><div class="amv ${m.c}">${m.v}</div></div>`).join('');
+  }
+
+  // Dividend income row (from cache if already loaded)
+  _refreshAssetDivRow(asset.isin);
+
+  // Button: Gestionar vs Añadir
+  const btn=document.getElementById('btnOpenModal');
+  if(btn)btn.textContent=hasPos?(isEs?'✎ Gestionar posición':'✎ Manage position'):(isEs?'+ Añadir posición':'+ Add position');
+
   showScreen('asset',true);
   renderAssetChart();
+  document.getElementById('etfProfileSection').style.display='none';
+  loadETFProfile(asset.isin);
+}
+
+// Dividend income row inside the position card
+function _refreshAssetDivRow(isin){
+  const row=document.getElementById('adDivRow');
+  if(!row)return;
+  if(!_divDataCache){row.style.display='none';return;}
+  const d=_divDataCache.find(x=>x.isin===isin);
+  const a=assets.find(x=>x.isin===isin);
+  if(!d||!a||!(d.annualPerShare>0)){row.style.display='none';return;}
+  const annual=d.annualPerShare*(a.quantity||0);
+  const yld=d.yieldPct!=null?((d.yieldPct*100).toFixed(2)+'%'):null;
+  const yoc=d.yieldOnCostPct!=null?((d.yieldOnCostPct*100).toFixed(2)+'%'):null;
+  const isEs=currentLang==='es';
+  row.style.display='';
+  row.innerHTML=`<div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0 2px;margin-top:10px;border-top:1px solid rgba(20,32,24,.07)">
+    <div>
+      <div style="font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:#8fa090;font-weight:700">${isEs?'Renta anual estimada':'Est. annual income'}</div>
+      ${yld?`<div style="font-size:10px;color:#15803d;font-weight:600;margin-top:3px">yield ${yld}${yoc?' · cost '+yoc:''}</div>`:''}
+    </div>
+    <div style="font-size:18px;font-weight:800;color:#142018;letter-spacing:-.02em">${fe(annual)}</div>
+  </div>`;
+}
+
+// ── ETF profile (extraETF enrichment) ────────────────────────────────────────
+// ── Validation badge (dividend data quality indicator) ────────────────────────
+function divValidBadge(status){
+  const isEs=currentLang==='es';
+  const m={
+    validated:['ok','✓',isEs?'Validado':'Validated'],
+    partially_validated:['warn','~',isEs?'Parcial':'Partial'],
+    inconsistent:['bad','⚠',isEs?'Inconsistente':'Inconsistent'],
+  }[status];
+  if(!m)return '';
+  return `<span class="etfValidBadge ${m[0]}" style="font-size:10px;padding:2px 7px;margin-left:7px;vertical-align:middle">${m[1]} ${m[2]}</span>`;
+}
+
+// ── ETF profile (extraETF enrichment) ────────────────────────────────────────────
+const _etfProfileCache={};
+async function loadETFProfile(isin){
+  if(_etfProfileCache[isin]){renderETFProfile(_etfProfileCache[isin]);return;}
+  try{
+    const data=await getJson(`/api/etf/profile?isin=${isin}`);
+    const r=(data.results||[])[0];
+    if(!r||r.error||!r.overview)return;
+    _etfProfileCache[isin]=r;
+    renderETFProfile(r);
+  }catch(e){console.warn('[etfProfile] failed for '+isin+':',e.message);}
+}
+
+function renderETFProfile(r){
+  const ov=r.overview;
+  if(!ov)return;
+  const isEs=currentLang==='es';
+
+  // ── Overview rows ──────────────────────────────────────────────────────────
+  const fmtTer=ov.ter!=null?ov.ter.toFixed(2)+'%':null;
+  const fmtSize=ov.fund_size||null;
+  const fmtLaunch=ov.launch_date?new Date(ov.launch_date).toLocaleDateString(isEs?'es-ES':'en-GB',{year:'numeric',month:'short',day:'numeric'}):null;
+  const fmtYield=ov.dividend_yield!=null?ov.dividend_yield.toFixed(2)+'%':null;
+
+  const rows=[
+    [isEs?'Gastos (TER)':'Expense Ratio (TER)', fmtTer],
+    [isEs?'Tamaño del fondo':'Fund size',         fmtSize],
+    [isEs?'Fecha de lanzamiento':'Launch date',   fmtLaunch],
+    [isEs?'Distribución':'Distribution',          ov.distribution||(ov.is_distributing?'Distributing':'Accumulating')],
+    [isEs?'Moneda base':'Base currency',          ov.currency],
+    [isEs?'Domicilio':'Domicile',                 ov.domicile],
+    [isEs?'Réplica':'Replication',                ov.replication],
+    [isEs?'Índice subyacente':'Underlying index', ov.index_name],
+    [isEs?'Nº de componentes':'Holdings',         ov.num_holdings!=null?String(ov.num_holdings):null],
+    [isEs?'Rentab. dividendo':'Dividend yield',   fmtYield],
+    [isEs?'Cobertura divisa':'Currency hedge',    ov.is_hedged?(ov.hedged_currency||'Sí'):(isEs?'No':'No')],
+    [isEs?'Proveedor':'Provider',                 ov.provider_name],
+  ].filter(([,v])=>v!=null&&v!=='');
+
+  const srcDate=r.fetchedAt?new Date(r.fetchedAt).toLocaleDateString(isEs?'es-ES':'en-GB',{day:'2-digit',month:'2-digit',year:'2-digit'}):'';
+  const srcBadge=`<span style="font-size:10px;color:#8fa090;font-weight:500;margin-left:6px">${r.source||'extraetf'}${srcDate?' · '+srcDate:''}</span>`;
+
+  const valBadge=r.validationStatus&&r.validationStatus!=='unvalidated'?divValidBadge(r.validationStatus):'';
+  document.getElementById('etfOverviewTitle').innerHTML=(isEs?'Ficha del ETF':'ETF Profile')+srcBadge+valBadge;
+  document.getElementById('etfOverviewContent').innerHTML=rows.map(([l,v])=>
+    `<div class="etfInfoRow"><span class="etfInfoLabel">${l}</span><span class="etfInfoValue">${v}</span></div>`
+  ).join('');
+
+  // ── Holdings ───────────────────────────────────────────────────────────────
+  const holdings=r.holdings||[];
+  if(holdings.length){
+    const maxW=Math.max(...holdings.map(h=>h.weight||0),1);
+    const totalW=holdings.reduce((s,h)=>s+(h.weight||0),0);
+    const isEs2=currentLang==='es';
+    const hTitle=document.querySelector('#etfHoldingsCard .sectionTitle');
+    if(hTitle)hTitle.innerHTML='Top Holdings'+(totalW>0?` <span style="font-size:11px;color:#8fa090;font-weight:500">(${totalW.toFixed(1)}% ${isEs2?'del fondo':'of fund'})</span>`:'');
+    document.getElementById('etfHoldingsContent').innerHTML=holdings.map(h=>{
+      const barW=Math.round((h.weight||0)/maxW*56);
+      return`<div class="etfHoldingRow">
+        <div style="width:${Math.max(barW,3)}px" class="etfHoldingBar"></div>
+        <div class="etfHoldingName" title="${h.name||''}">${h.name||'—'}</div>
+        <div style="text-align:right;flex-shrink:0">
+          <div class="etfHoldingWeight">${h.weight!=null?h.weight.toFixed(2)+'%':'—'}</div>
+          ${h.country?`<div style="font-size:10px;color:#8fa090;font-weight:500;margin-top:1px">${h.country}</div>`:''}
+        </div>
+      </div>`;
+    }).join('');
+    document.getElementById('etfHoldingsCard').style.display='';
+  }else{
+    document.getElementById('etfHoldingsCard').style.display='none';
+  }
+
+  document.getElementById('etfProfileSection').style.display='';
 }
 
 function renderAssetChart(){
@@ -634,6 +801,10 @@ function openModal(isin){
   if(!a)return;
   const ov=getOverrides()[isin]||{};
   document.getElementById('modalAssetName').textContent=a.name;
+  const _ov2=getOverrides()[isin]||{};
+  const _isEdit=(_ov2.quantity??a.quantity)>0;
+  const _hint=document.getElementById('modalEditHint');
+  if(_hint)_hint.textContent=_isEdit?(currentLang==='es'?'Editar posición':'Edit position'):(currentLang==='es'?'Nueva posición':'New position');
   document.getElementById('simpleQty').value=fn(ov.quantity??a.quantity).replace(/\./g,'').replace(',','.');
   document.getElementById('simpleAvgCost').value=(ov.avgCost??a.buyPrice).toFixed(2);
   // Tx defaults
@@ -698,8 +869,16 @@ function saveTransaction(){
 
 function removePosition(){
   if(!currentModalIsin)return;
+  const a=assets.find(x=>x.isin===currentModalIsin);
   const ov=getOverrides();delete ov[currentModalIsin];saveOverrides(ov);
-  reapplyAndRender();closeModal();
+  if(a?.isCustom){
+    const ca=getCustomAssets();delete ca[currentModalIsin];saveCustomAssets(ca);
+    const idx=_rawSeedAssets.findIndex(x=>x.isin===currentModalIsin);
+    if(idx>-1)_rawSeedAssets.splice(idx,1);
+  }
+  assets=applyOverridesToAssets(_rawSeedAssets);
+  render();closeModal();
+  showScreen(prevScreen||'home');
 }
 
 function reapplyAndRender(){
@@ -734,10 +913,14 @@ function renderAnalysisCharts(){
   const cats=Object.keys(catMap).sort((a,b)=>catMap[b]-catMap[a]),catColors={'Fondos':'#7c3aed','ETFs':'#1d6fa8','Oro':'#475569'},pieColors=cats.map(c=>catColors[c]||'#666'),piePcts=cats.map(c=>Math.round(catMap[c]/total*100));
   analysisCharts.p=new Chart(document.getElementById('distPie').getContext('2d'),{type:'doughnut',data:{labels:cats,datasets:[{data:cats.map(c=>catMap[c]),backgroundColor:pieColors,borderWidth:3,borderColor:'#fff'}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>` ${c.label}: ${fe(c.raw)} (${piePcts[c.dataIndex]}%)`}}}}});
   document.getElementById('distLegend').innerHTML=cats.map((c,i)=>`<div class="legendItem"><div class="legendDot" style="background:${pieColors[i]}"></div>${c} ${piePcts[i]}%</div>`).join('');
-  const top=[...assets].sort((a,b)=>b.value-a.value).slice(0,10).sort((a,b)=>b.gainPct-a.gainPct);
+  const top=[...assets].sort((a,b)=>b.gainPct-a.gainPct);
+  document.getElementById('perfBarWrap').style.height=Math.max(200,top.length*24)+'px';
   analysisCharts.b=new Chart(document.getElementById('perfBar').getContext('2d'),{type:'bar',data:{labels:top.map(a=>a.name.length>14?a.name.slice(0,13)+'…':a.name),datasets:[{data:top.map(a=>a.gainPct),backgroundColor:top.map(a=>a.gainPct>=0?'rgba(34,197,94,.75)':'rgba(248,113,113,.75)'),borderRadius:4,borderSkipped:false}]},options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>` ${c.parsed.x>=0?'+':''}${c.parsed.x.toFixed(2)}%`}}},scales:{x:{grid:{color:'rgba(20,32,24,.05)'},border:{display:false},ticks:{color:'#8fa090',font:{size:10},callback:v=>v+'%'}},y:{grid:{display:false},border:{display:false},ticks:{color:'#4a5f4e',font:{size:10,weight:'600'}}}}}});
   const full=buildPortfolioTimeSeries(),years=Object.keys(MSCI_WORLD_ANNUAL).sort();
-  const portAnnual=years.map(yr=>{if(!full)return 0;const s=full.find(p=>p.date>=yr+'-01-01'),ends=full.filter(p=>p.date<=yr+'-12-31');if(!s||!ends.length||s.totalValue<=0)return 0;return((ends[ends.length-1].totalValue-s.totalValue)/s.totalValue)*100;});
+  // Annual return: (last value of year Y) / (last value of year Y-1) - 1
+  // This avoids the "growing portfolio coverage" distortion from using intra-year first point
+  const lastInYear=(yr)=>{const pts=full?full.filter(p=>p.date.startsWith(yr)):[];return pts.length?pts[pts.length-1].totalValue:null;};
+  const portAnnual=years.map(yr=>{if(!full)return 0;const prev=lastInYear(String(parseInt(yr)-1)),cur=lastInYear(yr);if(!prev||!cur||prev<=0)return 0;return((cur-prev)/prev)*100;});
   analysisCharts.v=new Chart(document.getElementById('vsWorldBar').getContext('2d'),{type:'bar',data:{labels:years,datasets:[{label:'Portfolio',data:portAnnual,backgroundColor:'rgba(21,128,61,.7)',borderRadius:4,borderSkipped:false},{label:'MSCI World',data:years.map(y=>MSCI_WORLD_ANNUAL[y]||0),backgroundColor:'rgba(59,130,246,.6)',borderRadius:4,borderSkipped:false}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{font:{size:11,weight:'600'},color:'#4a5f4e',usePointStyle:true,pointStyleWidth:8}},tooltip:{callbacks:{label:c=>` ${c.dataset.label}: ${c.parsed.y>=0?'+':''}${c.parsed.y.toFixed(1)}%`}}},scales:{x:{grid:{display:false},border:{display:false},ticks:{color:'#8fa090',font:{size:10}}},y:{grid:{color:'rgba(20,32,24,.05)'},border:{display:false},ticks:{color:'#8fa090',font:{size:10},callback:v=>v+'%'}}}}});
 
   // VS World note when no real history available
@@ -760,7 +943,7 @@ function renderAnalysisCharts(){
 
 // ========== Dividends ==========
 let _divDataCache = null;
-const _DIV_CACHE_VER = 'v20260316e'; // bump on every deploy to bust stale frontend cache
+const _DIV_CACHE_VER = 'v20260316f'; // bump on every deploy to bust stale frontend cache
 function _checkDivCacheVer(){if(sessionStorage.getItem('_divCacheVer')!==_DIV_CACHE_VER){_divDataCache=null;sessionStorage.setItem('_divCacheVer',_DIV_CACHE_VER);}}
 async function renderDividends(){
   _checkDivCacheVer();
@@ -777,6 +960,7 @@ async function renderDividends(){
       const allIsins=assets.map(a=>a.isin).join(',');
       const r=await getJson(`/api/dividends/history?isins=${allIsins}`);
       _divDataCache=r.results||[];
+      if(selectedAsset)_refreshAssetDivRow(selectedAsset.isin);
     }catch(e){
       document.getElementById('divLoadingCard').innerHTML=`<div style="font-size:22px;margin-bottom:8px">⚠️</div><span style="color:#b91c1c">Error cargando dividendos: ${e.message}</span>`;
       return;
@@ -840,7 +1024,7 @@ async function renderDividends(){
         </div>
         <div class="divHoldingRight">
           <div class="divHoldingAmt">${fe(d.annualIncome)}</div>
-          <div class="divHoldingYield">${(d.yieldPct*100).toFixed(2)}% yield</div>
+          <div class="divHoldingYield">${d.yieldPct!=null?((d.yieldPct*100).toFixed(2)+'% yield'):'—'}</div>
         </div>
       </div>`).join('');
   }
@@ -1106,7 +1290,7 @@ async function loadDividendDetail(isins){
         const up2=pct2>=0;
         changeBadge=`<span style="font-size:10px;font-weight:700;color:${up2?'#15803d':'#b91c1c'};margin-left:5px">${up2?'↑':'↓'}${Math.abs(pct2).toFixed(1)}%</span>`;
       }
-      const qtyTotal=y.totalUser!=null?`<span style="color:#8fa090;font-size:11px"> · ${fe(y.totalUser)}</span>`:'';
+      const qtyTotal=y.totalUser!=null?`<span style="color:#8fa090;font-size:11px"> · ${fe(y.totalUser)}</span>`:'';      const yValBadge=y.validation&&y.validation!=='unvalidated'?divValidBadge(y.validation):'';
       const payList=y.payments.map(p=>`<div style="display:flex;justify-content:space-between;padding:3px 0 3px 12px;border-left:2px solid rgba(234,179,8,.25);margin:2px 0">
         <span style="color:#8fa090;font-size:12px">${p.exDate}</span>
         <span style="font-weight:600;font-size:12px">${fn(p.amount)} €</span>
@@ -1114,14 +1298,15 @@ async function loadDividendDetail(isins){
       return`<details style="margin-bottom:4px">
         <summary style="cursor:pointer;display:flex;justify-content:space-between;align-items:center;padding:7px 0;list-style:none;-webkit-appearance:none">
           <span style="font-weight:700;color:#2d1a4a">${y.year}${changeBadge}</span>
-          <span style="font-weight:700">${fe(y.totalPerShare)}${qtyTotal}</span>
+          <span style="display:flex;align-items:center;gap:5px"><span style="font-weight:700">${fe(y.totalPerShare)}${qtyTotal}</span>${y.validation&&y.validation!=='unvalidated'?divValidBadge(y.validation):''}</span>
         </summary>
         <div style="padding:4px 0 8px">${payList}</div>
       </details>`;
     }).reverse().join('');
 
+    const overallBadge=r.validationStatus&&r.validationStatus!=='unvalidated'?divValidBadge(r.validationStatus):'';
     return`<div id="div-detail-${r.isin}" style="scroll-margin-top:12px;margin-bottom:20px">
-      <div style="font-weight:700;font-size:14px;margin-bottom:6px">${r.name||r.ticker||r.isin}${srcBadge}</div>
+      <div style="font-weight:700;font-size:14px;margin-bottom:6px;display:flex;align-items:center;flex-wrap:wrap;gap:5px">${r.name||r.ticker||r.isin}${srcBadge}${overallBadge}</div>
       ${delistedWarn}
       ${yearRows}
     </div>`;
@@ -1226,13 +1411,13 @@ function renderLists(){
       <div class="icon ${assetType(a)}">${iconInitials(a)}</div>
       <div style="min-width:0;flex:1">
         <div class="name" title="${a.fullName||a.name}">${a.name}</div>
-        <div class="meta">${fn(a.quantity)} ${t('shares').toLowerCase()} · ${fe(a.currentPrice)}</div>
+        <div class="meta">${fn(a.quantity)} ${t('shares').toLowerCase()} · ${fe(a.currentPrice)}${a.customCurrency&&a.customCurrency!=='EUR'?' '+a.customCurrency:''}</div>
       </div>
       <div class="right">
         <div class="money">${fe(a.value)}</div>
         <div class="pct" style="display:flex;gap:7px;justify-content:flex-end;align-items:baseline;flex-wrap:wrap">
           ${dayHtml}
-          <span style="color:${totalColor}">${a.gainPct>=0?'+':''}${a.gainPct.toFixed(2)}%</span>
+          <span style="color:${totalColor}">${(a.value-a.invested)>=0?'+':''}${fe(a.value-a.invested)}<span style="font-size:10px;margin-left:3px">(${a.gainPct>=0?'+':''}${a.gainPct.toFixed(2)}%)</span></span>
         </div>
       </div>
     </div>`;
@@ -1315,7 +1500,7 @@ document.getElementById('bsSell').addEventListener('click',()=>setTxType('sell')
 document.getElementById('modalOverlay').addEventListener('click',e=>{if(e.target===document.getElementById('modalOverlay'))closeModal();});
 
 // Settings / language
-function openSettings(){document.getElementById('settingsSheet').classList.add('open');document.getElementById('settingsOverlay').classList.add('open');}
+function openSettings(){closeSearch();document.getElementById('settingsSheet').classList.add('open');document.getElementById('settingsOverlay').classList.add('open');}
 function closeSettings(){document.getElementById('settingsSheet').classList.remove('open');document.getElementById('settingsOverlay').classList.remove('open');}
 document.getElementById('btnSettings').addEventListener('click',openSettings);
 document.getElementById('settingsOverlay').addEventListener('click',closeSettings);
@@ -1357,7 +1542,7 @@ function loadCustomIntoAssets(){
 // ========== Search Sheet ==========
 let _searchTimer=null,_searchResult=null;
 
-function openSearch(){
+function openSearch(){closeSettings();
   document.getElementById('searchOverlay').classList.add('open');
   document.getElementById('searchInput').focus();
   showSearchResults();
@@ -1436,7 +1621,7 @@ function renderSearchResults(results){
       const r=results[Number(el.dataset.idx)];
       el.innerHTML=`<div style="flex:1;text-align:center;color:#8fa090;font-size:13px">Cargando precio…</div>`;
       try{
-        const q=await getJson(`/api/search/quote?symbol=${encodeURIComponent(r.symbol)}`);
+        const q=await getJson(`/api/search/query?symbol=${encodeURIComponent(r.symbol)}`);
         showAddForm(r,q.currentPrice,q.currency,q.history||[]);
       }catch(e){
         el.innerHTML=`<div style="flex:1;text-align:center;color:#b91c1c;font-size:13px">Error obteniendo precio</div>`;
@@ -1486,3 +1671,4 @@ boot().catch(err=>{document.getElementById('chartNote').textContent='Error: '+er
 </script>
 </body>
 </html>
+

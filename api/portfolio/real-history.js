@@ -1,7 +1,7 @@
 // Returns real historical price series for ALL portfolio assets
 // Uses Yahoo (ISIN-direct) as primary source, falls back to EODHD/TwelveData
 const portfolioProviders = require('../../portfolio-providers.json');
-const { resolveAssetData } = require('../_lib/providers');
+const { resolveAssetData } = require('../../lib/providers');
 
 module.exports = async (req, res) => {
   try {

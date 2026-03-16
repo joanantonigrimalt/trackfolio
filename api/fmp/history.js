@@ -1,4 +1,4 @@
-const { json, fmpFetch, getDateYearsAgo } = require('../_lib/fmp');
+const { json, fmpFetch, getDateYearsAgo } = require('../../lib/fmp');
 
 module.exports = async (req, res) => {
   try {

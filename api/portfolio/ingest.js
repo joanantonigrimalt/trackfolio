@@ -5,8 +5,8 @@
 // POST /api/portfolio/ingest   body: { "isins": ["IE00BYX5NK04", ...] }
 // Add ?refresh=1 to bypass cache
 
-const { resolveAssetData } = require('../_lib/providers');
-const { dbSaveHistory, isSupabaseEnabled } = require('../_lib/cache');
+const { resolveAssetData } = require('../../lib/providers');
+const { dbSaveHistory, isSupabaseEnabled } = require('../../lib/cache');
 const portfolioProviders = require('../../portfolio-providers.json');
 
 module.exports = async (req, res) => {
