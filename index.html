@@ -21,8 +21,28 @@
 .empty{font-size:13px;color:#6d7e72;line-height:1.55}.kv{display:flex;justify-content:space-between;gap:10px;padding:11px 0;border-bottom:1px solid rgba(20,32,24,.06)}.kv:last-child{border-bottom:none}
 /* Tab bar */
 .tab{position:absolute;left:12px;right:12px;bottom:12px;background:rgba(255,255,255,.94);backdrop-filter:blur(20px);border:1px solid rgba(20,32,24,.07);border-radius:22px;padding:10px 4px 16px;display:flex;justify-content:space-around;box-shadow:0 12px 32px rgba(20,32,24,.09)}.tab button{background:none;border:none;text-align:center;font-size:10px;color:#8fa090;font-family:inherit;cursor:pointer;font-weight:500;transition:color .15s;flex:1;min-width:0}.tab b{display:block;font-size:18px;color:#b0c0b5;margin-bottom:2px;transition:color .15s}.tab button.active b,.tab button.active{color:#15803d}
-/* Settings button */
+/* Settings + Add buttons */
 .settingsBtn{background:none;border:none;font-size:16px;cursor:pointer;padding:2px 4px;color:#688071;line-height:1;border-radius:6px;transition:background .12s}.settingsBtn:active{background:rgba(20,32,24,.08)}
+.addAssetBtn{background:#142018;border:none;color:#f5fbf6;width:28px;height:28px;border-radius:9px;font-size:18px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;line-height:1;transition:opacity .15s;font-family:inherit}.addAssetBtn:active{opacity:.75}
+/* Search overlay */
+.searchOverlay{position:absolute;inset:0;background:rgba(20,32,24,.45);z-index:30;opacity:0;pointer-events:none;transition:opacity .25s}.searchOverlay.open{opacity:1;pointer-events:auto}
+.searchSheet{position:absolute;bottom:0;left:0;right:0;background:#f7faf8;border-radius:26px 26px 0 0;max-height:94%;display:flex;flex-direction:column;transform:translateY(100%);transition:transform .3s cubic-bezier(.32,.72,0,1);z-index:31}.searchOverlay.open .searchSheet{transform:translateY(0)}
+.searchHandle{width:36px;height:4px;background:#dce5dc;border-radius:2px;margin:12px auto 0;flex-shrink:0}
+.searchTopBar{display:flex;align-items:center;gap:10px;padding:14px 16px 10px;flex-shrink:0}
+.searchInputWrap{flex:1;display:flex;align-items:center;gap:8px;background:#fff;border:1.5px solid #dce5dc;border-radius:14px;padding:10px 14px;transition:border-color .15s}.searchInputWrap:focus-within{border-color:#15803d}.searchIcon{font-size:15px;color:#8fa090;flex-shrink:0}
+.searchInput{flex:1;border:none;outline:none;font:inherit;font-size:15px;color:#142018;background:transparent}.searchInput::placeholder{color:#b0c0b5}
+.searchCloseBtn{background:rgba(20,32,24,.07);border:none;width:36px;height:36px;border-radius:12px;font-size:14px;cursor:pointer;color:#4a5f4e;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:background .12s}.searchCloseBtn:active{background:rgba(20,32,24,.14)}
+.searchBody{flex:1;overflow-y:auto;padding:0 16px 32px}.searchBody::-webkit-scrollbar{width:0}
+.searchHint{font-size:13px;color:#8fa090;text-align:center;padding:32px 20px;font-weight:500}
+.searchResult{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid rgba(20,32,24,.06);cursor:pointer;transition:opacity .12s}.searchResult:last-child{border-bottom:none}.searchResult:active{opacity:.6}
+.srIcon{width:42px;height:42px;border-radius:13px;color:#fff;display:grid;place-items:center;font-weight:800;font-size:12px;flex-shrink:0;letter-spacing:-.02em}
+.srType{font-size:10px;font-weight:700;padding:2px 7px;border-radius:5px;display:inline-block;margin-top:3px}
+/* Add asset form (inside search sheet) */
+.addAssetForm{padding:6px 0 0}
+.addAssetHero{display:flex;align-items:center;gap:12px;padding:14px 0 16px;border-bottom:1px solid rgba(20,32,24,.06);margin-bottom:16px}
+.addAssetBack{background:rgba(20,32,24,.06);border:none;width:32px;height:32px;border-radius:10px;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;color:#142018;flex-shrink:0}
+.addAssetInfo{flex:1;min-width:0}.addAssetName{font-size:15px;font-weight:800;color:#142018;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.addAssetMeta{font-size:12px;color:#8fa090;margin-top:2px;font-weight:500}
+.addAssetPrice{font-size:22px;font-weight:800;color:#142018;letter-spacing:-.03em;text-align:right;flex-shrink:0}
 /* Settings sheet */
 .settingsSheet{position:absolute;bottom:0;left:0;right:0;background:#fff;border-radius:22px 22px 0 0;padding:20px 20px 32px;box-shadow:0 -12px 40px rgba(20,32,24,.14);z-index:10;transform:translateY(100%);transition:transform .28s cubic-bezier(.32,.72,0,1)}.settingsSheet.open{transform:translateY(0)}.settingsOverlay{position:absolute;inset:0;background:rgba(20,32,24,.32);z-index:9;opacity:0;pointer-events:none;transition:opacity .28s}.settingsOverlay.open{opacity:1;pointer-events:auto}.sheetHandle{width:36px;height:4px;background:#e0e6e2;border-radius:2px;margin:0 auto 18px}.sheetTitle{font-size:13px;font-weight:700;color:#8fa090;text-transform:uppercase;letter-spacing:.1em;margin-bottom:14px}.langRow{display:flex;gap:10px}.langBtn{flex:1;padding:13px;border-radius:14px;border:2px solid rgba(20,32,24,.08);background:#f4f7f5;font:inherit;font-size:14px;font-weight:700;color:#4a5f4e;cursor:pointer;transition:all .15s;text-align:center}.langBtn.active{background:#142018;color:#f5fbf6;border-color:#142018}
 /* === Asset Detail === */
@@ -68,6 +88,7 @@
   <span id="clock">9:41</span>
   <div style="display:flex;align-items:center;gap:8px">
     <button class="settingsBtn" id="btnSettings" title="Settings">⚙</button>
+    <button class="addAssetBtn" id="btnOpenSearch" title="Añadir activo">+</button>
     <span style="font-weight:600">Trackfolio</span>
   </div>
 </div>
@@ -307,6 +328,50 @@
         </div>
         <button class="mSaveBtn" id="btnTxSave" data-i18n="save">Guardar</button>
         <button class="mCancelBtn" id="btnTxCancel" data-i18n="cancel">Cancelar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ SEARCH / ADD ASSET SHEET ============ -->
+<div class="searchOverlay" id="searchOverlay">
+  <div class="searchSheet" id="searchSheet">
+    <div class="searchHandle"></div>
+    <div class="searchTopBar">
+      <div class="searchInputWrap">
+        <span class="searchIcon">🔍</span>
+        <input class="searchInput" id="searchInput" type="text" placeholder="Buscar acción, ETF, fondo, cripto…" autocomplete="off" autocorrect="off" spellcheck="false">
+      </div>
+      <button class="searchCloseBtn" id="btnSearchClose">✕</button>
+    </div>
+    <div class="searchBody" id="searchBody">
+      <div class="searchHint" id="searchHint">Busca por nombre, ticker o ISIN</div>
+      <div id="searchResultsList"></div>
+      <!-- Add asset form — hidden until a result is selected -->
+      <div id="addAssetForm" class="addAssetForm" style="display:none">
+        <div class="addAssetHero">
+          <button class="addAssetBack" id="btnBackToSearch">←</button>
+          <div class="addAssetIcon srIcon" id="addAssetIcon">?</div>
+          <div class="addAssetInfo">
+            <div class="addAssetName" id="addAssetName">—</div>
+            <div class="addAssetMeta" id="addAssetMeta">—</div>
+          </div>
+          <div class="addAssetPrice" id="addAssetPrice">—</div>
+        </div>
+        <div class="mFieldGroup">
+          <div class="mLabel">Participaciones / Unidades</div>
+          <div class="mFieldRow"><input type="number" id="addQty" placeholder="0" min="0" step="any"></div>
+        </div>
+        <div class="mFieldGroup">
+          <div class="mLabel">Precio medio de compra</div>
+          <div class="mFieldRow">
+            <input type="number" id="addAvgCost" placeholder="0.00" min="0" step="any">
+            <div class="mCurrencyBadge" id="addCurrencyBadge">EUR</div>
+          </div>
+          <div class="mHint" id="addCostHint"></div>
+        </div>
+        <button class="mSaveBtn" id="btnSaveNewAsset">Añadir a cartera</button>
+        <button class="mCancelBtn" id="btnCancelAddAsset">Cancelar</button>
       </div>
     </div>
   </div>
@@ -824,6 +889,7 @@ async function boot(){
     return{isin:pos.isin,name:pos.shortName||pos.name||mapping?.name||pos.isin,fullName:pos.name||mapping?.name||pos.isin,quantity,buyPrice,currentPrice,invested:quantity*buyPrice,value:quantity*currentPrice,gainPct:buyPrice?((currentPrice-buyPrice)/buyPrice)*100:0,mapping,provider:entry.data?.provider||null,coverageStatus:entry.data?.coverage?.status||'MISSING',coverage:entry.data?.coverage||{status:'MISSING'},history,hasRealHistory:history.length>1,_rawQty:quantity,_rawBuyPrice:buyPrice};
   });
   assets=applyOverridesToAssets(_rawSeedAssets);
+  loadCustomIntoAssets(); // merge any custom assets from localStorage
   dataReady=true;render();
 }
 
@@ -855,6 +921,157 @@ document.querySelectorAll('.langBtn').forEach(btn=>btn.addEventListener('click',
   if(dataReady){render();destroyAnalysisCharts();const active=document.querySelector('.tab button.active')?.dataset?.screen;if(active==='analysis')renderAnalysisCharts();if(active==='dividends')renderDividends();if(active==='ia')renderIA();}
   closeSettings();
 }));
+
+// ========== Custom Assets (localStorage) ==========
+function getCustomAssets(){try{return JSON.parse(localStorage.getItem('tf_custom_assets')||'{}');}catch{return {};}}
+function saveCustomAssets(o){localStorage.setItem('tf_custom_assets',JSON.stringify(o));}
+
+// Type → icon style
+const TYPE_COLORS={stock:'linear-gradient(135deg,#1d6fa8,#38bdf8)',etf:'linear-gradient(135deg,#1d6fa8,#38bdf8)',fund:'linear-gradient(135deg,#7c3aed,#a78bfa)',crypto:'linear-gradient(135deg,#d97706,#fbbf24)',index:'linear-gradient(135deg,#475569,#94a3b8)',fx:'linear-gradient(135deg,#059669,#34d399)',unknown:'linear-gradient(135deg,#475569,#64748b)'};
+const TYPE_LABELS={stock:'Acción',etf:'ETF',fund:'Fondo',crypto:'Cripto',index:'Índice',fx:'Divisa',unknown:'Activo'};
+
+function buildCustomAssetObj(ca,pos){
+  const qty=pos.quantity||0,bp=pos.avgCost||0,cp=ca.currentPrice||0;
+  return{isin:ca.symbol,name:ca.shortName||ca.name||ca.symbol,fullName:ca.name||ca.symbol,symbol:ca.symbol,quantity:qty,buyPrice:bp,currentPrice:cp,invested:qty*bp,value:qty*cp,gainPct:bp>0?((cp-bp)/bp)*100:0,mapping:{type:ca.type||'stock'},provider:'yahoo',coverageStatus:ca.history?.length>60?'OK':'PARTIAL',history:ca.history||[],hasRealHistory:(ca.history?.length||0)>1,_rawQty:qty,_rawBuyPrice:bp,isCustom:true,customCurrency:ca.currency};
+}
+
+function loadCustomIntoAssets(){
+  const ca=getCustomAssets(),ov=getOverrides();
+  const customs=Object.entries(ca).map(([sym,info])=>{
+    const pos=ov[sym]||{quantity:0,avgCost:0};
+    return buildCustomAssetObj(info,pos);
+  }).filter(a=>a.quantity>0);
+  // Add to _rawSeedAssets and re-apply overrides (avoid duplicates with seed)
+  const seedIsins=new Set(_rawSeedAssets.map(a=>a.isin));
+  customs.forEach(c=>{if(!seedIsins.has(c.isin))_rawSeedAssets.push(c);});
+  assets=applyOverridesToAssets(_rawSeedAssets);
+}
+
+// ========== Search Sheet ==========
+let _searchTimer=null,_searchResult=null;
+
+function openSearch(){
+  document.getElementById('searchOverlay').classList.add('open');
+  document.getElementById('searchInput').focus();
+  showSearchResults();
+}
+function closeSearch(){
+  document.getElementById('searchOverlay').classList.remove('open');
+  document.getElementById('searchInput').value='';
+  document.getElementById('searchHint').style.display='';
+  document.getElementById('searchResultsList').innerHTML='';
+  showSearchResults();
+}
+function showSearchResults(){
+  document.getElementById('addAssetForm').style.display='none';
+  document.getElementById('searchResultsList').style.display='';
+  document.getElementById('searchHint').style.display='';
+  document.getElementById('searchTopBar').style.display='';
+}
+function showAddForm(result,price,currency,history){
+  _searchResult={...result,currentPrice:price,currency,history};
+  document.getElementById('addAssetForm').style.display='';
+  document.getElementById('searchResultsList').style.display='none';
+  document.getElementById('searchHint').style.display='none';
+
+  const icon=document.getElementById('addAssetIcon');
+  icon.textContent=(result.shortName||result.symbol).slice(0,3).toUpperCase();
+  icon.style.background=TYPE_COLORS[result.type]||TYPE_COLORS.unknown;
+
+  document.getElementById('addAssetName').textContent=result.name;
+  document.getElementById('addAssetMeta').textContent=`${result.symbol} · ${result.exchange||''} · ${TYPE_LABELS[result.type]||result.type}`;
+  document.getElementById('addAssetPrice').textContent=price>0?new Intl.NumberFormat(currentLang==='es'?'es-ES':'en-GB',{style:'currency',currency:currency||'EUR',maximumFractionDigits:2}).format(price):'—';
+  document.getElementById('addCurrencyBadge').textContent=currency||'—';
+  document.getElementById('addCostHint').textContent=`Precio actual: ${document.getElementById('addAssetPrice').textContent}`;
+
+  // Pre-fill avg cost with current price
+  document.getElementById('addAvgCost').value=price>0?price.toFixed(2):'';
+  document.getElementById('addQty').value='';
+  document.getElementById('addQty').focus();
+}
+
+async function onSearchInput(){
+  clearTimeout(_searchTimer);
+  const q=document.getElementById('searchInput').value.trim();
+  if(q.length<2){document.getElementById('searchResultsList').innerHTML='';document.getElementById('searchHint').style.display='';return;}
+  document.getElementById('searchHint').style.display='none';
+  document.getElementById('searchResultsList').innerHTML=`<div class="searchHint">Buscando…</div>`;
+  _searchTimer=setTimeout(async()=>{
+    try{
+      const data=await getJson(`/api/search/query?q=${encodeURIComponent(q)}`);
+      renderSearchResults(data.results||[]);
+    }catch(e){
+      document.getElementById('searchResultsList').innerHTML=`<div class="searchHint" style="color:#b91c1c">Error: ${e.message}</div>`;
+    }
+  },380);
+}
+
+function renderSearchResults(results){
+  if(!results.length){document.getElementById('searchResultsList').innerHTML=`<div class="searchHint">Sin resultados para esa búsqueda.</div>`;return;}
+  document.getElementById('searchResultsList').innerHTML=results.map((r,i)=>{
+    const bg=TYPE_COLORS[r.type]||TYPE_COLORS.unknown;
+    const lbl=TYPE_LABELS[r.type]||r.type;
+    const lblColor={stock:'#1d6fa8',etf:'#1d6fa8',fund:'#7c3aed',crypto:'#d97706',index:'#475569',fx:'#059669'}[r.type]||'#475569';
+    const initials=(r.shortName||r.symbol).slice(0,3).toUpperCase();
+    return`<div class="searchResult" data-idx="${i}">
+      <div class="srIcon" style="background:${bg}">${initials}</div>
+      <div style="flex:1;min-width:0">
+        <div class="name">${r.name}</div>
+        <div class="meta">${r.symbol}${r.exchange?' · '+r.exchange:''}${r.isin?' · '+r.isin:''}</div>
+        <span class="srType" style="background:${lblColor}22;color:${lblColor}">${lbl}</span>
+      </div>
+      <div style="font-size:12px;color:#8fa090;font-weight:600;flex-shrink:0">${r.currency||''}</div>
+    </div>`;
+  }).join('');
+  // Attach click handlers
+  document.querySelectorAll('#searchResultsList .searchResult').forEach(el=>{
+    el.addEventListener('click',async()=>{
+      const r=results[Number(el.dataset.idx)];
+      el.innerHTML=`<div style="flex:1;text-align:center;color:#8fa090;font-size:13px">Cargando precio…</div>`;
+      try{
+        const q=await getJson(`/api/search/quote?symbol=${encodeURIComponent(r.symbol)}`);
+        showAddForm(r,q.currentPrice,q.currency,q.history||[]);
+      }catch(e){
+        el.innerHTML=`<div style="flex:1;text-align:center;color:#b91c1c;font-size:13px">Error obteniendo precio</div>`;
+      }
+    });
+  });
+}
+
+async function saveNewAsset(){
+  if(!_searchResult)return;
+  const qty=parseFloat(document.getElementById('addQty').value)||0;
+  const avgCost=parseFloat(document.getElementById('addAvgCost').value)||0;
+  if(qty<=0){document.getElementById('addQty').focus();return;}
+
+  const sym=_searchResult.symbol;
+  // Save custom asset metadata
+  const ca=getCustomAssets();
+  ca[sym]={symbol:sym,isin:_searchResult.isin||sym,name:_searchResult.name,shortName:_searchResult.shortName||_searchResult.symbol,type:_searchResult.type,exchange:_searchResult.exchange,currency:_searchResult.currency,currentPrice:_searchResult.currentPrice,history:(_searchResult.history||[]).slice(-500),priceTs:new Date().toISOString()};
+  saveCustomAssets(ca);
+
+  // Save position
+  const ov=getOverrides();
+  ov[sym]={quantity:qty,avgCost,isCustom:true};
+  saveOverrides(ov);
+
+  // Inject into assets immediately
+  loadCustomIntoAssets();
+  render();
+  _divDataCache=null; // force div refresh
+
+  closeSearch();
+  showScreen('portfolio');
+}
+
+// Event listeners for search
+document.getElementById('btnOpenSearch').addEventListener('click',openSearch);
+document.getElementById('btnSearchClose').addEventListener('click',closeSearch);
+document.getElementById('searchOverlay').addEventListener('click',e=>{if(e.target===document.getElementById('searchOverlay'))closeSearch();});
+document.getElementById('searchInput').addEventListener('input',onSearchInput);
+document.getElementById('btnBackToSearch').addEventListener('click',showSearchResults);
+document.getElementById('btnSaveNewAsset').addEventListener('click',saveNewAsset);
+document.getElementById('btnCancelAddAsset').addEventListener('click',closeSearch);
 
 applyTranslations();
 tick();setInterval(tick,30000);
