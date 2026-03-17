@@ -320,8 +320,8 @@
     </div>
     <div class="auth-title" id="auth-title">Welcome</div>
     <div class="auth-sub" id="auth-sub">Sign in to your portfolio</div>
-    <label class="auth-lbl" id="auth-email-lbl">Email</label>
-    <input class="auth-inp" id="auth-email" type="email" placeholder="you@email.com" autocomplete="email">
+    <label class="auth-lbl" id="auth-email-lbl">Email or username</label>
+    <input class="auth-inp" id="auth-email" type="text" placeholder="Email or username" autocomplete="email username">
     <label class="auth-lbl" id="auth-name-lbl" style="display:none">Username</label>
     <input class="auth-inp" id="auth-name" type="text" placeholder="Username" style="display:none" autocomplete="username">
     <label class="auth-lbl" id="auth-pass-lbl">Password</label>
@@ -1159,7 +1159,7 @@ function tick(){const cl=document.getElementById('clock');if(cl)cl.textContent=n
 
 // ========== localStorage positions ==========
 function getOverrides(){try{const o=JSON.parse(localStorage.getItem('tf_positions')||'{}');return o!==null&&typeof o==='object'&&!Array.isArray(o)?o:{};}catch{return {};}}
-function saveOverrides(o){localStorage.setItem('tf_positions',JSON.stringify(o));_debouncedSync();}
+function saveOverrides(o){if(_isDemo)return;localStorage.setItem('tf_positions',JSON.stringify(o));_debouncedSync();}
 function applyOverridesToAssets(rawAssets){
   const ov=getOverrides();
   const mapped=rawAssets.map(a=>{
@@ -1570,6 +1570,7 @@ function setTxType(type){
 }
 
 function saveSimple(){
+  if(_isDemo){_demoToast();return;}
   if(!currentModalIsin)return;
   const qty=parseNum('simpleQty');
   const avgCost=parseNum('simpleAvgCost');
@@ -1583,6 +1584,7 @@ function saveSimple(){
 }
 
 function saveTransaction(){
+  if(_isDemo){_demoToast();return;}
   if(!currentModalIsin)return;
   const qty=parseFloat(document.getElementById('txQty').value)||0;
   const price=parseNum('txPrice');
@@ -1611,6 +1613,7 @@ function saveTransaction(){
 }
 
 function removePosition(){
+  if(_isDemo){_demoToast();return;}
   if(!currentModalIsin)return;
   const a=assets.find(x=>x.isin===currentModalIsin);
   const ov=getOverrides();delete ov[currentModalIsin];saveOverrides(ov);
@@ -2575,6 +2578,7 @@ function loadCustomIntoAssets(){
 let _searchTimer=null,_searchResult=null,_searchReqId=0;
 
 function openSearch(){
+  if(_isDemo){_demoToast();return;}
   // Force-hide settings immediately (no animation) before search opens
   const ss=document.getElementById('settingsSheet'),so=document.getElementById('settingsOverlay');
   ss.style.transition='none';so.style.transition='none';
@@ -2731,6 +2735,7 @@ function renderSearchResults(results){
 }
 
 async function saveNewAsset(){
+  if(_isDemo){_demoToast();return;}
   if(!_searchResult)return;
   const qty=parseNum('addQty');
   const avgCost=parseNum('addAvgCost');
@@ -3099,12 +3104,22 @@ async function authSubmit() {
     try { await initSupabase(); } catch(_) {}
   }
   if (!_sb) { showAuthErr('Error: '+(_sbInitErr||'supabase no cargado')); return; }
-  const email = document.getElementById('auth-email').value.trim();
+  let emailOrUser = document.getElementById('auth-email').value.trim();
   const pass  = document.getElementById('auth-pass').value;
   const name  = document.getElementById('auth-name')?.value?.trim() || '';
   const isEs  = currentLang === 'es';
-  if (!email || !pass) { showAuthErr(isEs ? 'Completa email y contraseña.' : 'Enter email and password.'); return; }
+  if (!emailOrUser || !pass) { showAuthErr(isEs ? 'Completa email/usuario y contraseña.' : 'Enter email/username and password.'); return; }
   if (pass.length < 8) { showAuthErr(isEs ? 'Contraseña mínimo 8 caracteres.' : 'Password must be at least 8 characters.'); return; }
+  // Resolve username → email if no @ present (login mode only)
+  let email = emailOrUser;
+  if (_authMode === 'login' && !emailOrUser.includes('@')) {
+    try {
+      const r = await fetch(`/api/auth/lookup-username?u=${encodeURIComponent(emailOrUser)}`);
+      const d = await r.json();
+      if (!r.ok || !d.email) { showAuthErr(isEs ? 'Usuario no encontrado.' : 'Username not found.'); return; }
+      email = d.email;
+    } catch { showAuthErr(isEs ? 'Error de conexión.' : 'Connection error.'); return; }
+  }
   const btn = document.getElementById('auth-btn-main');
   btn.classList.add('auth-btn-loading');
   btn.disabled = true;
@@ -3167,24 +3182,40 @@ async function authSubmit() {
 }
 
 const DEMO_POSITIONS = {
-  'IE00BYX5NK04': { quantity: 85,  avgCost: 69.50, costCurrency: 'EUR' }, // iShares MSCI World
-  'ES0173311103': { quantity: 450, avgCost: 10.30, costCurrency: 'EUR' }, // Numantia Patrimonio
-  'IE00B4ND3602': { quantity: 65,  avgCost: 16.80, costCurrency: 'GBP' }, // iShares Physical Gold
-  'NL0011683594': { quantity: 150, avgCost: 21.20, costCurrency: 'EUR' }, // VanEck Div Leaders TDIV
-  'IE00B9CQXS71': { quantity: 280, avgCost: 10.60, costCurrency: 'GBP' }, // SPDR Div Aristocrats
-  'LU1598719752': { quantity: 20,  avgCost: 72.00, costCurrency: 'EUR' }, // Cobas International
+  'IE00B4L5Y983': { quantity: 120, avgCost: 58.20, costCurrency: 'EUR', broker: 'DEGIRO' },       // iShares Core MSCI World
+  'IE00BYX5NK04': { quantity: 85,  avgCost: 69.50, costCurrency: 'EUR', broker: 'MyInvestor' },   // Fidelity MSCI World
+  'IE00B4ND3602': { quantity: 65,  avgCost: 16.80, costCurrency: 'GBP', broker: 'DEGIRO' },       // iShares Physical Gold
+  'NL0011683594': { quantity: 150, avgCost: 21.20, costCurrency: 'EUR', broker: 'DEGIRO' },       // VanEck Dividend Leaders
+  'LU0360863021': { quantity: 40,  avgCost: 182.50, costCurrency: 'EUR', broker: 'MyInvestor' },  // Fundsmith Equity
+  'LU1598719752': { quantity: 20,  avgCost: 72.00, costCurrency: 'EUR', broker: 'MyInvestor' },   // Cobas International
 };
 const DEMO_LIQUIDITY = [
-  { id:'demo_liq1', name:'Cuenta Naranja ING', type:'savings', amount:5000, currency:'EUR', rate:3.00, since:'2024-01-15' },
+  { id:'demo_liq1', name:'Cuenta Naranja ING', type:'savings', amount:8500, currency:'EUR', rate:3.00, since:'2024-01-15' },
+  { id:'demo_liq2', name:'Fondo monetario Indexa', type:'money_market', amount:3200, currency:'EUR', rate:3.50, since:'2024-06-01' },
 ];
 let _isDemo = false;
 
+// Demo mode: show a non-blocking toast telling user this is read-only
+function _demoToast(){
+  let t=document.getElementById('_demoToast');
+  if(!t){
+    t=document.createElement('div');
+    t.id='_demoToast';
+    Object.assign(t.style,{position:'fixed',bottom:'80px',left:'50%',transform:'translateX(-50%)',background:'rgba(20,32,24,.88)',color:'#fff',padding:'9px 18px',borderRadius:'12px',fontSize:'13px',fontWeight:'700',zIndex:'9999',pointerEvents:'none',transition:'opacity .3s',whiteSpace:'nowrap'});
+    document.body.appendChild(t);
+  }
+  t.textContent = currentLang==='es' ? '👁 Modo demo · Solo lectura' : '👁 Demo mode · View only';
+  t.style.opacity='1';
+  clearTimeout(t._to);
+  t._to=setTimeout(()=>t.style.opacity='0',2200);
+}
+
 function enterDemo() {
   localStorage.setItem('fa_ob_done','1');
+  // Save demo data BEFORE setting _isDemo so guards don't block initial setup
+  if(Object.keys(getOverrides()).length === 0) { localStorage.setItem('tf_positions',JSON.stringify(DEMO_POSITIONS)); }
+  if(getLiquidity().length === 0) { localStorage.setItem('fa_liquidity',JSON.stringify(DEMO_LIQUIDITY)); }
   _isDemo = true;
-  // Inject demo positions only if the user has no real overrides
-  if(Object.keys(getOverrides()).length === 0) saveOverrides(DEMO_POSITIONS);
-  if(getLiquidity().length === 0) saveLiquidity(DEMO_LIQUIDITY);
   enterMainApp();
   // Show demo banners
   ['demoBanner','demoBannerPortfolio'].forEach(id=>{const el=document.getElementById(id);if(el)el.classList.add('show');});
@@ -3213,6 +3244,7 @@ const LIQ_ICONS = {savings:'🏦', deposit:'🔒', moneymarket:'📈', pension:'
 const LIQ_LABELS = {savings:'Savings', deposit:'Deposit', moneymarket:'Money Market', pension:'Pension Plan', cash:'Current Acc.'};
 
 function openLiqModal(id) {
+  if(_isDemo){_demoToast();return;}
   _liqEditId = id || null;
   const liq = getLiquidity();
   const item = id ? liq.find(x=>x.id===id) : null;
@@ -3238,6 +3270,7 @@ function setLiqType(type) {
   document.querySelectorAll('.liqTypeBtn').forEach(b=>b.classList.toggle('active',b.dataset.ltype===type));
 }
 function saveLiqItem() {
+  if(_isDemo){_demoToast();return;}
   const name = document.getElementById('liqName').value.trim();
   const broker = document.getElementById('liqBroker').value.trim();
   const amount = parseFloat(document.getElementById('liqAmount').value)||0;
