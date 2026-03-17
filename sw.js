@@ -2,7 +2,7 @@
 // Strategy: Cache-First for static assets, Network-First for API calls
 // Provides offline shell + background sync for critical data
 
-const CACHE_VERSION = 'finasset-v27';
+const CACHE_VERSION = 'finasset-v28';
 const STATIC_CACHE  = `${CACHE_VERSION}-static`;
 const DATA_CACHE    = `${CACHE_VERSION}-data`;
 
@@ -27,9 +27,14 @@ const API_CACHE_ROUTES = [
 self.addEventListener('install', event => {
   event.waitUntil(
     caches.open(STATIC_CACHE).then(cache => {
-      return cache.addAll(STATIC_ASSETS).catch(err => {
-        console.warn('[SW] Precache partial failure:', err);
-      });
+      // Force no-cache so SW always fetches fresh HTML on version bump
+      return Promise.all(
+        STATIC_ASSETS.map(url =>
+          fetch(new Request(url, { cache: 'no-store' }))
+            .then(res => cache.put(url, res))
+            .catch(() => {})
+        )
+      );
     }).then(() => self.skipWaiting())
   );
 });
