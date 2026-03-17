@@ -160,6 +160,40 @@
 .an-bw-bottom{display:flex;justify-content:space-between;align-items:center}
 .an-bw-price{font-size:11px;font-weight:800;color:#142018}.an-bw-total{font-size:9px;font-weight:700}.an-bw-total.pos{color:#1aab70}.an-bw-total.neg{color:#f05252}
 .an-bw-item.sm .an-bw-logo{width:26px;height:26px;font-size:7px}.an-bw-item.sm .an-bw-ticker{font-size:9px}.an-bw-item.sm .an-bw-pct{font-size:9px}.an-bw-item.sm .an-bw-eur{font-size:7px}.an-bw-item.sm .an-bw-price{font-size:10px}.an-bw-item.sm .an-bw-total{font-size:8px}.an-bw-item.sm .an-bw-spark{height:22px;margin:4px 0 5px}.an-bw-item.sm .an-bw-badge{align-items:flex-start}
+/* === Correlation === */
+.an-corr-hdr{background:linear-gradient(135deg,#0f1f18 0%,#1a3528 100%);border-radius:16px 16px 0 0;padding:18px 18px 14px}
+.an-corr-pills{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:12px}
+.an-corr-pill{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.1);border-radius:10px;padding:8px 10px}
+.an-corr-pill-lbl{font-size:8px;font-weight:600;color:rgba(255,255,255,.38);text-transform:uppercase;letter-spacing:.07em}
+.an-corr-pill-val{font-size:13px;font-weight:800;margin-top:2px}
+.an-corr-legend{padding:12px 16px 8px;border-bottom:1px solid #f0f0f0}
+.an-corr-bar{height:8px;border-radius:10px;background:linear-gradient(to right,#3b82f6 0%,#93c5fd 22%,#e8f5e9 50%,#a3e9c9 78%,#2dc98a 100%)}
+.an-corr-mtx-wrap{padding:12px 10px 4px;overflow-x:auto;-webkit-overflow-scrolling:touch}
+.an-corr-mtx-wrap::-webkit-scrollbar{display:none}
+table.an-corr-mtx{border-collapse:separate;border-spacing:4px}
+.an-corr-col-hd{font-size:0;padding-bottom:2px;text-align:center}
+.an-corr-row-hd{padding-right:6px;text-align:right;vertical-align:middle}
+.an-corr-badge{display:inline-block;font-size:8px;font-weight:800;padding:2px 5px;border-radius:5px;letter-spacing:.02em;white-space:nowrap}
+.an-corr-cell{width:42px;height:42px;border-radius:10px;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;transition:transform .15s,box-shadow .15s;position:relative}
+.an-corr-cell:hover{transform:scale(1.1);box-shadow:0 4px 14px rgba(0,0,0,.15);z-index:10}
+.an-corr-cell.diag{cursor:default;background:#1a2e22!important}
+.an-corr-cell .cv{font-size:10px;font-weight:800;line-height:1}
+.an-corr-cell .cs{font-size:7px;font-weight:600;margin-top:1px;opacity:.75}
+.an-corr-detail{margin:4px 14px 14px;background:#f8faf9;border:1px solid #e5ede9;border-radius:12px;padding:12px 14px;min-height:52px;display:flex;align-items:center}
+.an-corr-pairs{padding:0 14px 16px}
+.an-cpair-sep{height:1px;background:#f0f0f0;margin:10px 0}
+.an-cpair-grp{display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:10px;margin-bottom:8px}
+.an-cpair-row{display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid #f5f5f5}
+.an-cpair-row:last-child{border-bottom:none}
+.an-cpair-names{font-size:11px;font-weight:700;color:#142018;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.an-cpair-desc{font-size:9px;color:#8a9e93;margin-top:2px;line-height:1.4}
+.an-cpair-right{display:flex;flex-direction:column;align-items:flex-end;gap:3px;flex-shrink:0}
+.an-cpair-bar{width:52px;height:5px;background:#f0f0f0;border-radius:10px;overflow:hidden;flex-shrink:0}
+.an-cpair-fill{height:100%;border-radius:10px}
+.an-cpair-val{font-size:11px;font-weight:800}
+.an-cpair-badge{font-size:8px;font-weight:700;padding:2px 5px;border-radius:5px}
+.an-corr-tip{display:flex;align-items:flex-start;gap:8px;background:linear-gradient(135deg,#f0fdf4,#eff6ff);border:1px solid #c6f6d5;border-radius:12px;padding:12px 14px;margin-top:12px;font-size:11px;color:#374151;line-height:1.6}
+.an-corr-lock{display:flex;align-items:center;gap:10px;background:rgba(124,95,168,.06);border:1px dashed rgba(124,95,168,.25);border-radius:10px;padding:10px 12px;margin-top:12px;font-size:11px;color:#7c5fa8;font-weight:600}
 /* === Dividends === */
 .divHero{background:linear-gradient(160deg,#1a3f2c 0%,#0f2a1e 100%);color:#f5fbf6}.divHeroTop{display:flex;align-items:flex-end;gap:16px;margin-bottom:14px}.divBig{font-size:48px;font-weight:800;letter-spacing:-.05em;line-height:1}.divBigSub{font-size:14px;color:rgba(239,249,242,.6);font-weight:600;padding-bottom:8px}.divMetrics{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}.divMetricBox{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.09);border-radius:14px;padding:10px}.divMetricBox .dl{font-size:10px;color:rgba(239,249,242,.5);text-transform:uppercase;letter-spacing:.08em;font-weight:600}.divMetricBox .dn{font-size:16px;font-weight:700;margin-top:3px;letter-spacing:-.02em}
 .divHoldingRow{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid rgba(20,32,24,.06);cursor:pointer;transition:background .15s}.divHoldingRow:hover{background:rgba(21,128,61,.04);border-radius:10px;margin:0 -8px;padding:12px 8px}.divHoldingRow:last-child{border-bottom:none}.divHoldingLeft{flex:1;min-width:0}.divHoldingName{font-size:13px;font-weight:700;color:#142018;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.divHoldingMeta{font-size:11px;color:#8fa090;margin-top:2px;font-weight:500}.divHoldingRight{text-align:right;flex-shrink:0}.divHoldingAmt{font-size:15px;font-weight:800;color:#142018}.divHoldingYield{font-size:11px;color:#15803d;margin-top:2px;font-weight:700}
@@ -532,6 +566,7 @@
   </div>
   <div class="card"><div class="sectionTitle" data-i18n="vsWorld">Portfolio vs MSCI World</div><div style="position:relative;height:180px;margin-top:6px"><canvas id="vsWorldBar"></canvas></div><div id="vsWorldNote" style="display:none;font-size:11px;color:#8fa090;text-align:center;margin-top:8px"></div></div>
   <div class="card" id="analysisCoverageCard"><div id="analysisCoverageContent"></div></div>
+  <div class="card" id="anCorrCard" style="padding:0;overflow:hidden"><div id="anCorrContent"></div></div>
 </div>
 
 <!-- ============ DIVIDENDOS ============ -->
@@ -1871,6 +1906,104 @@ function renderAnalysisCharts(){
     </div>
     ${missList.length?`<div style="font-size:11px;color:#ef4444;margin-top:4px">⚠ Sin histórico: ${missList.join(', ')}</div>`:''}
     ${partList.length?`<div style="font-size:11px;color:#f59e0b;margin-top:4px">~ Parcial: ${partList.join(', ')}</div>`:''}`;
+  // ─── Correlation ───
+  _anRenderCorrelation();
+}
+
+// ── Asset Correlation ─────────────────────────────────────────────────────────
+function _anRenderCorrelation(){
+  const el=document.getElementById('anCorrContent');
+  if(!el)return;
+  const isEs=currentLang==='es';
+  const pool=assets.filter(a=>a.hasRealHistory&&a.history?.length>=30).slice(0,6);
+  if(pool.length<2){
+    el.innerHTML=`<div style="padding:14px 16px;font-size:11px;color:#8fa090;text-align:center">${isEs?'Se necesitan ≥2 activos con histórico para calcular correlaciones.':'Need ≥2 assets with history to compute correlations.'}</div>`;
+    return;
+  }
+  const IC=['#e63946','#4f8ef7','#7c5cbf','#f5b731','#2dc98a','#0ea5e9'];
+  function dailyRet(hist){const m={};for(let i=1;i<hist.length;i++){const p=hist[i-1].close,c=hist[i].close;if(p>0)m[hist[i].date]=(c-p)/p;}return m;}
+  function pearson(mA,mB){const d=Object.keys(mA).filter(k=>mB[k]!==undefined);if(d.length<20)return null;const xs=d.map(k=>mA[k]),ys=d.map(k=>mB[k]),n=d.length;const mx=xs.reduce((s,v)=>s+v,0)/n,my=ys.reduce((s,v)=>s+v,0)/n;let num=0,dx2=0,dy2=0;for(let i=0;i<n;i++){const dx=xs[i]-mx,dy=ys[i]-my;num+=dx*dy;dx2+=dx*dx;dy2+=dy*dy;}const dn=Math.sqrt(dx2*dy2);return dn===0?null:Math.max(-1,Math.min(1,num/dn));}
+  const retMaps=pool.map(a=>dailyRet(a.history));
+  const n=pool.length;
+  const corr=Array.from({length:n},(_,i)=>Array.from({length:n},(_,j)=>i===j?1:pearson(retMaps[i],retMaps[j])));
+  const pairs=[];for(let i=0;i<n;i++)for(let j=i+1;j<n;j++){const r=corr[i][j];if(r!==null)pairs.push({i,j,r});}
+  pairs.sort((a,b)=>b.r-a.r);
+  const validRs=pairs.map(p=>p.r);
+  const avgCorr=validRs.length?validRs.reduce((s,v)=>s+v,0)/validRs.length:0;
+  const highPairs=validRs.filter(r=>r>=0.7).length;
+  const diversif=avgCorr<0.3?(isEs?'Excelente ✓':'Excellent ✓'):avgCorr<0.5?(isEs?'Buena ✓':'Good ✓'):avgCorr<0.7?(isEs?'Moderada':'Moderate'):(isEs?'Baja ✗':'Low ✗');
+  const diversifC=avgCorr<0.5?'#2dc98a':avgCorr<0.7?'#fbbf24':'#f87171';
+  function cellBg(v){if(v===null)return'#e8f0e9';if(v>=0.7)return`rgba(240,82,82,${0.12+(v-0.7)/0.3*0.52})`;if(v>=0.4)return`rgba(245,183,49,${0.12+(v-0.4)/0.3*0.4})`;if(v>=0)return`rgba(45,201,138,${0.08+v/0.4*0.28})`;return`rgba(79,142,247,${0.1+Math.abs(v)*0.55})`;}
+  function cellTxt(v){if(v===null)return'#8fa090';if(v>=0.7)return'#dc2626';if(v>=0.4)return'#b45309';if(v>=0)return'#1aab70';return'#1d4ed8';}
+  function lvl(v){if(v===null)return{t:isEs?'N/D':'N/A',bg:'#f1f5f2',c:'#8fa090'};if(v>=0.7)return{t:isEs?'Alta':'High',bg:'#fef2f2',c:'#dc2626'};if(v>=0.4)return{t:isEs?'Media':'Med.',bg:'#fefce8',c:'#b45309'};if(v>=0)return{t:isEs?'Baja':'Low',bg:'#e6faf3',c:'#1aab70'};return{t:isEs?'Negat.':'Neg.',bg:'#eff6ff',c:'#1d4ed8'};}
+  const keys=pool.map((a,i)=>a.name.replace(/[^a-zA-Z]/g,'').toUpperCase().slice(0,3)||String(i));
+  function corrDesc(a,b,r){const na=a.name.split(' ')[0],nb=b.name.split(' ')[0];if(r>=0.8)return isEs?`Alta superposición entre ${na} y ${nb}. Movimientos casi idénticos — considera si ambos aportan diversificación real.`:`High overlap between ${na} and ${nb}. Nearly identical moves — consider if both add real diversification.`;if(r>=0.6)return isEs?'Comparten tendencias similares con divergencias sectoriales o geográficas.':'Share similar trends with sectoral or geographic divergences.';if(r>=0.4)return isEs?'Correlación moderada. Se mueven juntos en alcistas pero divergen en momentos de estrés.':'Moderate correlation. Move together in bull markets but diverge under stress.';if(r>=0.2)return isEs?'Baja correlación — buena combinación. Ciclos y factores de riesgo difieren significativamente.':'Low correlation — good combo. Cycles and risk factors differ significantly.';if(r>=0)return isEs?'Correlación muy baja. Prácticamente independientes — excelente para reducir la volatilidad total.':'Very low correlation. Nearly independent — great for reducing total portfolio volatility.';return isEs?'Correlación negativa — cobertura natural. Cuando uno sube el otro tiende a bajar, amortiguando el riesgo global.':'Negative correlation — natural hedge. When one rises the other tends to fall, cushioning overall risk.';}
+  // Build matrix
+  let mh=`<table class="an-corr-mtx"><thead><tr><td style="width:62px"></td>`;
+  pool.forEach((_,i)=>mh+=`<th class="an-corr-col-hd"><span class="an-corr-badge" style="background:${IC[i]}18;color:${IC[i]}">${keys[i]}</span></th>`);
+  mh+='</tr></thead><tbody>';
+  pool.forEach((a,i)=>{
+    mh+=`<tr><td class="an-corr-row-hd"><span class="an-corr-badge" style="background:${IC[i]}18;color:${IC[i]}">${keys[i]}</span></td>`;
+    pool.forEach((_,j)=>{const v=corr[i][j];const lv=lvl(v);const s=v!==null?(v>=0?'+':'')+v.toFixed(2):'N/A';mh+=i===j?`<td><div class="an-corr-cell diag" title="${escapeHtml(a.name)}"><span class="cv" style="color:#fff;font-size:8px">${keys[i]}</span><span class="cs" style="color:rgba(255,255,255,.5)">1.00</span></div></td>`:`<td><div class="an-corr-cell" style="background:${cellBg(v)}" data-ci="${i}" data-cj="${j}"><span class="cv" style="color:${cellTxt(v)}">${s}</span><span class="cs" style="color:${cellTxt(v)}">${lv.t.toLowerCase()}</span></div></td>`;});
+    mh+='</tr>';
+  });
+  mh+='</tbody></table>';
+  // Build pairs list
+  function pairRow(p){const a=pool[p.i],b=pool[p.j],r=p.r,lv=lvl(r),pct=Math.abs(r)*100;const fc=r>=0.7?'linear-gradient(to right,#fca5a5,#f05252)':r>=0.4?'linear-gradient(to right,#fde68a,#f59e0b)':r>=0?'linear-gradient(to right,#bbf7d0,#2dc98a)':'linear-gradient(to right,#bfdbfe,#3b82f6)';const desc=!_isDemo?`<div class="an-cpair-desc">${corrDesc(a,b,r)}</div>`:'';return`<div class="an-cpair-row"><div class="an-cpair-info" style="min-width:0;flex:1"><div class="an-cpair-names">${escapeHtml(a.name.slice(0,16))} · ${escapeHtml(b.name.slice(0,16))}</div>${desc}</div><div class="an-cpair-right"><div class="an-cpair-bar"><div class="an-cpair-fill" style="width:${pct}%;background:${fc}"></div></div><div style="display:flex;align-items:center;gap:4px"><span class="an-cpair-val" style="color:${cellTxt(r)}">${r>=0?'+':''}${r.toFixed(2)}</span><span class="an-cpair-badge" style="background:${lv.bg};color:${lv.c}">${lv.t}</span></div></div></div>`;}
+  function groupBlock(gp,icon,title,sub,clr){if(!gp.length)return'';return`<div class="an-cpair-grp" style="background:${clr}0d;border:1px solid ${clr}33"><div style="width:28px;height:28px;border-radius:8px;background:rgba(255,255,255,.7);display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0">${icon}</div><div style="flex:1"><div style="font-size:12px;font-weight:800;color:#142018">${title}</div><div style="font-size:9px;color:#8a9e93;margin-top:1px">${sub}</div></div><span style="font-size:9px;font-weight:800;padding:3px 8px;border-radius:20px;background:${clr}1a;color:${clr};flex-shrink:0">${gp.length} ${isEs?'par':'pair'}${gp.length>1?'s':''}</span></div>${gp.map(pairRow).join('')}`;}
+  const highP=pairs.filter(p=>p.r>=0.7),midP=pairs.filter(p=>p.r>=0.4&&p.r<0.7),lowP=pairs.filter(p=>p.r>=0&&p.r<0.4),negP=pairs.filter(p=>p.r<0);
+  const worst=pairs[0],bestDiv=[...pairs].filter(p=>p.r<0.4).sort((a,b)=>a.r-b.r)[0];
+  const tipHtml=!_isDemo&&worst?`<div class="an-corr-tip"><span style="font-size:13px">💡</span><div>${isEs?`<strong>Recomendación:</strong> El par <span style="color:#f05252;font-weight:700">${escapeHtml(pool[worst.i].name.split(' ')[0])} · ${escapeHtml(pool[worst.j].name.split(' ')[0])}</span> (${worst.r.toFixed(2)}) tiene alta correlación — aportan poco diversificando juntos.${bestDiv?` Combinar <span style="color:#3b82f6;font-weight:700">${escapeHtml(pool[bestDiv.i].name.split(' ')[0])} · ${escapeHtml(pool[bestDiv.j].name.split(' ')[0])}</span> mejora la diversificación.`:''}`:`<strong>Tip:</strong> The pair <span style="color:#f05252;font-weight:700">${escapeHtml(pool[worst.i].name.split(' ')[0])} · ${escapeHtml(pool[worst.j].name.split(' ')[0])}</span> (${worst.r.toFixed(2)}) is highly correlated.${bestDiv?` Combining <span style="color:#3b82f6;font-weight:700">${escapeHtml(pool[bestDiv.i].name.split(' ')[0])} · ${escapeHtml(pool[bestDiv.j].name.split(' ')[0])}</span> improves overall diversification.`:''}`}</div></div>`:'';
+  const lockHtml=_isDemo?`<div class="an-corr-lock">🔒 <span>${isEs?'Los análisis detallados están disponibles en la versión completa.':'Detailed insights are available in the full version.'}</span></div>`:'';
+  const sep='<div class="an-cpair-sep"></div>';
+  el.innerHTML=`
+    <div class="an-corr-hdr">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px">
+        <div>
+          <div style="font-size:9px;font-weight:700;color:rgba(255,255,255,.4);text-transform:uppercase;letter-spacing:.12em;margin-bottom:4px">${isEs?'Análisis de diversificación':'Diversification analysis'}</div>
+          <div style="font-size:15px;font-weight:800;color:#fff;letter-spacing:-.02em">${isEs?'Correlación entre Activos':'Asset Correlation'}</div>
+        </div>
+        <div style="background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);border-radius:8px;padding:4px 10px;font-size:9px;font-weight:700;color:rgba(255,255,255,.55)">${isEs?'12 meses':'12 months'}</div>
+      </div>
+      <div class="an-corr-pills">
+        <div class="an-corr-pill"><div class="an-corr-pill-lbl">${isEs?'Corr. media':'Avg. corr.'}</div><div class="an-corr-pill-val" style="color:${diversifC}">${avgCorr.toFixed(2).replace('.',',')}</div></div>
+        <div class="an-corr-pill"><div class="an-corr-pill-lbl">${isEs?'Pares altos':'High pairs'}</div><div class="an-corr-pill-val" style="color:${highPairs>0?'#f87171':'#2dc98a'}">${highPairs}</div></div>
+        <div class="an-corr-pill"><div class="an-corr-pill-lbl">${isEs?'Diversific.':'Diversif.'}</div><div class="an-corr-pill-val" style="color:${diversifC}">${diversif}</div></div>
+      </div>
+    </div>
+    <div class="an-corr-legend">
+      <div style="display:flex;justify-content:space-between;margin-bottom:5px"><span style="font-size:9px;font-weight:600;color:#8fa090">${isEs?'← Negativa (cobertura)':'← Negative (hedge)'}</span><span style="font-size:9px;font-weight:600;color:#8fa090">${isEs?'Positiva (solapamiento) →':'Positive (overlap) →'}</span></div>
+      <div class="an-corr-bar"></div>
+      <div style="display:flex;justify-content:space-between;margin-top:4px">${['-1,0','-0,5','0','+0,5','+1,0'].map(v=>`<span style="font-size:8px;color:#8fa090;font-weight:600">${v}</span>`).join('')}</div>
+    </div>
+    <div class="an-corr-mtx-wrap">${mh}</div>
+    <div class="an-corr-detail" id="anCorrDetail">
+      <div id="anCorrDetailHint" style="font-size:11px;color:#8fa090;font-style:italic;width:100%;text-align:center">${isEs?'Toca una celda para ver el detalle':'Tap a cell to see details'}</div>
+      <div id="anCorrDetailInner" style="display:none;width:100%;gap:12px;align-items:center"></div>
+    </div>
+    <div class="an-corr-pairs">
+      ${highP.length?groupBlock(highP,'⚠️',isEs?'Más correlacionados':'Most correlated',isEs?'Mucho solapamiento':'High overlap','#f05252'):''}
+      ${highP.length&&(midP.length||lowP.length||negP.length)?sep:''}
+      ${midP.length?groupBlock(midP,'↕️',isEs?'Correlación media':'Medium correlation',isEs?'Algún solapamiento':'Some overlap','#f59e0b'):''}
+      ${midP.length&&(lowP.length||negP.length)?sep:''}
+      ${lowP.length?groupBlock(lowP,'✅',isEs?'Menos correlacionados':'Least correlated',isEs?'Buena complementariedad':'Good complementarity','#2dc98a'):''}
+      ${lowP.length&&negP.length?sep:''}
+      ${negP.length?groupBlock(negP,'↔️',isEs?'No correlacionados':'Uncorrelated',isEs?'Cobertura natural':'Natural hedge','#3b82f6'):''}
+      ${tipHtml}
+      ${lockHtml}
+    </div>`;
+  // Cell click handlers
+  el.querySelectorAll('.an-corr-cell:not(.diag)').forEach(cell=>{
+    cell.addEventListener('click',()=>{
+      const ci=parseInt(cell.dataset.ci),cj=parseInt(cell.dataset.cj),v=corr[ci][cj];
+      if(v===null)return;
+      const lv=lvl(v);
+      document.getElementById('anCorrDetailHint').style.display='none';
+      const inner=document.getElementById('anCorrDetailInner');
+      inner.style.display='flex';
+      inner.innerHTML=`<div style="font-size:24px;font-weight:800;letter-spacing:-.04em;color:${cellTxt(v)};flex-shrink:0">${v>=0?'+':''}${v.toFixed(2)}</div><div style="flex:1"><div style="display:flex;align-items:center;gap:4px;flex-wrap:wrap;margin-bottom:5px"><span style="font-size:9px;font-weight:800;padding:2px 7px;border-radius:5px;background:${IC[ci]}18;color:${IC[ci]}">${keys[ci]}</span><span style="font-size:10px;color:#8fa090">↔</span><span style="font-size:9px;font-weight:800;padding:2px 7px;border-radius:5px;background:${IC[cj]}18;color:${IC[cj]}">${keys[cj]}</span><span style="font-size:9px;font-weight:700;padding:2px 6px;border-radius:5px;background:${lv.bg};color:${lv.c}">${lv.t}</span></div><div style="font-size:10px;color:#4b5563;line-height:1.5">${!_isDemo?corrDesc(pool[ci],pool[cj],v):(isEs?'Análisis disponible en versión completa.':'Analysis available in full version.')}</div></div>`;
+    });
+  });
 }
 
 // ========== Dividends ==========
