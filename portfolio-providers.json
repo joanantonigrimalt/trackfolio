@@ -181,6 +181,16 @@
       "providerSymbol": "TDIV",
       "yahooSymbol": "TDIV.AS",
       "notes": "TDIV.AS on Euronext Amsterdam. Yahoo ISIN direct may also resolve."
+    },
+    {
+      "isin": "LU2145461757",
+      "name": "Robeco Smart Energy D EUR",
+      "type": "fund",
+      "status": "mapped",
+      "recommendedProvider": "eodhd",
+      "providerSymbol": "LU2145461757.SG",
+      "yahooSymbol": null,
+      "notes": "Robeco SAM Smart Energy fund. Try EODHD with ISIN direct. Luxembourg-domiciled fund."
     }
   ]
 }

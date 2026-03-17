@@ -6,19 +6,24 @@
 // Response:
 //   { results: [{ isin, overview, holdings, source, fetchedAt, error? }] }
 
+const { setupApi, validateIsins } = require('../../lib/security');
 const portfolioSeed = require('../../portfolio-seed.json');
 const { fetchETFProfile } = require('../../lib/extraetf');
 
 module.exports = async (req, res) => {
-  res.setHeader('Content-Type', 'application/json; charset=utf-8');
-  res.setHeader('Access-Control-Allow-Origin', '*');
+  if (!setupApi(req, res, { maxRequests: 30 })) return;
 
   const rawIsins = String(req.query?.isin || req.query?.isins || '');
   const force = req.query?.force === '1';
 
-  const isins = rawIsins
-    ? rawIsins.split(',').map(s => s.trim()).filter(Boolean)
-    : portfolioSeed.positions.map(p => p.isin);
+  let isins;
+  if (rawIsins) {
+    const { isins: validated, error } = validateIsins(rawIsins);
+    if (error) { res.statusCode = 400; return res.end(JSON.stringify({ error })); }
+    isins = validated;
+  } else {
+    isins = portfolioSeed.positions.map(p => p.isin);
+  }
 
   // Run in parallel — extraETF API is fast and we have L1/L2 cache
   const results = await Promise.all(
@@ -26,7 +31,7 @@ module.exports = async (req, res) => {
       try {
         return await fetchETFProfile(isin, { force });
       } catch (e) {
-        return { isin, overview: null, holdings: [], source: 'error', error: e.message, fetchedAt: new Date().toISOString() };
+        return { isin, overview: null, holdings: [], source: 'error', error: 'fetch_failed', fetchedAt: new Date().toISOString() };
       }
     })
   );

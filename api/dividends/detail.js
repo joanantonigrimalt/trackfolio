@@ -9,6 +9,7 @@
 //     payments: [{ exDate, amountEur, currency, year }],
 //     yearly:   [{ year, totalPerShare, totalUser, payments }] }
 
+const { setupApi, validateIsins } = require('../../lib/security');
 const portfolioSeed = require('../../portfolio-seed.json');
 const { fetchDividendHistory } = require('../../lib/dividends');
 const { getGbpEur, toEur } = require('../../lib/fx');
@@ -26,16 +27,20 @@ async function runThrottled(tasks, concurrency = 2) {
 }
 
 module.exports = async (req, res) => {
-  res.setHeader('Content-Type', 'application/json; charset=utf-8');
-  res.setHeader('Access-Control-Allow-Origin', '*');
+  if (!setupApi(req, res, { maxRequests: 20 })) return;
 
   const rawIsins = String(req.query?.isins || '');
   // FIX #9: support ?force=1 to bypass all caches
   const force = req.query?.force === '1';
 
-  const isins = rawIsins
-    ? rawIsins.split(',').map(s => s.trim()).filter(Boolean)
-    : portfolioSeed.positions.map(p => p.isin);
+  let isins;
+  if (rawIsins) {
+    const { isins: validated, error } = validateIsins(rawIsins);
+    if (error) { res.statusCode = 400; return res.end(JSON.stringify({ error })); }
+    isins = validated;
+  } else {
+    isins = portfolioSeed.positions.map(p => p.isin);
+  }
 
   // FIX #2: get GBPEUR rate once for all conversions
   const gbpRate = await getGbpEur();
@@ -112,7 +117,7 @@ module.exports = async (req, res) => {
         isin,
         ticker: null,
         source: 'error',
-        error: e.message,
+        error: 'fetch_failed',
         currency: 'EUR',
         fetchedAt: new Date().toISOString(),
         isDelisted: false,

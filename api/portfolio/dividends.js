@@ -1,3 +1,4 @@
+const { setupApi } = require('../../lib/security');
 const portfolioSeed = require('../../portfolio-seed.json');
 const portfolioProviders = require('../../portfolio-providers.json');
 
@@ -8,7 +9,8 @@ const dividendCandidates = {
   DE000A0F5UH1: { label: 'iShares Core EURO STOXX 50 UCITS ETF (DE)', status: 'pending_source', note: 'Puede repartir según clase/listing; falta validar política exacta y proveedor de pagos.' }
 };
 
-module.exports = async (_req, res) => {
+module.exports = async (req, res) => {
+  if (!setupApi(req, res, { maxRequests: 30 })) return;
   const positions = portfolioSeed.positions
     .filter((position) => dividendCandidates[position.isin])
     .map((position) => ({

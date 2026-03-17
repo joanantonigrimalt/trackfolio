@@ -8,6 +8,8 @@
 // Pay months + amounts derived 100% from actual historical payment dates.
 // GBp (pence) → GBP → EUR via live GBPEUR=X from Yahoo.
 
+const { setupApi, validateIsins } = require('../../lib/security');
+const ISIN_RE = /^[A-Z]{2}[A-Z0-9]{10}$/;
 const portfolioSeed = require('../../portfolio-seed.json');
 const { fetchDividendHistory } = require('../../lib/dividends');
 const { getGbpEur, toEur } = require('../../lib/fx');
@@ -127,14 +129,16 @@ async function tdDiv(symbol) {
 }
 
 // ── Fetch with fallback chain ─────────────────────────────────────────────
-async function fetchDivs(isin) {
+async function fetchDivs(isin, symbolOverride) {
   const s = DIV_ASSETS[isin];
   if (s) {
     if (s.eodhd) { const d = await eodhdDiv(s.eodhd); if (d.length) return d; }
     if (s.yahoo)  { const d = await yahooDiv(s.yahoo);  if (d.length) return d; }
     if (s.td)     { const d = await tdDiv(s.td);         if (d.length) return d; }
   } else {
-    // Custom/unknown asset — try Yahoo directly with the symbol/ISIN
+    // Use symbol override (e.g. "KO" for Coca-Cola) — works for both tickers and ISIN-less assets
+    if (symbolOverride && symbolOverride !== isin) { const d = await yahooDiv(symbolOverride); if (d.length) return d; }
+    // If isin is itself a ticker (not ISIN format), query it directly
     const d = await yahooDiv(isin);
     if (d.length) return d;
   }
@@ -244,13 +248,31 @@ async function recentForDisplay(divs, gbpRate) {
 
 // ── Handler ───────────────────────────────────────────────────────────────
 module.exports = async (req, res) => {
-  res.setHeader('Content-Type', 'application/json; charset=utf-8');
-  res.setHeader('Access-Control-Allow-Origin', '*');
+  if (!setupApi(req, res, { maxRequests: 20 })) return;
 
   const rawIsins = String(req.query?.isins || '');
-  const isins = rawIsins
-    ? rawIsins.split(',').map(s => s.trim()).filter(Boolean)
-    : portfolioSeed.positions.map(p => p.isin);
+  let isins, symbolOverrides = {};
+  if (rawIsins) {
+    // Support "ID:SYMBOL" pairs — ID can be a real ISIN or a ticker symbol (e.g. "KO:KO")
+    const pairs = rawIsins.split(',').map(s => {
+      const [id, sym] = s.trim().split(':');
+      const trimId = id.trim().toUpperCase();
+      return { isin: trimId, symbol: sym?.trim() || null, isRealIsin: ISIN_RE.test(trimId) };
+    }).filter(p => p.isin);
+    // Only validate real ISINs — tickers are allowed through
+    const realIsins = pairs.filter(p => p.isRealIsin).map(p => p.isin);
+    if (realIsins.length > 0) {
+      const { error } = validateIsins(realIsins.join(','));
+      if (error) { res.statusCode = 400; return res.end(JSON.stringify({ error })); }
+    }
+    isins = pairs.map(p => p.isin);
+    pairs.forEach(p => {
+      if (p.symbol) symbolOverrides[p.isin] = p.symbol;
+      else if (!p.isRealIsin) symbolOverrides[p.isin] = p.isin; // ticker is its own symbol
+    });
+  } else {
+    isins = portfolioSeed.positions.map(p => p.isin);
+  }
 
   const gbpRate = await getGbpEur();
   const results = [];
@@ -260,7 +282,7 @@ module.exports = async (req, res) => {
     const seed = portfolioSeed.positions.find(p => p.isin === isin);
 
     try {
-      const divs = await fetchDivs(isin);
+      const divs = await fetchDivs(isin, symbolOverrides[isin]);
       const aps  = await annualEurPerShare(divs, gbpRate);
       const pm   = derivePayMonths(divs);
       const ps   = await buildPaySchedule(divs, gbpRate);

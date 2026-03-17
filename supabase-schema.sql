@@ -129,8 +129,12 @@ CREATE TABLE IF NOT EXISTS public.user_positions (
   user_id      UUID PRIMARY KEY REFERENCES auth.users(id) ON DELETE CASCADE,
   overrides    JSONB NOT NULL DEFAULT '{}',
   custom_assets JSONB NOT NULL DEFAULT '{}',
+  liquidity    JSONB NOT NULL DEFAULT '[]',
   updated_at   TIMESTAMPTZ DEFAULT NOW()
 );
+
+-- Add liquidity column if table already exists (migration)
+ALTER TABLE public.user_positions ADD COLUMN IF NOT EXISTS liquidity JSONB NOT NULL DEFAULT '[]';
 
 ALTER TABLE public.user_positions ENABLE ROW LEVEL SECURITY;
 

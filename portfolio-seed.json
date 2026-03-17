@@ -18,6 +18,7 @@
     { "isin": "DE000A0F5UH1", "name": "ETF iShares STOXX Europe Global", "shortName": "Euro Stoxx 50", "quantity": 28.00, "buyPrice": 36.41, "currentPrice": 35.96 },
     { "isin": "IE00BZ4BMM98", "name": "Invesco EuroStoxx High Div Low Vol ETF", "shortName": "High Div Low Vol", "quantity": 30.00, "buyPrice": 33.91, "currentPrice": 33.43 },
     { "isin": "IE00B9CQXS71", "name": "ETF SPDR Global Dividend Aristocrats", "shortName": "Div Aristocrats", "quantity": 29.00, "buyPrice": 33.45, "currentPrice": 32.60 },
-    { "isin": "NL0011683594", "name": "VanEck Dev Mkt Dividend Leaders ETF", "shortName": "VanEck TDIV", "quantity": 18.00, "buyPrice": 51.98, "currentPrice": 52.10 }
+    { "isin": "NL0011683594", "name": "VanEck Dev Mkt Dividend Leaders ETF", "shortName": "VanEck TDIV", "quantity": 18.00, "buyPrice": 51.98, "currentPrice": 52.10 },
+    { "isin": "LU2145461757", "name": "Robeco Smart Energy D EUR", "shortName": "Robeco Smart Energy", "quantity": 0.00, "buyPrice": 0.00, "currentPrice": 0.00 }
   ]
 }

@@ -34,7 +34,7 @@ module.exports = async (req, res) => {
         provider: r.data?.provider || null
       });
     } catch (err) {
-      results.push({ isin, status: 'ERROR', error: err.message });
+      results.push({ isin, status: 'ERROR', error: 'fetch_failed' });
     }
   }
 

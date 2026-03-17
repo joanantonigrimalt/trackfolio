@@ -1,9 +1,11 @@
 // Returns real historical price series for ALL portfolio assets
 // Uses Yahoo (ISIN-direct) as primary source, falls back to EODHD/TwelveData
+const { setupApi, sendError } = require('../../lib/security');
 const portfolioProviders = require('../../portfolio-providers.json');
 const { resolveAssetData } = require('../../lib/providers');
 
 module.exports = async (req, res) => {
+  if (!setupApi(req, res, { maxRequests: 10 })) return;
   try {
     const skipCache = req.query.refresh === '1';
     const results = [];
@@ -26,7 +28,7 @@ module.exports = async (req, res) => {
       } catch (err) {
         results.push({
           isin: asset.isin, name: asset.name, provider: null, symbol: null,
-          resolvedAs: null, status: 'MISSING', points: [], error: err.message
+          resolvedAs: null, status: 'MISSING', points: [], error: 'fetch_failed'
         });
       }
     }
@@ -42,8 +44,6 @@ module.exports = async (req, res) => {
     res.setHeader('Content-Type', 'application/json; charset=utf-8');
     res.end(JSON.stringify({ summary, results }, null, 2));
   } catch (error) {
-    res.statusCode = 500;
-    res.setHeader('Content-Type', 'application/json; charset=utf-8');
-    res.end(JSON.stringify({ error: error.message }));
+    sendError(res, 500, 'Internal server error');
   }
 };

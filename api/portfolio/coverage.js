@@ -1,10 +1,15 @@
+const { setupApi, validateIsins, sendError } = require('../../lib/security');
 const { resolveAssetData } = require('../../lib/providers');
 
 module.exports = async (req, res) => {
+  if (!setupApi(req, res, { maxRequests: 20 })) return;
   try {
-    const isins = req.query.isin
-      ? String(req.query.isin).split(',').map((v) => v.trim()).filter(Boolean)
-      : [];
+    let isins = [];
+    if (req.query.isin) {
+      const { isins: validated, error } = validateIsins(String(req.query.isin));
+      if (error) return sendError(res, 400, error);
+      isins = validated;
+    }
     const skipCache = req.query.refresh === '1';
     const uniqueIsins = [...new Set(isins)];
 
@@ -25,8 +30,6 @@ module.exports = async (req, res) => {
     res.setHeader('Content-Type', 'application/json; charset=utf-8');
     res.end(JSON.stringify({ summary, results }, null, 2));
   } catch (error) {
-    res.statusCode = 500;
-    res.setHeader('Content-Type', 'application/json; charset=utf-8');
-    res.end(JSON.stringify({ error: error.message }));
+    sendError(res, 500, 'Internal server error');
   }
 };
