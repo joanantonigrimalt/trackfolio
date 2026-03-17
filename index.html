@@ -123,6 +123,40 @@
 /* === Analysis === */
 .healthRow{display:flex;align-items:center;gap:16px;margin-top:4px}.healthDonutWrap{position:relative;width:110px;height:110px;flex-shrink:0}.healthDonutWrap canvas{width:110px!important;height:110px!important}.healthCenter{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center;pointer-events:none}.healthCenter .hs{font-size:26px;font-weight:800;letter-spacing:-.04em;color:#142018;line-height:1}.healthCenter .hsl{font-size:10px;color:#8fa090;font-weight:600}.subscores{display:flex;flex-direction:column;gap:8px;flex:1}.subscoreRow{display:flex;align-items:center;justify-content:space-between;gap:8px}.subscoreLabel{font-size:12px;font-weight:600;color:#5a6e5e;min-width:72px}.subscoreBar{flex:1;height:6px;background:#e8f0e9;border-radius:3px;overflow:hidden}.subscoreBarFill{height:100%;border-radius:3px;transition:width .6s}.subscoreVal{font-size:13px;font-weight:800;color:#142018;min-width:28px;text-align:right}
 .chartWrap2{position:relative;height:160px;margin-top:8px}.distLegend{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}.legendItem{display:flex;align-items:center;gap:5px;font-size:12px;font-weight:600;color:#4a5f4e}.legendDot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+/* Analysis summary */
+.an-sum-top{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px}
+.an-sum-card{background:rgba(255,255,255,.85);border:1px solid rgba(20,32,24,.06);border-radius:20px;padding:14px;backdrop-filter:blur(8px)}
+.an-sum-label{font-size:9px;font-weight:700;color:#8fa090;text-transform:uppercase;letter-spacing:.09em;margin-bottom:5px}
+.an-sum-main{font-size:18px;font-weight:800;color:#142018;letter-spacing:-.04em;line-height:1}.an-sum-main.an-green{color:#15803d}.an-sum-main.an-red{color:#b91c1c}
+.an-sum-badge{display:inline-flex;align-items:center;border-radius:6px;padding:2px 7px;font-size:11px;font-weight:700;width:fit-content;margin-top:5px}
+.an-sum-badge.pos{background:rgba(21,128,61,.09);color:#15803d}.an-sum-badge.neg{background:rgba(185,28,28,.08);color:#b91c1c}
+.an-sum-sub{font-size:10px;color:#8fa090;font-weight:500;margin-top:3px}
+.an-sum-foot{font-size:10px;color:#8fa090;font-weight:500;margin-top:5px;padding-top:5px;border-top:1px solid rgba(20,32,24,.06)}
+.an-cash-row{background:rgba(255,255,255,.85);border:1px solid rgba(20,32,24,.06);border-radius:20px;padding:14px;display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:10px;backdrop-filter:blur(8px)}
+.an-cash-left{flex:1}
+.an-liq-wrap{position:relative;width:48px;height:48px;flex-shrink:0}.an-liq-wrap canvas{position:absolute;top:0;left:0}
+.an-liq-label{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.an-liq-pct{font-size:9px;font-weight:800;color:#142018;line-height:1}.an-liq-tag{font-size:7px;color:#8fa090;font-weight:600}
+/* Period strip */
+.an-period-strip{background:rgba(255,255,255,.85);border:1px solid rgba(20,32,24,.06);border-radius:20px;padding:6px 4px;display:grid;grid-template-columns:repeat(6,1fr);margin-bottom:12px}
+.an-period-item{display:flex;flex-direction:column;align-items:center;gap:2px;padding:7px 2px;border-radius:10px;border-right:1px solid rgba(20,32,24,.06)}.an-period-item:last-child{border-right:none}
+.an-period-label{font-size:7px;font-weight:700;color:#8fa090;text-transform:uppercase;letter-spacing:.03em;white-space:nowrap}
+.an-period-pct{font-size:10px;font-weight:800;white-space:nowrap}.an-period-abs{font-size:7px;font-weight:500;white-space:nowrap}
+.an-period-pct.pos,.an-period-abs.pos{color:#15803d}.an-period-pct.neg,.an-period-abs.neg{color:#b91c1c}.an-period-pct.neu,.an-period-abs.neu{color:#8fa090}
+/* Best/Worst */
+.an-bw-header{display:flex;align-items:center;gap:8px;margin-bottom:10px}
+.an-bw-icon{width:30px;height:30px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0}.an-bw-icon.best{background:#e6faf3}.an-bw-icon.worst{background:#fef2f2}
+.an-bw-title{font-size:14px;font-weight:800;color:#142018;letter-spacing:-.02em}
+.an-bw-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.an-bw-item{background:#fff;border:1px solid rgba(20,32,24,.07);border-radius:14px;padding:10px;display:flex;flex-direction:column}
+.an-bw-item.best-item{border-color:rgba(21,128,61,.15)}.an-bw-item.worst-item{border-color:rgba(185,28,28,.12)}
+.an-bw-top{display:flex;align-items:flex-start;justify-content:space-between;gap:4px;margin-bottom:5px}
+.an-bw-logo{width:28px;height:28px;border-radius:8px;color:#fff;display:grid;place-items:center;font-weight:800;font-size:11px;flex-shrink:0}
+.an-bw-nameWrap{flex:1;margin-left:6px;min-width:0}.an-bw-ticker{font-size:11px;font-weight:700;color:#142018;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.an-bw-fname{font-size:9px;color:#8fa090;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:1px}
+.an-bw-badge{display:flex;flex-direction:column;align-items:flex-end;flex-shrink:0}.an-bw-pct{font-size:11px;font-weight:800}.an-bw-pct.pos{color:#15803d}.an-bw-pct.neg{color:#b91c1c}
+.an-bw-eur{font-size:9px;font-weight:500;margin-top:1px}.an-bw-eur.pos{color:#15803d}.an-bw-eur.neg{color:#b91c1c}
+.an-bw-spark{height:24px;margin:3px 0 5px}.an-bw-bottom{display:flex;justify-content:space-between;align-items:flex-end;margin-top:auto}
+.an-bw-price{font-size:11px;font-weight:800;color:#142018}.an-bw-total{font-size:9px;font-weight:600}.an-bw-total.pos{color:#15803d}.an-bw-total.neg{color:#b91c1c}
 /* === Dividends === */
 .divHero{background:linear-gradient(160deg,#1a3f2c 0%,#0f2a1e 100%);color:#f5fbf6}.divHeroTop{display:flex;align-items:flex-end;gap:16px;margin-bottom:14px}.divBig{font-size:48px;font-weight:800;letter-spacing:-.05em;line-height:1}.divBigSub{font-size:14px;color:rgba(239,249,242,.6);font-weight:600;padding-bottom:8px}.divMetrics{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}.divMetricBox{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.09);border-radius:14px;padding:10px}.divMetricBox .dl{font-size:10px;color:rgba(239,249,242,.5);text-transform:uppercase;letter-spacing:.08em;font-weight:600}.divMetricBox .dn{font-size:16px;font-weight:700;margin-top:3px;letter-spacing:-.02em}
 .divHoldingRow{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid rgba(20,32,24,.06);cursor:pointer;transition:background .15s}.divHoldingRow:hover{background:rgba(21,128,61,.04);border-radius:10px;margin:0 -8px;padding:12px 8px}.divHoldingRow:last-child{border-bottom:none}.divHoldingLeft{flex:1;min-width:0}.divHoldingName{font-size:13px;font-weight:700;color:#142018;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.divHoldingMeta{font-size:11px;color:#8fa090;margin-top:2px;font-weight:500}.divHoldingRight{text-align:right;flex-shrink:0}.divHoldingAmt{font-size:15px;font-weight:800;color:#142018}.divHoldingYield{font-size:11px;color:#15803d;margin-top:2px;font-weight:700}
@@ -425,14 +459,74 @@
     <div class="title" data-i18n="tabAnalysis">Análisis</div>
     <div class="sub" data-i18n="analysisSub">Salud, distribución y rendimiento</div>
   </div></div>
-  <div class="card"><div class="sectionTitle" data-i18n="healthScore">Score de salud</div>
+
+  <!-- ─── Portfolio Summary ─── -->
+  <div class="an-sum-top">
+    <div class="an-sum-card">
+      <div class="an-sum-label">📊 Valor</div>
+      <div class="an-sum-main" id="anSumValue">—</div>
+      <span class="an-sum-badge" id="anSumDayBadge">—</span>
+      <div class="an-sum-sub" id="anSumDayGain">—</div>
+      <div class="an-sum-foot" id="anSumInvested">—</div>
+    </div>
+    <div class="an-sum-card">
+      <div class="an-sum-label">📈 Rentabilidad</div>
+      <div class="an-sum-main" id="anSumGain">—</div>
+      <span class="an-sum-badge" id="anSumGainBadge">—</span>
+      <canvas id="anSumSpark" width="126" height="32" style="margin-top:8px;display:block"></canvas>
+    </div>
+  </div>
+  <div class="an-cash-row">
+    <div class="an-cash-left">
+      <div class="an-sum-label">💳 Efectivo</div>
+      <div class="an-sum-main" id="anCashAmt">—</div>
+      <div class="an-sum-sub" id="anCashSub">—</div>
+    </div>
+    <div style="display:flex;flex-direction:column;align-items:center;gap:3px;flex-shrink:0">
+      <div class="an-liq-wrap">
+        <canvas id="anLiqCanvas" width="48" height="48"></canvas>
+        <div class="an-liq-label"><span id="anLiqPct" class="an-liq-pct">0%</span><span class="an-liq-tag">LIQ.</span></div>
+      </div>
+      <span style="font-size:8px;color:#8fa090;font-weight:700;text-transform:uppercase;letter-spacing:.05em">Liquidez</span>
+    </div>
+  </div>
+  <div class="an-period-strip" id="anPeriodStrip"></div>
+
+  <!-- ─── Cards ─── -->
+  <div class="card">
+    <div class="sectionTitle" data-i18n="healthScore">Score de salud</div>
     <div class="healthRow">
       <div class="healthDonutWrap"><canvas id="healthDonut"></canvas><div class="healthCenter"><div class="hs" id="healthScoreNum">—</div><div class="hsl">/ 100</div></div></div>
       <div class="subscores" id="subscoreList"></div>
     </div>
   </div>
   <div class="card"><div class="sectionTitle" data-i18n="distribution">Distribución por tipo</div><div class="chartWrap2"><canvas id="distPie"></canvas></div><div class="distLegend" id="distLegend"></div></div>
+  <div class="card" id="anBrokerCard" style="display:none">
+    <div class="sectionTitle">Distribución por broker</div>
+    <div style="display:flex;align-items:center;gap:14px;margin-bottom:12px">
+      <div style="width:110px;height:110px;flex-shrink:0;position:relative"><canvas id="brokerPie" style="width:110px!important;height:110px!important"></canvas></div>
+      <div id="brokerLegend" style="flex:1;display:flex;flex-direction:column;gap:6px"></div>
+    </div>
+    <div id="brokerBars"></div>
+  </div>
   <div class="card"><div class="sectionTitle" data-i18n="performance">Rentabilidad por activo</div><div id="perfBarWrap" style="position:relative;height:220px;margin-top:6px"><canvas id="perfBar"></canvas></div></div>
+  <div class="card" id="anBestWorstCard">
+    <div id="anBestSection"></div>
+    <div id="anWorstSection" style="margin-top:14px"></div>
+  </div>
+  <div class="card" style="padding:0;overflow:hidden" id="anTreemapCard">
+    <div style="padding:14px 16px 10px;display:flex;align-items:center;justify-content:space-between">
+      <div>
+        <div style="font-size:9px;font-weight:700;color:#8fa090;text-transform:uppercase;letter-spacing:.1em;margin-bottom:3px">Cambio total</div>
+        <div style="font-size:15px;font-weight:800;color:#142018;letter-spacing:-.02em">Mapa de Cartera</div>
+      </div>
+      <div style="display:flex;gap:8px">
+        <div style="display:flex;align-items:center;gap:4px;font-size:10px;color:#8fa090;font-weight:600"><div style="width:8px;height:8px;border-radius:2px;background:#22c55e"></div>+</div>
+        <div style="display:flex;align-items:center;gap:4px;font-size:10px;color:#8fa090;font-weight:600"><div style="width:8px;height:8px;border-radius:2px;background:#f87171"></div>−</div>
+      </div>
+    </div>
+    <div id="anTreemap" style="width:100%;height:260px;position:relative"></div>
+  </div>
   <div class="card"><div class="sectionTitle" data-i18n="vsWorld">Portfolio vs MSCI World</div><div style="position:relative;height:180px;margin-top:6px"><canvas id="vsWorldBar"></canvas></div><div id="vsWorldNote" style="display:none;font-size:11px;color:#8fa090;text-align:center;margin-top:8px"></div></div>
   <div class="card" id="analysisCoverageCard"><div id="analysisCoverageContent"></div></div>
 </div>
@@ -1553,42 +1647,196 @@ function computeHealthScore(){
   const rentab=Math.round(Math.max(0,Math.min(100,50+gp*2)));
   return{score:Math.round(diversif*.35+riesgo*.3+rentab*.35),diversif,riesgo,rentab};
 }
+// ── Analysis helpers ────────────────────────────────────────────────────────
+function _anDrawSpark(canvas,pts,pos){
+  if(!canvas||!pts||pts.length<2)return;
+  const ctx=canvas.getContext('2d'),w=canvas.width,h=canvas.height;
+  const mn=Math.min(...pts),mx=Math.max(...pts),rng=mx-mn||1;
+  const tx=i=>i*(w/(pts.length-1));
+  const ty=v=>h-3-((v-mn)/rng)*(h-6);
+  const col=pos?'#22c55e':'#f87171';
+  ctx.clearRect(0,0,w,h);
+  ctx.beginPath();ctx.moveTo(tx(0),h);
+  pts.forEach((v,i)=>ctx.lineTo(tx(i),ty(v)));
+  ctx.lineTo(tx(pts.length-1),h);ctx.closePath();
+  const g=ctx.createLinearGradient(0,0,0,h);
+  g.addColorStop(0,pos?'rgba(34,197,94,.22)':'rgba(248,113,113,.22)');
+  g.addColorStop(1,'rgba(255,255,255,0)');
+  ctx.fillStyle=g;ctx.fill();
+  ctx.beginPath();pts.forEach((v,i)=>i===0?ctx.moveTo(tx(i),ty(v)):ctx.lineTo(tx(i),ty(v)));
+  ctx.strokeStyle=col;ctx.lineWidth=1.5;ctx.lineJoin='round';ctx.lineCap='round';ctx.stroke();
+}
+function _anLiqGauge(canvas,pct){
+  if(!canvas)return;
+  const ctx=canvas.getContext('2d'),cx=24,cy=24,r=19;
+  const st=Math.PI*.75,tot=Math.PI*1.5;
+  ctx.clearRect(0,0,48,48);
+  ctx.beginPath();ctx.arc(cx,cy,r,st,st+tot);
+  ctx.strokeStyle='#e8f0e9';ctx.lineWidth=5;ctx.lineCap='round';ctx.stroke();
+  if(pct>0){ctx.beginPath();ctx.arc(cx,cy,r,st,st+pct*tot);ctx.strokeStyle='#f59e0b';ctx.lineWidth=5;ctx.lineCap='round';ctx.stroke();}
+}
+function _anRenderSummary(){
+  const total=assets.reduce((s,a)=>s+toDisplay(a.value,assetCcy(a)),0);
+  const inv=assets.reduce((s,a)=>s+toDisplay(a.invested,costCcy(a)),0);
+  const gain=total-inv,gainPct=inv>0?(gain/inv)*100:0,isPos=gain>=0;
+  const isEs=currentLang==='es';
+  // Today's change
+  let todayGain=null,todayPct=null;
+  {let prev=0,has=false;assets.forEach(a=>{const dp=getDayPct(a);if(dp!=null){prev+=toDisplay(a.quantity*(a.history[a.history.length-2]?.close??0),assetCcy(a));has=true;}else prev+=toDisplay(a.value,assetCcy(a));});
+  if(has&&prev>0){todayGain=total-prev;todayPct=(todayGain/prev)*100;}}
+  const elVal=document.getElementById('anSumValue'),elDB=document.getElementById('anSumDayBadge');
+  const elDG=document.getElementById('anSumDayGain'),elInv=document.getElementById('anSumInvested');
+  if(elVal)elVal.textContent=fe(total);
+  if(elDB){elDB.textContent=todayPct!=null?`${todayPct>=0?'+':''}${todayPct.toFixed(2)}%`:'—';elDB.className='an-sum-badge '+(todayPct==null?'':todayPct>=0?'pos':'neg');}
+  if(elDG&&todayGain!=null)elDG.textContent=`${todayGain>=0?'+':''}${fe(todayGain)} ${isEs?'hoy':'today'}`;
+  if(elInv)elInv.textContent=`${isEs?'Invertido':'Invested'}: ${fe(inv)}`;
+  const elG=document.getElementById('anSumGain'),elGB=document.getElementById('anSumGainBadge');
+  if(elG){elG.textContent=(isPos?'+':'')+fe(gain);elG.className='an-sum-main '+(isPos?'an-green':'an-red');}
+  if(elGB){elGB.textContent=`${isPos?'+':''}${gainPct.toFixed(2)}%`;elGB.className='an-sum-badge '+(isPos?'pos':'neg');}
+  const full=buildPortfolioTimeSeries();
+  const sp=document.getElementById('anSumSpark');
+  if(sp&&full&&full.length>1)_anDrawSpark(sp,full.slice(-30).map(p=>p.totalValue),isPos);
+  // Liquidity
+  const liq=getLiquidity(),liqTot=liq.reduce((s,l)=>s+(Number(l.amount)||0),0);
+  const liqPct=(total+liqTot)>0?liqTot/(total+liqTot):0;
+  const elC=document.getElementById('anCashAmt'),elCS=document.getElementById('anCashSub');
+  if(elC)elC.textContent=fe(liqTot);
+  if(elCS)elCS.textContent=isEs?`${liq.length} cuenta${liq.length!==1?'s':''}`:`${liq.length} account${liq.length!==1?'s':''}`;
+  _anLiqGauge(document.getElementById('anLiqCanvas'),liqPct);
+  const lpe=document.getElementById('anLiqPct');if(lpe)lpe.textContent=(liqPct*100).toFixed(1)+'%';
+}
+function _anRenderPeriodStrip(){
+  const strip=document.getElementById('anPeriodStrip');if(!strip)return;
+  const full=buildPortfolioTimeSeries();
+  const isEs=currentLang==='es';
+  const periods=[
+    {key:'1W', label:isEs?'1 Sem':'1 Wk'},
+    {key:'1M', label:isEs?'1 Mes':'1 Mo'},
+    {key:'3M', label:'3M'},{key:'6M', label:'6M'},
+    {key:'YTD',label:'YTD'},
+    {key:'5Y', label:isEs?'5 Años':'5 Yr'},
+  ];
+  strip.innerHTML=periods.map(({key,label})=>{
+    let pct=null,abs=null;
+    if(full&&full.length>=2){const f=filterByRange(full,key);if(f&&f.length>=2){const b=f[0].totalValue,c=f[f.length-1].totalValue;if(b>0){pct=(c-b)/b*100;abs=c-b;}}}
+    const cl=pct==null?'neu':pct>=0?'pos':'neg';
+    const ps=pct==null?'—':`${pct>=0?'+':''}${pct.toFixed(1)}%`;
+    const as=abs==null?'—':`${abs>=0?'+':''}${Math.abs(abs)>=1000?(abs>=0?'+':'-')+Math.abs(abs/1000).toFixed(1)+'k':(abs>=0?'+':'')+fe(abs)}`;
+    return`<div class="an-period-item"><span class="an-period-label">${label}</span><span class="an-period-pct ${cl}">${ps}</span><span class="an-period-abs ${cl}">${as}</span></div>`;
+  }).join('');
+}
+function _anRenderBroker(){
+  const card=document.getElementById('anBrokerCard');if(!card)return;
+  const byB={};assets.forEach(a=>{const b=a.broker||(currentLang==='es'?'Sin broker':'Other');byB[b]=(byB[b]||0)+toDisplay(a.value,assetCcy(a));});
+  const entries=Object.entries(byB).sort((a,b)=>b[1]-a[1]);
+  if(entries.length<2){card.style.display='none';return;}card.style.display='';
+  const tot=entries.reduce((s,[,v])=>s+v,0);
+  const BC=['#15803d','#f59e0b','#3b82f6','#e91e8c','#9e9e9e','#f97316','#7c3aed','#0ea5e9','#ef4444','#14b8a6'];
+  const cols=entries.map((_,i)=>BC[i%BC.length]);
+  document.getElementById('brokerLegend').innerHTML=entries.map(([n,v],i)=>
+    `<div class="legendItem"><div class="legendDot" style="background:${cols[i]}"></div><span style="flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${escapeHtml(n)}</span><span style="color:#8fa090;font-weight:700;margin-left:6px">${Math.round(v/tot*100)}%</span></div>`
+  ).join('');
+  document.getElementById('brokerBars').innerHTML=entries.map(([n,v],i)=>
+    `<div style="margin-bottom:8px"><div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:4px"><span style="font-weight:600;color:#142018;display:flex;align-items:center;gap:5px"><span style="display:inline-block;width:6px;height:6px;border-radius:50%;background:${cols[i]};flex-shrink:0"></span>${escapeHtml(n)}</span><span style="font-weight:700;color:#142018">${fe(v)}</span></div><div style="height:8px;background:#f0f0f0;border-radius:10px;overflow:hidden"><div style="width:${Math.round(v/tot*100)}%;height:100%;background:${cols[i]};border-radius:10px"></div></div></div>`
+  ).join('');
+  if(analysisCharts._broker){try{analysisCharts._broker.destroy();}catch(_){}}
+  analysisCharts._broker=new Chart(document.getElementById('brokerPie').getContext('2d'),{type:'doughnut',data:{datasets:[{data:entries.map(([,v])=>v),backgroundColor:cols,borderWidth:2,borderColor:'#fff'}]},options:{cutout:'68%',responsive:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>` ${entries[c.dataIndex][0]}: ${fe(c.raw)}`}}},animation:{duration:600}}});
+}
+function _anRenderBestWorst(){
+  const bestEl=document.getElementById('anBestSection'),worstEl=document.getElementById('anWorstSection');
+  if(!bestEl||!worstEl)return;
+  const sorted=[...assets].filter(a=>Number.isFinite(a.gainPct)).sort((a,b)=>b.gainPct-a.gainPct);
+  if(!sorted.length){bestEl.innerHTML='';worstEl.innerHTML='';return;}
+  const isEs=currentLang==='es';
+  const IC=['#15803d','#1d6fa8','#7c3aed','#f59e0b','#ef4444','#0ea5e9','#e91e8c'];
+  function mkCard(a,idx,isBest){
+    const pos=a.gainPct>=0,col=IC[idx%IC.length];
+    const sparkId=`anSpk_${isBest?'b':'w'}_${idx}`;
+    return`<div class="an-bw-item ${isBest?'best-item':'worst-item'}">
+      <div class="an-bw-top">
+        <div class="an-bw-logo" style="background:${col}">${escapeHtml(iconInitials(a))}</div>
+        <div class="an-bw-nameWrap"><div class="an-bw-ticker">${escapeHtml(a.name.slice(0,10))}</div><div class="an-bw-fname">${escapeHtml(a.name.slice(0,16))}</div></div>
+        <div class="an-bw-badge"><span class="an-bw-pct ${pos?'pos':'neg'}">${(pos?'+':'')+a.gainPct.toFixed(2)}%</span><span class="an-bw-eur ${pos?'pos':'neg'}">${(a.gain>=0?'+':'')+fe(toDisplay(a.gain,assetCcy(a)))}</span></div>
+      </div>
+      <div class="an-bw-spark"><canvas id="${sparkId}" width="120" height="24"></canvas></div>
+      <div class="an-bw-bottom"><span class="an-bw-price">${fc(a.currentPrice,assetCcy(a))}</span><span class="an-bw-total ${pos?'pos':'neg'}">${fe(toDisplay(a.value,assetCcy(a)))}</span></div>
+    </div>`;
+  }
+  const top4=sorted.slice(0,4),bot4=sorted.slice(-4).reverse();
+  bestEl.innerHTML=`<div class="an-bw-header"><div class="an-bw-icon best">↑</div><span class="an-bw-title">${isEs?'Mejores':'Top Performers'}</span></div><div class="an-bw-grid">${top4.map((a,i)=>mkCard(a,i,true)).join('')}</div>`;
+  worstEl.innerHTML=`<div class="an-bw-header"><div class="an-bw-icon worst">↓</div><span class="an-bw-title">${isEs?'Peores':'Worst Performers'}</span></div><div class="an-bw-grid">${bot4.map((a,i)=>mkCard(a,i,false)).join('')}</div>`;
+  [...top4.map((a,i)=>({a,id:`anSpk_b_${i}`})),...bot4.map((a,i)=>({a,id:`anSpk_w_${i}`}))].forEach(({a,id})=>{
+    const cvs=document.getElementById(id);if(!cvs)return;
+    const pts=a.hasRealHistory&&a.history?.length>1?a.history.slice(-20).map(p=>p.close):[a.buyPrice||1,a.currentPrice||1];
+    _anDrawSpark(cvs,pts,a.gainPct>=0);
+  });
+}
+function _anRenderTreemap(){
+  const container=document.getElementById('anTreemap');if(!container)return;
+  const W=container.offsetWidth||358,H=260;
+  container.innerHTML='';if(!assets.length)return;
+  const all=[...assets.map(a=>({name:a.name.length>18?a.name.slice(0,16)+'…':a.name,weight:toDisplay(a.value,assetCcy(a)),gainPct:a.gainPct??0,today:getDayPct(a)??0}))];
+  const liqTot=getLiquidity().reduce((s,l)=>s+(Number(l.amount)||0),0);
+  if(liqTot>0)all.push({name:currentLang==='es'?'Efectivo':'Cash',weight:liqTot,gainPct:null,today:0});
+  const tot=all.reduce((s,i)=>s+i.weight,0);if(!tot)return;
+  function colFor(item){if(item.gainPct==null)return'#2563eb';const p=item.gainPct;if(p>20)return'#14532d';if(p>5)return'#15803d';if(p>0)return'#22c55e';if(p>-5)return'#dc2626';if(p>-15)return'#b91c1c';return'#7f1d1d';}
+  function squarify(itms,x,y,w,h){
+    if(!itms.length)return[];
+    const area=w*h,rects=[];
+    function worst(row,side){const s=row.reduce((a,b)=>a+b.weight,0)/tot*area,mx=Math.max(...row.map(r=>r.weight/tot*area)),mn=Math.min(...row.map(r=>r.weight/tot*area));return Math.max((side*side*mx)/(s*s),(s*s)/(side*side*mn));}
+    function lr(row,cx,cy,cw,ch,hz){const s=row.reduce((a,b)=>a+b.weight,0)/tot*area;let pos=hz?cy:cx;row.forEach(item=>{const fr=(item.weight/tot*area)/s,rw=hz?s/ch:fr*cw,rh=hz?fr*ch:s/cw;rects.push({item,x:hz?cx:pos,y:hz?pos:cy,w:rw,h:rh});pos+=hz?rh:rw;});return hz?{x:cx+s/ch,y:cy,w:cw-s/ch,h:ch}:{x:cx,y:cy+s/cw,w:cw,h:ch-s/cw};}
+    let rem=[...itms],cx=x,cy=y,cw=w,ch=h;
+    while(rem.length){const hz=cw>=ch,side=hz?ch:cw;let row=[rem[0]],i=1;while(i<rem.length){const nx=[...row,rem[i]];if(row.length>1&&worst(nx,side)>worst(row,side))break;row=nx;i++;}const nxt=lr(row,cx,cy,cw,ch,hz);rem=rem.slice(row.length);cx=nxt.x;cy=nxt.y;cw=nxt.w;ch=nxt.h;}
+    return rects;
+  }
+  squarify([...all].sort((a,b)=>b.weight-a.weight),0,0,W,H).forEach(({item,x,y,w,h})=>{
+    const cell=document.createElement('div');
+    cell.style.cssText=`position:absolute;left:${x+1.5}px;top:${y+1.5}px;width:${Math.max(w-3,2)}px;height:${Math.max(h-3,2)}px;background:${colFor(item)};border-radius:8px;display:flex;flex-direction:column;align-items:center;justify-content:center;overflow:hidden;cursor:default;transition:filter .15s`;
+    cell.onmouseenter=()=>cell.style.filter='brightness(1.15)';cell.onmouseleave=()=>cell.style.filter='';
+    if(w>32&&h>20){const fs=Math.min(w/(item.name.length*.72),h*.28,13);const nm=document.createElement('div');nm.style.cssText=`font-size:${fs}px;font-weight:800;color:#fff;text-align:center;line-height:1.2;padding:0 3px;word-break:break-word;text-shadow:0 1px 4px rgba(0,0,0,.5)`;nm.textContent=item.name;cell.appendChild(nm);}
+    if(w>36&&h>36&&item.gainPct!=null){const pfs=Math.min(w/7,h*.2,11);const pe=document.createElement('div');pe.style.cssText=`font-size:${pfs}px;font-weight:700;color:rgba(255,255,255,.9);margin-top:2px;text-shadow:0 1px 2px rgba(0,0,0,.4)`;pe.textContent=(item.gainPct>=0?'+':'')+item.gainPct.toFixed(1)+'%';cell.appendChild(pe);}
+    container.appendChild(cell);
+  });
+}
 function renderAnalysisCharts(){
   destroyAnalysisCharts();
+  // ─── Summary section ───
+  _anRenderSummary();
+  _anRenderPeriodStrip();
+  // ─── Health score ───
   const{score,diversif,riesgo,rentab}=computeHealthScore();
   document.getElementById('healthScoreNum').textContent=score;
   const sc=score>=70?'#22c55e':score>=50?'#f59e0b':'#f87171';
   analysisCharts.h=new Chart(document.getElementById('healthDonut').getContext('2d'),{type:'doughnut',data:{datasets:[{data:[score,100-score],backgroundColor:[sc,'#e8f0e9'],borderWidth:0}]},options:{cutout:'74%',responsive:false,plugins:{legend:{display:false},tooltip:{enabled:false}}}});
   document.getElementById('subscoreList').innerHTML=[{l:t('distribution').slice(0,5)+'.',v:diversif,c:'#3b82f6'},{l:currentLang==='es'?'Riesgo':'Risk',v:riesgo,c:'#22c55e'},{l:currentLang==='es'?'Rentab.':'Return',v:rentab,c:'#f59e0b'}].map(s=>`<div class="subscoreRow"><div class="subscoreLabel">${s.l}</div><div class="subscoreBar"><div class="subscoreBarFill" style="width:${s.v}%;background:${s.c}"></div></div><div class="subscoreVal">${s.v}</div></div>`).join('');
+  // ─── Distribution by type ───
   const total=assets.reduce((s,a)=>s+toDisplay(a.value,assetCcy(a)),0),catMap={};assets.forEach(a=>{const c=assetCategory(a);catMap[c]=(catMap[c]||0)+toDisplay(a.value,assetCcy(a));});
   const cats=Object.keys(catMap).sort((a,b)=>catMap[b]-catMap[a]),catColors={'Fondos':'#7c3aed','ETFs':'#1d6fa8','Oro':'#475569'},pieColors=cats.map(c=>catColors[c]||'#666'),piePcts=cats.map(c=>Math.round(catMap[c]/total*100));
   analysisCharts.p=new Chart(document.getElementById('distPie').getContext('2d'),{type:'doughnut',data:{labels:cats,datasets:[{data:cats.map(c=>catMap[c]),backgroundColor:pieColors,borderWidth:3,borderColor:'#fff'}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>` ${c.label}: ${fe(c.raw)} (${piePcts[c.dataIndex]}%)`}}}}});
   document.getElementById('distLegend').innerHTML=cats.map((c,i)=>`<div class="legendItem"><div class="legendDot" style="background:${pieColors[i]}"></div>${c} ${piePcts[i]}%</div>`).join('');
+  // ─── Distribution by broker ───
+  _anRenderBroker();
+  // ─── Performance by asset ───
   const top=[...assets].sort((a,b)=>b.gainPct-a.gainPct);
   document.getElementById('perfBarWrap').style.height=Math.max(200,top.length*24)+'px';
   analysisCharts.b=new Chart(document.getElementById('perfBar').getContext('2d'),{type:'bar',data:{labels:top.map(a=>a.name.length>14?a.name.slice(0,13)+'…':a.name),datasets:[{data:top.map(a=>a.gainPct),backgroundColor:top.map(a=>a.gainPct>=0?'rgba(34,197,94,.75)':'rgba(248,113,113,.75)'),borderRadius:4,borderSkipped:false}]},options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>` ${c.parsed.x>=0?'+':''}${c.parsed.x.toFixed(2)}%`}}},scales:{x:{grid:{color:'rgba(20,32,24,.05)'},border:{display:false},ticks:{color:'#8fa090',font:{size:10},callback:v=>v+'%'}},y:{grid:{display:false},border:{display:false},ticks:{color:'#4a5f4e',font:{size:10,weight:'600'}}}}}});
+  // ─── Best / Worst performers ───
+  _anRenderBestWorst();
+  // ─── Treemap ───
+  setTimeout(_anRenderTreemap,80);
+  // ─── Portfolio vs MSCI World ───
   const full=buildPortfolioTimeSeries(),years=Object.keys(MSCI_WORLD_ANNUAL).sort();
-  // Annual return: (last value of year Y) / (last value of year Y-1) - 1
   const lastInYear=(yr)=>{const pts=full?full.filter(p=>p.date.startsWith(yr)):[];return pts.length?pts[pts.length-1].totalValue:null;};
   const firstInYear=(yr)=>{const pts=full?full.filter(p=>p.date.startsWith(yr)):[];return pts.length?pts[0].totalValue:null;};
   const portAnnual=years.map(yr=>{
-    if(!full)return null;
-    const cur=lastInYear(yr);
-    if(!cur)return null; // no data for this year at all
-    const prev=lastInYear(String(parseInt(yr)-1));
-    if(prev&&prev>0)return((cur-prev)/prev)*100;
-    // No prior-year data: use first available point of this year as base (partial-year return)
-    const first=firstInYear(yr);
-    if(!first||first<=0||first===cur)return null; // only 1 point or same point
-    return((cur-first)/first)*100;
+    if(!full)return null;const cur=lastInYear(yr);if(!cur)return null;
+    const prev=lastInYear(String(parseInt(yr)-1));if(prev&&prev>0)return((cur-prev)/prev)*100;
+    const first=firstInYear(yr);if(!first||first<=0||first===cur)return null;return((cur-first)/first)*100;
   });
   analysisCharts.v=new Chart(document.getElementById('vsWorldBar').getContext('2d'),{type:'bar',data:{labels:years,datasets:[{label:'Portfolio',data:portAnnual,backgroundColor:'rgba(21,128,61,.7)',borderRadius:4,borderSkipped:false},{label:'MSCI World',data:years.map(y=>MSCI_WORLD_ANNUAL[y]??null),backgroundColor:'rgba(59,130,246,.6)',borderRadius:4,borderSkipped:false}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{font:{size:11,weight:'600'},color:'#4a5f4e',usePointStyle:true,pointStyleWidth:8}},tooltip:{callbacks:{label:c=>` ${c.dataset.label}: ${c.parsed.y>=0?'+':''}${c.parsed.y.toFixed(1)}%`}}},scales:{x:{grid:{display:false},border:{display:false},ticks:{color:'#8fa090',font:{size:10}}},y:{grid:{color:'rgba(20,32,24,.05)'},border:{display:false},ticks:{color:'#8fa090',font:{size:10},callback:v=>v+'%'}}}}});
-
-  // VS World note when no real history available
   const vsNote=document.getElementById('vsWorldNote');
   if(vsNote){vsNote.style.display=full?'none':'';if(!full)vsNote.textContent=currentLang==='es'?'Sin histórico real: comparativa portfolio no disponible.':'No real history: portfolio comparison unavailable.';}
-
-  // Coverage summary card
+  // ─── Coverage card ───
   const{ok,partial,missing}=counts(),isEs=currentLang==='es';
   const missList=assets.filter(a=>coverageStatus(a)==='MISSING').map(a=>a.name);
   const partList=assets.filter(a=>coverageStatus(a)==='PARTIAL').map(a=>a.name);
@@ -2931,7 +3179,7 @@ function enterMainApp() {
   // Activate home screen
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
   document.getElementById('screen-home').classList.add('active');
-  showTgFab(); // show community FAB now that user is in the app
+  document.getElementById('tgFab').classList.remove('tgShow'); // FAB only on auth screen
   boot().catch(err => { const n = document.getElementById('chartNote'); if(n) n.textContent = 'Error: '+err.message; });
 }
 
