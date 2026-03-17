@@ -546,7 +546,7 @@
   <div class="card divHero">
     <div class="divHeroTop">
       <div><div class="divBig" id="divAnnual">—</div><div class="divBigSub" data-i18n="annualDividends">Annual Dividends</div></div>
-      <div id="divTrend" style="display:none;font-size:12px;font-weight:700;align-self:flex-start;padding-top:6px;border-radius:20px;padding:4px 10px;margin-top:4px"></div>
+      <div id="divTrend" style="display:none;font-size:12px;font-weight:700;align-self:flex-start;padding:4px 10px;border-radius:20px;margin-top:4px;outline:none;color:rgba(239,249,242,.9);background:rgba(255,255,255,.12)"></div>
     </div>
     <div class="divMetrics">
       <div class="divMetricBox"><div class="dl" data-i18n="monthly">Monthly</div><div class="dn" id="divMonthly">—</div></div>
@@ -2227,14 +2227,14 @@ async function loadDividendDetail(isins){
       const pct=((last12-prev12)/prev12)*100;
       const up=pct>=0;
       el.style.display='';
-      el.style.background=up?'rgba(21,128,61,.15)':'rgba(185,28,28,.12)';
-      el.style.color=up?'#15803d':'#b91c1c';
+      el.style.background=up?'rgba(255,255,255,.12)':'rgba(255,255,255,.12)';
+      el.style.color='rgba(239,249,242,.9)';
       el.textContent=(up?'↑ ':'↓ ')+Math.abs(pct).toFixed(1)+'% vs '+(currentYear-1);
     } else {
       // New dividend income — no prior year to compare
       el.style.display='';
-      el.style.background='rgba(21,128,61,.15)';
-      el.style.color='#15803d';
+      el.style.background='rgba(255,255,255,.12)';
+      el.style.color='rgba(239,249,242,.9)';
       el.textContent='↑ '+(currentLang==='es'?'Nuevo':'New');
     }
   }
