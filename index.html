@@ -149,7 +149,7 @@
 .an-bw-title{font-size:15px;font-weight:800;color:#142018;letter-spacing:-.02em}
 .an-bw-grid2{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px}
 .an-bw-grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
-.an-bw-item{background:#fafafa;border:1px solid rgba(0,0,0,.07);border-radius:12px;padding:10px 10px 8px;display:flex;flex-direction:column;gap:0}
+.an-bw-item{background:#fafafa;border:1px solid rgba(0,0,0,.07);border-radius:12px;padding:10px 10px 8px;display:flex;flex-direction:column;gap:0;overflow:hidden;min-width:0}
 .an-bw-item.pos{border-color:rgba(45,201,138,.25);background:#fafffe}.an-bw-item.neg{border-color:rgba(240,82,82,.2);background:#fffafa}
 .an-bw-top{display:flex;align-items:center;gap:7px;margin-bottom:2px}
 .an-bw-logo{width:30px;height:30px;border-radius:8px;color:#fff;display:grid;place-items:center;font-weight:900;font-size:8px;flex-shrink:0;overflow:hidden;letter-spacing:-.03em}
@@ -1174,7 +1174,8 @@ function applyOverridesToAssets(rawAssets){
     const costCurrency=o.costCurrency||'EUR';
     const val=qty*a.currentPrice, inv=qty*bp;
     const gp=bp>0?((a.currentPrice-bp)/bp)*100:0;
-    return{...a,quantity:qty,buyPrice:bp,value:val,invested:inv,gainPct:gp,costCurrency,...(o.broker&&{broker:o.broker})};
+    const gain=val-inv;
+    return{...a,quantity:qty,buyPrice:bp,value:val,invested:inv,gain,gainPct:gp,costCurrency,...(o.broker&&{broker:o.broker})};
   });
   return (_sbUser || _isDemo) ? mapped.filter(Boolean) : mapped;
 }
@@ -1779,7 +1780,9 @@ function _anRenderBestWorst(){
       +`<div class="an-bw-grid2">${big.map((a,i)=>mkCard(a,i,isBest,false)).join('')}</div>`
       +(small.length?`<div class="an-bw-grid3">${small.map((a,i)=>mkCard(a,i+2,isBest,true)).join('')}</div>`:'');
   }
-  const top5=sorted.slice(0,5),bot5=sorted.slice(-5).reverse();
+  const top5=sorted.slice(0,5);
+  const negatives=sorted.filter(a=>a.gainPct<0).reverse();
+  const bot5=negatives.length?negatives.slice(0,5):sorted.slice(-Math.min(3,sorted.length)).reverse();
   bestEl.innerHTML=mkSection(top5,true);
   worstEl.innerHTML=mkSection(bot5,false);
   requestAnimationFrame(()=>{
@@ -3182,12 +3185,12 @@ async function authSubmit() {
 }
 
 const DEMO_POSITIONS = {
-  'IE00B4L5Y983': { quantity: 120, avgCost: 58.20, costCurrency: 'EUR', broker: 'DEGIRO' },       // iShares Core MSCI World
-  'IE00BYX5NK04': { quantity: 85,  avgCost: 69.50, costCurrency: 'EUR', broker: 'MyInvestor' },   // Fidelity MSCI World
-  'IE00B4ND3602': { quantity: 65,  avgCost: 16.80, costCurrency: 'GBP', broker: 'DEGIRO' },       // iShares Physical Gold
-  'NL0011683594': { quantity: 150, avgCost: 21.20, costCurrency: 'EUR', broker: 'DEGIRO' },       // VanEck Dividend Leaders
-  'LU0360863021': { quantity: 40,  avgCost: 182.50, costCurrency: 'EUR', broker: 'MyInvestor' },  // Fundsmith Equity
-  'LU1598719752': { quantity: 20,  avgCost: 72.00, costCurrency: 'EUR', broker: 'MyInvestor' },   // Cobas International
+  'IE00BYX5NK04': { quantity: 850,  avgCost: 9.20,  costCurrency: 'USD', broker: 'MyInvestor' },  // Fidelity MSCI World
+  'IE00B9CQXS71': { quantity: 280,  avgCost: 22.40, costCurrency: 'GBP', broker: 'DEGIRO' },       // SPDR Div Aristocrats
+  'IE00B4ND3602': { quantity: 65,   avgCost: 42.00, costCurrency: 'USD', broker: 'DEGIRO' },       // iShares Physical Gold
+  'NL0011683594': { quantity: 150,  avgCost: 36.50, costCurrency: 'EUR', broker: 'DEGIRO' },       // VanEck Dividend Leaders
+  'ES0173311103': { quantity: 450,  avgCost: 18.60, costCurrency: 'EUR', broker: 'MyInvestor' },   // Numantia Patrimonio
+  'LU1598719752': { quantity: 20,   avgCost: 148.00,costCurrency: 'EUR', broker: 'MyInvestor' },   // Cobas International
 };
 const DEMO_LIQUIDITY = [
   { id:'demo_liq1', name:'Cuenta Naranja ING', type:'savings', amount:8500, currency:'EUR', rate:3.00, since:'2024-01-15' },
