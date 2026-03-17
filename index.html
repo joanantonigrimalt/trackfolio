@@ -3212,9 +3212,9 @@ function _demoToast(){
 
 function enterDemo() {
   localStorage.setItem('fa_ob_done','1');
-  // Save demo data BEFORE setting _isDemo so guards don't block initial setup
-  if(Object.keys(getOverrides()).length === 0) { localStorage.setItem('tf_positions',JSON.stringify(DEMO_POSITIONS)); }
-  if(getLiquidity().length === 0) { localStorage.setItem('fa_liquidity',JSON.stringify(DEMO_LIQUIDITY)); }
+  // Always force demo data — overwrite whatever was in localStorage
+  localStorage.setItem('tf_positions', JSON.stringify(DEMO_POSITIONS));
+  localStorage.setItem('fa_liquidity', JSON.stringify(DEMO_LIQUIDITY));
   _isDemo = true;
   enterMainApp();
   // Show demo banners
