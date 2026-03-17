@@ -147,9 +147,9 @@
 .an-bw-header{display:flex;align-items:center;gap:10px;margin-bottom:14px}
 .an-bw-icon{width:34px;height:34px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0}.an-bw-icon.best{background:#e6faf3}.an-bw-icon.worst{background:#fef2f2}
 .an-bw-title{font-size:15px;font-weight:800;color:#142018;letter-spacing:-.02em}
-.an-bw-grid2{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px}
-.an-bw-grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
-.an-bw-item{background:#fafafa;border:1px solid rgba(0,0,0,.07);border-radius:12px;padding:10px 10px 8px;display:flex;flex-direction:column;gap:0;overflow:hidden;min-width:0}
+.an-bw-grid2{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px;width:100%;overflow:hidden}
+.an-bw-grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;width:100%;overflow:hidden}
+.an-bw-item{background:#fafafa;border:1px solid rgba(0,0,0,.07);border-radius:12px;padding:9px 8px 7px;display:flex;flex-direction:column;gap:0;overflow:hidden;min-width:0;box-sizing:border-box}
 .an-bw-item.pos{border-color:rgba(45,201,138,.25);background:#fafffe}.an-bw-item.neg{border-color:rgba(240,82,82,.2);background:#fffafa}
 .an-bw-top{display:flex;align-items:center;gap:7px;margin-bottom:2px}
 .an-bw-logo{width:30px;height:30px;border-radius:8px;color:#fff;display:grid;place-items:center;font-weight:900;font-size:8px;flex-shrink:0;overflow:hidden;letter-spacing:-.03em}
@@ -157,9 +157,10 @@
 .an-bw-badge{display:flex;flex-direction:column;align-items:flex-end;flex-shrink:0;gap:1px}.an-bw-pct{font-size:10px;font-weight:800;white-space:nowrap}.an-bw-pct.pos{color:#1aab70}.an-bw-pct.neg{color:#f05252}
 .an-bw-eur{font-size:8px;font-weight:500;white-space:nowrap}.an-bw-eur.pos{color:#1aab70}.an-bw-eur.neg{color:#f05252}
 .an-bw-spark{height:28px;margin:5px 0 6px;display:block;width:100%}
-.an-bw-bottom{display:flex;justify-content:space-between;align-items:center}
-.an-bw-price{font-size:11px;font-weight:800;color:#142018}.an-bw-total{font-size:9px;font-weight:700}.an-bw-total.pos{color:#1aab70}.an-bw-total.neg{color:#f05252}
-.an-bw-item.sm .an-bw-logo{width:26px;height:26px;font-size:7px}.an-bw-item.sm .an-bw-ticker{font-size:9px}.an-bw-item.sm .an-bw-pct{font-size:9px}.an-bw-item.sm .an-bw-eur{font-size:7px}.an-bw-item.sm .an-bw-price{font-size:10px}.an-bw-item.sm .an-bw-total{font-size:8px}.an-bw-item.sm .an-bw-spark{height:22px;margin:4px 0 5px}.an-bw-item.sm .an-bw-badge{align-items:flex-start}
+.an-bw-bottom{display:flex;justify-content:space-between;align-items:center;gap:2px;overflow:hidden}
+.an-bw-price{font-size:11px;font-weight:800;color:#142018;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0;flex-shrink:1}
+.an-bw-total{font-size:9px;font-weight:700;white-space:nowrap;flex-shrink:0}.an-bw-total.pos{color:#1aab70}.an-bw-total.neg{color:#f05252}
+.an-bw-item.sm .an-bw-logo{width:24px;height:24px;font-size:7px}.an-bw-item.sm .an-bw-ticker{font-size:9px}.an-bw-item.sm .an-bw-pct{font-size:8px}.an-bw-item.sm .an-bw-eur{font-size:7px}.an-bw-item.sm .an-bw-price{font-size:9px}.an-bw-item.sm .an-bw-total{font-size:8px}.an-bw-item.sm .an-bw-spark{height:20px;margin:3px 0 4px}.an-bw-item.sm .an-bw-badge{align-items:flex-start}
 /* === Correlation === */
 .an-corr-hdr{background:linear-gradient(135deg,#0f1f18 0%,#1a3528 100%);border-radius:16px 16px 0 0;padding:18px 18px 14px}
 .an-corr-pills{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:12px}
@@ -1797,12 +1798,18 @@ function _anRenderBestWorst(){
     const sparkId=`anSpk_${isBest?'b':'w'}_${idx}`;
     const ticker=escapeHtml(a.name.slice(0,sm?8:10));
     const fname=escapeHtml(a.name.slice(0,sm?12:16));
-    const pctStr=(pos?'+':'')+a.gainPct.toFixed(2)+'%';
+    const pctStr=(pos?'+':'')+a.gainPct.toFixed(1)+'%';
     const eurStr=(a.gain>=0?'+':'')+fe(toDisplay(a.gain,assetCcy(a)));
+    const val=toDisplay(a.value,assetCcy(a));
+    const valStr=(a.gain>=0?'+':'')+(val>=1000?fe(Math.round(val/100)*100):fe(val));
+    const smValStr=(a.gain>=0?'+':'')+(val>=1000?(val>=10000?Math.round(val/1000)+'K':(val/1000).toFixed(1)+'K'):Math.round(val)+'');
     const badge=`<div class="an-bw-badge"${sm?' style="align-items:flex-start"':''}><span class="an-bw-pct ${cl}">${arrow(a.gainPct)} ${pctStr}</span><span class="an-bw-eur ${cl}">${eurStr}</span></div>`;
     const nameWrap=`<div class="an-bw-nameWrap"><div class="an-bw-ticker">${ticker}</div><div class="an-bw-fname">${fname}</div></div>`;
     const logoDiv=`<div class="an-bw-logo" style="background:${col}">${escapeHtml(iconInitials(a))}</div>`;
-    const bottom=`<div class="an-bw-bottom"><span class="an-bw-price">${fc(a.currentPrice,assetCcy(a))}</span><span class="an-bw-total ${cl}">${(a.gain>=0?'+':'')+fe(toDisplay(a.value,assetCcy(a)))}</span></div>`;
+    const price=fc(a.currentPrice,assetCcy(a));
+    const bottom=sm
+      ?`<div class="an-bw-bottom"><span class="an-bw-price" style="font-size:9px">${price}</span><span class="an-bw-total ${cl}">€${smValStr}</span></div>`
+      :`<div class="an-bw-bottom"><span class="an-bw-price">${price}</span><span class="an-bw-total ${cl}">${valStr}</span></div>`;
     const spark=`<canvas class="an-bw-spark" id="${sparkId}"></canvas>`;
     if(sm) return`<div class="an-bw-item ${cl} sm"><div class="an-bw-top">${logoDiv}${nameWrap}</div>${badge}${spark}${bottom}</div>`;
     return`<div class="an-bw-item ${cl}"><div class="an-bw-top">${logoDiv}${nameWrap}${badge}</div>${spark}${bottom}</div>`;
