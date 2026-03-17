@@ -9,15 +9,20 @@ const { resolveAssetData } = require('../../lib/providers');
 
 module.exports = async (req, res) => {
   // Verify cron secret (Vercel sets Authorization header automatically for crons)
+  // Always required — set CRON_SECRET in Vercel environment variables
   const secret = process.env.CRON_SECRET;
-  if (secret) {
-    const auth = req.headers['authorization'] || '';
-    if (auth !== `Bearer ${secret}`) {
-      res.statusCode = 401;
-      res.setHeader('Content-Type', 'application/json; charset=utf-8');
-      res.end(JSON.stringify({ error: 'Unauthorized' }));
-      return;
-    }
+  if (!secret) {
+    res.statusCode = 503;
+    res.setHeader('Content-Type', 'application/json; charset=utf-8');
+    res.end(JSON.stringify({ error: 'CRON_SECRET not configured' }));
+    return;
+  }
+  const auth = req.headers['authorization'] || '';
+  if (auth !== `Bearer ${secret}`) {
+    res.statusCode = 401;
+    res.setHeader('Content-Type', 'application/json; charset=utf-8');
+    res.end(JSON.stringify({ error: 'Unauthorized' }));
+    return;
   }
 
   const isins = portfolioSeed.positions.map(p => p.isin);

@@ -931,8 +931,12 @@ const I18N = {
   }
 };
 
-let currentLang = localStorage.getItem('tf_lang') || 'en';
-let _displayCcy = localStorage.getItem('tf_display_ccy') || 'EUR';
+const _VALID_LANGS = new Set(['es', 'en']);
+const _VALID_CCYS  = new Set(['EUR', 'USD', 'GBP', 'CHF']);
+const _rawLang = localStorage.getItem('tf_lang') || 'en';
+const _rawCcy  = localStorage.getItem('tf_display_ccy') || 'EUR';
+let currentLang = _VALID_LANGS.has(_rawLang) ? _rawLang : 'en';
+let _displayCcy = _VALID_CCYS.has(_rawCcy)   ? _rawCcy  : 'EUR';
 let _fxRates = { EUR: 1, USD: 1.09, GBP: 0.86, CHF: 1.06 }; // EUR→X rates, refreshed at boot
 const t = k => I18N[currentLang][k] || I18N.es[k] || k;
 
@@ -1057,7 +1061,7 @@ async function getJson(u,timeout=12000){const ctrl=new AbortController();const t
 function tick(){const cl=document.getElementById('clock');if(cl)cl.textContent=new Date().toLocaleTimeString(currentLang==='es'?'es-ES':'en-GB',{hour:'2-digit',minute:'2-digit'});}
 
 // ========== localStorage positions ==========
-function getOverrides(){try{return JSON.parse(localStorage.getItem('tf_positions')||'{}');}catch{return {};}}
+function getOverrides(){try{const o=JSON.parse(localStorage.getItem('tf_positions')||'{}');return o!==null&&typeof o==='object'&&!Array.isArray(o)?o:{};}catch{return {};}}
 function saveOverrides(o){localStorage.setItem('tf_positions',JSON.stringify(o));_debouncedSync();}
 function applyOverridesToAssets(rawAssets){
   const ov=getOverrides();
@@ -2276,7 +2280,7 @@ document.querySelectorAll('.langBtn').forEach(btn=>btn.addEventListener('click',
 }));
 
 // ========== Custom Assets (localStorage) ==========
-function getCustomAssets(){try{return JSON.parse(localStorage.getItem('tf_custom_assets')||'{}');}catch{return {};}}
+function getCustomAssets(){try{const o=JSON.parse(localStorage.getItem('tf_custom_assets')||'{}');return o!==null&&typeof o==='object'&&!Array.isArray(o)?o:{};}catch{return {};}}
 function saveCustomAssets(o){localStorage.setItem('tf_custom_assets',JSON.stringify(o));_debouncedSync();}
 
 // Type → icon style
@@ -2934,7 +2938,7 @@ function enterMainApp() {
 // ══════════════════════════════════════════════════════════════════
 // LIQUIDITY
 // ══════════════════════════════════════════════════════════════════
-function getLiquidity(){ try{return JSON.parse(localStorage.getItem('fa_liquidity')||'[]');}catch{return[];} }
+function getLiquidity(){ try{const a=JSON.parse(localStorage.getItem('fa_liquidity')||'[]');return Array.isArray(a)?a:[];}catch{return[];} }
 function saveLiquidity(arr){ localStorage.setItem('fa_liquidity',JSON.stringify(arr)); }
 
 let _liqEditId = null;

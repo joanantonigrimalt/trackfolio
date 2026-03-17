@@ -8,14 +8,13 @@ module.exports = async (req, res) => {
   if (!setupApi(req, res, { maxRequests: 10 })) return;
   try {
     const skipCache = req.query.refresh === '1';
-    const results = [];
 
-    for (const asset of portfolioProviders.assets) {
+    const results = await Promise.all(portfolioProviders.assets.map(async asset => {
       try {
         const resolved = await resolveAssetData(asset.isin, { skipCache });
         const points = Array.isArray(resolved.data?.history) ? resolved.data.history : [];
         const status = resolved.data?.coverage?.status || 'MISSING';
-        results.push({
+        return {
           isin: asset.isin,
           name: asset.name,
           provider: resolved.data?.provider || null,
@@ -24,14 +23,14 @@ module.exports = async (req, res) => {
           status,
           points,
           error: resolved.error || null
-        });
-      } catch (err) {
-        results.push({
+        };
+      } catch {
+        return {
           isin: asset.isin, name: asset.name, provider: null, symbol: null,
           resolvedAs: null, status: 'MISSING', points: [], error: 'fetch_failed'
-        });
+        };
       }
-    }
+    }));
 
     const summary = {
       total: results.length,

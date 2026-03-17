@@ -16,7 +16,7 @@ try {
 const CACHE = new Map();
 const TTL = 5 * 60 * 1000;
 const cget = k => { const e = CACHE.get(k); if (!e || Date.now() > e.x) { CACHE.delete(k); return null; } return e.v; };
-const cset = (k, v) => CACHE.set(k, { v, x: Date.now() + TTL });
+const cset = (k, v) => { if (CACHE.size > 2000) CACHE.clear(); CACHE.set(k, { v, x: Date.now() + TTL }); };
 
 // ── Type maps ──────────────────────────────────────────────────────────────
 const YAHOO_TYPE = {
@@ -338,9 +338,9 @@ module.exports = async (req, res) => {
         return res.end(JSON.stringify(out));
       }
       throw new Error('No data from Yahoo');
-    } catch (err) {
+    } catch {
       res.statusCode = 500;
-      return res.end(JSON.stringify({ error: err.message }));
+      return res.end(JSON.stringify({ error: 'Failed to fetch chart data' }));
     }
   }
 

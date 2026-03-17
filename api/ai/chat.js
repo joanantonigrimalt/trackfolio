@@ -22,6 +22,20 @@ export default async function handler(req) {
     return new Response(JSON.stringify({ error: 'messages required' }), { status: 400 });
   }
 
+  // Validate and sanitize each message — prevent prompt injection via user-supplied system roles
+  const ALLOWED_ROLES = new Set(['user', 'assistant']);
+  const MAX_CONTENT_LEN = 4000;
+  const MAX_MESSAGES = 20;
+
+  const sanitized = messages
+    .slice(-MAX_MESSAGES)
+    .filter(m => m && typeof m === 'object' && ALLOWED_ROLES.has(m.role) && typeof m.content === 'string')
+    .map(m => ({ role: m.role, content: m.content.slice(0, MAX_CONTENT_LEN) }));
+
+  if (sanitized.length === 0) {
+    return new Response(JSON.stringify({ error: 'No valid messages' }), { status: 400 });
+  }
+
   try {
     const res = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
@@ -31,7 +45,7 @@ export default async function handler(req) {
       },
       body: JSON.stringify({
         model: 'gpt-4o-mini',
-        messages: messages,
+        messages: sanitized,
         max_tokens: 500,
         temperature: 0.7,
       }),
@@ -50,6 +64,6 @@ export default async function handler(req) {
       headers: { 'Content-Type': 'application/json' },
     });
   } catch (e) {
-    return new Response(JSON.stringify({ error: e.message }), { status: 500, headers: { 'Content-Type': 'application/json' } });
+    return new Response(JSON.stringify({ error: 'Internal server error' }), { status: 500, headers: { 'Content-Type': 'application/json' } });
   }
 }
