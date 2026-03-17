@@ -2452,44 +2452,62 @@ function render(){
 // ========== Boot ==========
 let _rawSeedAssets = [];
 async function boot(){
-  // Fetch live FX rates in background (best-effort, falls back to defaults)
   fetchGlobalFxRates();
-  // Migrate existing overrides to include costCurrency
   const _ovMig=getOverrides();let _ovChanged=false;
   Object.keys(_ovMig).forEach(k=>{if(_ovMig[k]&&!_ovMig[k].costCurrency){_ovMig[k].costCurrency='EUR';_ovChanged=true;}});
   if(_ovChanged)saveOverrides(_ovMig);
-  // Step 1: seed is essential — fail hard if unavailable
+
+  // Step 1: seed — fail hard if unavailable
   let seed;
-  try{
-    seed=await getJson('/api/portfolio/seed');
-  }catch(e){
-    document.getElementById('chartNote').textContent='Error cargando portfolio: '+e.message;
-    return;
-  }
+  try{ seed=await getJson('/api/portfolio/seed',10000); }
+  catch(e){ document.getElementById('chartNote').textContent='Error cargando portfolio: '+e.message; return; }
 
-  // Step 2: coverage is best-effort — if it fails/times-out, proceed with MISSING status
+  // ── Fast first render: show positions immediately with prices (no history yet)
   const isinList=seed.positions.map(p=>p.isin).join(',');
-  let coverage={results:[]};
-  try{
-    coverage=await getJson('/api/portfolio/coverage?isin='+encodeURIComponent(isinList));
-  }catch(e){
-    console.warn('[boot] coverage failed, proceeding without history:',e.message);
-    // Show a non-blocking warning in the chart note
-    const note=document.getElementById('chartNote');
-    if(note)note.textContent=currentLang==='es'?'Histórico no disponible (error de red). Los datos de posición son correctos.':'History unavailable (network error). Position data is correct.';
+  function buildAssets(cvMap){
+    return seed.positions.map(pos=>{
+      const entry=cvMap[pos.isin]||{},mapping=entry.mapping||null;
+      const currentPrice=Number(pos.currentPrice)||0,buyPrice=Number(pos.buyPrice)||0,quantity=Number(pos.quantity)||0;
+      const history=normalizeHistory(entry.data?.history||[]);
+      const gain=quantity*(currentPrice-buyPrice);
+      return{isin:pos.isin,name:pos.shortName||pos.name||mapping?.name||pos.isin,fullName:pos.name||mapping?.name||pos.isin,quantity,buyPrice,currentPrice,invested:quantity*buyPrice,value:quantity*currentPrice,gain,gainPct:buyPrice?((currentPrice-buyPrice)/buyPrice)*100:0,mapping,provider:entry.data?.provider||null,coverageStatus:entry.data?.coverage?.status||'MISSING',coverage:entry.data?.coverage||{status:'MISSING'},history,hasRealHistory:history.length>1,_rawQty:quantity,_rawBuyPrice:buyPrice};
+    });
   }
-
-  const cvMap=Object.fromEntries((coverage.results||[]).map(e=>[e.isin,e]));
-
-  _rawSeedAssets=seed.positions.map(pos=>{
-    const entry=cvMap[pos.isin]||{},mapping=entry.mapping||null;
-    const currentPrice=Number(pos.currentPrice)||0,buyPrice=Number(pos.buyPrice)||0,quantity=Number(pos.quantity)||0;
-    const history=normalizeHistory(entry.data?.history||[]);
-    return{isin:pos.isin,name:pos.shortName||pos.name||mapping?.name||pos.isin,fullName:pos.name||mapping?.name||pos.isin,quantity,buyPrice,currentPrice,invested:quantity*buyPrice,value:quantity*currentPrice,gainPct:buyPrice?((currentPrice-buyPrice)/buyPrice)*100:0,mapping,provider:entry.data?.provider||null,coverageStatus:entry.data?.coverage?.status||'MISSING',coverage:entry.data?.coverage||{status:'MISSING'},history,hasRealHistory:history.length>1,_rawQty:quantity,_rawBuyPrice:buyPrice};
-  });
+  _rawSeedAssets=buildAssets({});
   assets=applyOverridesToAssets(_rawSeedAssets);
   loadCustomIntoAssets();
-  dataReady=true;render();
+  dataReady=true; render(); // ← Home visible immediately
+
+  // Step 2: coverage (history) — runs AFTER first render, best-effort
+  let coverage={results:[]};
+  try{ coverage=await getJson('/api/portfolio/coverage?isin='+encodeURIComponent(isinList),8000); }
+  catch(e){ console.warn('[boot] coverage failed:',e.message); }
+
+  _rawSeedAssets=buildAssets(Object.fromEntries((coverage.results||[]).map(e=>[e.isin,e])));
+  assets=applyOverridesToAssets(_rawSeedAssets);
+  loadCustomIntoAssets();
+  render(); // ← Second render with charts/history
+
+  // Step 3: pre-fetch dividends in background so Dividends tab is instant
+  _prefetchDividends();
+}
+
+// Fire dividends API in background and cache in sessionStorage
+async function _prefetchDividends(){
+  _checkDivCacheVer();
+  if(_divDataCache) return;
+  // Try sessionStorage first (survives page re-focus, same session)
+  try{
+    const cached=sessionStorage.getItem('_divCache_'+_DIV_CACHE_VER);
+    if(cached){ _divDataCache=JSON.parse(cached); return; }
+  }catch(_){}
+  if(!assets.length) return;
+  try{
+    const allIsins=assets.map(a=>{const sym=a.mapping?.yahooSymbol||a.symbol||'';return sym?`${a.isin}:${sym}`:a.isin;}).join(',');
+    const r=await getJson(`/api/dividends/history?isins=${encodeURIComponent(allIsins)}`,15000);
+    _divDataCache=r.results||[];
+    try{ sessionStorage.setItem('_divCache_'+_DIV_CACHE_VER, JSON.stringify(_divDataCache)); }catch(_){}
+  }catch(e){ console.warn('[prefetch] dividends failed:',e.message); }
 }
 
 // ========== Event Listeners ==========
