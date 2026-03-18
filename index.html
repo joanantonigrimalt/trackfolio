@@ -260,7 +260,12 @@ table.an-corr-mtx{border-collapse:separate;border-spacing:4px}
 #screen-finx .fx-ticker-tag.red{background:#fef2f2;color:var(--red)}
 #screen-finx .fx-post-title{font-size:.85rem;font-weight:800;margin-bottom:4px;color:var(--text)}
 #screen-finx .fx-post-body{font-size:.78rem;color:#374151;line-height:1.6;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
-#screen-finx .fx-post-body.expanded{-webkit-line-clamp:unset;overflow:visible}
+#screen-finx .fx-post-body.expanded{-webkit-line-clamp:unset!important;overflow:visible}
+#screen-finx .fx-comment-input-row .fx-comment-input:focus{border-color:#1aab70;background:#fff}
+#screen-finx .fx-action-btn:hover{background:#f4f6f5;color:#1a2e22}
+#screen-finx .fx-portfolio-card:hover{border-color:#1aab70}
+#fxComposeModal .fx-ctype svg{width:13px;height:13px}
+#screen-finx .fx-ptab:hover{color:#1a2e22}
 #screen-finx .fx-show-more{font-size:.72rem;color:var(--muted);cursor:pointer;margin-top:2px;display:inline-block}
 #screen-finx .fx-translate-row{font-size:.68rem;color:var(--muted);margin-top:3px;cursor:pointer;display:inline-block}
 #screen-finx .fx-txn-card{border:1px solid var(--border);border-radius:12px;padding:12px 14px;margin:10px 0 4px;display:flex;align-items:center;gap:10px;background:#fafcfb}
@@ -842,8 +847,8 @@ table.an-corr-mtx{border-collapse:separate;border-spacing:4px}
     </button>
   </div>
 
-  <!-- Feed -->
-  <div class="fx-feed">
+  <!-- Feed (dynamic) -->
+  <div class="fx-feed" id="fxFeed">
 
     <!-- POST 1 -->
     <div class="fx-post">
@@ -988,11 +993,11 @@ table.an-corr-mtx{border-collapse:separate;border-spacing:4px}
     <div class="fx-profile-topbar">
       <div class="fx-profile-topbar-row">
         <button class="fx-profile-back" onclick="fxCloseProfile()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="15 18 9 12 15 6"/></svg></button>
-        <div style="flex:1;"><div style="font-size:.88rem;font-weight:800;color:#1a2e22;">Grigom</div><div style="font-size:.62rem;color:#8a9e93;">14 posts</div></div>
+        <div style="flex:1;" id="fxProfileTopInfo"><div style="font-size:.88rem;font-weight:800;color:#1a2e22;">Grigom</div><div style="font-size:.62rem;color:#8a9e93;">0 posts</div></div>
         <button class="fx-ticon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="17" height="17"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button>
       </div>
     </div>
-    <div class="fx-profile-scroll">
+    <div class="fx-profile-scroll" id="fxProfileScroll">
       <div class="fx-profile-cover">
         <div class="fx-profile-cover-av">G</div>
         <div class="fx-profile-cover-actions">
@@ -1109,9 +1114,9 @@ table.an-corr-mtx{border-collapse:separate;border-spacing:4px}
     <div class="fx-modal-handle"></div>
     <div class="fx-modal-title">Share</div>
     <div class="fx-modal-options">
-      <button class="fx-modal-opt" onclick="document.getElementById('fxShareModal').classList.remove('open')"><div class="fx-modal-opt-icon" style="background:#e6faf3;"><svg viewBox="0 0 18 18" fill="none" stroke="#1aab70" stroke-width="1.6" width="17" height="17"><rect x="2" y="3" width="14" height="12" rx="2"/><path d="M2 7h14"/></svg></div><div><div class="fx-modal-opt-text">Share portfolio</div><div class="fx-modal-opt-sub">Post your full portfolio to the feed</div></div></button>
-      <button class="fx-modal-opt" onclick="document.getElementById('fxShareModal').classList.remove('open')"><div class="fx-modal-opt-icon" style="background:#eff6ff;"><svg viewBox="0 0 18 18" fill="none" stroke="#1d4ed8" stroke-width="1.6" width="17" height="17"><path d="M9 2v14M5 5h5.5a2.5 2.5 0 0 1 0 5H5"/></svg></div><div><div class="fx-modal-opt-text">Share transaction</div><div class="fx-modal-opt-sub">Post a buy, sell or dividend</div></div></button>
-      <button class="fx-modal-opt" onclick="document.getElementById('fxShareModal').classList.remove('open')"><div class="fx-modal-opt-icon" style="background:#f5f3ff;"><svg viewBox="0 0 18 18" fill="none" stroke="#7c5cbf" stroke-width="1.6" width="17" height="17"><circle cx="15" cy="5" r="2"/><circle cx="3" cy="9" r="2"/><circle cx="15" cy="13" r="2"/><path d="M5 8.5l8-3M5 9.5l8 3"/></svg></div><div><div class="fx-modal-opt-text">Copy link</div><div class="fx-modal-opt-sub">Share via link or message</div></div></button>
+      <button class="fx-modal-opt" onclick="document.getElementById('fxShareModal').classList.remove('open');fxOpenCompose('portfolio')"><div class="fx-modal-opt-icon" style="background:#e6faf3;"><svg viewBox="0 0 18 18" fill="none" stroke="#1aab70" stroke-width="1.6" width="17" height="17"><rect x="2" y="3" width="14" height="12" rx="2"/><path d="M2 7h14"/></svg></div><div><div class="fx-modal-opt-text">Compartir cartera</div><div class="fx-modal-opt-sub">Publica tu portfolio al feed</div></div></button>
+      <button class="fx-modal-opt" onclick="document.getElementById('fxShareModal').classList.remove('open');fxOpenCompose('transaction')"><div class="fx-modal-opt-icon" style="background:#eff6ff;"><svg viewBox="0 0 18 18" fill="none" stroke="#1d4ed8" stroke-width="1.6" width="17" height="17"><path d="M9 2v14M5 5h5.5a2.5 2.5 0 0 1 0 5H5"/></svg></div><div><div class="fx-modal-opt-text">Compartir operación</div><div class="fx-modal-opt-sub">Publica una compra, venta o dividendo</div></div></button>
+      <button class="fx-modal-opt" onclick="document.getElementById('fxShareModal').classList.remove('open');fxOpenCompose('poll')"><div class="fx-modal-opt-icon" style="background:#fefce8;"><svg viewBox="0 0 18 18" fill="none" stroke="#b45309" stroke-width="1.6" width="17" height="17"><circle cx="9" cy="9" r="7"/><path d="M9 6v3l2 2"/></svg></div><div><div class="fx-modal-opt-text">Crear encuesta</div><div class="fx-modal-opt-sub">Pregunta a la comunidad</div></div></button>
     </div>
   </div>
 </div>
@@ -1131,13 +1136,16 @@ table.an-corr-mtx{border-collapse:separate;border-spacing:4px}
       <button class="fx-ctype" onclick="fxSetCType(this)"><svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.6" width="13" height="13"><circle cx="7" cy="7" r="5"/><line x1="7" y1="4" x2="7" y2="7"/><line x1="7" y1="9.5" x2="7.01" y2="9.5"/></svg>Poll</button>
       <button class="fx-ctype" onclick="fxSetCType(this)"><svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.6" width="13" height="13"><polyline points="1 9 4 5 7 7 10 3 13 5"/></svg>Analysis</button>
     </div>
-    <div class="fx-compose-area"><textarea placeholder="Share an idea, trade or analysis…" rows="4"></textarea></div>
+    <div id="fxComposeContent">
+      <div class="fx-compose-area"><textarea id="fxComposeTxt" placeholder="Comparte una idea, operación o análisis…" rows="4" style="width:100%;border:none;outline:none;resize:none;font-family:inherit;font-size:.82rem;color:#1a2e22;line-height:1.6;min-height:80px;background:transparent;"></textarea></div>
+      <div id="fxComposeAttach" style="padding:0 16px 10px;"></div>
+    </div>
     <div class="fx-compose-footer">
       <div class="fx-compose-footer-icons">
         <button class="fx-cico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg></button>
         <button class="fx-cico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg></button>
       </div>
-      <button class="fx-post-btn">Post</button>
+      <button class="fx-post-btn" onclick="fxSubmitPost()">Publicar</button>
     </div>
   </div>
 </div>
@@ -2054,7 +2062,7 @@ function showScreen(name,keepTab=false){
   if(name==='analysis'&&dataReady)renderAnalysisCharts();
   if(name==='dividends'&&dataReady)renderDividends();
   if(name==='ia'&&dataReady)renderIA();
-  if(name==='finx')requestAnimationFrame(fxDrawPGauge);
+  if(name==='finx'){fxRenderFeed();}
 }
 function normalizeHistory(h){return(Array.isArray(h)?h:[]).map(p=>({date:String(p.date).slice(0,10),close:Number(p.close)})).filter(p=>p.date&&Number.isFinite(p.close)&&p.close>0).sort((a,b)=>a.date.localeCompare(b.date));}
 function getPriceOnOrBefore(s,date){if(!s.length)return null;let lo=0,hi=s.length-1,best=-1;while(lo<=hi){const m=Math.floor((lo+hi)/2);if(s[m].date<=date){best=m;lo=m+1;}else hi=m-1;}return best>=0?s[best].close:null;}
@@ -2828,67 +2836,484 @@ function _anRenderCosts() {
   el.innerHTML = html;
 }
 
-// ========== FinX Forum ==========
-function fxSetTab(el){document.querySelectorAll('#screen-finx .fx-tab').forEach(t=>t.classList.remove('active'));el.classList.add('active');}
-function fxToggleComments(id){const el=document.getElementById(id);el.style.display=el.style.display==='none'?'block':'none';}
-function fxToggleLike(btn){btn.classList.toggle('liked');}
-function fxExpand(id,link){const el=document.getElementById(id);el.classList.toggle('expanded');link.textContent=el.classList.contains('expanded')?'Show less':'Show more';}
-function fxVote(opt){opt.closest('.fx-poll-card').querySelectorAll('.fx-poll-option').forEach(o=>o.style.pointerEvents='none');}
+// ========== FinX Forum (functional) ==========
+/* ── Seed posts data ── */
+const FX_SEED=[
+  {id:'s1',name:'Richard',handle:'@wokenbynoises',av:'R',color:'#2563eb',verified:true,timeMs:Date.now()-86400000,
+   title:'Core satellite con 3x momentum',
+   body:"Las estrategias basadas en momentum están ganando tracción. Estoy desarrollando una estrategia core-satellite con un componente de momentum (V8 Satellite) rebalanceado mensualmente. El backtest desde 2008 vs S&P 500 Buy&Hold muestra resultados notables ajustados al riesgo.",
+   type:'analysis',tableRows:[['CAGR','56.4%','g','11.0%',''],['Sharpe','2.75','g','0.46',''],['Max Drawdown','−19.1%','g','−51.9%','r'],['Win Rate','72.6%','g','67.0%','']],
+   reactions:{'👍':21,'🚀':12,'🤔':4},
+   seedComments:[{id:'sc1a',name:'Emdy',handle:'@Emdy',av:'E',color:'#7c5cbf',timeMs:Date.now()-85e6,text:"Muy interesante! El Sharpe de 2.75 es impresionante. ¿Qué supuestos de coste de rebalanceo usas?"},{id:'sc1b',name:'Keineui',handle:'@Keineui',av:'K',color:'#0ea5e9',timeMs:Date.now()-84e6,text:'La diferencia en el max drawdown es el dato clave. −19% vs −52% es abismal.'}]},
+  {id:'s2',name:'Chris',handle:'@Multibagger',av:'C',color:'#374151',verified:false,timeMs:Date.now()-86400000,
+   title:'¿Short en Nebius?',
+   body:'Valdría la pena intentarlo. $NBIS −12.44% está cerca del doble techo del año pasado. Tras la rápida subida y las altas necesidades de capital, podría ser una buena entrada para un corto.',
+   type:'post',ticker:{tag:'$NBIS −12.44%',neg:true},
+   reactions:{'👍':17,'🔥':3},
+   seedComments:[{id:'sc2a',name:'Emdy',handle:'@Emdy',av:'A',color:'#f05252',timeMs:Date.now()-85e6,text:'Buena idea pero bastante arriesgado — hay mucho FOMO ahora mismo.'}]},
+  {id:'s3',name:'Oleg',handle:'@ScorpionfromBW',av:'O',color:'#0369a1',verified:false,timeMs:Date.now()-6*86400000,
+   title:'TDIV desde Scalable',
+   body:'Dividendo recibido de VanEck TDIV. Pago trimestral como esperaba.',
+   type:'transaction',txn:{day:'11',month:'Mar',iconBg:'#e5383b',iconText:'VanEck',name:'VanEck TDIV',detail:'Recibido ×270 dividendos a €0.21',amount:'+€56.70',pos:true},
+   reactions:{'👍':20},seedComments:[]},
+  {id:'s4',name:'Melvin',handle:'@Melvin2300',av:'M',color:'#166534',verified:false,timeMs:Date.now()-14*86400000,
+   title:'Acciones',
+   body:'Compré estas acciones el viernes — ¿cuál es mejor deal a largo plazo?',
+   type:'poll',poll:{options:['ABN Amro','Coca-Cola'],votes:[55,45],total:125},
+   reactions:{'👍':8},seedComments:[]},
+  {id:'s5',name:'Grigom',handle:'@Grigom',av:'G',color:'#e8ebe9',avColor:'#8a9e93',isMe:true,timeMs:Date.now()-150*86400000,
+   body:"¡Hola a todos! Solo quería compartir mi cartera actual. Sigo trabajando en el equilibrio entre riesgo y crecimiento — cualquier feedback de la comunidad es bienvenido.",
+   type:'portfolio',reactions:{'👍':2},seedComments:[]}
+];
+/* ── Storage helpers ── */
+function fxGetUserPosts(){try{return JSON.parse(localStorage.getItem('fx_posts')||'[]');}catch{return[];}}
+function fxSaveUserPosts(p){localStorage.setItem('fx_posts',JSON.stringify(p));}
+function fxGetLikes(){try{return new Set(JSON.parse(localStorage.getItem('fx_likes')||'[]'));}catch{return new Set();}}
+function fxSaveLikes(s){localStorage.setItem('fx_likes',JSON.stringify([...s]));}
+function fxGetComments(pid){try{return JSON.parse(localStorage.getItem('fx_c_'+pid)||'[]');}catch{return[];}}
+function fxSaveComments(pid,arr){localStorage.setItem('fx_c_'+pid,JSON.stringify(arr));}
+function fxGetVotes(){try{return JSON.parse(localStorage.getItem('fx_votes')||'{}');}catch{return{};}}
+function fxSaveVotes(v){localStorage.setItem('fx_votes',JSON.stringify(v));}
+function fxGetFollowing(){try{return JSON.parse(localStorage.getItem('fx_following')||'[]');}catch{return[];}}
+function fxSaveFollowing(arr){localStorage.setItem('fx_following',JSON.stringify(arr));}
+/* ── Time label ── */
+function fxTL(ms){const d=Date.now()-ms;if(d<60e3)return'ahora';if(d<3600e3)return Math.floor(d/60e3)+'min';if(d<86400e3)return Math.floor(d/3600e3)+'h';if(d<604800e3)return Math.floor(d/86400e3)+'D';if(d<2592e6)return Math.floor(d/604800e3)+'Wk';return Math.floor(d/2592e6)+'Mo';}
+/* ── Portfolio summary (real data) ── */
+function fxPortfolioSummary(){
+  if(typeof assets==='undefined'||!assets.length)return{value:'€—',ret:'—',count:0,invested:'—',divYear:'—',pct:0};
+  const total=assets.reduce((s,a)=>s+a.value,0);
+  const inv=assets.reduce((s,a)=>s+a.invested,0);
+  const gain=total-inv;
+  const pct=inv>0?((gain/inv)*100):0;
+  const divYear=assets.reduce((s,a)=>s+(a.annualDividend||0),0);
+  const count=assets.filter(a=>a.quantity>0).length;
+  return{value:fe(total),ret:(pct>=0?'↗ +':'↘ ')+Math.abs(pct).toFixed(2)+'%',count,invested:fe(inv),gain:fe(gain),pct,divYear:fe(divYear)};
+}
+/* ── Attachment HTML ── */
+function fxAttachHTML(post){
+  if(post.type==='analysis'&&post.tableRows){
+    return`<div class="fx-table-preview"><table><thead><tr><th>Métrica</th><th>Estrategia</th><th>Benchmark</th></tr></thead><tbody>${post.tableRows.map(r=>`<tr><td>${r[0]}</td><td class="${r[2]}">${r[1]}</td><td class="${r[4]}">${r[3]}</td></tr>`).join('')}</tbody></table></div>`;
+  }
+  if(post.type==='transaction'&&post.txn){
+    const t=post.txn;
+    return`<div class="fx-txn-card"><div class="fx-txn-date"><div class="fx-txn-date-d">${t.day}</div><div class="fx-txn-date-m">${t.month}</div></div><div class="fx-txn-icon"><div style="width:32px;height:32px;background:${t.iconBg};border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:.42rem;font-weight:900;color:#fff;text-align:center;line-height:1.1;">${t.iconText}</div></div><div class="fx-txn-info"><div class="fx-txn-name">${t.name}</div><div class="fx-txn-detail">${t.detail}</div></div><div class="fx-txn-amount ${t.pos?'pos':'neg'}">${t.amount}</div></div>`;
+  }
+  if(post.type==='portfolio'||post.type==='portfolio_share'){
+    const pv=fxPortfolioSummary();
+    return`<div class="fx-portfolio-card" onclick="fxOpenProfile()" style="background:#fafcfb;"><div class="fx-pc-inner"><div class="fx-pc-gauge"><canvas id="fxPgCard_${post.id}" width="64" height="64"></canvas><div class="fx-pc-gauge-label"><span class="fx-pc-gauge-num">${pv.count}</span><span class="fx-pc-gauge-sub">Positions</span></div></div><div class="fx-pc-info"><div class="fx-pc-value">${pv.value}</div><div class="fx-pc-return">${pv.ret}</div></div><svg viewBox="0 0 24 24" fill="none" stroke="#8a9e93" stroke-width="2" width="18" height="18"><polyline points="9 18 15 12 9 6"/></svg></div></div>`;
+  }
+  if(post.type==='poll'&&post.poll){
+    const p=post.poll;
+    const votes=fxGetVotes();
+    const voted=votes[post.id]!=null;
+    return`<div class="fx-poll-card">${p.options.map((o,i)=>`<div class="fx-poll-option"${!voted?` onclick="fxVotePoll('${post.id}',${i},this)"`:''} style="${voted?'pointer-events:none':''}"><div class="fx-poll-fill" style="width:${p.votes[i]}%"></div><div class="fx-poll-text"><span class="fx-poll-name">${o}</span><span class="fx-poll-pct">${p.votes[i]}%</span></div></div>`).join('')}<div class="fx-poll-meta">${p.total} votos</div></div>`;
+  }
+  return'';
+}
+/* ── Single post HTML ── */
+function fxPostHTML(post){
+  const likes=fxGetLikes();
+  const isLiked=likes.has(post.id);
+  const seedCmts=post.seedComments||[];
+  const userCmts=fxGetComments(post.id);
+  const allCmts=[...seedCmts,...userCmts];
+  const totalLikes=(post.reactions?.['👍']||0)+(isLiked?1:0);
+  const avatarStyle=`background:${post.color||'#2dc98a'};${post.avColor?'color:'+post.avColor+';':''}`;
+  const onClickAv=(post.isMe||post._isUser)?`onclick="fxOpenProfile()"`:post.id==='s5'?`onclick="fxOpenProfile()"`:'' ;
+  const verifiedBadge=post.verified?`<div class="fx-verified"><svg viewBox="0 0 8 8" fill="#fff"><path d="M1.5 4L3 5.5 6.5 2"/></svg></div>`:'';
+  let body=post.body||'';
+  if(post.ticker){body=body.replace(post.ticker.tag,`<span class="fx-ticker-tag${post.ticker.neg?' red':''}">${post.ticker.tag}</span>`);}
+  const isLong=body.length>140;
+  const reactHTML=Object.entries(post.reactions||{}).map(([e,c])=>`<span class="fx-reaction-bubble${e==='👍'&&isLiked?' active':''}" onclick="fxToggleReaction('${post.id}','${e}',this)">${e} <span>${e==='👍'?totalLikes:c}</span></span>`).join('');
+  const cmtsHTML=allCmts.map(c=>`<div class="fx-comment"><div class="fx-comment-av" style="background:${c.color||c.avatarColor||'#888'};">${c.av||c.avatarText||'?'}</div><div class="fx-comment-body"><div class="fx-comment-header"><span class="fx-comment-name">${c.name}</span><span class="fx-comment-handle">${c.handle}</span><span class="fx-comment-time">${fxTL(c.timeMs||Date.now())}</span></div><div class="fx-comment-text">${c.text}</div><div class="fx-comment-actions"><button class="fx-comment-act">👍 ${c.likes||0}</button><button class="fx-comment-act" onclick="fxReplyTo('${post.id}','${c.name}')">Responder</button></div></div></div>`).join('');
+  return`<div class="fx-post" data-post-id="${post.id}">
+  <div class="fx-post-header">
+    <div class="fx-post-av" style="${avatarStyle}" ${onClickAv}>${post.av||post.avatarText||'?'}${verifiedBadge}</div>
+    <div class="fx-post-meta"><div class="fx-post-name-row">
+      <span class="fx-post-name" ${onClickAv}>${post.name}</span>
+      <span class="fx-post-handle">${post.handle}</span>
+      <span class="fx-post-time">${fxTL(post.timeMs||Date.now())}</span>
+      ${post._isUser?`<button class="fx-post-options" onclick="fxDeletePost('${post.id}')">🗑</button>`:`<button class="fx-post-options">···</button>`}
+    </div></div>
+  </div>
+  ${post.title?`<div class="fx-post-title">${post.title}</div>`:''}
+  <div class="fx-post-body${isLong?'':' expanded'}" id="fxb_${post.id}">${body}</div>
+  ${isLong?`<span class="fx-show-more" onclick="fxExpand('fxb_${post.id}',this)">Mostrar más</span>`:''}
+  ${fxAttachHTML(post)}
+  <div class="fx-post-reactions">${reactHTML}<span style="margin-left:auto;font-size:.68rem;color:#8a9e93;">${allCmts.length?allCmts.length+' ':''}Comentarios</span></div>
+  <div class="fx-post-actions">
+    <button class="fx-action-btn${isLiked?' liked':''}" onclick="fxToggleLike('${post.id}',this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3H14z"/><path d="M7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"/></svg>Like</button>
+    <button class="fx-action-btn" onclick="fxToggleComments('fxcs_${post.id}')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>Comentar</button>
+    <button class="fx-action-btn" onclick="fxShareFromPost('${post.id}')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg>Compartir</button>
+  </div>
+  <div class="fx-comments-section" id="fxcs_${post.id}" style="display:none;">
+    ${cmtsHTML}
+    <div class="fx-comment-input-row">
+      <div class="fx-comment-av" style="background:#2dc98a;width:28px;height:28px;font-size:.55rem;">YO</div>
+      <input class="fx-comment-input" placeholder="Comentar…" id="fxcin_${post.id}" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();fxSubmitComment('${post.id}');}">
+      <button class="fx-comment-post-btn" onclick="fxSubmitComment('${post.id}')">Post</button>
+    </div>
+  </div>
+</div>`;
+}
+/* ── Render feed ── */
+function fxRenderFeed(){
+  const feed=document.getElementById('fxFeed');if(!feed)return;
+  const userPosts=fxGetUserPosts();
+  const allPosts=[...userPosts.reverse(),...FX_SEED];
+  feed.innerHTML=allPosts.map(fxPostHTML).join('');
+  // Draw portfolio gauge canvases in cards
+  requestAnimationFrame(()=>{
+    allPosts.filter(p=>p.type==='portfolio'||p.type==='portfolio_share').forEach(p=>{
+      const c=document.getElementById('fxPgCard_'+p.id);
+      if(c)fxDrawGauge(c,32,32,24,5);
+    });
+  });
+}
+/* ── Toggle like ── */
+function fxToggleLike(postId,btn){
+  const likes=fxGetLikes();
+  const post=[...FX_SEED,...fxGetUserPosts()].find(p=>p.id===postId);
+  if(!post)return;
+  const wasLiked=likes.has(postId);
+  if(wasLiked){likes.delete(postId);}else{likes.add(postId);}
+  fxSaveLikes(likes);
+  // Update reaction count in DOM
+  const postEl=document.querySelector(`[data-post-id="${postId}"]`);
+  if(!postEl)return;
+  const reactionSpan=postEl.querySelector('.fx-reaction-bubble[onclick*="👍"]');
+  if(reactionSpan){
+    const base=post.reactions?.['👍']||0;
+    reactionSpan.querySelector('span').textContent=wasLiked?base:base+1;
+    reactionSpan.classList.toggle('active',!wasLiked);
+  }
+  btn.classList.toggle('liked',!wasLiked);
+}
+/* ── Toggle reaction ── */
+function fxToggleReaction(postId,emoji,el){
+  if(emoji!=='👍')return;
+  const btn=document.querySelector(`[data-post-id="${postId}"] .fx-action-btn`);
+  if(btn)fxToggleLike(postId,btn);
+}
+/* ── Toggle comments ── */
+function fxToggleComments(id){const el=document.getElementById(id);if(!el)return;const show=el.style.display==='none';el.style.display=show?'block':'none';if(show){const inp=el.querySelector('.fx-comment-input');if(inp)setTimeout(()=>inp.focus(),100);}}
+/* ── Submit comment ── */
+function fxSubmitComment(postId){
+  const inp=document.getElementById('fxcin_'+postId);
+  if(!inp||!inp.value.trim())return;
+  const text=inp.value.trim();
+  const comment={id:'uc_'+Date.now(),name:'Grigom',handle:'@Grigom',av:'G',color:'#2dc98a',timeMs:Date.now(),text,likes:0};
+  const existing=fxGetComments(postId);
+  existing.push(comment);
+  fxSaveComments(postId,existing);
+  inp.value='';
+  // Refresh post
+  const postEl=document.querySelector(`[data-post-id="${postId}"]`);
+  if(postEl){
+    const allPosts=[...FX_SEED,...fxGetUserPosts()];
+    const post=allPosts.find(p=>p.id===postId);
+    if(post){const temp=document.createElement('div');temp.innerHTML=fxPostHTML(post);postEl.replaceWith(temp.firstElementChild);}
+    // Re-show comments section
+    const cs=document.getElementById('fxcs_'+postId);
+    if(cs){cs.style.display='block';}
+  }
+}
+/* ── Reply to comment ── */
+function fxReplyTo(postId,name){
+  const inp=document.getElementById('fxcin_'+postId);
+  if(!inp)return;
+  inp.value='@'+name+' ';
+  const cs=document.getElementById('fxcs_'+postId);
+  if(cs)cs.style.display='block';
+  inp.focus();
+}
+/* ── Vote on poll ── */
+function fxVotePoll(postId,optIndex,el){
+  const votes=fxGetVotes();
+  votes[postId]=optIndex;
+  fxSaveVotes(votes);
+  // Find seed post and update local state
+  const post=FX_SEED.find(p=>p.id===postId);
+  if(post&&post.poll){
+    const total=post.poll.total+1;
+    const oldVotes=[...post.poll.votes];
+    const newTotal=oldVotes.reduce((s,v)=>s+v,0)+1;
+    post.poll.total=total;
+    post.poll.votes=oldVotes.map((v,i)=>Math.round(i===optIndex?(v*oldVotes.reduce((s,x)=>s+x,0)+1)/newTotal*100:v*oldVotes.reduce((s,x)=>s+x,0)/newTotal*100));
+  }
+  // Re-render the post
+  const postEl=el.closest('[data-post-id]');
+  if(postEl){const allPosts=[...FX_SEED,...fxGetUserPosts()];const p=allPosts.find(x=>x.id===postId);if(p){const temp=document.createElement('div');temp.innerHTML=fxPostHTML(p);postEl.replaceWith(temp.firstElementChild);}}
+}
+/* ── Expand post body ── */
+function fxExpand(id,link){const el=document.getElementById(id);if(!el)return;el.classList.toggle('expanded');link.textContent=el.classList.contains('expanded')?'Mostrar menos':'Mostrar más';}
+/* ── Delete user post ── */
+function fxDeletePost(postId){
+  if(!confirm('¿Eliminar este post?'))return;
+  const posts=fxGetUserPosts().filter(p=>p.id!==postId);
+  fxSaveUserPosts(posts);
+  fxRenderFeed();
+}
+/* ── Share from post ── */
+function fxShareFromPost(postId){document.getElementById('fxShareModal').classList.add('open');}
+/* ── Open share modal ── */
 function fxOpenShare(){document.getElementById('fxShareModal').classList.add('open');}
-function fxOpenCompose(){document.getElementById('fxComposeModal').classList.add('open');}
-function fxSetCType(el){document.querySelectorAll('#fxComposeModal .fx-ctype').forEach(c=>c.classList.remove('active'));el.classList.add('active');}
+/* ── Tab switch ── */
+function fxSetTab(el){document.querySelectorAll('#screen-finx .fx-tab').forEach(t=>t.classList.remove('active'));el.classList.add('active');}
+/* ── Compose modal ── */
+let _fxComposeType='post';
+let _fxComposeTxnAsset=null;
+function fxOpenCompose(type){
+  _fxComposeType=type||'post';
+  const modal=document.getElementById('fxComposeModal');
+  modal.classList.add('open');
+  // Activate correct type button
+  document.querySelectorAll('#fxComposeModal .fx-ctype').forEach((c,i)=>{
+    const types=['post','transaction','portfolio','poll','analysis'];
+    c.classList.toggle('active',types[i]===_fxComposeType);
+  });
+  fxRenderComposeContent(_fxComposeType);
+  setTimeout(()=>{const t=document.getElementById('fxComposeTxt');if(t)t.focus();},200);
+}
+function fxCloseCompose(){document.getElementById('fxComposeModal').classList.remove('open');_fxComposeTxnAsset=null;}
+function fxSetCType(el,type){
+  _fxComposeType=type||'post';
+  document.querySelectorAll('#fxComposeModal .fx-ctype').forEach(c=>c.classList.remove('active'));
+  el.classList.add('active');
+  fxRenderComposeContent(_fxComposeType);
+}
+function fxRenderComposeContent(type){
+  const attach=document.getElementById('fxComposeAttach');
+  if(!attach)return;
+  if(type==='portfolio'){
+    const pv=fxPortfolioSummary();
+    attach.innerHTML=`<div style="border:1px solid rgba(0,0,0,.08);border-radius:12px;overflow:hidden;background:#fafcfb;"><div style="display:flex;align-items:center;gap:12px;padding:12px 14px;"><div style="flex:1;"><div style="font-size:.85rem;font-weight:800;color:#1a2e22;">${pv.value}</div><div style="font-size:.72rem;font-weight:700;color:#1aab70;">${pv.ret}</div></div><div style="font-size:.7rem;color:#8a9e93;">${pv.count} posiciones</div></div></div><div style="font-size:.68rem;color:#8a9e93;margin-top:6px;">Se adjuntará una tarjeta de tu cartera actual</div>`;
+  }else if(type==='transaction'){
+    if(typeof assets!=='undefined'&&assets.length){
+      const list=assets.filter(a=>a.quantity>0).slice(0,8).map(a=>`<div style="display:flex;align-items:center;gap:8px;padding:8px 12px;border-radius:10px;cursor:pointer;transition:background .1s;${_fxComposeTxnAsset===a.isin?'background:#e6faf3;':''}" onclick="fxPickTxnAsset('${a.isin}','${(a.shortName||a.name).replace(/'/g,'&#39;')}',this)"><div style="width:32px;height:32px;border-radius:8px;background:#0e1f15;display:flex;align-items:center;justify-content:center;font-size:.5rem;font-weight:800;color:#fff;">${(a.shortName||a.name).slice(0,4)}</div><div><div style="font-size:.75rem;font-weight:700;color:#1a2e22;">${a.shortName||a.name}</div><div style="font-size:.6rem;color:#8a9e93;">${fe(a.value)} · ${a.quantity.toFixed(2)} participaciones</div></div></div>`).join('');
+      attach.innerHTML=`<div style="font-size:.68rem;font-weight:700;color:#8a9e93;margin-bottom:6px;text-transform:uppercase;letter-spacing:.06em;">Selecciona activo</div><div style="max-height:180px;overflow-y:auto;">${list}</div><div id="fxTxnTypeRow" style="display:${_fxComposeTxnAsset?'flex':'none'};gap:6px;margin-top:8px;flex-wrap:wrap;"></div>`;
+      if(_fxComposeTxnAsset)fxRenderTxnTypes();
+    }else{
+      attach.innerHTML=`<div style="font-size:.74rem;color:#8a9e93;padding:12px;">No hay activos en cartera.</div>`;
+    }
+  }else if(type==='poll'){
+    attach.innerHTML=`<div style="display:flex;flex-direction:column;gap:8px;padding:2px 0;"><input class="fx-comment-input" id="fxPollOpt1" placeholder="Opción A" style="border-radius:8px;"><input class="fx-comment-input" id="fxPollOpt2" placeholder="Opción B" style="border-radius:8px;"><button onclick="fxAddPollOption()" style="background:none;border:none;font-size:.72rem;font-weight:700;color:#1aab70;cursor:pointer;text-align:left;padding:2px 0;">+ Añadir opción</button></div>`;
+  }else{
+    attach.innerHTML='';
+  }
+}
+function fxPickTxnAsset(isin,name,el){
+  _fxComposeTxnAsset={isin,name};
+  // Highlight selected
+  el.parentElement.querySelectorAll('div[onclick]').forEach(d=>d.style.background='');
+  el.style.background='#e6faf3';
+  document.getElementById('fxTxnTypeRow').style.display='flex';
+  fxRenderTxnTypes();
+}
+function fxRenderTxnTypes(){
+  const row=document.getElementById('fxTxnTypeRow');if(!row)return;
+  row.innerHTML=['🟢 Compra','🔴 Venta','💰 Dividendo'].map(t=>`<button onclick="fxSelectTxnType('${t}',this)" style="flex:1;padding:7px 4px;border-radius:8px;font-size:.7rem;font-weight:700;border:1px solid rgba(0,0,0,.1);background:#f4f6f5;cursor:pointer;font-family:inherit;">${t}</button>`).join('');
+}
+function fxSelectTxnType(type,el){el.parentElement.querySelectorAll('button').forEach(b=>{b.style.background='#f4f6f5';b.style.color='';});el.style.background='#0e1f15';el.style.color='#fff';_fxComposeTxnAsset.type=type;}
+function fxAddPollOption(){
+  const attach=document.getElementById('fxComposeAttach');
+  const existing=attach.querySelectorAll('.fx-comment-input').length;
+  if(existing>=4)return;
+  const letters=['A','B','C','D'];
+  const inp=document.createElement('input');inp.className='fx-comment-input';inp.placeholder='Opción '+letters[existing];inp.style.borderRadius='8px';
+  attach.querySelector('div').insertBefore(inp,attach.querySelector('button'));
+}
+/* ── Submit new post ── */
+function fxSubmitPost(){
+  const txt=document.getElementById('fxComposeTxt');
+  const body=(txt?.value||'').trim();
+  if(!body&&_fxComposeType!=='portfolio'){if(txt)txt.style.outline='2px solid #f05252';setTimeout(()=>{if(txt)txt.style.outline='';},800);return;}
+  const newPost={
+    id:'up_'+Date.now(),
+    name:'Grigom',handle:'@Grigom',av:'G',color:'#2dc98a',
+    _isUser:true,
+    timeMs:Date.now(),
+    body,
+    type:_fxComposeType==='post'||_fxComposeType==='analysis'?'post':_fxComposeType,
+    reactions:{'👍':0},
+    seedComments:[]
+  };
+  if(_fxComposeType==='transaction'&&_fxComposeTxnAsset){
+    const a=_fxComposeTxnAsset;
+    const asset=typeof assets!=='undefined'?assets.find(x=>x.isin===a.isin):null;
+    const txnType=a.type||'🟢 Compra';
+    const day=new Date().getDate();
+    const months=['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
+    const month=months[new Date().getMonth()];
+    const detail=`${txnType} · ${asset?asset.quantity.toFixed(2):''} participaciones`;
+    const amount=asset?(txnType.includes('Venta')?('-'+fe(asset.value)):'+'+fe(asset.value)):'';
+    newPost.type='transaction';
+    newPost.txn={day,month,iconBg:'#0e1f15',iconText:(a.name||'').slice(0,4),name:a.name,detail,amount,pos:!txnType.includes('Venta')};
+    newPost.title=txnType.replace(/[🟢🔴💰]/g,'').trim()+': '+a.name;
+  }else if(_fxComposeType==='portfolio'){
+    const pv=fxPortfolioSummary();
+    newPost.title='Mi cartera · '+pv.value;
+    newPost.type='portfolio';
+  }else if(_fxComposeType==='poll'){
+    const opts=[...document.querySelectorAll('#fxComposeAttach .fx-comment-input')].map(i=>i.value.trim()).filter(Boolean);
+    if(opts.length<2){alert('Añade al menos 2 opciones');return;}
+    newPost.type='poll';
+    newPost.poll={options:opts,votes:opts.map(()=>Math.round(100/opts.length)),total:0};
+  }
+  const posts=fxGetUserPosts();
+  posts.push(newPost);
+  fxSaveUserPosts(posts);
+  fxCloseCompose();
+  if(txt)txt.value='';
+  fxRenderFeed();
+  // Scroll to top
+  const feed=document.getElementById('screen-finx');
+  if(feed)feed.scrollTo({top:0,behavior:'smooth'});
+}
+/* ── Profile ── */
 function fxOpenProfile(){
-  document.getElementById('fxProfileModal').classList.add('open');
-  requestAnimationFrame(()=>{fxDrawPGauge();fxDrawPerfChart();});
+  const modal=document.getElementById('fxProfileModal');
+  modal.classList.add('open');
+  fxBuildProfile();
 }
 function fxCloseProfile(){document.getElementById('fxProfileModal').classList.remove('open');}
-function fxToggleFollow(){const btn=document.getElementById('fxFollowBtn');btn.classList.toggle('following');btn.textContent=btn.classList.contains('following')?'Siguiendo':'Follow';}
-function fxSwitchPTab(el,contentId){
-  document.querySelectorAll('#fxProfileModal .fx-ptab').forEach(t=>t.classList.remove('active'));
-  el.classList.add('active');
-  document.querySelectorAll('#fxProfileModal .fx-ptab-content').forEach(t=>t.classList.remove('active'));
-  document.getElementById(contentId).classList.add('active');
-  if(contentId==='fxPtabPortfolio')requestAnimationFrame(()=>{fxDrawPGauge();fxDrawPerfChart();});
+function fxBuildProfile(){
+  const pv=fxPortfolioSummary();
+  const userPosts=fxGetUserPosts();
+  const following=fxGetFollowing();
+  const isFollowing=following.includes('grigom');
+  // Topbar info
+  const topInfo=document.getElementById('fxProfileTopInfo');
+  if(topInfo)topInfo.innerHTML=`<div style="font-size:.88rem;font-weight:800;color:#1a2e22;">Grigom</div><div style="font-size:.62rem;color:#8a9e93;">${userPosts.length} posts</div>`;
+  // Profile scroll
+  const scroll=document.getElementById('fxProfileScroll');
+  if(!scroll)return;
+  const holdings=typeof assets!=='undefined'?assets.filter(a=>a.quantity>0).sort((a,b)=>b.value-a.value):[];
+  const holdingsHTML=holdings.slice(0,6).map(a=>{
+    const pct=a.invested>0?((a.value-a.invested)/a.invested*100):0;
+    const isPos=pct>=0;
+    const abbr=(a.shortName||a.name||a.isin).slice(0,4).toUpperCase();
+    return`<div class="fx-holding-row"><div class="fx-holding-icon" style="background:#0e1f15;">${abbr}</div><div class="fx-holding-info"><div class="fx-holding-name">${a.shortName||a.name}</div><div class="fx-holding-detail">×${a.quantity.toFixed(2)} · ${fe(a.invested)} invertido</div></div><div class="fx-holding-right"><div class="fx-holding-val">${fe(a.value)}</div><div class="fx-holding-pct ${isPos?'pos':'neg'}">${isPos?'+':''}${pct.toFixed(2)}%</div></div></div>`;
+  }).join('');
+  const myPostsHTML=userPosts.length?[...userPosts].reverse().slice(0,3).map(p=>`<div class="fx-profile-post"><div class="fx-ppost-header"><div class="fx-ppost-av">G</div><div><div class="fx-ppost-name">Grigom</div><div style="font-size:.6rem;color:#8a9e93;">@Grigom</div></div><div class="fx-ppost-time">${fxTL(p.timeMs)}</div></div><div class="fx-ppost-body">${p.body||''}</div><div class="fx-ppost-actions"><button class="fx-ppost-act" onclick="fxDeletePost('${p.id}');fxBuildProfile()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/></svg>Eliminar</button></div></div>`).join(''):`<div style="padding:24px;text-align:center;font-size:.74rem;color:#8a9e93;">Aún no has publicado nada.<br><button onclick="fxCloseProfile();fxOpenCompose('post')" style="margin-top:12px;background:#1aab70;color:#fff;border:none;border-radius:20px;padding:8px 18px;font-size:.72rem;font-weight:800;cursor:pointer;font-family:inherit;">Crear primer post</button></div>`;
+  scroll.innerHTML=`
+    <div class="fx-profile-cover"><div class="fx-profile-cover-av">G</div>
+      <div class="fx-profile-cover-actions">
+        <button class="fx-profile-msg-btn"><svg viewBox="0 0 24 24" fill="none" stroke="#1a2e22" stroke-width="2" width="15" height="15"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></button>
+        <button class="fx-profile-follow-btn${isFollowing?' following':''}" id="fxFollowBtn" onclick="fxToggleFollow()">${isFollowing?'Siguiendo':'Follow'}</button>
+      </div>
+    </div>
+    <div class="fx-profile-info">
+      <div class="fx-profile-name-row"><span class="fx-profile-fullname">Grigom</span><svg viewBox="0 0 16 16" fill="none" width="16" height="16"><circle cx="8" cy="8" r="7" fill="#4f8ef7"/><path d="M5 8l2 2 4-4" stroke="#fff" stroke-width="1.5" stroke-linecap="round"/></svg><span style="font-size:.62rem;background:#e6faf3;color:#1aab70;font-weight:800;padding:2px 7px;border-radius:5px;">PRO</span></div>
+      <div class="fx-profile-handle">@Grigom · se unió sep. 2024</div>
+      <div class="fx-profile-bio">Inversor particular en ETFs y fondos value. Filosofía indexada con toque contrarian. 🇪🇸 España · Largo plazo, sin ruido.</div>
+      <div class="fx-profile-meta-row">
+        <div class="fx-profile-meta-item"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 9a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/><path d="M1.5 14.5s1-4 6.5-4 6.5 4 6.5 4"/></svg>España</div>
+        <div class="fx-profile-meta-item"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 12l3-3 3 3 5-7"/></svg>Rentab. ${pv.pct>=0?'+':''}${pv.pct.toFixed(2)}%</div>
+      </div>
+      <div class="fx-profile-followers-row"><div class="fx-profile-follow-stat"><b>2.380</b> seguidores</div><div class="fx-profile-follow-stat"><b>${following.length}</b> siguiendo</div></div>
+    </div>
+    <div class="fx-pstats-strip">
+      <div class="fx-pstat-cell"><div class="fx-pstat-num">${pv.count}</div><div class="fx-pstat-label">Posiciones</div></div>
+      <div class="fx-pstat-cell"><div class="fx-pstat-num ${pv.pct>=0?'green':'red'}">${pv.pct>=0?'+':''}${pv.pct.toFixed(1)}%</div><div class="fx-pstat-label">Rentab.</div></div>
+      <div class="fx-pstat-cell"><div class="fx-pstat-num">${pv.value}</div><div class="fx-pstat-label">Valor</div></div>
+      <div class="fx-pstat-cell"><div class="fx-pstat-num green">${pv.divYear}</div><div class="fx-pstat-label">Divid./año</div></div>
+    </div>
+    <div class="fx-ptabs">
+      <button class="fx-ptab active" onclick="fxSwitchPTab(this,'fxPtabPosts')">Posts (${userPosts.length})</button>
+      <button class="fx-ptab" onclick="fxSwitchPTab(this,'fxPtabPortfolio')">Portfolio</button>
+      <button class="fx-ptab" onclick="fxSwitchPTab(this,'fxPtabActivity')">Actividad</button>
+    </div>
+    <div class="fx-ptab-content active" id="fxPtabPosts">${myPostsHTML}</div>
+    <div class="fx-ptab-content" id="fxPtabPortfolio">
+      <div class="fx-p-portfolio-hero">
+        <div style="font-size:.6rem;font-weight:700;color:rgba(255,255,255,.4);text-transform:uppercase;letter-spacing:.1em;margin-bottom:6px;">Valor total del portfolio</div>
+        <div class="fx-p-port-val">${pv.value}</div>
+        <div class="fx-p-port-return">${pv.ret} · ganancia ${pv.gain}</div>
+        <div class="fx-p-port-meta">
+          <div class="fx-p-port-m"><div class="fx-p-port-m-val">${pv.count}</div><div class="fx-p-port-m-lbl">Posiciones</div></div>
+          <div class="fx-p-port-m"><div class="fx-p-port-m-val">${pv.divYear}</div><div class="fx-p-port-m-lbl">Divid./año</div></div>
+          <div class="fx-p-port-m"><div class="fx-p-port-m-val">${pv.invested}</div><div class="fx-p-port-m-lbl">Invertido</div></div>
+        </div>
+      </div>
+      <div class="fx-holdings-section">
+        <div class="fx-holdings-header"><div class="fx-holdings-title">Posiciones (${holdings.length})</div></div>
+        ${holdingsHTML}
+        ${holdings.length>6?`<div style="padding:10px;text-align:center;"><button style="background:#f0f5f2;border:1px solid rgba(0,0,0,.08);border-radius:20px;padding:7px 16px;font-size:.72rem;font-weight:700;color:#1a2e22;cursor:pointer;font-family:inherit;">Ver todas (${holdings.length-6} más)</button></div>`:''}
+      </div>
+      <div class="fx-activity-card" style="margin:0 12px 20px;">
+        <div class="fx-alloc-title">Rendimiento vs índice</div>
+        <canvas id="fxPerfChart" width="320" height="110" style="max-width:100%;"></canvas>
+        <div style="display:flex;gap:14px;margin-top:8px;">
+          <div style="display:flex;align-items:center;gap:5px;font-size:.62rem;font-weight:600;color:#8a9e93;"><div style="width:10px;height:3px;background:#1aab70;border-radius:2px;"></div>Mi cartera ${pv.pct>=0?'+':''}${pv.pct.toFixed(1)}%</div>
+          <div style="display:flex;align-items:center;gap:5px;font-size:.62rem;font-weight:600;color:#8a9e93;"><div style="width:10px;height:3px;background:#4f8ef7;border-radius:2px;"></div>MSCI World +14.5%</div>
+        </div>
+      </div>
+    </div>
+    <div class="fx-ptab-content" id="fxPtabActivity">
+      <div style="padding:12px;"><div class="fx-activity-card">
+        <div class="fx-alloc-title">Actividad reciente</div>
+        ${holdings.slice(0,4).map(a=>{const isPos=a.value>=a.invested;return`<div style="display:flex;gap:10px;align-items:flex-start;margin-bottom:10px;"><div style="width:8px;height:8px;border-radius:50%;background:${isPos?'#1aab70':'#f05252'};margin-top:5px;flex-shrink:0;"></div><div style="flex:1;"><div style="font-size:.72rem;font-weight:700;color:#1a2e22;">${a.shortName||a.name}</div><div style="font-size:.62rem;color:#8a9e93;">×${a.quantity.toFixed(2)} · Precio medio ${fe(a.buyPrice)}</div></div><div style="font-size:.72rem;font-weight:800;color:${isPos?'#1aab70':'#f05252'}">${isPos?'+':''}${fe(a.value-a.invested)}</div></div>`;}).join('')}
+      </div></div>
+    </div>`;
+  requestAnimationFrame(()=>fxDrawPerfChart());
 }
-function fxDrawPGauge(){
-  const c=document.getElementById('fxPgauge');if(!c)return;
-  const ctx=c.getContext('2d'),cx=32,cy=32,r=24;
+function fxToggleFollow(){
+  const btn=document.getElementById('fxFollowBtn');if(!btn)return;
+  const following=fxGetFollowing();
+  const idx=following.indexOf('grigom');
+  if(idx>-1){following.splice(idx,1);}else{following.push('grigom');}
+  fxSaveFollowing(following);
+  const isNow=following.includes('grigom');
+  btn.classList.toggle('following',isNow);
+  btn.textContent=isNow?'Siguiendo':'Follow';
+}
+function fxSwitchPTab(el,contentId){
+  document.querySelectorAll('#fxProfileScroll .fx-ptab').forEach(t=>t.classList.remove('active'));
+  el.classList.add('active');
+  document.querySelectorAll('#fxProfileScroll .fx-ptab-content').forEach(t=>t.classList.remove('active'));
+  const c=document.getElementById(contentId);
+  if(c){c.classList.add('active');}
+  if(contentId==='fxPtabPortfolio')requestAnimationFrame(fxDrawPerfChart);
+}
+/* ── Canvas helpers ── */
+function fxDrawGauge(canvas,cx,cy,r,lw){
+  if(!canvas)return;
+  const ctx=canvas.getContext('2d');
   const s=Math.PI*.75,t=Math.PI*1.5;
   const segs=[{p:.30,col:'#4f8ef7'},{p:.25,col:'#2dc98a'},{p:.20,col:'#7c5cbf'},{p:.12,col:'#f5b731'},{p:.08,col:'#f05252'},{p:.05,col:'#8a9e93'}];
-  ctx.clearRect(0,0,64,64);
-  ctx.beginPath();ctx.arc(cx,cy,r,s,s+t);ctx.strokeStyle='#f0f0f0';ctx.lineWidth=5;ctx.stroke();
-  let a=s;segs.forEach(sg=>{const e=a+sg.p*t;ctx.beginPath();ctx.arc(cx,cy,r,a,e);ctx.strokeStyle=sg.col;ctx.lineWidth=5;ctx.lineCap='round';ctx.stroke();a=e;});
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  ctx.beginPath();ctx.arc(cx,cy,r,s,s+t);ctx.strokeStyle='#f0f0f0';ctx.lineWidth=lw;ctx.stroke();
+  let a=s;segs.forEach(sg=>{const e=a+sg.p*t;ctx.beginPath();ctx.arc(cx,cy,r,a,e);ctx.strokeStyle=sg.col;ctx.lineWidth=lw;ctx.lineCap='round';ctx.stroke();a=e;});
 }
+function fxDrawPGauge(){const c=document.getElementById('fxPgauge')||document.getElementById('fxPgCard_s5');if(c)fxDrawGauge(c,32,32,24,5);}
 function fxDrawPerfChart(){
   const c=document.getElementById('fxPerfChart');if(!c)return;
   const dpr=window.devicePixelRatio||1;
-  const W=c.parentElement.offsetWidth-28||300,H=110;
+  const W=c.parentElement.offsetWidth-28||280,H=110;
   c.width=W*dpr;c.height=H*dpr;c.style.width=W+'px';c.style.height=H+'px';
   const ctx=c.getContext('2d');ctx.scale(dpr,dpr);
   const labels=['Sep','Nov','Ene','Mar','May','Jul','Sep','Nov','Ene','Mar'];
-  const grigom=[0,3.2,5.1,8.4,11.2,14.8,18.3,22.1,24.9,27.1];
+  const pv=fxPortfolioSummary();
+  const maxPct=Math.max(pv.pct,20);
+  const grigom=[0,pv.pct*.12,pv.pct*.19,pv.pct*.31,pv.pct*.41,pv.pct*.55,pv.pct*.68,pv.pct*.82,pv.pct*.92,pv.pct];
   const msci=[0,1.8,3.2,5.0,6.8,8.4,9.8,11.6,13.1,14.5];
-  const min=-2,max=30,range=max-min;
-  const padL=22,padR=8,padT=6,padB=18;
+  const min=-2,max=maxPct+2,range=max-min;
+  const padL=26,padR=8,padT=6,padB=18;
   const w=W-padL-padR,h=H-padT-padB;
   const sx=i=>padL+i*(w/(labels.length-1));
   const sy=v=>padT+h-((v-min)/range)*h;
   ctx.strokeStyle='rgba(0,0,0,.06)';ctx.lineWidth=1;ctx.setLineDash([3,3]);
-  [0,10,20,30].forEach(v=>{ctx.beginPath();ctx.moveTo(padL,sy(v));ctx.lineTo(W-padR,sy(v));ctx.stroke();});
+  [0,Math.round(maxPct/2),Math.round(maxPct)].forEach(v=>{ctx.beginPath();ctx.moveTo(padL,sy(v));ctx.lineTo(W-padR,sy(v));ctx.stroke();});
   ctx.setLineDash([]);
   const g2=ctx.createLinearGradient(0,padT,0,padT+h);g2.addColorStop(0,'rgba(79,142,247,.1)');g2.addColorStop(1,'rgba(79,142,247,0)');
-  ctx.beginPath();ctx.moveTo(sx(0),sy(msci[0]));msci.forEach((v,i)=>{if(i>0)ctx.lineTo(sx(i),sy(v));});
-  ctx.lineTo(sx(msci.length-1),padT+h);ctx.lineTo(sx(0),padT+h);ctx.closePath();ctx.fillStyle=g2;ctx.fill();
+  ctx.beginPath();ctx.moveTo(sx(0),sy(msci[0]));msci.forEach((v,i)=>{if(i>0)ctx.lineTo(sx(i),sy(v));});ctx.lineTo(sx(msci.length-1),padT+h);ctx.lineTo(sx(0),padT+h);ctx.closePath();ctx.fillStyle=g2;ctx.fill();
   const g1=ctx.createLinearGradient(0,padT,0,padT+h);g1.addColorStop(0,'rgba(26,171,112,.18)');g1.addColorStop(1,'rgba(26,171,112,0)');
-  ctx.beginPath();ctx.moveTo(sx(0),sy(grigom[0]));grigom.forEach((v,i)=>{if(i>0)ctx.lineTo(sx(i),sy(v));});
-  ctx.lineTo(sx(grigom.length-1),padT+h);ctx.lineTo(sx(0),padT+h);ctx.closePath();ctx.fillStyle=g1;ctx.fill();
-  ctx.beginPath();msci.forEach((v,i)=>i===0?ctx.moveTo(sx(i),sy(v)):ctx.lineTo(sx(i),sy(v)));
-  ctx.strokeStyle='#4f8ef7';ctx.lineWidth=1.5;ctx.setLineDash([4,3]);ctx.stroke();ctx.setLineDash([]);
-  ctx.beginPath();grigom.forEach((v,i)=>i===0?ctx.moveTo(sx(i),sy(v)):ctx.lineTo(sx(i),sy(v)));
-  ctx.strokeStyle='#1aab70';ctx.lineWidth=2;ctx.lineJoin='round';ctx.stroke();
-  ctx.fillStyle='#8a9e93';ctx.font='600 9px system-ui,sans-serif';ctx.textAlign='center';
-  labels.forEach((l,i)=>ctx.fillText(l,sx(i),H-2));
-  ctx.textAlign='right';[0,10,20].forEach(v=>ctx.fillText(v+'%',padL-2,sy(v)+3));
+  ctx.beginPath();ctx.moveTo(sx(0),sy(grigom[0]));grigom.forEach((v,i)=>{if(i>0)ctx.lineTo(sx(i),sy(v));});ctx.lineTo(sx(grigom.length-1),padT+h);ctx.lineTo(sx(0),padT+h);ctx.closePath();ctx.fillStyle=g1;ctx.fill();
+  ctx.beginPath();msci.forEach((v,i)=>i===0?ctx.moveTo(sx(i),sy(v)):ctx.lineTo(sx(i),sy(v)));ctx.strokeStyle='#4f8ef7';ctx.lineWidth=1.5;ctx.setLineDash([4,3]);ctx.stroke();ctx.setLineDash([]);
+  ctx.beginPath();grigom.forEach((v,i)=>i===0?ctx.moveTo(sx(i),sy(v)):ctx.lineTo(sx(i),sy(v)));ctx.strokeStyle='#1aab70';ctx.lineWidth=2;ctx.lineJoin='round';ctx.stroke();
+  ctx.fillStyle='#8a9e93';ctx.font='600 9px system-ui,sans-serif';ctx.textAlign='center';labels.forEach((l,i)=>ctx.fillText(l,sx(i),H-2));
+  ctx.textAlign='right';[0,Math.round(maxPct/2),Math.round(maxPct)].forEach(v=>ctx.fillText(v+'%',padL-4,sy(v)+3));
 }
 
 function renderAnalysisCharts(){
