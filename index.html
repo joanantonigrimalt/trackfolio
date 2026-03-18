@@ -905,7 +905,33 @@ table.an-corr-mtx{border-collapse:separate;border-spacing:4px}
       <div class="title" data-i18n="appTitle">Finasset</div>
       <div class="sub" data-i18n="homeSub">Cartera propia · ETFs, fondos y metales preciosos</div>
     </div>
-    <div class="badge" id="coverageBadge">...</div>
+    <div style="position:relative;">
+      <button id="homeFabBtn" onclick="toggleHomeFab(event)" style="width:38px;height:38px;border-radius:50%;background:#15803d;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 14px rgba(21,128,61,.35);transition:transform .15s,box-shadow .15s;flex-shrink:0;" aria-label="Añadir">
+        <svg id="homeFabIcon" viewBox="0 0 18 18" fill="none" stroke="#fff" stroke-width="2.8" stroke-linecap="round" width="16" height="16"><line x1="9" y1="3" x2="9" y2="15"/><line x1="3" y1="9" x2="15" y2="9"/></svg>
+      </button>
+      <div id="homeFabMenu" style="display:none;position:absolute;top:46px;right:0;background:#fff;border-radius:16px;box-shadow:0 8px 28px rgba(20,32,24,.16);border:1px solid rgba(20,32,24,.07);overflow:hidden;min-width:148px;z-index:50;animation:faIn .15s both;">
+        <button onclick="homeFabAction('activo')" style="display:flex;align-items:center;gap:10px;width:100%;padding:13px 16px;background:transparent;border:none;font:inherit;font-size:14px;font-weight:600;color:#142018;cursor:pointer;text-align:left;transition:background .12s;" onmouseover="this.style.background='#f4f7f5'" onmouseout="this.style.background='transparent'">
+          <span style="width:28px;height:28px;border-radius:8px;background:#e6faf3;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+            <svg viewBox="0 0 16 16" fill="none" stroke="#15803d" stroke-width="1.8" width="14" height="14"><rect x="2" y="2" width="12" height="12" rx="2"/><path d="M8 5v6M5 8h6"/></svg>
+          </span>
+          Activo
+        </button>
+        <div style="height:1px;background:rgba(20,32,24,.06);margin:0 14px;"></div>
+        <button onclick="homeFabAction('liquidez')" style="display:flex;align-items:center;gap:10px;width:100%;padding:13px 16px;background:transparent;border:none;font:inherit;font-size:14px;font-weight:600;color:#142018;cursor:pointer;text-align:left;transition:background .12s;" onmouseover="this.style.background='#f4f7f5'" onmouseout="this.style.background='transparent'">
+          <span style="width:28px;height:28px;border-radius:8px;background:#eff6ff;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+            <svg viewBox="0 0 16 16" fill="none" stroke="#3b82f6" stroke-width="1.8" width="14" height="14"><circle cx="8" cy="8" r="6"/><path d="M8 5v3l2 2"/></svg>
+          </span>
+          Liquidez
+        </button>
+        <div style="height:1px;background:rgba(20,32,24,.06);margin:0 14px;"></div>
+        <button onclick="homeFabAction('alerta')" style="display:flex;align-items:center;gap:10px;width:100%;padding:13px 16px;background:transparent;border:none;font:inherit;font-size:14px;font-weight:600;color:#142018;cursor:pointer;text-align:left;transition:background .12s;" onmouseover="this.style.background='#f4f7f5'" onmouseout="this.style.background='transparent'">
+          <span style="width:28px;height:28px;border-radius:8px;background:#fefce8;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+            <svg viewBox="0 0 16 16" fill="none" stroke="#b45309" stroke-width="1.8" width="14" height="14"><path d="M8 2a5 5 0 0 1 5 5v2l1 2H2l1-2V7a5 5 0 0 1 5-5z"/><path d="M6.5 13a1.5 1.5 0 0 0 3 0"/></svg>
+          </span>
+          Alerta
+        </button>
+      </div>
+    </div>
   </div>
 
   <div class="card hero">
@@ -1443,20 +1469,20 @@ table.an-corr-mtx{border-collapse:separate;border-spacing:4px}
       <div id="anTreemap" style="width:100%;height:260px;position:relative"></div>
     </div>
 
-    <!-- Trend Analysis vs MSCI World -->
+    <!-- Portfolio vs MSCI World -->
     <div class="card" style="padding:0;overflow:hidden">
-      <div style="padding:18px 20px 14px">
-        <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:14px">
+      <div style="padding:18px 20px 12px">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px">
           <div>
-            <div style="font-size:9px;font-weight:700;color:#8fa090;text-transform:uppercase;letter-spacing:.1em;margin-bottom:4px">Rendimiento histórico</div>
-            <div class="sectionTitle" style="margin-bottom:0" data-i18n="vsWorld">Trend vs MSCI World</div>
+            <div style="font-size:9px;font-weight:700;color:#8fa090;text-transform:uppercase;letter-spacing:.1em;margin-bottom:3px">Rendimiento histórico</div>
+            <div style="font-size:16px;font-weight:800;color:#142018;letter-spacing:-.02em" data-i18n="vsWorld">Portfolio vs MSCI World</div>
           </div>
           <div style="background:#f0f5f2;border-radius:8px;padding:4px 10px"><span style="font-size:10px;font-weight:700;color:#8fa090">2021–2025</span></div>
         </div>
-        <div id="vsWorldChips" style="display:flex;gap:8px"></div>
+        <div id="vsWorldChips" style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px"></div>
       </div>
       <div style="padding:0 16px 16px">
-        <div style="position:relative;height:180px;margin-top:6px"><canvas id="vsWorldBar"></canvas></div>
+        <div style="position:relative;height:190px;margin-top:4px"><canvas id="vsWorldBar"></canvas></div>
         <div id="vsWorldNote" style="display:none;font-size:11px;color:#8fa090;text-align:center;margin-top:8px"></div>
       </div>
     </div>
@@ -3830,9 +3856,7 @@ function renderAnalysisCharts(){
       const avgP=pairs.reduce((s,x)=>s+x.p,0)/pairs.length;
       const avgM=pairs.reduce((s,x)=>s+x.m,0)/pairs.length;
       const alpha=avgP-avgM;
-      vsChips.innerHTML=`<div style="background:#e6faf3;border:1px solid #b7f0d8;border-radius:8px;padding:6px 10px;flex:1"><div style="font-size:8px;font-weight:600;color:#8fa090;text-transform:uppercase;letter-spacing:.08em">Portfolio avg</div><div style="font-size:14px;font-weight:800;color:#15803d;margin-top:1px">${avgP>=0?'+':''}${avgP.toFixed(1)}%</div></div>
-      <div style="background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;padding:6px 10px;flex:1"><div style="font-size:8px;font-weight:600;color:#8fa090;text-transform:uppercase;letter-spacing:.08em">MSCI avg</div><div style="font-size:14px;font-weight:800;color:#3b82f6;margin-top:1px">${avgM>=0?'+':''}${avgM.toFixed(1)}%</div></div>
-      <div style="background:#f5f3ff;border:1px solid #ddd6fe;border-radius:8px;padding:6px 10px;flex:1"><div style="font-size:8px;font-weight:600;color:#8fa090;text-transform:uppercase;letter-spacing:.08em">Alpha</div><div style="font-size:14px;font-weight:800;color:#7c3aed;margin-top:1px">${alpha>=0?'+':''}${alpha.toFixed(1)}%</div></div>`;
+      vsChips.innerHTML=`<div style="background:#e6faf3;border:1px solid #b7f0d8;border-radius:10px;padding:10px 12px;"><div style="font-size:8px;font-weight:700;color:#8fa090;text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px">Portfolio AVG</div><div style="font-size:17px;font-weight:800;color:#15803d;letter-spacing:-.02em;">${avgP>=0?'+':''}${avgP.toFixed(1)}%</div></div><div style="background:#eff6ff;border:1px solid #bfdbfe;border-radius:10px;padding:10px 12px;"><div style="font-size:8px;font-weight:700;color:#8fa090;text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px">MSCI AVG</div><div style="font-size:17px;font-weight:800;color:#3b82f6;letter-spacing:-.02em;">${avgM>=0?'+':''}${avgM.toFixed(1)}%</div></div><div style="background:#f5f3ff;border:1px solid #ddd6fe;border-radius:10px;padding:10px 12px;"><div style="font-size:8px;font-weight:700;color:#8fa090;text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px">ALPHA</div><div style="font-size:17px;font-weight:800;color:#7c3aed;letter-spacing:-.02em;">${alpha>=0?'+':''}${alpha.toFixed(1)}%</div></div>`;
     }
   }
   // ─── Coverage card ───
@@ -4882,7 +4906,7 @@ function render(){
   document.getElementById('profitPercent').textContent=`${gainPct>=0?'+':''}${gainPct.toFixed(2)}%`;
   const ge=document.getElementById('totalGainPill');ge.textContent=`${gain>=0?'+':''}${fe(gain)} · ${gainPct>=0?'+':''}${gainPct.toFixed(2)}%`;ge.className=`pill ${gain>=0?'pos':'neg'}`;
   document.getElementById('coveragePill').textContent=`${c.total} ${t('assets')}`;
-  document.getElementById('coverageBadge').textContent=`${c.ok}/${c.total} OK`;
+  // coverageBadge replaced by FAB button — no-op
   document.getElementById('count').textContent=c.total;
   document.getElementById('summaryInvested').textContent=fe(invested);
   document.getElementById('summaryGainAbs').textContent=`${gain>=0?'+':''}${fe(gain)} ${currentLang==='es'?'ganancia':'gain'}`;
@@ -5659,6 +5683,12 @@ const DEMO_LIQUIDITY = [
 ];
 let _isDemo = false;
 
+function showToast(msg, duration=2200) {
+  let t=document.getElementById('_globalToast');
+  if(!t){t=document.createElement('div');t.id='_globalToast';Object.assign(t.style,{position:'fixed',bottom:'80px',left:'50%',transform:'translateX(-50%)',background:'rgba(20,32,24,.88)',color:'#fff',padding:'9px 18px',borderRadius:'12px',fontSize:'13px',fontWeight:'700',zIndex:'9999',pointerEvents:'none',transition:'opacity .3s',whiteSpace:'nowrap'});document.body.appendChild(t);}
+  t.textContent=msg;t.style.opacity='1';clearTimeout(t._to);t._to=setTimeout(()=>t.style.opacity='0',duration);
+}
+
 // Demo mode: show a non-blocking toast telling user this is read-only
 function _demoToast(){
   let t=document.getElementById('_demoToast');
@@ -5725,6 +5755,43 @@ function openLiqModal(id) {
   document.getElementById('liqOverlay').classList.add('open');
   document.getElementById('liqSheet').classList.add('open');
 }
+// ── Home FAB ──────────────────────────────────────────────────────────────
+let _fabOpen = false;
+function toggleHomeFab(e) {
+  e.stopPropagation();
+  _fabOpen = !_fabOpen;
+  const menu = document.getElementById('homeFabMenu');
+  const btn  = document.getElementById('homeFabBtn');
+  const icon = document.getElementById('homeFabIcon');
+  if(menu) menu.style.display = _fabOpen ? 'block' : 'none';
+  if(btn)  btn.style.transform = _fabOpen ? 'rotate(45deg)' : '';
+  if(btn)  btn.style.boxShadow = _fabOpen ? '0 4px 18px rgba(21,128,61,.5)' : '0 4px 14px rgba(21,128,61,.35)';
+}
+function homeFabAction(type) {
+  _fabOpen = false;
+  const menu = document.getElementById('homeFabMenu');
+  const btn  = document.getElementById('homeFabBtn');
+  if(menu) menu.style.display = 'none';
+  if(btn)  btn.style.transform = '';
+  if(type === 'activo') {
+    const addBtn = document.getElementById('btnOpenModal');
+    if(addBtn) addBtn.click();
+  } else if(type === 'liquidez') {
+    openLiqModal(null);
+  } else if(type === 'alerta') {
+    showToast(currentLang==='es'?'Alertas próximamente':'Alerts coming soon');
+  }
+}
+document.addEventListener('click', e => {
+  if(_fabOpen && !document.getElementById('homeFabBtn')?.contains(e.target)) {
+    _fabOpen = false;
+    const menu = document.getElementById('homeFabMenu');
+    const btn  = document.getElementById('homeFabBtn');
+    if(menu) menu.style.display = 'none';
+    if(btn)  btn.style.transform = '';
+  }
+});
+
 function closeLiqModal() {
   document.getElementById('liqOverlay').classList.remove('open');
   document.getElementById('liqSheet').classList.remove('open');
