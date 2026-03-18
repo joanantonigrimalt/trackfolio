@@ -228,6 +228,195 @@ table.an-corr-mtx{border-collapse:separate;border-spacing:4px}
 .an-costs-amt{font-size:11px;font-weight:800;color:#f87171;white-space:nowrap;flex-shrink:0}
 .an-ter-bar-track{height:5px;background:#f0f0f0;border-radius:3px;overflow:hidden;margin-top:3px}
 .an-ter-bar-fill{height:100%;border-radius:3px;background:#f87171}
+/* === FinX Forum === */
+#screen-finx{--bg:#f0f5f2;--surface:#fff;--text:#1a2e22;--muted:#8a9e93;--green:#2dc98a;--green2:#1aab70;--dark:#0e1f15;--red:#f05252;--yellow:#f5b731;--blue:#4f8ef7;--purple:#7c5cbf;--border:rgba(0,0,0,.07);background:#f0f5f2;padding:0 0 114px!important}
+#screen-finx .fx-topbar{background:var(--surface);border-bottom:1px solid var(--border);padding:14px 16px 0;position:sticky;top:0;z-index:30}
+#screen-finx .fx-topbar-row1{display:flex;align-items:center;justify-content:space-between;padding-bottom:10px}
+#screen-finx .fx-topbar-logo{font-size:1.05rem;font-weight:800;color:var(--text);letter-spacing:-.02em}
+#screen-finx .fx-topbar-icons{display:flex;gap:8px}
+#screen-finx .fx-ticon{width:34px;height:34px;border-radius:50%;background:var(--bg);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--muted);border:none;position:relative}
+#screen-finx .fx-ticon svg{width:17px;height:17px}
+#screen-finx .fx-notif-dot{position:absolute;top:5px;right:5px;width:7px;height:7px;border-radius:50%;background:var(--red);border:1.5px solid var(--surface)}
+#screen-finx .fx-tabs{display:flex}
+#screen-finx .fx-tab{flex:1;text-align:center;padding:10px 0 8px;font-size:.75rem;font-weight:700;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;border-left:none;border-right:none;border-top:none;background:transparent;transition:color .15s;font-family:inherit}
+#screen-finx .fx-tab.active{color:var(--text);border-bottom-color:var(--green2)}
+#screen-finx .fx-compose-bar{background:var(--surface);border-bottom:1px solid var(--border);padding:10px 16px;display:flex;gap:10px;align-items:center}
+#screen-finx .fx-compose-av{width:36px;height:36px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:.65rem;font-weight:800;color:#fff;background:var(--green2)}
+#screen-finx .fx-compose-input{flex:1;background:#f4f6f5;border:1px solid #e8ebe9;border-radius:24px;padding:9px 16px;font-family:inherit;font-size:.78rem;color:var(--muted);cursor:pointer;outline:none}
+#screen-finx .fx-compose-btn{width:34px;height:34px;border-radius:50%;background:var(--green2);display:flex;align-items:center;justify-content:center;flex-shrink:0;border:none;cursor:pointer}
+#screen-finx .fx-feed{display:flex;flex-direction:column}
+#screen-finx .fx-post{background:var(--surface);border-bottom:1px solid var(--border);padding:14px 16px}
+#screen-finx .fx-post-header{display:flex;align-items:flex-start;gap:10px;margin-bottom:8px}
+#screen-finx .fx-post-av{width:40px;height:40px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:.7rem;font-weight:800;color:#fff;cursor:pointer;position:relative}
+#screen-finx .fx-verified{position:absolute;bottom:-1px;right:-1px;width:14px;height:14px;border-radius:50%;background:var(--blue);border:2px solid var(--surface);display:flex;align-items:center;justify-content:center}
+#screen-finx .fx-verified svg{width:7px;height:7px}
+#screen-finx .fx-post-meta{flex:1;min-width:0}
+#screen-finx .fx-post-name-row{display:flex;align-items:center;gap:5px;flex-wrap:wrap}
+#screen-finx .fx-post-name{font-size:.82rem;font-weight:800;cursor:pointer;color:var(--text)}
+#screen-finx .fx-post-handle{font-size:.72rem;color:var(--muted);font-weight:500}
+#screen-finx .fx-post-time{font-size:.68rem;color:var(--muted);margin-left:auto;flex-shrink:0}
+#screen-finx .fx-post-options{cursor:pointer;color:var(--muted);padding:2px 4px;background:none;border:none;font-size:1rem}
+#screen-finx .fx-ticker-tag{display:inline-flex;align-items:center;gap:3px;background:#e6faf3;color:var(--green2);font-size:.68rem;font-weight:800;padding:2px 7px;border-radius:5px;cursor:pointer}
+#screen-finx .fx-ticker-tag.red{background:#fef2f2;color:var(--red)}
+#screen-finx .fx-post-title{font-size:.85rem;font-weight:800;margin-bottom:4px;color:var(--text)}
+#screen-finx .fx-post-body{font-size:.78rem;color:#374151;line-height:1.6;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+#screen-finx .fx-post-body.expanded{-webkit-line-clamp:unset;overflow:visible}
+#screen-finx .fx-show-more{font-size:.72rem;color:var(--muted);cursor:pointer;margin-top:2px;display:inline-block}
+#screen-finx .fx-translate-row{font-size:.68rem;color:var(--muted);margin-top:3px;cursor:pointer;display:inline-block}
+#screen-finx .fx-txn-card{border:1px solid var(--border);border-radius:12px;padding:12px 14px;margin:10px 0 4px;display:flex;align-items:center;gap:10px;background:#fafcfb}
+#screen-finx .fx-txn-date{text-align:center;flex-shrink:0;min-width:36px}
+#screen-finx .fx-txn-date-d{font-size:.75rem;font-weight:800}
+#screen-finx .fx-txn-date-m{font-size:.58rem;font-weight:600;color:var(--muted);margin-top:1px}
+#screen-finx .fx-txn-icon{width:32px;height:32px;border-radius:8px;flex-shrink:0;display:flex;align-items:center;justify-content:center;overflow:hidden}
+#screen-finx .fx-txn-info{flex:1;min-width:0}
+#screen-finx .fx-txn-name{font-size:.75rem;font-weight:700;color:var(--text)}
+#screen-finx .fx-txn-detail{font-size:.62rem;color:var(--muted);margin-top:2px}
+#screen-finx .fx-txn-amount{font-size:.82rem;font-weight:800;flex-shrink:0}
+#screen-finx .fx-txn-amount.pos{color:var(--green2)}
+#screen-finx .fx-txn-amount.neg{color:var(--red)}
+#screen-finx .fx-portfolio-card{border:1px solid var(--border);border-radius:12px;overflow:hidden;margin:10px 0 4px;cursor:pointer}
+#screen-finx .fx-pc-inner{padding:12px 14px;display:flex;align-items:center;gap:12px}
+#screen-finx .fx-pc-gauge{position:relative;flex-shrink:0}
+#screen-finx .fx-pc-gauge canvas{display:block}
+#screen-finx .fx-pc-gauge-label{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+#screen-finx .fx-pc-gauge-num{font-size:.72rem;font-weight:800;color:var(--text)}
+#screen-finx .fx-pc-gauge-sub{font-size:.48rem;color:var(--muted);font-weight:600}
+#screen-finx .fx-pc-info{flex:1}
+#screen-finx .fx-pc-value{font-size:1rem;font-weight:800;letter-spacing:-.02em;color:var(--text)}
+#screen-finx .fx-pc-return{font-size:.72rem;font-weight:700;color:var(--green2)}
+#screen-finx .fx-poll-card{margin:10px 0 4px}
+#screen-finx .fx-poll-option{border:1px solid var(--border);border-radius:10px;overflow:hidden;margin-bottom:6px;cursor:pointer;position:relative}
+#screen-finx .fx-poll-fill{position:absolute;top:0;left:0;bottom:0;background:#e6faf3;transition:width .5s ease}
+#screen-finx .fx-poll-text{position:relative;z-index:1;display:flex;align-items:center;justify-content:space-between;padding:9px 12px}
+#screen-finx .fx-poll-name{font-size:.75rem;font-weight:600;color:var(--text)}
+#screen-finx .fx-poll-pct{font-size:.7rem;font-weight:800;color:var(--green2)}
+#screen-finx .fx-poll-meta{font-size:.64rem;color:var(--muted);margin-top:4px}
+#screen-finx .fx-table-preview{margin:10px 0 4px;border-radius:10px;overflow:hidden;border:1px solid var(--border);font-size:.7rem}
+#screen-finx .fx-table-preview table{width:100%;border-collapse:collapse}
+#screen-finx .fx-table-preview thead{background:var(--dark)}
+#screen-finx .fx-table-preview thead th{padding:7px 10px;color:rgba(255,255,255,.7);font-weight:700;text-align:left;font-size:.65rem}
+#screen-finx .fx-table-preview tbody tr:nth-child(odd){background:#f8faf9}
+#screen-finx .fx-table-preview tbody td{padding:6px 10px;font-weight:500;color:var(--text)}
+#screen-finx .fx-table-preview tbody td.g{color:var(--green2);font-weight:700}
+#screen-finx .fx-table-preview tbody td.r{color:var(--red);font-weight:700}
+#screen-finx .fx-post-reactions{display:flex;align-items:center;gap:6px;margin:8px 0 6px;flex-wrap:wrap}
+#screen-finx .fx-reaction-bubble{display:inline-flex;align-items:center;gap:3px;background:#f4f6f5;border:1px solid #e8ebe9;border-radius:20px;padding:3px 8px;cursor:pointer;font-size:.7rem;font-weight:600}
+#screen-finx .fx-reaction-bubble.active{background:#e6faf3;border-color:var(--green2);color:var(--green2)}
+#screen-finx .fx-post-actions{display:flex;border-top:1px solid var(--border);padding-top:8px;margin-top:4px}
+#screen-finx .fx-action-btn{flex:1;display:flex;align-items:center;justify-content:center;gap:5px;font-size:.7rem;font-weight:600;color:var(--muted);cursor:pointer;padding:5px 4px;border-radius:8px;border:none;background:transparent;font-family:inherit}
+#screen-finx .fx-action-btn.liked{color:var(--green2)}
+#screen-finx .fx-action-btn svg{width:16px;height:16px}
+#screen-finx .fx-comments-section{background:#fafcfb;border-top:1px solid var(--border)}
+#screen-finx .fx-comment{display:flex;gap:8px;padding:10px 16px 8px;border-bottom:1px solid rgba(0,0,0,.04)}
+#screen-finx .fx-comment-av{width:30px;height:30px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:.58rem;font-weight:800;color:#fff}
+#screen-finx .fx-comment-body{flex:1}
+#screen-finx .fx-comment-header{display:flex;align-items:center;gap:5px;margin-bottom:3px}
+#screen-finx .fx-comment-name{font-size:.72rem;font-weight:800;color:var(--text)}
+#screen-finx .fx-comment-handle{font-size:.64rem;color:var(--muted)}
+#screen-finx .fx-comment-time{font-size:.62rem;color:var(--muted);margin-left:auto}
+#screen-finx .fx-comment-text{font-size:.74rem;color:#374151;line-height:1.5}
+#screen-finx .fx-comment-actions{display:flex;gap:12px;margin-top:5px}
+#screen-finx .fx-comment-act{font-size:.62rem;font-weight:600;color:var(--muted);cursor:pointer;display:flex;align-items:center;gap:3px;border:none;background:transparent;font-family:inherit}
+#screen-finx .fx-view-more{padding:8px 16px;font-size:.72rem;font-weight:700;color:var(--muted);cursor:pointer;text-align:left;border:none;background:none;width:100%;font-family:inherit}
+#screen-finx .fx-comment-input-row{display:flex;gap:8px;padding:10px 16px;border-top:1px solid var(--border);align-items:center}
+#screen-finx .fx-comment-input{flex:1;background:#f4f6f5;border:1px solid #e8ebe9;border-radius:20px;padding:8px 14px;font-family:inherit;font-size:.74rem;color:var(--text);outline:none}
+#screen-finx .fx-comment-post-btn{font-size:.72rem;font-weight:700;color:var(--green2);background:none;border:none;cursor:pointer;padding:0 4px;flex-shrink:0;font-family:inherit}
+/* FinX Modals (fixed overlays) */
+#fxShareModal,#fxComposeModal{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:200;display:none;align-items:flex-end;justify-content:center}
+#fxShareModal.open,#fxComposeModal.open{display:flex}
+#fxShareModal .fx-modal-sheet,#fxComposeModal .fx-compose-sheet{background:#fff;border-radius:24px 24px 0 0;width:min(100vw,390px);padding:16px 0 32px;animation:slideUp .25s ease}
+#fxShareModal .fx-modal-handle,#fxComposeModal .fx-modal-handle{width:36px;height:4px;background:#ddd;border-radius:2px;margin:0 auto 14px}
+#fxShareModal .fx-modal-title{font-size:.82rem;font-weight:800;text-align:center;margin-bottom:14px;padding:0 16px;color:#1a2e22}
+#fxShareModal .fx-modal-options{display:flex;flex-direction:column;gap:2px;padding:0 12px}
+#fxShareModal .fx-modal-opt{display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:12px;cursor:pointer;border:none;background:transparent;width:100%;text-align:left;font-family:inherit}
+#fxShareModal .fx-modal-opt-icon{width:38px;height:38px;border-radius:11px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+#fxShareModal .fx-modal-opt-text{font-size:.78rem;font-weight:700;color:#1a2e22}
+#fxShareModal .fx-modal-opt-sub{font-size:.62rem;color:#8a9e93;margin-top:1px}
+#fxComposeModal .fx-compose-header{display:flex;align-items:center;justify-content:space-between;padding:0 16px 12px;border-bottom:1px solid rgba(0,0,0,.07)}
+#fxComposeModal .fx-ctypes{display:flex;gap:6px;padding:12px 16px;border-bottom:1px solid rgba(0,0,0,.07);overflow-x:auto;scrollbar-width:none}
+#fxComposeModal .fx-ctype{display:flex;align-items:center;gap:5px;white-space:nowrap;font-size:.68rem;font-weight:700;padding:5px 10px;border-radius:20px;cursor:pointer;border:1px solid rgba(0,0,0,.07);background:transparent;color:#8a9e93;font-family:inherit}
+#fxComposeModal .fx-ctype.active{background:#0e1f15;color:#fff;border-color:#0e1f15}
+#fxComposeModal .fx-compose-area{padding:12px 16px}
+#fxComposeModal textarea{width:100%;border:none;outline:none;resize:none;font-family:inherit;font-size:.82rem;color:#1a2e22;line-height:1.6;min-height:80px;background:transparent}
+#fxComposeModal .fx-compose-footer{display:flex;align-items:center;justify-content:space-between;padding:10px 16px 0;border-top:1px solid rgba(0,0,0,.07)}
+#fxComposeModal .fx-compose-footer-icons{display:flex;gap:6px}
+#fxComposeModal .fx-cico{background:none;border:none;cursor:pointer;color:#8a9e93;padding:4px}
+#fxComposeModal .fx-cico svg{width:18px;height:18px}
+#fxComposeModal .fx-post-btn{background:#1aab70;color:#fff;border:none;border-radius:20px;padding:8px 18px;font-family:inherit;font-size:.75rem;font-weight:800;cursor:pointer}
+#fxComposeModal .fx-close-btn{background:none;border:none;cursor:pointer;font-size:1rem;color:#8a9e93;font-family:inherit}
+/* FinX Profile modal */
+#fxProfileModal{display:none;position:fixed;inset:0;z-index:200;background:#f0f5f2;flex-direction:column}
+#fxProfileModal.open{display:flex;animation:slideInRight .22s ease}
+#fxProfileModal .fx-profile-topbar{background:#fff;border-bottom:1px solid rgba(0,0,0,.07);padding:14px 16px 0;flex-shrink:0}
+#fxProfileModal .fx-profile-topbar-row{display:flex;align-items:center;gap:10px;padding-bottom:10px}
+#fxProfileModal .fx-profile-back{width:34px;height:34px;border-radius:50%;background:#f0f5f2;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;color:#1a2e22;flex-shrink:0}
+#fxProfileModal .fx-profile-scroll{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch}
+#fxProfileModal .fx-profile-cover{height:90px;background:linear-gradient(135deg,#0e1f15 0%,#193226 50%,#1aab70 100%);position:relative;flex-shrink:0}
+#fxProfileModal .fx-profile-cover-av{position:absolute;bottom:-26px;left:16px;width:56px;height:56px;border-radius:50%;background:#2dc98a;border:3px solid #fff;display:flex;align-items:center;justify-content:center;font-size:1.1rem;font-weight:800;color:#fff}
+#fxProfileModal .fx-profile-cover-actions{position:absolute;bottom:10px;right:16px;display:flex;gap:6px}
+#fxProfileModal .fx-profile-follow-btn{background:#0e1f15;color:#fff;border:none;border-radius:20px;padding:7px 16px;font-size:.72rem;font-weight:800;cursor:pointer;font-family:inherit}
+#fxProfileModal .fx-profile-follow-btn.following{background:transparent;color:#1a2e22;border:1.5px solid rgba(0,0,0,.07)}
+#fxProfileModal .fx-profile-msg-btn{width:32px;height:32px;border-radius:50%;background:#fff;border:1.5px solid rgba(0,0,0,.07);display:flex;align-items:center;justify-content:center;cursor:pointer}
+#fxProfileModal .fx-profile-info{background:#fff;padding:34px 16px 14px;border-bottom:1px solid rgba(0,0,0,.07)}
+#fxProfileModal .fx-profile-name-row{display:flex;align-items:center;gap:6px;margin-bottom:2px}
+#fxProfileModal .fx-profile-fullname{font-size:1rem;font-weight:800;letter-spacing:-.02em;color:#1a2e22}
+#fxProfileModal .fx-profile-handle{font-size:.75rem;color:#8a9e93;margin-bottom:8px}
+#fxProfileModal .fx-profile-bio{font-size:.76rem;color:#374151;line-height:1.6;margin-bottom:10px}
+#fxProfileModal .fx-profile-meta-row{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:10px}
+#fxProfileModal .fx-profile-meta-item{display:flex;align-items:center;gap:4px;font-size:.68rem;color:#8a9e93}
+#fxProfileModal .fx-profile-followers-row{display:flex;gap:14px}
+#fxProfileModal .fx-profile-follow-stat{font-size:.72rem;color:#8a9e93}
+#fxProfileModal .fx-profile-follow-stat b{color:#1a2e22;font-weight:800}
+#fxProfileModal .fx-pstats-strip{background:#fff;display:grid;grid-template-columns:repeat(4,1fr);border-bottom:1px solid rgba(0,0,0,.07)}
+#fxProfileModal .fx-pstat-cell{padding:12px 8px;text-align:center;border-right:1px solid rgba(0,0,0,.07)}
+#fxProfileModal .fx-pstat-cell:last-child{border-right:none}
+#fxProfileModal .fx-pstat-num{font-size:.88rem;font-weight:800;letter-spacing:-.02em;color:#1a2e22}
+#fxProfileModal .fx-pstat-num.green{color:#1aab70}
+#fxProfileModal .fx-pstat-num.red{color:#f05252}
+#fxProfileModal .fx-pstat-label{font-size:.52rem;font-weight:700;color:#8a9e93;text-transform:uppercase;letter-spacing:.07em;margin-top:2px}
+#fxProfileModal .fx-ptabs{background:#fff;display:flex;border-bottom:1px solid rgba(0,0,0,.07);position:sticky;top:0;z-index:10}
+#fxProfileModal .fx-ptab{flex:1;text-align:center;padding:11px 0 9px;font-size:.72rem;font-weight:700;color:#8a9e93;cursor:pointer;border-bottom:2px solid transparent;border-left:none;border-right:none;border-top:none;background:transparent;font-family:inherit}
+#fxProfileModal .fx-ptab.active{color:#1a2e22;border-bottom-color:#1aab70}
+#fxProfileModal .fx-ptab-content{display:none}
+#fxProfileModal .fx-ptab-content.active{display:block}
+#fxProfileModal .fx-p-portfolio-hero{background:linear-gradient(150deg,#0e1f15 0%,#193226 100%);margin:12px;border-radius:16px;padding:16px 18px;color:#fff}
+#fxProfileModal .fx-p-port-val{font-size:1.6rem;font-weight:800;letter-spacing:-.04em;margin-bottom:2px}
+#fxProfileModal .fx-p-port-return{font-size:.78rem;font-weight:700;color:#2dc98a}
+#fxProfileModal .fx-p-port-meta{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:14px}
+#fxProfileModal .fx-p-port-m{background:rgba(255,255,255,.08);border-radius:10px;padding:10px;text-align:center}
+#fxProfileModal .fx-p-port-m-val{font-size:.88rem;font-weight:800;color:#fff}
+#fxProfileModal .fx-p-port-m-lbl{font-size:.52rem;font-weight:700;color:rgba(255,255,255,.4);text-transform:uppercase;letter-spacing:.06em;margin-top:2px}
+#fxProfileModal .fx-holdings-section{padding:0 12px}
+#fxProfileModal .fx-holdings-header{display:flex;align-items:center;justify-content:space-between;padding:12px 0 6px}
+#fxProfileModal .fx-holdings-title{font-size:.72rem;font-weight:800;text-transform:uppercase;letter-spacing:.07em;color:#8a9e93}
+#fxProfileModal .fx-holding-row{background:#fff;border-radius:12px;padding:11px 13px;margin-bottom:6px;display:flex;align-items:center;gap:10px}
+#fxProfileModal .fx-holding-icon{width:36px;height:36px;border-radius:10px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:.55rem;font-weight:800;color:#fff;text-align:center;line-height:1.2}
+#fxProfileModal .fx-holding-info{flex:1;min-width:0}
+#fxProfileModal .fx-holding-name{font-size:.75rem;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:#1a2e22}
+#fxProfileModal .fx-holding-detail{font-size:.6rem;color:#8a9e93;margin-top:1px}
+#fxProfileModal .fx-holding-right{text-align:right;flex-shrink:0}
+#fxProfileModal .fx-holding-val{font-size:.8rem;font-weight:800;color:#1a2e22}
+#fxProfileModal .fx-holding-pct{font-size:.62rem;font-weight:700;margin-top:1px}
+#fxProfileModal .fx-holding-pct.pos{color:#1aab70}
+#fxProfileModal .fx-holding-pct.neg{color:#f05252}
+#fxProfileModal .fx-alloc-card{background:#fff;border-radius:12px;padding:14px;margin:0 12px 10px}
+#fxProfileModal .fx-alloc-title{font-size:.72rem;font-weight:800;text-transform:uppercase;letter-spacing:.07em;color:#8a9e93;margin-bottom:12px}
+#fxProfileModal .fx-alloc-row{display:flex;align-items:center;gap:8px;margin-bottom:7px}
+#fxProfileModal .fx-alloc-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+#fxProfileModal .fx-alloc-name{font-size:.7rem;font-weight:600;flex:1;color:#1a2e22}
+#fxProfileModal .fx-alloc-bar{flex:2;height:5px;background:#f0f0f0;border-radius:10px;overflow:hidden}
+#fxProfileModal .fx-alloc-fill{height:100%;border-radius:10px}
+#fxProfileModal .fx-alloc-pct{font-size:.68rem;font-weight:800;width:30px;text-align:right}
+#fxProfileModal .fx-profile-post{background:#fff;border-bottom:1px solid rgba(0,0,0,.07);padding:13px 16px}
+#fxProfileModal .fx-ppost-header{display:flex;align-items:center;gap:8px;margin-bottom:6px}
+#fxProfileModal .fx-ppost-av{width:32px;height:32px;border-radius:50%;background:#2dc98a;display:flex;align-items:center;justify-content:center;font-size:.62rem;font-weight:800;color:#fff;flex-shrink:0}
+#fxProfileModal .fx-ppost-name{font-size:.78rem;font-weight:800;color:#1a2e22}
+#fxProfileModal .fx-ppost-time{font-size:.65rem;color:#8a9e93;margin-left:auto}
+#fxProfileModal .fx-ppost-body{font-size:.76rem;color:#374151;line-height:1.6;margin-bottom:8px}
+#fxProfileModal .fx-ppost-actions{display:flex;gap:16px}
+#fxProfileModal .fx-ppost-act{font-size:.68rem;font-weight:600;color:#8a9e93;display:flex;align-items:center;gap:4px;border:none;background:transparent;cursor:pointer;font-family:inherit}
+#fxProfileModal .fx-ppost-act svg{width:14px;height:14px}
+#fxProfileModal .fx-activity-card{background:#fff;border-radius:12px;padding:14px;margin:10px 12px}
 /* === Dividends === */
 .divHero{background:linear-gradient(160deg,#1a3f2c 0%,#0f2a1e 100%);color:#f5fbf6}.divHeroTop{display:flex;align-items:flex-end;gap:16px;margin-bottom:14px}.divBig{font-size:48px;font-weight:800;letter-spacing:-.05em;line-height:1}.divBigSub{font-size:14px;color:rgba(239,249,242,.6);font-weight:600;padding-bottom:8px}.divMetrics{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}.divMetricBox{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.09);border-radius:14px;padding:10px}.divMetricBox .dl{font-size:10px;color:rgba(239,249,242,.5);text-transform:uppercase;letter-spacing:.08em;font-weight:600}.divMetricBox .dn{font-size:16px;font-weight:700;margin-top:3px;letter-spacing:-.02em}
 .divHoldingRow{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid rgba(20,32,24,.06);cursor:pointer;transition:background .15s}.divHoldingRow:hover{background:rgba(21,128,61,.04);border-radius:10px;margin:0 -8px;padding:12px 8px}.divHoldingRow:last-child{border-bottom:none}.divHoldingLeft{flex:1;min-width:0}.divHoldingName{font-size:13px;font-weight:700;color:#142018;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.divHoldingMeta{font-size:11px;color:#8fa090;margin-top:2px;font-weight:500}.divHoldingRight{text-align:right;flex-shrink:0}.divHoldingAmt{font-size:15px;font-weight:800;color:#142018}.divHoldingYield{font-size:11px;color:#15803d;margin-top:2px;font-weight:700}
@@ -620,6 +809,335 @@ table.an-corr-mtx{border-collapse:separate;border-spacing:4px}
     <div style="display:flex;justify-content:space-between;align-items:center;padding-top:10px;margin-top:6px;border-top:1px solid rgba(20,32,24,.06)">
       <span style="font-size:12px;font-weight:700;color:#8fa090;text-transform:uppercase;letter-spacing:.06em">Total</span>
       <span id="portfolioLiqTotalAmt" style="font-size:16px;font-weight:800;color:#142018"></span>
+    </div>
+  </div>
+</div>
+
+<!-- ============ FINX ============ -->
+<div id="screen-finx" class="screen">
+
+  <!-- Topbar -->
+  <div class="fx-topbar">
+    <div class="fx-topbar-row1">
+      <div class="fx-topbar-logo">FinX</div>
+      <div class="fx-topbar-icons">
+        <button class="fx-ticon" onclick="fxOpenCompose()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>
+        <button class="fx-ticon"><div class="fx-notif-dot"></div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg></button>
+      </div>
+    </div>
+    <div class="fx-tabs">
+      <button class="fx-tab active" onclick="fxSetTab(this)">Trending</button>
+      <button class="fx-tab" onclick="fxSetTab(this)">Recent</button>
+      <button class="fx-tab" onclick="fxSetTab(this)">For You</button>
+      <button class="fx-tab" onclick="fxSetTab(this)">Best Of</button>
+    </div>
+  </div>
+
+  <!-- Compose bar -->
+  <div class="fx-compose-bar">
+    <div class="fx-compose-av">YO</div>
+    <input class="fx-compose-input" placeholder="Share a trade, idea or question…" onclick="fxOpenCompose()" readonly>
+    <button class="fx-compose-btn" onclick="fxOpenCompose()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+    </button>
+  </div>
+
+  <!-- Feed -->
+  <div class="fx-feed">
+
+    <!-- POST 1 -->
+    <div class="fx-post">
+      <div class="fx-post-header">
+        <div class="fx-post-av" style="background:#2563eb;" onclick="fxOpenProfile()">R<div class="fx-verified"><svg viewBox="0 0 8 8" fill="#fff"><path d="M1.5 4L3 5.5 6.5 2"/></svg></div></div>
+        <div class="fx-post-meta">
+          <div class="fx-post-name-row">
+            <span class="fx-post-name" onclick="fxOpenProfile()">Richard</span>
+            <span class="fx-post-handle">@wokenbynoises</span>
+            <span class="fx-post-time">1D</span>
+            <button class="fx-post-options">···</button>
+          </div>
+        </div>
+      </div>
+      <div class="fx-post-title">Core satellite with 3x momentum and value averaging</div>
+      <div class="fx-post-body" id="fxpb1">Momentum-based strategies have been gaining traction recently. I'm developing a core-satellite strategy with a momentum component (V8 Satellite) rebalanced monthly. Backtest since 2008 vs S&P 500 Buy&Hold shows remarkable risk-adjusted results.</div>
+      <span class="fx-show-more" onclick="fxExpand('fxpb1',this)">Show more</span>
+      <span class="fx-translate-row">Show original (German)</span>
+      <div class="fx-table-preview">
+        <table>
+          <thead><tr><th>Metric</th><th>V8 Satellite</th><th>S&amp;P 500 B&amp;H</th></tr></thead>
+          <tbody>
+            <tr><td>CAGR</td><td class="g">56.4%</td><td>11.0%</td></tr>
+            <tr><td>Sharpe</td><td class="g">2.75</td><td>0.46</td></tr>
+            <tr><td>Max Drawdown</td><td class="g">−19.1%</td><td class="r">−51.9%</td></tr>
+            <tr><td>Win Rate (mo.)</td><td class="g">72.6%</td><td>67.0%</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="fx-post-reactions">
+        <span class="fx-reaction-bubble active">👍 <span>21</span></span>
+        <span class="fx-reaction-bubble">🚀 <span>12</span></span>
+        <span class="fx-reaction-bubble">🤔 <span>4</span></span>
+        <span style="margin-left:auto;font-size:.68rem;color:#8a9e93;">23 Comments</span>
+      </div>
+      <div class="fx-post-actions">
+        <button class="fx-action-btn liked" onclick="fxToggleLike(this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3H14z"/><path d="M7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"/></svg>Like</button>
+        <button class="fx-action-btn" onclick="fxToggleComments('fxc1')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>Comment</button>
+        <button class="fx-action-btn" onclick="fxOpenShare()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg>Share</button>
+      </div>
+      <div class="fx-comments-section" id="fxc1" style="display:none;">
+        <div class="fx-comment"><div class="fx-comment-av" style="background:#7c5cbf;">E</div><div class="fx-comment-body"><div class="fx-comment-header"><span class="fx-comment-name">Emdy</span><span class="fx-comment-handle">@Emdy</span><span class="fx-comment-time">1D</span></div><div class="fx-comment-text">Very interesting! The Sharpe of 2.75 is impressive. What's the rebalancing cost assumption?</div><div class="fx-comment-actions"><button class="fx-comment-act">👍 2</button><button class="fx-comment-act">Reply</button></div></div></div>
+        <div class="fx-comment"><div class="fx-comment-av" style="background:#0ea5e9;">K</div><div class="fx-comment-body"><div class="fx-comment-header"><span class="fx-comment-name">Keineui</span><span class="fx-comment-handle">@Keineui</span><span class="fx-comment-time">1D</span></div><div class="fx-comment-text">The max drawdown difference is the key stat. −19% vs −52% is night and day.</div><div class="fx-comment-actions"><button class="fx-comment-act">👍 5</button><button class="fx-comment-act">Reply</button></div></div></div>
+        <button class="fx-view-more">View all 8 further answers</button>
+        <div class="fx-comment-input-row"><div class="fx-comment-av" style="background:#2dc98a;width:28px;height:28px;font-size:.55rem;">YO</div><input class="fx-comment-input" placeholder="Comment…"><button class="fx-comment-post-btn">Post</button></div>
+      </div>
+    </div>
+
+    <!-- POST 2 -->
+    <div class="fx-post">
+      <div class="fx-post-header">
+        <div class="fx-post-av" style="background:#374151;">C</div>
+        <div class="fx-post-meta"><div class="fx-post-name-row"><span class="fx-post-name">Chris</span><span class="fx-post-handle">@Multibagger</span><span class="fx-post-time">1D</span><button class="fx-post-options">···</button></div></div>
+      </div>
+      <div class="fx-post-title">Short on Nebius?</div>
+      <div class="fx-post-body">Would be worth a try. <span class="fx-ticker-tag red">$NBIS −12.44%</span> is close to last year's double top. After the rapid rise and high capital requirements, a good entry for a short position.</div>
+      <div class="fx-post-reactions"><span class="fx-reaction-bubble">👍 <span>17</span></span><span class="fx-reaction-bubble">🔥 <span>3</span></span><span style="margin-left:auto;font-size:.68rem;color:#8a9e93;">19 Comments</span></div>
+      <div class="fx-post-actions">
+        <button class="fx-action-btn" onclick="fxToggleLike(this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3H14z"/><path d="M7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"/></svg>Like</button>
+        <button class="fx-action-btn" onclick="fxToggleComments('fxc2')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>Comment</button>
+        <button class="fx-action-btn" onclick="fxOpenShare()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg>Share</button>
+      </div>
+      <div class="fx-comments-section" id="fxc2" style="display:none;">
+        <div class="fx-comment"><div class="fx-comment-av" style="background:#f05252;">A</div><div class="fx-comment-body"><div class="fx-comment-header"><span class="fx-comment-name">Emdy</span><span class="fx-comment-handle">@Emdy</span><span class="fx-comment-time">1D</span></div><div class="fx-comment-text">Good idea but quite risky — a lot of FOMO right now.</div><div class="fx-comment-actions"><button class="fx-comment-act">👍 2</button><button class="fx-comment-act">Reply</button></div></div></div>
+        <div class="fx-comment-input-row"><div class="fx-comment-av" style="background:#2dc98a;width:28px;height:28px;font-size:.55rem;">YO</div><input class="fx-comment-input" placeholder="Comment…"><button class="fx-comment-post-btn">Post</button></div>
+      </div>
+    </div>
+
+    <!-- POST 3: Transaction -->
+    <div class="fx-post">
+      <div class="fx-post-header">
+        <div class="fx-post-av" style="background:#0369a1;">O</div>
+        <div class="fx-post-meta"><div class="fx-post-name-row"><span class="fx-post-name">Oleg</span><span class="fx-post-handle">@ScorpionfromBW</span><span class="fx-post-time">6D</span><button class="fx-post-options">···</button></div></div>
+      </div>
+      <div class="fx-post-title">TDIV from Scalable</div>
+      <div class="fx-post-body">Dividend received from VanEck TDIV. Quarterly payment as expected.</div>
+      <div class="fx-txn-card">
+        <div class="fx-txn-date"><div class="fx-txn-date-d">11</div><div class="fx-txn-date-m">Mar</div></div>
+        <div class="fx-txn-icon"><div style="width:32px;height:32px;background:#e5383b;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:.42rem;font-weight:900;color:#fff;text-align:center;line-height:1.1;">Van<br>Eck</div></div>
+        <div class="fx-txn-info"><div class="fx-txn-name">VanEck Vectors ETFs NV – Dev. Mrkts. Div. Ldrs.</div><div class="fx-txn-detail">Received ×270 Dividends at €0.21</div></div>
+        <div class="fx-txn-amount pos">+€56.70</div>
+      </div>
+      <div class="fx-post-reactions"><span class="fx-reaction-bubble">👍 <span>20</span></span></div>
+      <div class="fx-post-actions">
+        <button class="fx-action-btn" onclick="fxToggleLike(this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3H14z"/><path d="M7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"/></svg>Like</button>
+        <button class="fx-action-btn" onclick="fxToggleComments('fxc3')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>Comment</button>
+        <button class="fx-action-btn" onclick="fxOpenShare()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg>Share</button>
+      </div>
+      <div class="fx-comments-section" id="fxc3" style="display:none;"><div class="fx-comment-input-row"><div class="fx-comment-av" style="background:#2dc98a;width:28px;height:28px;font-size:.55rem;">YO</div><input class="fx-comment-input" placeholder="Comment…"><button class="fx-comment-post-btn">Post</button></div></div>
+    </div>
+
+    <!-- POST 4: Poll -->
+    <div class="fx-post">
+      <div class="fx-post-header">
+        <div class="fx-post-av" style="background:#166534;">M</div>
+        <div class="fx-post-meta"><div class="fx-post-name-row"><span class="fx-post-name">Melvin</span><span class="fx-post-handle">@Melvin2300</span><span class="fx-post-time">2Wk</span><button class="fx-post-options">···</button></div></div>
+      </div>
+      <div class="fx-post-title">Stocks</div>
+      <div class="fx-post-body">Bought these stocks Friday evening — which is a better long-term deal?</div>
+      <div class="fx-poll-card">
+        <div class="fx-poll-option" onclick="fxVote(this)"><div class="fx-poll-fill" style="width:55%"></div><div class="fx-poll-text"><span class="fx-poll-name">ABN Amro</span><span class="fx-poll-pct">55%</span></div></div>
+        <div class="fx-poll-option" onclick="fxVote(this)"><div class="fx-poll-fill" style="width:45%"></div><div class="fx-poll-text"><span class="fx-poll-name">Coca-Cola</span><span class="fx-poll-pct">45%</span></div></div>
+        <div class="fx-poll-meta">125 Votes · 3 days left</div>
+      </div>
+      <div class="fx-post-reactions"><span class="fx-reaction-bubble">👍 <span>8</span></span></div>
+      <div class="fx-post-actions">
+        <button class="fx-action-btn" onclick="fxToggleLike(this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3H14z"/><path d="M7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"/></svg>Like</button>
+        <button class="fx-action-btn" onclick="fxToggleComments('fxc4')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>Comment</button>
+        <button class="fx-action-btn" onclick="fxOpenShare()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg>Share</button>
+      </div>
+      <div class="fx-comments-section" id="fxc4" style="display:none;"><div class="fx-comment-input-row"><div class="fx-comment-av" style="background:#2dc98a;width:28px;height:28px;font-size:.55rem;">YO</div><input class="fx-comment-input" placeholder="Comment…"><button class="fx-comment-post-btn">Post</button></div></div>
+    </div>
+
+    <!-- POST 5: Portfolio share -->
+    <div class="fx-post">
+      <div class="fx-post-header">
+        <div class="fx-post-av" style="background:#e8ebe9;color:#8a9e93;" onclick="fxOpenProfile()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="20" height="20"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg></div>
+        <div class="fx-post-meta"><div class="fx-post-name-row"><span class="fx-post-name" onclick="fxOpenProfile()">Grigom</span><span class="fx-post-handle">@Grigom</span><span class="fx-post-time">5Mo</span><button class="fx-post-options">···</button></div></div>
+      </div>
+      <div class="fx-post-body" id="fxpb5">Hey everyone! I just wanted to share my current portfolio. I'm still working on balancing risk and growth — any feedback or suggestions from the community would be appreciated.</div>
+      <span class="fx-show-more" onclick="fxExpand('fxpb5',this)">Show more</span>
+      <div class="fx-portfolio-card" onclick="fxOpenProfile()">
+        <div class="fx-pc-inner">
+          <div class="fx-pc-gauge"><canvas id="fxPgauge" width="64" height="64"></canvas><div class="fx-pc-gauge-label"><span class="fx-pc-gauge-num">14</span><span class="fx-pc-gauge-sub">Positions</span></div></div>
+          <div class="fx-pc-info"><div class="fx-pc-value">€38,551.50</div><div class="fx-pc-return">↗ +8.69%</div></div>
+          <svg viewBox="0 0 24 24" fill="none" stroke="#8a9e93" stroke-width="2" width="18" height="18"><polyline points="9 18 15 12 9 6"/></svg>
+        </div>
+      </div>
+      <div class="fx-post-reactions"><span class="fx-reaction-bubble">👍 <span>2</span></span></div>
+      <div class="fx-post-actions">
+        <button class="fx-action-btn" onclick="fxToggleLike(this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3H14z"/><path d="M7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"/></svg>Like</button>
+        <button class="fx-action-btn" onclick="fxToggleComments('fxc5')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>Comment</button>
+        <button class="fx-action-btn" onclick="fxOpenShare()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg>Share</button>
+      </div>
+      <div class="fx-comments-section" id="fxc5" style="display:none;"><div class="fx-comment-input-row"><div class="fx-comment-av" style="background:#2dc98a;width:28px;height:28px;font-size:.55rem;">YO</div><input class="fx-comment-input" placeholder="Comment…"><button class="fx-comment-post-btn">Post</button></div></div>
+    </div>
+
+  </div><!-- end fx-feed -->
+
+  <!-- Profile modal (full-screen) -->
+  <div id="fxProfileModal" onclick="if(event.target===this)fxCloseProfile()">
+    <div class="fx-profile-topbar">
+      <div class="fx-profile-topbar-row">
+        <button class="fx-profile-back" onclick="fxCloseProfile()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="15 18 9 12 15 6"/></svg></button>
+        <div style="flex:1;"><div style="font-size:.88rem;font-weight:800;color:#1a2e22;">Grigom</div><div style="font-size:.62rem;color:#8a9e93;">14 posts</div></div>
+        <button class="fx-ticon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="17" height="17"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button>
+      </div>
+    </div>
+    <div class="fx-profile-scroll">
+      <div class="fx-profile-cover">
+        <div class="fx-profile-cover-av">G</div>
+        <div class="fx-profile-cover-actions">
+          <button class="fx-profile-msg-btn"><svg viewBox="0 0 24 24" fill="none" stroke="#1a2e22" stroke-width="2" width="15" height="15"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></button>
+          <button class="fx-profile-follow-btn" id="fxFollowBtn" onclick="fxToggleFollow()">Follow</button>
+        </div>
+      </div>
+      <div class="fx-profile-info">
+        <div class="fx-profile-name-row">
+          <span class="fx-profile-fullname">Grigom</span>
+          <svg viewBox="0 0 16 16" fill="none" width="16" height="16"><circle cx="8" cy="8" r="7" fill="#4f8ef7"/><path d="M5 8l2 2 4-4" stroke="#fff" stroke-width="1.5" stroke-linecap="round"/></svg>
+          <span style="font-size:.62rem;background:#e6faf3;color:#1aab70;font-weight:800;padding:2px 7px;border-radius:5px;letter-spacing:.04em;">PRO</span>
+        </div>
+        <div class="fx-profile-handle">@Grigom · se unió sep. 2024</div>
+        <div class="fx-profile-bio">Inversor particular en ETFs y acciones de dividendos. Filosofía indexada con toque value. 🇪🇸 España · Largo plazo, sin ruido.</div>
+        <div class="fx-profile-meta-row">
+          <div class="fx-profile-meta-item"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 9a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/><path d="M1.5 14.5s1-4 6.5-4 6.5 4 6.5 4"/></svg>España</div>
+          <div class="fx-profile-meta-item"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="3" width="12" height="11" rx="1.5"/><path d="M5 1.5v3M11 1.5v3M2 7h12"/></svg>Desde sep. 2024</div>
+          <div class="fx-profile-meta-item"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 12l3-3 3 3 5-7"/></svg>TTWROR +27.08%</div>
+        </div>
+        <div class="fx-profile-followers-row">
+          <div class="fx-profile-follow-stat"><b>2.380</b> seguidores</div>
+          <div class="fx-profile-follow-stat"><b>143</b> siguiendo</div>
+        </div>
+      </div>
+      <div class="fx-pstats-strip">
+        <div class="fx-pstat-cell"><div class="fx-pstat-num">11</div><div class="fx-pstat-label">Posiciones</div></div>
+        <div class="fx-pstat-cell"><div class="fx-pstat-num green">+27.1%</div><div class="fx-pstat-label">TTWROR</div></div>
+        <div class="fx-pstat-cell"><div class="fx-pstat-num">€38.5k</div><div class="fx-pstat-label">Valor</div></div>
+        <div class="fx-pstat-cell"><div class="fx-pstat-num green">+€2.1k</div><div class="fx-pstat-label">Divid./año</div></div>
+      </div>
+      <div class="fx-ptabs">
+        <button class="fx-ptab active" onclick="fxSwitchPTab(this,'fxPtabPosts')">Posts (14)</button>
+        <button class="fx-ptab" onclick="fxSwitchPTab(this,'fxPtabPortfolio')">Portfolio</button>
+        <button class="fx-ptab" onclick="fxSwitchPTab(this,'fxPtabActivity')">Actividad</button>
+      </div>
+      <!-- Posts tab -->
+      <div class="fx-ptab-content active" id="fxPtabPosts">
+        <div class="fx-profile-post">
+          <div class="fx-ppost-header"><div class="fx-ppost-av">G</div><div><div class="fx-ppost-name">Grigom</div><div style="font-size:.6rem;color:#8a9e93;">@Grigom</div></div><div class="fx-ppost-time">2D</div></div>
+          <div class="fx-ppost-body">He añadido mi primera posición en <b>$VWCE</b> — Vanguard FTSE All-World. El objetivo es construir un núcleo sólido antes de añadir satélites más específicos. Filosofía: mercado global, costes bajos, largo plazo. 🌍</div>
+          <div style="background:#e6faf3;border-radius:10px;padding:9px 12px;margin-bottom:8px;display:flex;justify-content:space-between;align-items:center;"><div><div style="font-size:.72rem;font-weight:700;color:#1a2e22;">VWCE · Vanguard FTSE All-World</div><div style="font-size:.6rem;color:#8a9e93;">Compra · 12 participaciones · €104.32/u</div></div><div style="text-align:right;"><div style="font-size:.85rem;font-weight:800;color:#1aab70;">+€1.251</div><div style="font-size:.6rem;color:#8a9e93;">+10.3%</div></div></div>
+          <div class="fx-ppost-actions">
+            <button class="fx-ppost-act"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3H14z"/><path d="M7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"/></svg>24</button>
+            <button class="fx-ppost-act"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>7</button>
+          </div>
+        </div>
+        <div class="fx-profile-post">
+          <div class="fx-ppost-header"><div class="fx-ppost-av">G</div><div><div class="fx-ppost-name">Grigom</div><div style="font-size:.6rem;color:#8a9e93;">@Grigom</div></div><div class="fx-ppost-time">1Mo</div></div>
+          <div class="fx-ppost-body">Dividendo recibido de <b>TDIV</b> — €42.30. Pequeño pero constante. El objetivo este año: que los dividendos cubran al menos €1.200 anuales. 💸</div>
+          <div style="border:1px solid #d1fae5;border-radius:10px;padding:10px 12px;background:#f0fdf4;margin-bottom:8px;display:flex;align-items:center;gap:10px;"><div style="width:32px;height:32px;background:#e5383b;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:.42rem;font-weight:900;color:#fff;text-align:center;line-height:1.1;flex-shrink:0;">Van<br>Eck</div><div style="flex:1;"><div style="font-size:.72rem;font-weight:700;color:#1a2e22;">VanEck TDIV</div><div style="font-size:.6rem;color:#8a9e93;">Dividendo × 202 · €0.21/u</div></div><div style="font-size:.88rem;font-weight:800;color:#1aab70;">+€42.30</div></div>
+          <div class="fx-ppost-actions">
+            <button class="fx-ppost-act"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3H14z"/><path d="M7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"/></svg>11</button>
+            <button class="fx-ppost-act"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>3</button>
+          </div>
+        </div>
+        <div style="padding:20px;text-align:center;font-size:.74rem;color:#8a9e93;">Ver todos los posts →</div>
+      </div>
+      <!-- Portfolio tab -->
+      <div class="fx-ptab-content" id="fxPtabPortfolio">
+        <div class="fx-p-portfolio-hero">
+          <div style="font-size:.6rem;font-weight:700;color:rgba(255,255,255,.4);text-transform:uppercase;letter-spacing:.1em;margin-bottom:6px;">Valor total del portfolio</div>
+          <div class="fx-p-port-val">€38.551,50</div>
+          <div class="fx-p-port-return">↗ +27.08% TTWROR · +€8.178 total</div>
+          <div class="fx-p-port-meta">
+            <div class="fx-p-port-m"><div class="fx-p-port-m-val">11</div><div class="fx-p-port-m-lbl">Posiciones</div></div>
+            <div class="fx-p-port-m"><div class="fx-p-port-m-val">€2.148</div><div class="fx-p-port-m-lbl">Divid./año</div></div>
+            <div class="fx-p-port-m"><div class="fx-p-port-m-val">5.57%</div><div class="fx-p-port-m-lbl">Yield</div></div>
+          </div>
+        </div>
+        <div class="fx-alloc-card">
+          <div class="fx-alloc-title">Asignación por clase</div>
+          <div class="fx-alloc-row"><div class="fx-alloc-dot" style="background:#4f8ef7;"></div><div class="fx-alloc-name">Renta variable global</div><div class="fx-alloc-bar"><div class="fx-alloc-fill" style="width:48%;background:#4f8ef7;"></div></div><div class="fx-alloc-pct" style="color:#4f8ef7;">48%</div></div>
+          <div class="fx-alloc-row"><div class="fx-alloc-dot" style="background:#2dc98a;"></div><div class="fx-alloc-name">Dividendos</div><div class="fx-alloc-bar"><div class="fx-alloc-fill" style="width:22%;background:#2dc98a;"></div></div><div class="fx-alloc-pct" style="color:#2dc98a;">22%</div></div>
+          <div class="fx-alloc-row"><div class="fx-alloc-dot" style="background:#f5b731;"></div><div class="fx-alloc-name">Acciones individuales</div><div class="fx-alloc-bar"><div class="fx-alloc-fill" style="width:18%;background:#f5b731;"></div></div><div class="fx-alloc-pct" style="color:#d97706;">18%</div></div>
+          <div class="fx-alloc-row"><div class="fx-alloc-dot" style="background:#7c5cbf;"></div><div class="fx-alloc-name">Materias primas</div><div class="fx-alloc-bar"><div class="fx-alloc-fill" style="width:8%;background:#7c5cbf;"></div></div><div class="fx-alloc-pct" style="color:#7c5cbf;">8%</div></div>
+        </div>
+        <div class="fx-holdings-section">
+          <div class="fx-holdings-header"><div class="fx-holdings-title">Posiciones (11)</div></div>
+          <div class="fx-holding-row"><div class="fx-holding-icon" style="background:#1d3557;font-size:.48rem;">Fide<br>lity</div><div class="fx-holding-info"><div class="fx-holding-name">Fidelity MSCI World</div><div class="fx-holding-detail">×142 participaciones · TER 0.12%</div></div><div class="fx-holding-right"><div class="fx-holding-val">€18.503</div><div class="fx-holding-pct pos">+18.12%</div></div></div>
+          <div class="fx-holding-row"><div class="fx-holding-icon" style="background:#e5383b;font-size:.48rem;">Van<br>Eck</div><div class="fx-holding-info"><div class="fx-holding-name">VanEck TDIV</div><div class="fx-holding-detail">×202 participaciones · Yield 4.8%</div></div><div class="fx-holding-right"><div class="fx-holding-val">€5.292</div><div class="fx-holding-pct pos">+6.81%</div></div></div>
+          <div class="fx-holding-row"><div class="fx-holding-icon" style="background:#0369a1;font-size:.48rem;">iSh<br>ares</div><div class="fx-holding-info"><div class="fx-holding-name">iShares EM IMI</div><div class="fx-holding-detail">×88 participaciones · TER 0.18%</div></div><div class="fx-holding-right"><div class="fx-holding-val">€2.981</div><div class="fx-holding-pct neg">−2.14%</div></div></div>
+        </div>
+        <div class="fx-activity-card" style="margin:0 12px 20px;">
+          <div class="fx-alloc-title">Rendimiento vs índice</div>
+          <canvas id="fxPerfChart" width="320" height="110" style="max-width:100%;"></canvas>
+          <div style="display:flex;gap:14px;margin-top:8px;">
+            <div style="display:flex;align-items:center;gap:5px;font-size:.62rem;font-weight:600;color:#8a9e93;"><div style="width:10px;height:3px;background:#1aab70;border-radius:2px;"></div>Grigom +27.1%</div>
+            <div style="display:flex;align-items:center;gap:5px;font-size:.62rem;font-weight:600;color:#8a9e93;"><div style="width:10px;height:3px;background:#4f8ef7;border-radius:2px;"></div>MSCI World +14.5%</div>
+          </div>
+        </div>
+      </div>
+      <!-- Activity tab -->
+      <div class="fx-ptab-content" id="fxPtabActivity">
+        <div style="padding:12px;">
+          <div style="background:#fff;border-radius:12px;padding:14px;margin-bottom:10px;">
+            <div style="font-size:.72rem;font-weight:800;text-transform:uppercase;letter-spacing:.07em;color:#8a9e93;margin-bottom:12px;">Actividad reciente</div>
+            <div style="display:flex;flex-direction:column;gap:10px;">
+              <div style="display:flex;gap:10px;align-items:flex-start;"><div style="width:8px;height:8px;border-radius:50%;background:#1aab70;margin-top:5px;flex-shrink:0;"></div><div style="flex:1;"><div style="font-size:.72rem;font-weight:700;color:#1a2e22;">Compra: Fidelity MSCI World</div><div style="font-size:.62rem;color:#8a9e93;">×5 participaciones · €521.60 · hace 3 días</div></div><div style="font-size:.72rem;font-weight:800;color:#1a2e22;">€521</div></div>
+              <div style="display:flex;gap:10px;align-items:flex-start;"><div style="width:8px;height:8px;border-radius:50%;background:#4f8ef7;margin-top:5px;flex-shrink:0;"></div><div style="flex:1;"><div style="font-size:.72rem;font-weight:700;color:#1a2e22;">Dividendo: VanEck TDIV</div><div style="font-size:.62rem;color:#8a9e93;">×202 · €0.21/u · hace 2 semanas</div></div><div style="font-size:.72rem;font-weight:800;color:#1aab70;">+€42</div></div>
+              <div style="display:flex;gap:10px;align-items:flex-start;"><div style="width:8px;height:8px;border-radius:50%;background:#1aab70;margin-top:5px;flex-shrink:0;"></div><div style="flex:1;"><div style="font-size:.72rem;font-weight:700;color:#1a2e22;">Compra: VWCE</div><div style="font-size:.62rem;color:#8a9e93;">×2 participaciones · €208.64 · hace 1 mes</div></div><div style="font-size:.72rem;font-weight:800;color:#1a2e22;">€208</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div><!-- end fx-profile-scroll -->
+  </div><!-- end fxProfileModal -->
+
+</div><!-- end screen-finx -->
+
+<!-- FinX Share Modal -->
+<div id="fxShareModal" onclick="if(event.target===this)this.classList.remove('open')">
+  <div class="fx-modal-sheet" onclick="event.stopPropagation()">
+    <div class="fx-modal-handle"></div>
+    <div class="fx-modal-title">Share</div>
+    <div class="fx-modal-options">
+      <button class="fx-modal-opt" onclick="document.getElementById('fxShareModal').classList.remove('open')"><div class="fx-modal-opt-icon" style="background:#e6faf3;"><svg viewBox="0 0 18 18" fill="none" stroke="#1aab70" stroke-width="1.6" width="17" height="17"><rect x="2" y="3" width="14" height="12" rx="2"/><path d="M2 7h14"/></svg></div><div><div class="fx-modal-opt-text">Share portfolio</div><div class="fx-modal-opt-sub">Post your full portfolio to the feed</div></div></button>
+      <button class="fx-modal-opt" onclick="document.getElementById('fxShareModal').classList.remove('open')"><div class="fx-modal-opt-icon" style="background:#eff6ff;"><svg viewBox="0 0 18 18" fill="none" stroke="#1d4ed8" stroke-width="1.6" width="17" height="17"><path d="M9 2v14M5 5h5.5a2.5 2.5 0 0 1 0 5H5"/></svg></div><div><div class="fx-modal-opt-text">Share transaction</div><div class="fx-modal-opt-sub">Post a buy, sell or dividend</div></div></button>
+      <button class="fx-modal-opt" onclick="document.getElementById('fxShareModal').classList.remove('open')"><div class="fx-modal-opt-icon" style="background:#f5f3ff;"><svg viewBox="0 0 18 18" fill="none" stroke="#7c5cbf" stroke-width="1.6" width="17" height="17"><circle cx="15" cy="5" r="2"/><circle cx="3" cy="9" r="2"/><circle cx="15" cy="13" r="2"/><path d="M5 8.5l8-3M5 9.5l8 3"/></svg></div><div><div class="fx-modal-opt-text">Copy link</div><div class="fx-modal-opt-sub">Share via link or message</div></div></button>
+    </div>
+  </div>
+</div>
+
+<!-- FinX Compose Modal -->
+<div id="fxComposeModal" onclick="if(event.target===this)this.classList.remove('open')">
+  <div class="fx-compose-sheet" onclick="event.stopPropagation()">
+    <div class="fx-modal-handle"></div>
+    <div class="fx-compose-header">
+      <div style="display:flex;align-items:center;gap:8px;"><div class="fx-compose-av" style="width:32px;height:32px;font-size:.6rem;">YO</div><span style="font-size:.82rem;font-weight:800;color:#1a2e22;">New post</span></div>
+      <button class="fx-close-btn" onclick="document.getElementById('fxComposeModal').classList.remove('open')">✕</button>
+    </div>
+    <div class="fx-ctypes">
+      <button class="fx-ctype active" onclick="fxSetCType(this)"><svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.6" width="13" height="13"><path d="M2 4h10M2 7h7M2 10h5"/></svg>Post</button>
+      <button class="fx-ctype" onclick="fxSetCType(this)"><svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.6" width="13" height="13"><path d="M7 1v12M4 4h4.5a2.5 2.5 0 0 1 0 5H4"/></svg>Transaction</button>
+      <button class="fx-ctype" onclick="fxSetCType(this)"><svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.6" width="13" height="13"><rect x="1" y="2" width="12" height="10" rx="1.5"/><path d="M1 5.5h12"/></svg>Portfolio</button>
+      <button class="fx-ctype" onclick="fxSetCType(this)"><svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.6" width="13" height="13"><circle cx="7" cy="7" r="5"/><line x1="7" y1="4" x2="7" y2="7"/><line x1="7" y1="9.5" x2="7.01" y2="9.5"/></svg>Poll</button>
+      <button class="fx-ctype" onclick="fxSetCType(this)"><svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.6" width="13" height="13"><polyline points="1 9 4 5 7 7 10 3 13 5"/></svg>Analysis</button>
+    </div>
+    <div class="fx-compose-area"><textarea placeholder="Share an idea, trade or analysis…" rows="4"></textarea></div>
+    <div class="fx-compose-footer">
+      <div class="fx-compose-footer-icons">
+        <button class="fx-cico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg></button>
+        <button class="fx-cico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg></button>
+      </div>
+      <button class="fx-post-btn">Post</button>
     </div>
   </div>
 </div>
@@ -1303,10 +1821,10 @@ table.an-corr-mtx{border-collapse:separate;border-spacing:4px}
 <!-- TAB BAR -->
 <div class="tab">
   <button class="active" data-screen="home"><b>⌂</b><span data-i18n="tabHome">Inicio</span></button>
-  <button data-screen="portfolio"><b>◫</b><span data-i18n="tabPortfolio">Cartera</span></button>
-  <button data-screen="analysis"><b>◈</b><span data-i18n="tabAnalysis">Análisis</span></button>
-  <button data-screen="dividends"><b>◎</b><span data-i18n="tabDividends">Dividendos</span></button>
   <button data-screen="ia"><b>✦</b><span data-i18n="tabIA">IA</span></button>
+  <button data-screen="analysis"><b>◈</b><span data-i18n="tabAnalysis">Análisis</span></button>
+  <button data-screen="finx"><b>◱</b><span data-i18n="tabFinX">FinX</span></button>
+  <button data-screen="dividends"><b>◎</b><span data-i18n="tabDividends">Dividendos</span></button>
 </div>
 
 <!-- Telegram community FAB -->
@@ -1333,7 +1851,7 @@ const I18N = {
     heroTitle:'Valor total del portfolio',mInvested:'Invertido',mReturn:'Rentabilidad',mPositions:'Posiciones',mEvolution:'Evolución',
     chartNoData:'Histórico insuficiente para construir una curva.',
     sumInvested:'Capital invertido',sumGain:'Ganancia acumulada',myPortfolio:'Mi cartera',
-    tabHome:'Inicio',tabPortfolio:'Cartera',tabAnalysis:'Análisis',tabDividends:'Dividendos',tabIA:'IA',
+    tabHome:'Inicio',tabPortfolio:'Cartera',tabAnalysis:'Análisis',tabDividends:'Dividendos',tabIA:'IA',tabFinX:'FinX',
     portfolioSub:'Detalle completo de posiciones',positions:'Posiciones',
     analysisSub:'Salud, distribución y rendimiento',healthScore:'Score de salud',distribution:'Distribución por tipo',performance:'Rentabilidad por activo',vsWorld:'Portfolio vs MSCI World',
     dividendsSub:'Ingresos pasivos reales del portfolio',annualDividends:'al año',perYear:'al año',monthly:'Mensual',daily:'Diario',hourly:'Por hora',assets:'Activos',upcoming:'Próximos pagos',pastPayments:'Pagos recibidos',annualCalendar:'Calendario anual',loadingDiv:'Cargando dividendos reales…',divHoldings:'Holdings con dividendos',exDiv:'Ex-Dividendo',payDate:'Pago',divDetailTitle:'Historial detallado',loadingDivDetail:'Cargando historial…',divDetailSource:'Fuente',divDetailYear:'Año',divDetailPerShare:'€/acción',divDetailTotal:'Total',divDetailPayments:'Pagos',divNoDetail:'Sin historial disponible.',nextPay:'Próx. cobro',divAnnualChartTitle:'Total cobrado por año',divDelisted:'Sin pagos recientes — posiblemente liquidado o fusionado',verDetalle:'Ver detalle',validated:'Validado',partially_validated:'Parcial',inconsistent:'Inconsistente',
@@ -1353,7 +1871,7 @@ const I18N = {
     heroTitle:'Total portfolio value',mInvested:'Invested',mReturn:'Return',mPositions:'Positions',mEvolution:'Evolution',
     chartNoData:'Insufficient history to build a chart.',
     sumInvested:'Invested capital',sumGain:'Accumulated gain',myPortfolio:'My portfolio',
-    tabHome:'Home',tabPortfolio:'Portfolio',tabAnalysis:'Analysis',tabDividends:'Dividends',tabIA:'AI',
+    tabHome:'Home',tabPortfolio:'Portfolio',tabAnalysis:'Analysis',tabDividends:'Dividends',tabIA:'AI',tabFinX:'FinX',
     portfolioSub:'Full position details',positions:'Positions',
     analysisSub:'Health, distribution & performance',healthScore:'Health score',distribution:'Distribution by type',performance:'Performance by asset',vsWorld:'Portfolio vs MSCI World',
     dividendsSub:'Real passive income from portfolio',annualDividends:'per year',perYear:'per year',monthly:'Monthly',daily:'Daily',hourly:'Hourly',assets:'Assets',upcoming:'Upcoming payments',pastPayments:'Past payments',annualCalendar:'Annual calendar',loadingDiv:'Loading real dividends…',divHoldings:'Dividend holdings',exDiv:'Ex-Dividend',payDate:'Payment',divDetailTitle:'Detailed history',loadingDivDetail:'Loading history…',divDetailSource:'Source',divDetailYear:'Year',divDetailPerShare:'€/share',divDetailTotal:'Total',divDetailPayments:'Payments',divNoDetail:'No history available.',nextPay:'Next payment',divAnnualChartTitle:'Total received per year',divDelisted:'No recent payments — possibly delisted or merged',verDetalle:'See detail',validated:'Validated',partially_validated:'Partial',inconsistent:'Inconsistent',
@@ -1536,6 +2054,7 @@ function showScreen(name,keepTab=false){
   if(name==='analysis'&&dataReady)renderAnalysisCharts();
   if(name==='dividends'&&dataReady)renderDividends();
   if(name==='ia'&&dataReady)renderIA();
+  if(name==='finx')requestAnimationFrame(fxDrawPGauge);
 }
 function normalizeHistory(h){return(Array.isArray(h)?h:[]).map(p=>({date:String(p.date).slice(0,10),close:Number(p.close)})).filter(p=>p.date&&Number.isFinite(p.close)&&p.close>0).sort((a,b)=>a.date.localeCompare(b.date));}
 function getPriceOnOrBefore(s,date){if(!s.length)return null;let lo=0,hi=s.length-1,best=-1;while(lo<=hi){const m=Math.floor((lo+hi)/2);if(s[m].date<=date){best=m;lo=m+1;}else hi=m-1;}return best>=0?s[best].close:null;}
@@ -2307,6 +2826,69 @@ function _anRenderCosts() {
     </div>
   </div>`;
   el.innerHTML = html;
+}
+
+// ========== FinX Forum ==========
+function fxSetTab(el){document.querySelectorAll('#screen-finx .fx-tab').forEach(t=>t.classList.remove('active'));el.classList.add('active');}
+function fxToggleComments(id){const el=document.getElementById(id);el.style.display=el.style.display==='none'?'block':'none';}
+function fxToggleLike(btn){btn.classList.toggle('liked');}
+function fxExpand(id,link){const el=document.getElementById(id);el.classList.toggle('expanded');link.textContent=el.classList.contains('expanded')?'Show less':'Show more';}
+function fxVote(opt){opt.closest('.fx-poll-card').querySelectorAll('.fx-poll-option').forEach(o=>o.style.pointerEvents='none');}
+function fxOpenShare(){document.getElementById('fxShareModal').classList.add('open');}
+function fxOpenCompose(){document.getElementById('fxComposeModal').classList.add('open');}
+function fxSetCType(el){document.querySelectorAll('#fxComposeModal .fx-ctype').forEach(c=>c.classList.remove('active'));el.classList.add('active');}
+function fxOpenProfile(){
+  document.getElementById('fxProfileModal').classList.add('open');
+  requestAnimationFrame(()=>{fxDrawPGauge();fxDrawPerfChart();});
+}
+function fxCloseProfile(){document.getElementById('fxProfileModal').classList.remove('open');}
+function fxToggleFollow(){const btn=document.getElementById('fxFollowBtn');btn.classList.toggle('following');btn.textContent=btn.classList.contains('following')?'Siguiendo':'Follow';}
+function fxSwitchPTab(el,contentId){
+  document.querySelectorAll('#fxProfileModal .fx-ptab').forEach(t=>t.classList.remove('active'));
+  el.classList.add('active');
+  document.querySelectorAll('#fxProfileModal .fx-ptab-content').forEach(t=>t.classList.remove('active'));
+  document.getElementById(contentId).classList.add('active');
+  if(contentId==='fxPtabPortfolio')requestAnimationFrame(()=>{fxDrawPGauge();fxDrawPerfChart();});
+}
+function fxDrawPGauge(){
+  const c=document.getElementById('fxPgauge');if(!c)return;
+  const ctx=c.getContext('2d'),cx=32,cy=32,r=24;
+  const s=Math.PI*.75,t=Math.PI*1.5;
+  const segs=[{p:.30,col:'#4f8ef7'},{p:.25,col:'#2dc98a'},{p:.20,col:'#7c5cbf'},{p:.12,col:'#f5b731'},{p:.08,col:'#f05252'},{p:.05,col:'#8a9e93'}];
+  ctx.clearRect(0,0,64,64);
+  ctx.beginPath();ctx.arc(cx,cy,r,s,s+t);ctx.strokeStyle='#f0f0f0';ctx.lineWidth=5;ctx.stroke();
+  let a=s;segs.forEach(sg=>{const e=a+sg.p*t;ctx.beginPath();ctx.arc(cx,cy,r,a,e);ctx.strokeStyle=sg.col;ctx.lineWidth=5;ctx.lineCap='round';ctx.stroke();a=e;});
+}
+function fxDrawPerfChart(){
+  const c=document.getElementById('fxPerfChart');if(!c)return;
+  const dpr=window.devicePixelRatio||1;
+  const W=c.parentElement.offsetWidth-28||300,H=110;
+  c.width=W*dpr;c.height=H*dpr;c.style.width=W+'px';c.style.height=H+'px';
+  const ctx=c.getContext('2d');ctx.scale(dpr,dpr);
+  const labels=['Sep','Nov','Ene','Mar','May','Jul','Sep','Nov','Ene','Mar'];
+  const grigom=[0,3.2,5.1,8.4,11.2,14.8,18.3,22.1,24.9,27.1];
+  const msci=[0,1.8,3.2,5.0,6.8,8.4,9.8,11.6,13.1,14.5];
+  const min=-2,max=30,range=max-min;
+  const padL=22,padR=8,padT=6,padB=18;
+  const w=W-padL-padR,h=H-padT-padB;
+  const sx=i=>padL+i*(w/(labels.length-1));
+  const sy=v=>padT+h-((v-min)/range)*h;
+  ctx.strokeStyle='rgba(0,0,0,.06)';ctx.lineWidth=1;ctx.setLineDash([3,3]);
+  [0,10,20,30].forEach(v=>{ctx.beginPath();ctx.moveTo(padL,sy(v));ctx.lineTo(W-padR,sy(v));ctx.stroke();});
+  ctx.setLineDash([]);
+  const g2=ctx.createLinearGradient(0,padT,0,padT+h);g2.addColorStop(0,'rgba(79,142,247,.1)');g2.addColorStop(1,'rgba(79,142,247,0)');
+  ctx.beginPath();ctx.moveTo(sx(0),sy(msci[0]));msci.forEach((v,i)=>{if(i>0)ctx.lineTo(sx(i),sy(v));});
+  ctx.lineTo(sx(msci.length-1),padT+h);ctx.lineTo(sx(0),padT+h);ctx.closePath();ctx.fillStyle=g2;ctx.fill();
+  const g1=ctx.createLinearGradient(0,padT,0,padT+h);g1.addColorStop(0,'rgba(26,171,112,.18)');g1.addColorStop(1,'rgba(26,171,112,0)');
+  ctx.beginPath();ctx.moveTo(sx(0),sy(grigom[0]));grigom.forEach((v,i)=>{if(i>0)ctx.lineTo(sx(i),sy(v));});
+  ctx.lineTo(sx(grigom.length-1),padT+h);ctx.lineTo(sx(0),padT+h);ctx.closePath();ctx.fillStyle=g1;ctx.fill();
+  ctx.beginPath();msci.forEach((v,i)=>i===0?ctx.moveTo(sx(i),sy(v)):ctx.lineTo(sx(i),sy(v)));
+  ctx.strokeStyle='#4f8ef7';ctx.lineWidth=1.5;ctx.setLineDash([4,3]);ctx.stroke();ctx.setLineDash([]);
+  ctx.beginPath();grigom.forEach((v,i)=>i===0?ctx.moveTo(sx(i),sy(v)):ctx.lineTo(sx(i),sy(v)));
+  ctx.strokeStyle='#1aab70';ctx.lineWidth=2;ctx.lineJoin='round';ctx.stroke();
+  ctx.fillStyle='#8a9e93';ctx.font='600 9px system-ui,sans-serif';ctx.textAlign='center';
+  labels.forEach((l,i)=>ctx.fillText(l,sx(i),H-2));
+  ctx.textAlign='right';[0,10,20].forEach(v=>ctx.fillText(v+'%',padL-2,sy(v)+3));
 }
 
 function renderAnalysisCharts(){
