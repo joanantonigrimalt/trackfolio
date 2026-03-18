@@ -195,6 +195,39 @@ table.an-corr-mtx{border-collapse:separate;border-spacing:4px}
 .an-cpair-badge{font-size:8px;font-weight:700;padding:2px 5px;border-radius:5px}
 .an-corr-tip{display:flex;align-items:flex-start;gap:8px;background:linear-gradient(135deg,#f0fdf4,#eff6ff);border:1px solid #c6f6d5;border-radius:12px;padding:12px 14px;margin-top:12px;font-size:11px;color:#374151;line-height:1.6}
 .an-corr-lock{display:flex;align-items:center;gap:10px;background:rgba(124,95,168,.06);border:1px dashed rgba(124,95,168,.25);border-radius:10px;padding:10px 12px;margin-top:12px;font-size:11px;color:#7c5fa8;font-weight:600}
+/* === Analysis v2 – dark portfolio summary === */
+.an-ps-wrap{background:linear-gradient(160deg,#0d2418 0%,#1a3a28 60%,#0f2b1e 100%);border-radius:22px 22px 26px 26px;padding:14px 14px 16px;margin-bottom:14px}
+.an-ps-row2{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px}
+.an-ps-inner-card{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.1);border-radius:16px;padding:14px 12px}
+.an-ps-lbl{font-size:8px;font-weight:700;color:rgba(255,255,255,.42);text-transform:uppercase;letter-spacing:.1em;margin-bottom:5px}
+.an-ps-val{font-size:18px;font-weight:800;color:#fff;letter-spacing:-.04em;line-height:1}
+.an-ps-today{font-size:9px;color:rgba(255,255,255,.45);font-weight:500;margin-top:3px}
+.an-ps-sub{font-size:9px;color:rgba(255,255,255,.35);font-weight:500;margin-top:5px;padding-top:5px;border-top:1px solid rgba(255,255,255,.08)}
+.an-ps-cash{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.1);border-radius:16px;padding:12px 14px;display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:10px}
+.an-ps-wrap .an-sum-main{color:#fff}.an-ps-wrap .an-sum-main.an-green{color:#2dc98a}.an-ps-wrap .an-sum-main.an-red{color:#f87171}
+.an-ps-wrap .an-sum-badge.pos{background:rgba(45,201,138,.2);color:#2dc98a}.an-ps-wrap .an-sum-badge.neg{background:rgba(248,113,113,.2);color:#f87171}
+.an-ps-wrap .an-liq-pct{color:#fff}
+.an-ps-wrap .an-period-strip{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.1);margin-bottom:0;border-radius:14px}
+.an-ps-wrap .an-period-item{border-right-color:rgba(255,255,255,.08)}
+.an-ps-wrap .an-period-label{color:rgba(255,255,255,.38)}
+.an-ps-wrap .an-period-pct.pos,.an-ps-wrap .an-period-abs.pos{color:#2dc98a}
+.an-ps-wrap .an-period-pct.neg,.an-ps-wrap .an-period-abs.neg{color:#f87171}
+.an-ps-wrap .an-period-pct.neu,.an-ps-wrap .an-period-abs.neu{color:rgba(255,255,255,.25)}
+.an-cards-area{display:flex;flex-direction:column;gap:14px;padding-bottom:20px}
+.an-alloc-tabbar{display:flex;background:#f4f7f5;border-radius:10px;padding:3px;margin-bottom:0}
+.an-alloc-tab{flex:1;border:none;background:transparent;font-family:inherit;font-size:10px;font-weight:600;color:#8fa090;padding:6px 4px;border-radius:8px;cursor:pointer;transition:all .2s}
+.an-alloc-tab.an-alloc-tab-active{background:#fff;color:#142018;box-shadow:0 1px 6px rgba(0,0,0,.08)}
+.an-costs-chips{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:14px}
+.an-costs-chip{border-radius:10px;padding:8px 10px}
+.an-costs-chip .cc-lbl{font-size:8px;font-weight:600;color:#8fa090;text-transform:uppercase;letter-spacing:.07em}
+.an-costs-chip .cc-val{font-size:15px;font-weight:800;margin-top:2px}
+.an-costs-row{display:flex;align-items:center;padding:6px 0;border-bottom:1px solid #f5f5f5}
+.an-costs-row:last-child{border-bottom:none}
+.an-costs-badge{font-size:10px;font-weight:700;border-radius:4px;padding:1px 6px;flex-shrink:0}
+.an-costs-name{font-size:12px;font-weight:700;color:#142018;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin:0 6px}
+.an-costs-amt{font-size:11px;font-weight:800;color:#f87171;white-space:nowrap;flex-shrink:0}
+.an-ter-bar-track{height:5px;background:#f0f0f0;border-radius:3px;overflow:hidden;margin-top:3px}
+.an-ter-bar-fill{height:100%;border-radius:3px;background:#f87171}
 /* === Dividends === */
 .divHero{background:linear-gradient(160deg,#1a3f2c 0%,#0f2a1e 100%);color:#f5fbf6}.divHeroTop{display:flex;align-items:flex-end;gap:16px;margin-bottom:14px}.divBig{font-size:48px;font-weight:800;letter-spacing:-.05em;line-height:1}.divBigSub{font-size:14px;color:rgba(239,249,242,.6);font-weight:600;padding-bottom:8px}.divMetrics{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}.divMetricBox{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.09);border-radius:14px;padding:10px}.divMetricBox .dl{font-size:10px;color:rgba(239,249,242,.5);text-transform:uppercase;letter-spacing:.08em;font-weight:600}.divMetricBox .dn{font-size:16px;font-weight:700;margin-top:3px;letter-spacing:-.02em}
 .divHoldingRow{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid rgba(20,32,24,.06);cursor:pointer;transition:background .15s}.divHoldingRow:hover{background:rgba(21,128,61,.04);border-radius:10px;margin:0 -8px;padding:12px 8px}.divHoldingRow:last-child{border-bottom:none}.divHoldingLeft{flex:1;min-width:0}.divHoldingName{font-size:13px;font-weight:700;color:#142018;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.divHoldingMeta{font-size:11px;color:#8fa090;margin-top:2px;font-weight:500}.divHoldingRight{text-align:right;flex-shrink:0}.divHoldingAmt{font-size:15px;font-weight:800;color:#142018}.divHoldingYield{font-size:11px;color:#15803d;margin-top:2px;font-weight:700}
@@ -202,6 +235,106 @@ table.an-corr-mtx{border-collapse:separate;border-spacing:4px}
 .dateBadgeRow{display:flex;gap:6px;margin-top:5px;flex-wrap:wrap}.dateBadge{display:inline-flex;align-items:center;gap:4px;padding:3px 8px;border-radius:6px;font-size:10px;font-weight:700}.dateBadge.ex{background:rgba(234,179,8,.12);color:#92400e}.dateBadge.pay{background:rgba(21,128,61,.1);color:#166534}.dateBadge.past{background:rgba(20,32,24,.06);color:#4a5f4e}
 .calGrid{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:10px}.calCell{background:#f1f5f2;border-radius:12px;padding:9px 6px;text-align:center}.calCell.hasPay{background:rgba(21,128,61,.09);border:1px solid rgba(21,128,61,.12)}.calCell .cm{font-size:10px;font-weight:700;color:#8fa090;text-transform:uppercase;letter-spacing:.05em}.calCell .ca{font-size:13px;font-weight:800;color:#142018;margin-top:3px}.calCell.hasPay .cm{color:#166534}.calCell.hasPay .ca{color:#15803d}.calCell.curMonth{outline:2px solid #15803d;outline-offset:-2px}.calCell.curMonth .cm{color:#15803d;font-weight:800}
 #divDetailContent details>summary::-webkit-details-marker{display:none}#divDetailContent details>summary::marker{display:none}#divDetailContent details[open]>summary{margin-bottom:4px}#divDetailContent details>summary:hover{opacity:.8}
+/* === Dividends v2 === */
+.div-hero2{background:linear-gradient(160deg,#0f2a1e 0%,#1a3f2c 60%,#0f2a1e 100%);color:#f5fbf6;position:relative;overflow:hidden}
+.div-hero2::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 80% 20%,rgba(21,128,61,.18) 0%,transparent 70%);pointer-events:none}
+.div-h2-top{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:8px}
+.div-h2-annual{font-size:44px;font-weight:800;letter-spacing:-.05em;line-height:1;color:#f5fbf6}
+.div-h2-sub{font-size:12px;color:rgba(239,249,242,.5);font-weight:600;text-transform:uppercase;letter-spacing:.08em;margin-top:3px}
+.div-h2-badges{display:flex;flex-direction:column;align-items:flex-end;gap:6px}
+.div-trend-badge{font-size:11px;font-weight:700;padding:4px 10px;border-radius:20px;color:rgba(239,249,242,.9);background:rgba(255,255,255,.12);white-space:nowrap}
+.div-next-pill{display:inline-flex;align-items:center;gap:6px;background:rgba(21,128,61,.35);border:1px solid rgba(21,128,61,.5);border-radius:20px;padding:5px 12px;margin-top:10px}
+.div-next-pill-lbl{font-size:10px;font-weight:700;color:rgba(239,249,242,.55);text-transform:uppercase;letter-spacing:.07em}
+.div-next-pill-val{font-size:13px;font-weight:800;color:#f5fbf6}
+.div-next-pill-name{font-size:10px;color:rgba(239,249,242,.6);font-weight:600}
+.div-h2-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-top:14px}
+.div-h2-cell{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.09);border-radius:14px;padding:10px 12px}
+.div-h2-cell .dl{font-size:9px;color:rgba(239,249,242,.45);text-transform:uppercase;letter-spacing:.09em;font-weight:700}
+.div-h2-cell .dn{font-size:16px;font-weight:700;margin-top:4px;letter-spacing:-.02em;color:#f5fbf6}
+.div-yield-row{display:flex;gap:8px;margin-top:8px}
+.div-yield-chip{flex:1;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:8px 10px;text-align:center}
+.div-yield-chip .dl{font-size:9px;color:rgba(239,249,242,.45);text-transform:uppercase;letter-spacing:.07em;font-weight:700}
+.div-yield-chip .dn{font-size:14px;font-weight:800;color:#4ade80;margin-top:3px}
+/* Holdings table v2 */
+.div-tbl{width:100%;border-collapse:collapse;table-layout:fixed}
+.div-tbl th{font-size:9px;font-weight:700;color:#8fa090;text-transform:uppercase;letter-spacing:.08em;padding:0 0 8px;text-align:left}
+.div-tbl th:nth-child(2){text-align:center}
+.div-tbl th:nth-child(3),.div-tbl th:nth-child(4){text-align:right}
+.div-tbl td{padding:10px 0;border-bottom:1px solid rgba(20,32,24,.06);vertical-align:middle}
+.div-tbl tr:last-child td{border-bottom:none}
+.div-tbl tr{cursor:pointer;transition:background .15s}
+.div-tbl tr:hover td{background:rgba(21,128,61,.04)}
+.div-tbl td:nth-child(2){text-align:center}
+.div-tbl td:nth-child(3),.div-tbl td:nth-child(4){text-align:right}
+.div-tbl-name{font-size:12px;font-weight:700;color:#142018;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.div-tbl-meta{font-size:10px;color:#8fa090;margin-top:1px;font-weight:500}
+.div-tbl-yield{font-size:12px;font-weight:700;color:#15803d}
+.div-tbl-yoc{font-size:10px;color:#8fa090;margin-top:1px}
+.div-tbl-amt{font-size:13px;font-weight:800;color:#142018}
+.div-spark-wrap{width:54px;height:28px;display:inline-block;vertical-align:middle}
+/* Calendar v2 */
+.div-cal-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:10px}
+.div-cal-cell{background:#f1f5f2;border-radius:12px;padding:9px 6px;text-align:center;cursor:pointer;transition:all .15s;position:relative}
+.div-cal-cell:hover{background:rgba(21,128,61,.08);transform:scale(1.03)}
+.div-cal-cell.hasPay{background:rgba(21,128,61,.09);border:1px solid rgba(21,128,61,.12)}
+.div-cal-cell.hasPay:hover{background:rgba(21,128,61,.16)}
+.div-cal-cell .cm{font-size:10px;font-weight:700;color:#8fa090;text-transform:uppercase;letter-spacing:.05em}
+.div-cal-cell .ca{font-size:12px;font-weight:800;color:#142018;margin-top:3px}
+.div-cal-cell.hasPay .cm{color:#166534}
+.div-cal-cell.hasPay .ca{color:#15803d}
+.div-cal-cell.curMonth{outline:2px solid #15803d;outline-offset:-2px}
+.div-cal-cell.curMonth .cm{color:#15803d;font-weight:800}
+.div-cal-cell.active-cal{background:#15803d!important;box-shadow:0 4px 12px rgba(21,128,61,.35)}
+.div-cal-cell.active-cal .cm,.div-cal-cell.active-cal .ca{color:#fff!important}
+.div-cal-detail{background:#f6fdf8;border:1px solid rgba(21,128,61,.15);border-radius:14px;padding:12px 14px;margin-top:10px}
+.div-cal-detail-hdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+.div-cal-detail-title{font-size:12px;font-weight:700;color:#142018;text-transform:uppercase;letter-spacing:.05em}
+.div-cal-detail-total{font-size:15px;font-weight:800;color:#15803d}
+.div-cal-row{display:flex;align-items:center;gap:10px;padding:6px 0;border-bottom:1px solid rgba(21,128,61,.08)}
+.div-cal-row:last-child{border-bottom:none}
+.div-cal-row-name{font-size:12px;font-weight:600;color:#142018;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.div-cal-row-amt{font-size:12px;font-weight:800;color:#142018;flex-shrink:0}
+/* Goal */
+.div-goal-bar-wrap{background:#eef5ef;border-radius:20px;height:12px;overflow:hidden;margin:10px 0}
+.div-goal-bar-fill{height:100%;border-radius:20px;background:linear-gradient(90deg,#15803d,#4ade80);transition:width .6s cubic-bezier(.34,1.56,.64,1)}
+.div-goal-cells{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px}
+.div-goal-cell{background:#f6fdf8;border:1px solid rgba(21,128,61,.1);border-radius:12px;padding:10px;text-align:center}
+.div-goal-cell .dl{font-size:9px;font-weight:700;color:#8fa090;text-transform:uppercase;letter-spacing:.07em}
+.div-goal-cell .dn{font-size:14px;font-weight:800;color:#142018;margin-top:4px}
+.div-goal-hdr{display:flex;justify-content:space-between;align-items:center}
+.div-goal-edit{font-size:11px;font-weight:700;color:#15803d;background:rgba(21,128,61,.08);border:none;border-radius:8px;padding:4px 10px;cursor:pointer}
+/* Monthly chart tabs */
+.div-yr-tabs{display:flex;gap:6px;margin-bottom:10px;flex-wrap:wrap}
+.div-yr-tab{font-size:11px;font-weight:700;color:#8fa090;background:rgba(20,32,24,.05);border:1px solid rgba(20,32,24,.07);border-radius:8px;padding:4px 10px;cursor:pointer;transition:all .15s}
+.div-yr-tab.active{background:#15803d;color:#fff;border-color:#15803d}
+/* FV card */
+.div-fv-hdr{background:linear-gradient(135deg,#1e3a5f 0%,#0f1f3d 100%);border-radius:16px;padding:14px;margin-bottom:10px;color:#e8f0fe}
+.div-fv-big{font-size:36px;font-weight:800;letter-spacing:-.04em;color:#93c5fd}
+.div-fv-sub{font-size:11px;color:rgba(232,240,254,.55);font-weight:600;margin-top:2px}
+.div-fv-chips{display:flex;gap:6px;margin:10px 0;flex-wrap:wrap}
+.div-fv-chip{font-size:11px;font-weight:700;color:#6b7280;background:#f3f4f6;border:1px solid #e5e7eb;border-radius:8px;padding:5px 12px;cursor:pointer;transition:all .15s}
+.div-fv-chip.active{background:#1e3a5f;color:#fff;border-color:#1e3a5f}
+.div-fv-set-btn{font-size:11px;font-weight:700;color:#1e3a5f;background:rgba(30,58,95,.07);border:1px solid rgba(30,58,95,.12);border-radius:8px;padding:5px 12px;cursor:pointer;margin-left:auto}
+.div-fv-modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:200;display:flex;align-items:flex-end;justify-content:center}
+.div-fv-modal{background:#fff;border-radius:20px 20px 0 0;padding:20px 20px 32px;width:100%;max-width:480px;box-sizing:border-box}
+.div-fv-modal-title{font-size:15px;font-weight:800;color:#142018;margin-bottom:14px}
+.div-fv-field{margin-bottom:12px}
+.div-fv-field label{font-size:11px;font-weight:700;color:#4a5f4e;text-transform:uppercase;letter-spacing:.06em;display:block;margin-bottom:4px}
+.div-fv-field input{width:100%;border:1.5px solid #e0e8e2;border-radius:10px;padding:10px 12px;font:inherit;font-size:14px;color:#142018;background:#fff;box-sizing:border-box;outline:none;transition:border-color .15s}
+.div-fv-field input:focus{border-color:#15803d}
+.div-fv-modal-btns{display:flex;gap:8px;margin-top:16px}
+.div-fv-modal-save{flex:1;padding:13px;background:#142018;color:#f5fbf6;border:none;border-radius:12px;font:inherit;font-size:14px;font-weight:700;cursor:pointer}
+.div-fv-modal-cancel{padding:13px 18px;background:#f3f4f6;color:#142018;border:none;border-radius:12px;font:inherit;font-size:14px;font-weight:700;cursor:pointer}
+/* DRIP */
+.div-drip-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}
+.div-drip-cell{border-radius:14px;padding:14px;text-align:center}
+.div-drip-cell.base{background:#f3f4f6;border:1px solid #e5e7eb}
+.div-drip-cell.drip{background:linear-gradient(135deg,rgba(21,128,61,.08),rgba(21,128,61,.03));border:1px solid rgba(21,128,61,.2)}
+.div-drip-lbl{font-size:10px;font-weight:700;color:#6b7280;text-transform:uppercase;letter-spacing:.07em}
+.div-drip-val{font-size:22px;font-weight:800;color:#142018;margin:6px 0 2px;letter-spacing:-.03em}
+.div-drip-cell.drip .div-drip-val{color:#15803d}
+.div-drip-sub{font-size:10px;color:#8fa090;font-weight:500}
+.div-drip-note{font-size:11px;color:#8fa090;text-align:center;margin-top:10px;line-height:1.5}
 /* === IA === */
 .iaHeader{background:linear-gradient(160deg,#2d1a4a 0%,#1a0f2a 100%);color:#f5f0fb}.iaInsightCard{background:#faf8fd;border:1px solid rgba(90,30,140,.08);border-radius:18px;padding:14px;margin-bottom:10px}.iaInsightCard .icat{font-size:10px;text-transform:uppercase;letter-spacing:.1em;font-weight:700;color:#7c5fa8;margin-bottom:6px}.iaInsightCard .itxt{font-size:13px;line-height:1.6;color:#2d1a4a;font-weight:500}.iaTag{display:inline-block;padding:3px 8px;border-radius:6px;font-size:10px;font-weight:700;margin-top:8px}.iaTag.warn{background:rgba(245,158,11,.12);color:#92400e}.iaTag.good{background:rgba(22,163,74,.1);color:#166534}.iaTag.info{background:rgba(90,30,140,.08);color:#5a1e8c}.iaStar{font-size:22px;margin-bottom:6px}
 /* === Auth modal === */
@@ -498,76 +631,137 @@ table.an-corr-mtx{border-collapse:separate;border-spacing:4px}
     <div class="sub" data-i18n="analysisSub">Salud, distribución y rendimiento</div>
   </div></div>
 
-  <!-- ─── Portfolio Summary ─── -->
-  <div class="an-sum-top">
-    <div class="an-sum-card">
-      <div class="an-sum-label">📊 Valor</div>
-      <div class="an-sum-main" id="anSumValue">—</div>
-      <span class="an-sum-badge" id="anSumDayBadge">—</span>
-      <div class="an-sum-sub" id="anSumDayGain">—</div>
-      <div class="an-sum-foot" id="anSumInvested">—</div>
-    </div>
-    <div class="an-sum-card">
-      <div class="an-sum-label">📈 Rentabilidad</div>
-      <div class="an-sum-main" id="anSumGain">—</div>
-      <span class="an-sum-badge" id="anSumGainBadge">—</span>
-      <canvas id="anSumSpark" width="126" height="32" style="margin-top:8px;display:block"></canvas>
-    </div>
-  </div>
-  <div class="an-cash-row">
-    <div class="an-cash-left">
-      <div class="an-sum-label">💳 Efectivo</div>
-      <div class="an-sum-main" id="anCashAmt">—</div>
-      <div class="an-sum-sub" id="anCashSub">—</div>
-    </div>
-    <div style="display:flex;flex-direction:column;align-items:center;gap:3px;flex-shrink:0">
-      <div class="an-liq-wrap">
-        <canvas id="anLiqCanvas" width="48" height="48"></canvas>
-        <div class="an-liq-label"><span id="anLiqPct" class="an-liq-pct">0%</span><span class="an-liq-tag">LIQ.</span></div>
+  <!-- ─── Portfolio Summary (dark card) ─── -->
+  <div class="an-ps-wrap">
+    <div class="an-ps-row2">
+      <div class="an-ps-inner-card">
+        <div class="an-ps-lbl">📊 Valor Portfolio</div>
+        <div class="an-sum-main" id="anSumValue">—</div>
+        <span class="an-sum-badge" id="anSumDayBadge">—</span>
+        <div class="an-ps-today" id="anSumDayGain">—</div>
+        <div class="an-ps-sub" id="anSumInvested">—</div>
       </div>
-      <span style="font-size:8px;color:#8fa090;font-weight:700;text-transform:uppercase;letter-spacing:.05em">Liquidez</span>
+      <div class="an-ps-inner-card">
+        <div class="an-ps-lbl">📈 Rentabilidad Total</div>
+        <div class="an-sum-main" id="anSumGain">—</div>
+        <span class="an-sum-badge" id="anSumGainBadge">—</span>
+        <canvas id="anSumSpark" width="126" height="32" style="margin-top:8px;display:block"></canvas>
+      </div>
     </div>
+    <div class="an-ps-cash">
+      <div style="flex:1">
+        <div class="an-ps-lbl">💳 Efectivo Disponible</div>
+        <div class="an-sum-main" id="anCashAmt">—</div>
+        <div class="an-ps-today" id="anCashSub">—</div>
+      </div>
+      <div style="display:flex;flex-direction:column;align-items:center;gap:4px;flex-shrink:0;margin-left:12px">
+        <div class="an-liq-wrap">
+          <canvas id="anLiqCanvas" width="48" height="48"></canvas>
+          <div class="an-liq-label"><span id="anLiqPct" class="an-liq-pct">0%</span><span class="an-liq-tag">LIQ.</span></div>
+        </div>
+        <span style="font-size:7px;color:rgba(255,255,255,.4);font-weight:700;text-transform:uppercase;letter-spacing:.06em">Liquidez</span>
+      </div>
+    </div>
+    <div class="an-period-strip" id="anPeriodStrip"></div>
   </div>
-  <div class="an-period-strip" id="anPeriodStrip"></div>
 
-  <!-- ─── Cards ─── -->
-  <div class="card">
-    <div class="sectionTitle" data-i18n="healthScore">Score de salud</div>
-    <div class="healthRow">
-      <div class="healthDonutWrap"><canvas id="healthDonut"></canvas><div class="healthCenter"><div class="hs" id="healthScoreNum">—</div><div class="hsl">/ 100</div></div></div>
-      <div class="subscores" id="subscoreList"></div>
-    </div>
-  </div>
-  <div class="card"><div class="sectionTitle" data-i18n="distribution">Distribución por tipo</div><div class="chartWrap2"><canvas id="distPie"></canvas></div><div class="distLegend" id="distLegend"></div></div>
-  <div class="card" id="anBrokerCard" style="display:none">
-    <div class="sectionTitle">Distribución por broker</div>
-    <div style="display:flex;align-items:center;gap:14px;margin-bottom:12px">
-      <div style="width:110px;height:110px;flex-shrink:0;position:relative"><canvas id="brokerPie" style="width:110px!important;height:110px!important"></canvas></div>
-      <div id="brokerLegend" style="flex:1;display:flex;flex-direction:column;gap:6px"></div>
-    </div>
-    <div id="brokerBars"></div>
-  </div>
-  <div class="card"><div class="sectionTitle" data-i18n="performance">Rentabilidad por activo</div><div id="perfBarWrap" style="position:relative;height:220px;margin-top:6px"><canvas id="perfBar"></canvas></div></div>
-  <div class="card" id="anBestWorstCard">
-    <div id="anBestSection"></div>
-    <div id="anWorstSection" style="margin-top:14px"></div>
-  </div>
-  <div class="card" style="padding:0;overflow:hidden" id="anTreemapCard">
-    <div style="padding:14px 16px 10px;display:flex;align-items:center;justify-content:space-between">
-      <div>
-        <div style="font-size:9px;font-weight:700;color:#8fa090;text-transform:uppercase;letter-spacing:.1em;margin-bottom:3px">Cambio total</div>
-        <div style="font-size:15px;font-weight:800;color:#142018;letter-spacing:-.02em">Mapa de Cartera</div>
-      </div>
-      <div style="display:flex;gap:8px">
-        <div style="display:flex;align-items:center;gap:4px;font-size:10px;color:#8fa090;font-weight:600"><div style="width:8px;height:8px;border-radius:2px;background:#22c55e"></div>+</div>
-        <div style="display:flex;align-items:center;gap:4px;font-size:10px;color:#8fa090;font-weight:600"><div style="width:8px;height:8px;border-radius:2px;background:#f87171"></div>−</div>
+  <!-- ─── Cards area ─── -->
+  <div class="an-cards-area">
+
+    <!-- Health Score -->
+    <div class="card">
+      <div class="sectionTitle" data-i18n="healthScore">Score de salud</div>
+      <div class="healthRow">
+        <div class="healthDonutWrap"><canvas id="healthDonut"></canvas><div class="healthCenter"><div class="hs" id="healthScoreNum">—</div><div class="hsl">/ 100</div></div></div>
+        <div class="subscores" id="subscoreList"></div>
       </div>
     </div>
-    <div id="anTreemap" style="width:100%;height:260px;position:relative"></div>
+
+    <!-- Distribution by type -->
+    <div class="card"><div class="sectionTitle" data-i18n="distribution">Distribución por tipo</div><div class="chartWrap2"><canvas id="distPie"></canvas></div><div class="distLegend" id="distLegend"></div></div>
+
+    <!-- Allocation Overview tabs -->
+    <div class="card" style="padding:0;overflow:hidden">
+      <div style="padding:16px 16px 0">
+        <div class="sectionTitle" style="margin-bottom:10px">Allocation Overview</div>
+        <div class="an-alloc-tabbar">
+          <button onclick="_anAllocTab('currency')" id="anAllocTab-currency" class="an-alloc-tab an-alloc-tab-active">Currency</button>
+          <button onclick="_anAllocTab('country')" id="anAllocTab-country" class="an-alloc-tab">Country</button>
+          <button onclick="_anAllocTab('type')" id="anAllocTab-type" class="an-alloc-tab">Asset Type</button>
+          <button onclick="_anAllocTab('sector')" id="anAllocTab-sector" class="an-alloc-tab">Sector</button>
+        </div>
+      </div>
+      <div style="padding:16px" id="anAllocContent"></div>
+    </div>
+
+    <!-- Distribution by broker -->
+    <div class="card" id="anBrokerCard" style="display:none">
+      <div class="sectionTitle">Distribución por broker</div>
+      <div style="display:flex;align-items:center;gap:14px;margin-bottom:12px">
+        <div style="width:110px;height:110px;flex-shrink:0;position:relative"><canvas id="brokerPie" style="width:110px!important;height:110px!important"></canvas></div>
+        <div id="brokerLegend" style="flex:1;display:flex;flex-direction:column;gap:6px"></div>
+      </div>
+      <div id="brokerBars"></div>
+    </div>
+
+    <!-- Performance by asset -->
+    <div class="card"><div class="sectionTitle" data-i18n="performance">Rentabilidad por activo</div><div id="perfBarWrap" style="position:relative;height:220px;margin-top:6px"><canvas id="perfBar"></canvas></div></div>
+
+    <!-- Costs & Fees -->
+    <div class="card" id="anCostsCard">
+      <div style="display:flex;align-items:baseline;justify-content:space-between;margin-bottom:14px">
+        <div class="sectionTitle" style="margin-bottom:0">Costs &amp; Fees</div>
+        <span style="font-size:11px;font-weight:500;color:#8fa090">Estimado anual</span>
+      </div>
+      <div id="anCostsContent"></div>
+    </div>
+
+    <!-- Best / Worst -->
+    <div class="card" id="anBestWorstCard">
+      <div id="anBestSection"></div>
+      <div id="anWorstSection" style="margin-top:14px"></div>
+    </div>
+
+    <!-- Treemap -->
+    <div class="card" style="padding:0;overflow:hidden" id="anTreemapCard">
+      <div style="padding:14px 16px 10px;display:flex;align-items:center;justify-content:space-between">
+        <div>
+          <div style="font-size:9px;font-weight:700;color:#8fa090;text-transform:uppercase;letter-spacing:.1em;margin-bottom:3px">Cambio total</div>
+          <div style="font-size:15px;font-weight:800;color:#142018;letter-spacing:-.02em">Mapa de Cartera</div>
+        </div>
+        <div style="display:flex;gap:8px">
+          <div style="display:flex;align-items:center;gap:4px;font-size:10px;color:#8fa090;font-weight:600"><div style="width:8px;height:8px;border-radius:2px;background:#22c55e"></div>+</div>
+          <div style="display:flex;align-items:center;gap:4px;font-size:10px;color:#8fa090;font-weight:600"><div style="width:8px;height:8px;border-radius:2px;background:#f87171"></div>−</div>
+        </div>
+      </div>
+      <div id="anTreemap" style="width:100%;height:260px;position:relative"></div>
+    </div>
+
+    <!-- Trend Analysis vs MSCI World -->
+    <div class="card" style="padding:0;overflow:hidden">
+      <div style="padding:18px 20px 14px">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:14px">
+          <div>
+            <div style="font-size:9px;font-weight:700;color:#8fa090;text-transform:uppercase;letter-spacing:.1em;margin-bottom:4px">Rendimiento histórico</div>
+            <div class="sectionTitle" style="margin-bottom:0" data-i18n="vsWorld">Trend vs MSCI World</div>
+          </div>
+          <div style="background:#f0f5f2;border-radius:8px;padding:4px 10px"><span style="font-size:10px;font-weight:700;color:#8fa090">2021–2025</span></div>
+        </div>
+        <div id="vsWorldChips" style="display:flex;gap:8px"></div>
+      </div>
+      <div style="padding:0 16px 16px">
+        <div style="position:relative;height:180px;margin-top:6px"><canvas id="vsWorldBar"></canvas></div>
+        <div id="vsWorldNote" style="display:none;font-size:11px;color:#8fa090;text-align:center;margin-top:8px"></div>
+      </div>
+    </div>
+
+    <!-- Coverage -->
+    <div class="card" id="analysisCoverageCard"><div id="analysisCoverageContent"></div></div>
+
+    <!-- Correlation -->
+    <div class="card" id="anCorrCard" style="padding:0;overflow:hidden"><div id="anCorrContent"></div></div>
+
   </div>
-  <div class="card"><div class="sectionTitle" data-i18n="vsWorld">Portfolio vs MSCI World</div><div style="position:relative;height:180px;margin-top:6px"><canvas id="vsWorldBar"></canvas></div><div id="vsWorldNote" style="display:none;font-size:11px;color:#8fa090;text-align:center;margin-top:8px"></div></div>
-  <div class="card" id="analysisCoverageCard"><div id="analysisCoverageContent"></div></div>
-  <div class="card" id="anCorrCard" style="padding:0;overflow:hidden"><div id="anCorrContent"></div></div>
 </div>
 
 <!-- ============ DIVIDENDOS ============ -->
@@ -577,56 +771,165 @@ table.an-corr-mtx{border-collapse:separate;border-spacing:4px}
       <div class="title" data-i18n="tabDividends">Dividendos</div>
       <div class="sub" data-i18n="dividendsSub">Ingresos pasivos reales del portfolio</div>
     </div>
-    <button onclick="_divDataCache=null;renderDividends()" title="Actualizar" style="background:rgba(20,32,24,.07);border:1px solid rgba(20,32,24,.08);width:36px;height:36px;border-radius:12px;font-size:18px;cursor:pointer;color:#4a5f4e;display:flex;align-items:center;justify-content:center;flex-shrink:0">⟳</button>
+    <button onclick="_divDataCache=null;_divDetailCache=null;renderDividends()" title="Actualizar" style="background:rgba(20,32,24,.07);border:1px solid rgba(20,32,24,.08);width:36px;height:36px;border-radius:12px;font-size:18px;cursor:pointer;color:#4a5f4e;display:flex;align-items:center;justify-content:center;flex-shrink:0">⟳</button>
   </div>
-  <div class="card divHero">
-    <div class="divHeroTop">
-      <div><div class="divBig" id="divAnnual">—</div><div class="divBigSub" data-i18n="annualDividends">Annual Dividends</div></div>
-      <div id="divTrend" style="display:none;font-size:12px;font-weight:700;align-self:flex-start;padding:4px 10px;border-radius:20px;margin-top:4px;outline:none;color:rgba(239,249,242,.9);background:rgba(255,255,255,.12)"></div>
+
+  <!-- Hero card -->
+  <div class="card div-hero2">
+    <div class="div-h2-top">
+      <div>
+        <div class="div-h2-annual" id="divAnnual">—</div>
+        <div class="div-h2-sub" data-i18n="annualDividends">Dividendos anuales</div>
+      </div>
+      <div class="div-h2-badges">
+        <div id="divTrend" style="display:none" class="div-trend-badge"></div>
+        <div id="divTotalReceived" style="display:none;font-size:11px;font-weight:700;padding:4px 10px;border-radius:20px;color:rgba(239,249,242,.7);background:rgba(255,255,255,.08)"></div>
+      </div>
     </div>
-    <div class="divMetrics">
-      <div class="divMetricBox"><div class="dl" data-i18n="monthly">Monthly</div><div class="dn" id="divMonthly">—</div></div>
-      <div class="divMetricBox"><div class="dl" data-i18n="daily">Daily</div><div class="dn" id="divDaily">—</div></div>
-      <div class="divMetricBox"><div class="dl" data-i18n="hourly">Hourly</div><div class="dn" id="divHourly">—</div></div>
+    <!-- Next payment pill -->
+    <div id="divNextPayRow" style="display:none">
+      <div class="div-next-pill">
+        <span class="div-next-pill-lbl">Próx. cobro</span>
+        <span id="divNextPay" class="div-next-pill-val">—</span>
+        <span id="divNextPayName" class="div-next-pill-name"></span>
+      </div>
     </div>
-    <div class="divMetrics" style="margin-top:10px;padding-top:10px;border-top:1px solid rgba(255,255,255,.1)">
-      <div class="divMetricBox"><div class="dl">Yield</div><div class="dn" id="divYield">—</div></div>
-      <div class="divMetricBox"><div class="dl">Yield on Cost</div><div class="dn" id="divYieldCost">—</div></div>
+    <!-- 4-cell grid -->
+    <div class="div-h2-grid">
+      <div class="div-h2-cell"><div class="dl" data-i18n="monthly">Mensual</div><div class="dn" id="divMonthly">—</div></div>
+      <div class="div-h2-cell"><div class="dl" data-i18n="daily">Diario</div><div class="dn" id="divDaily">—</div></div>
+      <div class="div-h2-cell"><div class="dl" data-i18n="hourly">Por hora</div><div class="dn" id="divHourly">—</div></div>
+      <div class="div-h2-cell"><div class="dl">Total recibido</div><div class="dn" id="divCalTotal">—</div></div>
     </div>
-    <div id="divNextPayRow" style="display:none;margin-top:12px;padding-top:12px;border-top:1px solid rgba(255,255,255,.1);display:flex;justify-content:space-between;align-items:center">
-      <div style="font-size:11px;color:rgba(239,249,242,.55);font-weight:600;text-transform:uppercase;letter-spacing:.06em" data-i18n="nextPay">Próx. cobro</div>
-      <div id="divNextPay" style="font-size:15px;font-weight:800;color:#f5fbf6;letter-spacing:-.02em">—</div>
+    <!-- Yield row -->
+    <div class="div-yield-row">
+      <div class="div-yield-chip"><div class="dl">Yield</div><div class="dn" id="divYield">—</div></div>
+      <div class="div-yield-chip"><div class="dl">Yield on Cost</div><div class="dn" id="divYieldCost">—</div></div>
     </div>
   </div>
-  <div class="card" id="divChartCard" style="display:none">
-    <div class="sectionTitle">Ingresos mensuales estimados</div>
-    <div style="position:relative;height:140px;margin-top:8px"><canvas id="divMonthlyChart"></canvas></div>
-  </div>
-  <div class="card" id="divAllocCard" style="display:none">
-    <div class="sectionTitle">Asset Allocation</div>
-    <div style="position:relative;height:200px;margin-top:8px"><canvas id="divAllocChart"></canvas></div>
-  </div>
+
+  <!-- Note / empty state -->
   <div id="divNote" style="display:none;font-size:13px;color:#8fa090;text-align:center;padding:20px 16px;background:rgba(20,32,24,.04);border-radius:16px;margin-bottom:12px"></div>
+
+  <!-- Loading -->
   <div class="card" id="divLoadingCard" style="text-align:center;padding:28px 18px;color:#8fa090;font-size:13px;font-weight:600">
     <div style="font-size:22px;margin-bottom:8px">⏳</div>
     <span data-i18n="loadingDiv">Cargando dividendos reales…</span>
   </div>
+
+  <!-- Rendimiento por activo -->
   <div class="card" id="divHoldingsCard" style="display:none">
-    <div class="sectionTitle" data-i18n="divHoldings">Holdings con dividendos</div>
+    <div class="sectionTitle" data-i18n="divHoldings">Rendimiento por activo</div>
     <div id="divHoldingsList"></div>
   </div>
+
+  <!-- Calendario anual interactivo -->
+  <div class="card" id="divCalendarCard" style="display:none">
+    <div class="sectionTitle" data-i18n="annualCalendar">Calendario anual</div>
+    <div class="div-cal-grid" id="divCalendar"></div>
+    <div id="divCalDetail" style="display:none" class="div-cal-detail">
+      <div class="div-cal-detail-hdr">
+        <span class="div-cal-detail-title" id="divCalDetailTitle">—</span>
+        <span class="div-cal-detail-total" id="divCalDetailAmt">—</span>
+      </div>
+      <div id="divCalDetailRows"></div>
+    </div>
+  </div>
+
+  <!-- Meta anual -->
+  <div class="card" id="divGoalCard" style="display:none">
+    <div class="div-goal-hdr">
+      <div class="sectionTitle" style="margin:0">Meta anual</div>
+      <button class="div-goal-edit" onclick="_editDivGoal()">Editar objetivo</button>
+    </div>
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-top:8px">
+      <span id="divGoalLabel" style="font-size:13px;font-weight:600;color:#142018">—</span>
+      <span id="divGoalPct" style="font-size:13px;font-weight:800;color:#15803d">0%</span>
+    </div>
+    <div class="div-goal-bar-wrap"><div class="div-goal-bar-fill" id="divGoalFill" style="width:0%"></div></div>
+    <div style="display:flex;justify-content:space-between;font-size:10px;color:#8fa090;font-weight:600;margin-bottom:4px">
+      <span id="divGoalRemains"></span>
+      <span id="divGoalDeadline"></span>
+    </div>
+    <div class="div-goal-cells">
+      <div class="div-goal-cell"><div class="dl">Al ritmo actual</div><div class="dn" id="divGoalRate">—</div></div>
+      <div class="div-goal-cell"><div class="dl">Si reinviertes</div><div class="dn" id="divGoalReinvest">—</div></div>
+      <div class="div-goal-cell"><div class="dl">Objetivo</div><div class="dn" id="divGoalTarget">—</div></div>
+    </div>
+  </div>
+
+  <!-- Ingresos mensuales -->
+  <div class="card" id="divChartCard" style="display:none">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px">
+      <div class="sectionTitle" style="margin:0">Ingresos mensuales</div>
+    </div>
+    <div class="div-yr-tabs" id="divYrTabs"></div>
+    <div style="position:relative;height:140px;margin-top:4px"><canvas id="divMonthlyChart"></canvas></div>
+  </div>
+
+  <!-- Future Value -->
+  <div class="card" id="divFVCard" style="display:none">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+      <div class="sectionTitle" style="margin:0">Future Value</div>
+      <button class="div-fv-set-btn" onclick="_openDivFVModal()">Set Values</button>
+    </div>
+    <div class="div-fv-hdr">
+      <div class="div-fv-big" id="divFVValue">—</div>
+      <div class="div-fv-sub" id="divFVLabel">en 10 años</div>
+    </div>
+    <div class="div-fv-chips" id="divFVChips">
+      <span class="div-fv-chip active" onclick="_setDivFVPeriod(10,this)">10 años</span>
+      <span class="div-fv-chip" onclick="_setDivFVPeriod(25,this)">25 años</span>
+      <span class="div-fv-chip" onclick="_setDivFVPeriod(40,this)">40 años</span>
+    </div>
+    <div style="position:relative;height:150px"><canvas id="divFVChart"></canvas></div>
+  </div>
+
+  <!-- FV Modal -->
+  <div id="divFVModal" style="display:none;position:fixed;inset:0;z-index:200;background:rgba(0,0,0,.45);display:flex;align-items:flex-end;justify-content:center" onclick="if(event.target===this)_closeDivFVModal()">
+    <div class="div-fv-modal">
+      <div class="div-fv-modal-title">Parámetros Future Value</div>
+      <div class="div-fv-field"><label>Crecimiento div. anual (%)</label><input id="divFVDgr" type="number" min="0" max="30" step="0.1" value="0" placeholder="0"></div>
+      <div class="div-fv-field"><label>Crecimiento portfolio anual (%)</label><input id="divFVSgr" type="number" min="0" max="30" step="0.1" value="7" placeholder="7"></div>
+      <div class="div-fv-field"><label>Aportación mensual (€)</label><input id="divFVAc" type="number" min="0" step="10" value="0" placeholder="0"></div>
+      <div class="div-fv-modal-btns">
+        <button class="div-fv-modal-cancel" onclick="_closeDivFVModal()">Cancelar</button>
+        <button class="div-fv-modal-save" onclick="_saveDivFVModal()">Aplicar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- DRIP -->
+  <div class="card" id="divDripCard" style="display:none">
+    <div class="sectionTitle">DRIP – Reinversión de dividendos</div>
+    <div class="div-drip-grid">
+      <div class="div-drip-cell base">
+        <div class="div-drip-lbl">Sin reinvertir</div>
+        <div class="div-drip-val" id="divDripBase">—</div>
+        <div class="div-drip-sub" id="divDripBaseSub">en 10 años</div>
+      </div>
+      <div class="div-drip-cell drip">
+        <div class="div-drip-lbl">Reinvirtiendo</div>
+        <div class="div-drip-val" id="divDripDrip">—</div>
+        <div class="div-drip-sub" id="divDripDripSub">en 10 años (+5%/año)</div>
+      </div>
+    </div>
+    <div class="div-drip-note" id="divDripNote"></div>
+  </div>
+
+  <!-- Próximos pagos -->
   <div class="card" id="divUpcomingCard" style="display:none">
     <div class="sectionTitle" data-i18n="upcoming">Próximos pagos</div>
     <div id="upcomingPayments"></div>
   </div>
+
+  <!-- Pagos recibidos -->
   <div class="card" id="divPastCard" style="display:none">
     <div class="sectionTitle" data-i18n="pastPayments">Pagos recibidos</div>
     <div id="pastPaymentsList"></div>
   </div>
-  <div class="card" id="divCalendarCard" style="display:none">
-    <div class="sectionTitle" data-i18n="annualCalendar">Calendario anual</div>
-    <div class="calGrid" id="divCalendar"></div>
-  </div>
+
+  <!-- Historial detallado -->
   <div class="card" id="divDetailCard" style="display:none">
     <div class="sectionTitle" data-i18n="divDetailTitle">Historial detallado</div>
     <div id="divAnnualChartWrap" style="display:none;margin-bottom:20px">
@@ -638,6 +941,9 @@ table.an-corr-mtx{border-collapse:separate;border-spacing:4px}
   <div class="card" id="divDetailLoadingCard" style="display:none;text-align:center;padding:18px;color:#8fa090;font-size:13px;font-weight:600">
     <span data-i18n="loadingDivDetail">Cargando historial…</span>
   </div>
+
+  <!-- Hidden compat canvas for alloc chart (used by existing JS) -->
+  <div id="divAllocCard" style="display:none"><canvas id="divAllocChart"></canvas></div>
 </div>
 
 <!-- ============ IA ============ -->
@@ -1678,7 +1984,7 @@ function reapplyAndRender(){
 }
 
 // ========== Analysis ==========
-function destroyAnalysisCharts(){Object.values(analysisCharts).forEach(c=>{try{c.destroy();}catch(_){}});analysisCharts={};}
+function destroyAnalysisCharts(){Object.values(analysisCharts).forEach(c=>{try{c.destroy();}catch(_){}});analysisCharts={};if(_anAllocChartInst){try{_anAllocChartInst.destroy();}catch(_){}}_anAllocChartInst=null;}
 function resetDividendDetailCache(){_divDetailCache=null;document.getElementById('divDetailCard').style.display='none';document.getElementById('divAnnualChartWrap').style.display='none';const tr=document.getElementById('divTrend');if(tr)tr.style.display='none';if(analysisCharts._divAlloc){try{analysisCharts._divAlloc.destroy();}catch(_){}analysisCharts._divAlloc=null;}}
 function computeHealthScore(){
   const total=assets.reduce((s,a)=>s+toDisplay(a.value,assetCcy(a)),0);if(!total)return{score:0,diversif:0,riesgo:0,rentab:0};
@@ -1863,6 +2169,146 @@ function _anRenderTreemap(){
     container.appendChild(cell);
   });
 }
+// ── Allocation Overview ──────────────────────────────────────────────────────
+let _anAllocChartInst = null;
+function _anAllocTab(tab) {
+  ['currency','country','type','sector'].forEach(t => {
+    const btn = document.getElementById('anAllocTab-' + t);
+    if (btn) btn.className = 'an-alloc-tab' + (t === tab ? ' an-alloc-tab-active' : '');
+  });
+  _anRenderAllocContent(tab);
+}
+function _anRenderAllocTabs() {
+  _anAllocTab('currency');
+}
+function _anRenderAllocContent(tab) {
+  const el = document.getElementById('anAllocContent');
+  if (!el) return;
+  const total = assets.reduce((s,a) => s + toDisplay(a.value, assetCcy(a)), 0);
+  if (!total) { el.innerHTML = ''; return; }
+  const COLORS = ['#4f8ef7','#2dc98a','#f5b731','#f05252','#7c5cbf','#f97316','#0ea5e9','#ec4899'];
+  let groups = {};
+  if (tab === 'currency') {
+    assets.forEach(a => { const c = assetCcy(a)||'EUR'; groups[c]=(groups[c]||0)+toDisplay(a.value,assetCcy(a)); });
+  } else if (tab === 'type') {
+    assets.forEach(a => { const c = assetCategory(a); groups[c]=(groups[c]||0)+toDisplay(a.value,assetCcy(a)); });
+  } else if (tab === 'country') {
+    const regionOf = a => {
+      const isin = (a.isin||'').toUpperCase();
+      if (isin.startsWith('ES')) return 'España';
+      if (isin.startsWith('US')) return 'USA';
+      if (isin.startsWith('IE')||isin.startsWith('LU')||isin.startsWith('DE')||isin.startsWith('NL')||isin.startsWith('FR')) return 'Europa/Int\'l';
+      return 'Internacional';
+    };
+    assets.forEach(a => { const r = regionOf(a); groups[r]=(groups[r]||0)+toDisplay(a.value,assetCcy(a)); });
+  } else if (tab === 'sector') {
+    const sectorOf = a => {
+      const n = (a.name||a.shortName||'').toLowerCase();
+      if (n.includes('gold')||n.includes('oro')||n.includes('physical')||n.includes('sgld')||n.includes('igln')) return 'Materias Primas';
+      if (n.includes('energy')||n.includes('energ')) return 'Energía';
+      if (n.includes('dividend')||n.includes('tdiv')||n.includes('aristocrat')||n.includes('high div')) return 'Dividendos';
+      if (n.includes('asia')||n.includes('pacific')||n.includes('japan')||n.includes('china')) return 'RV Asia/Pacífico';
+      if (n.includes('world')||n.includes('msci')||n.includes('global')||n.includes('emerg')) return 'RV Global';
+      if (n.includes('europe')||n.includes('stoxx')||n.includes('iberia')||n.includes('magallanes')) return 'RV Europa';
+      if (n.includes('value')||n.includes('patrimonio')||n.includes('capital')||n.includes('numantia')||n.includes('cobas')||n.includes('azvalor')||n.includes('horos')||n.includes('cinvest')) return 'RV Value';
+      return 'Otros';
+    };
+    assets.forEach(a => { const s = sectorOf(a); groups[s]=(groups[s]||0)+toDisplay(a.value,assetCcy(a)); });
+  }
+  const entries = Object.entries(groups).sort((a,b) => b[1]-a[1]);
+  const cols = entries.map((_,i) => COLORS[i%COLORS.length]);
+  const pcts = entries.map(([,v]) => Math.round(v/total*100));
+  if (_anAllocChartInst) { try { _anAllocChartInst.destroy(); } catch(_) {} _anAllocChartInst = null; }
+  const canvasId = 'anAllocDonut';
+  el.innerHTML = `<div style="display:flex;align-items:center;gap:16px">
+    <div style="width:110px;height:110px;flex-shrink:0"><canvas id="${canvasId}" width="110" height="110"></canvas></div>
+    <div style="display:flex;flex-direction:column;gap:6px;flex:1">
+      ${entries.map(([n,v],i)=>`<div class="legendItem"><div class="legendDot" style="background:${cols[i]}"></div><span style="flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${escapeHtml(n)}</span><span style="color:#8fa090;font-weight:700;margin-left:6px">${pcts[i]}%</span></div>`).join('')}
+    </div>
+  </div>${tab==='sector'?'<div style="margin-top:10px;font-size:11px;color:#8fa090">Clasificación estimada por nombre del activo</div>':''}`;
+  setTimeout(() => {
+    const cv = document.getElementById(canvasId);
+    if (!cv) return;
+    _anAllocChartInst = new Chart(cv.getContext('2d'), {
+      type: 'doughnut',
+      data: { datasets: [{ data: entries.map(([,v])=>v), backgroundColor: cols, borderWidth: 2, borderColor: '#fff' }] },
+      options: { cutout: '68%', responsive: false, plugins: { legend: { display: false }, tooltip: { callbacks: { label: c => ` ${entries[c.dataIndex][0]}: ${fe(c.raw)}` } } }, animation: { duration: 600 } }
+    });
+  }, 0);
+}
+
+// ── Costs & Fees ─────────────────────────────────────────────────────────────
+const AN_TER_MAP = {
+  'IE00BYX5NK04':0.12,'IE00BYX5P602':0.12,'IE00B4ND3602':0.15,'IE00B579F325':0.12,
+  'DE000A0F5UH1':0.10,'IE00BZ4BMM98':0.29,'IE00B9CQXS71':0.45,'NL0011683594':0.38,
+  'IE000QAZP7L2':0.17,'LU0084617165':0.80,'LU2145461757':0.80,
+  'ES0146309002':1.35,'ES0112611001':1.50,'ES0146311008':1.35,'LU1598719752':1.40,
+  'ES0173311103':1.35,'ES0159259011':1.35,'ES0174115057':1.35
+};
+function _anRenderCosts() {
+  const el = document.getElementById('anCostsContent');
+  if (!el) return;
+  const isEs = currentLang === 'es';
+  const rows = assets
+    .filter(a => a.quantity > 0)
+    .map(a => {
+      const ter = a.ter ?? AN_TER_MAP[a.isin] ?? null;
+      const val = toDisplay(a.value, assetCcy(a));
+      return { a, ter, val, annualCost: ter != null ? val * ter / 100 : null, cat: assetCategory(a) };
+    })
+    .filter(r => r.annualCost != null)
+    .sort((a, b) => b.annualCost - a.annualCost);
+  const noTer = assets.filter(a => a.quantity > 0 && (a.ter ?? AN_TER_MAP[a.isin]) == null);
+  const totalCost = rows.reduce((s,r) => s + r.annualCost, 0);
+  const totalVal = assets.reduce((s,a) => s + toDisplay(a.value,assetCcy(a)), 0);
+  const avgTer = totalVal > 0 ? totalCost / totalVal * 100 : 0;
+  if (!rows.length) { el.innerHTML = `<div style="font-size:12px;color:#8fa090;text-align:center;padding:8px 0">${isEs?'No hay datos de TER disponibles.':'No TER data available.'}</div>`; return; }
+  const maxCost = rows[0].annualCost || 1;
+  let html = `<div class="an-costs-chips">
+    <div class="an-costs-chip" style="background:#fef2f2"><div class="cc-lbl">Coste total</div><div class="cc-val" style="color:#f87171">${fe(totalCost)}</div></div>
+    <div class="an-costs-chip" style="background:#fefce8"><div class="cc-lbl">TER medio</div><div class="cc-val" style="color:#b45309">${avgTer.toFixed(2)}%</div></div>
+    <div class="an-costs-chip" style="background:#e6faf3"><div class="cc-lbl">Activos</div><div class="cc-val" style="color:#15803d">${rows.length}</div></div>
+  </div><div>`;
+  rows.forEach(r => {
+    const isEtf = r.cat==='ETFs'||r.cat==='ETC'||r.cat==='Oro';
+    const typeColor = isEtf?'#166534':'#0369a1', typeBg = isEtf?'#dcfce7':'#e0f2fe';
+    const barW = Math.min(100, r.annualCost / maxCost * 100);
+    const shortName = r.a.name.length>22 ? r.a.name.slice(0,20)+'…' : r.a.name;
+    html += `<div class="an-costs-row">
+      <div style="flex:1;min-width:0">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:3px">
+          <div style="display:flex;align-items:center;min-width:0;flex:1">
+            <span class="an-costs-badge" style="background:${typeBg};color:${typeColor}">${isEtf?'ETF':'FONDO'}</span>
+            <span class="an-costs-name">${escapeHtml(shortName)}</span>
+          </div>
+          <span class="an-costs-amt" style="flex-shrink:0;margin-left:8px">${r.ter}% · ${fe(r.annualCost)}/año</span>
+        </div>
+        <div class="an-ter-bar-track"><div class="an-ter-bar-fill" style="width:${barW}%"></div></div>
+      </div>
+    </div>`;
+  });
+  html += `</div>`;
+  if (noTer.length) {
+    html += `<div style="display:flex;align-items:center;gap:6px;padding:8px 10px;background:#f8faf9;border-radius:8px;border-left:3px solid #2dc98a;margin-top:10px">
+      <span style="font-size:11px">ℹ️</span>
+      <span style="font-size:10px;color:#6b7280;line-height:1.4">Las <strong style="color:#142018">acciones individuales</strong> no llevan TER (${noTer.map(a=>escapeHtml(a.name.split(' ')[0])).slice(0,3).join(', ')}${noTer.length>3?'…':''})</span>
+    </div>`;
+  }
+  html += `<div style="margin-top:12px">
+    <div style="display:flex;justify-content:space-between;margin-bottom:4px">
+      <span style="font-size:9px;font-weight:600;color:#8fa090">TER bajo</span>
+      <span style="font-size:9px;font-weight:600;color:#8fa090">TER alto</span>
+    </div>
+    <div style="height:4px;border-radius:3px;background:linear-gradient(to right,#2dc98a,#f5b731,#f05252)"></div>
+    <div style="display:flex;justify-content:space-between;margin-top:3px">
+      <span style="font-size:9px;color:#8fa090">0,05%</span>
+      <span style="font-size:9px;color:#f97316">0,80%</span>
+      <span style="font-size:9px;color:#f05252">2,0%</span>
+    </div>
+  </div>`;
+  el.innerHTML = html;
+}
+
 function renderAnalysisCharts(){
   destroyAnalysisCharts();
   // ─── Summary section ───
@@ -1879,12 +2325,16 @@ function renderAnalysisCharts(){
   const cats=Object.keys(catMap).sort((a,b)=>catMap[b]-catMap[a]),catColors={'Fondos':'#7c3aed','ETFs':'#1d6fa8','Oro':'#475569'},pieColors=cats.map(c=>catColors[c]||'#666'),piePcts=cats.map(c=>Math.round(catMap[c]/total*100));
   analysisCharts.p=new Chart(document.getElementById('distPie').getContext('2d'),{type:'doughnut',data:{labels:cats,datasets:[{data:cats.map(c=>catMap[c]),backgroundColor:pieColors,borderWidth:3,borderColor:'#fff'}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>` ${c.label}: ${fe(c.raw)} (${piePcts[c.dataIndex]}%)`}}}}});
   document.getElementById('distLegend').innerHTML=cats.map((c,i)=>`<div class="legendItem"><div class="legendDot" style="background:${pieColors[i]}"></div>${c} ${piePcts[i]}%</div>`).join('');
+  // ─── Allocation tabs ───
+  _anRenderAllocTabs();
   // ─── Distribution by broker ───
   _anRenderBroker();
   // ─── Performance by asset ───
   const top=[...assets].sort((a,b)=>b.gainPct-a.gainPct);
   document.getElementById('perfBarWrap').style.height=Math.max(200,top.length*24)+'px';
   analysisCharts.b=new Chart(document.getElementById('perfBar').getContext('2d'),{type:'bar',data:{labels:top.map(a=>a.name.length>14?a.name.slice(0,13)+'…':a.name),datasets:[{data:top.map(a=>a.gainPct),backgroundColor:top.map(a=>a.gainPct>=0?'rgba(34,197,94,.75)':'rgba(248,113,113,.75)'),borderRadius:4,borderSkipped:false}]},options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>` ${c.parsed.x>=0?'+':''}${c.parsed.x.toFixed(2)}%`}}},scales:{x:{grid:{color:'rgba(20,32,24,.05)'},border:{display:false},ticks:{color:'#8fa090',font:{size:10},callback:v=>v+'%'}},y:{grid:{display:false},border:{display:false},ticks:{color:'#4a5f4e',font:{size:10,weight:'600'}}}}}});
+  // ─── Costs & Fees ───
+  _anRenderCosts();
   // ─── Best / Worst performers ───
   _anRenderBestWorst();
   // ─── Treemap ───
@@ -1901,6 +2351,19 @@ function renderAnalysisCharts(){
   analysisCharts.v=new Chart(document.getElementById('vsWorldBar').getContext('2d'),{type:'bar',data:{labels:years,datasets:[{label:'Portfolio',data:portAnnual,backgroundColor:'rgba(21,128,61,.7)',borderRadius:4,borderSkipped:false},{label:'MSCI World',data:years.map(y=>MSCI_WORLD_ANNUAL[y]??null),backgroundColor:'rgba(59,130,246,.6)',borderRadius:4,borderSkipped:false}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{font:{size:11,weight:'600'},color:'#4a5f4e',usePointStyle:true,pointStyleWidth:8}},tooltip:{callbacks:{label:c=>` ${c.dataset.label}: ${c.parsed.y>=0?'+':''}${c.parsed.y.toFixed(1)}%`}}},scales:{x:{grid:{display:false},border:{display:false},ticks:{color:'#8fa090',font:{size:10}}},y:{grid:{color:'rgba(20,32,24,.05)'},border:{display:false},ticks:{color:'#8fa090',font:{size:10},callback:v=>v+'%'}}}}});
   const vsNote=document.getElementById('vsWorldNote');
   if(vsNote){vsNote.style.display=full?'none':'';if(!full)vsNote.textContent=currentLang==='es'?'Sin histórico real: comparativa portfolio no disponible.':'No real history: portfolio comparison unavailable.';}
+  // ─── vsWorld chips (avg returns) ───
+  const vsChips=document.getElementById('vsWorldChips');
+  if(vsChips){
+    const pairs=years.map((yr,i)=>({p:portAnnual[i],m:MSCI_WORLD_ANNUAL[yr]})).filter(x=>x.p!=null&&x.m!=null);
+    if(pairs.length){
+      const avgP=pairs.reduce((s,x)=>s+x.p,0)/pairs.length;
+      const avgM=pairs.reduce((s,x)=>s+x.m,0)/pairs.length;
+      const alpha=avgP-avgM;
+      vsChips.innerHTML=`<div style="background:#e6faf3;border:1px solid #b7f0d8;border-radius:8px;padding:6px 10px;flex:1"><div style="font-size:8px;font-weight:600;color:#8fa090;text-transform:uppercase;letter-spacing:.08em">Portfolio avg</div><div style="font-size:14px;font-weight:800;color:#15803d;margin-top:1px">${avgP>=0?'+':''}${avgP.toFixed(1)}%</div></div>
+      <div style="background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;padding:6px 10px;flex:1"><div style="font-size:8px;font-weight:600;color:#8fa090;text-transform:uppercase;letter-spacing:.08em">MSCI avg</div><div style="font-size:14px;font-weight:800;color:#3b82f6;margin-top:1px">${avgM>=0?'+':''}${avgM.toFixed(1)}%</div></div>
+      <div style="background:#f5f3ff;border:1px solid #ddd6fe;border-radius:8px;padding:6px 10px;flex:1"><div style="font-size:8px;font-weight:600;color:#8fa090;text-transform:uppercase;letter-spacing:.08em">Alpha</div><div style="font-size:14px;font-weight:800;color:#7c3aed;margin-top:1px">${alpha>=0?'+':''}${alpha.toFixed(1)}%</div></div>`;
+    }
+  }
   // ─── Coverage card ───
   const{ok,partial,missing}=counts(),isEs=currentLang==='es';
   const missList=assets.filter(a=>coverageStatus(a)==='MISSING').map(a=>a.name);
@@ -2017,6 +2480,15 @@ function _anRenderCorrelation(){
 let _divDataCache = null;
 const _DIV_CACHE_VER = 'v20260317d'; // bump on every deploy to bust stale frontend cache
 function _checkDivCacheVer(){if(sessionStorage.getItem('_divCacheVer')!==_DIV_CACHE_VER){_divDataCache=null;sessionStorage.setItem('_divCacheVer',_DIV_CACHE_VER);}}
+
+// FV global state
+let _divFVParams={dgr:0,sgr:7,ac:0,years:10};
+let _divFVChart=null;
+let _divFVTotalAnnual=0;
+let _divActiveCalMonth=new Date().getMonth();
+let _divCalMt=Array(12).fill(0); // current calendar month totals
+let _divItems=[]; // cached divItems for calendar detail
+
 async function renderDividends(){
   _checkDivCacheVer();
   // Show loading state
@@ -2027,6 +2499,9 @@ async function renderDividends(){
   document.getElementById('divUpcomingCard').style.display='none';
   document.getElementById('divPastCard').style.display='none';
   document.getElementById('divCalendarCard').style.display='none';
+  const _gc=document.getElementById('divGoalCard');if(_gc)_gc.style.display='none';
+  const _fc=document.getElementById('divFVCard');if(_fc)_fc.style.display='none';
+  const _dc=document.getElementById('divDripCard');if(_dc)_dc.style.display='none';
 
   if(!_divDataCache){
     try{
@@ -2050,7 +2525,6 @@ async function renderDividends(){
   // If no dividend data at all, show "no dividends" state and stop
   if(!_divDataCache||_divDataCache.length===0||!_divDataCache.some(d=>d.annualPerShare>0)){
     const isEs=currentLang==='es';
-    document.getElementById('divChartCard').style.display='';
     document.getElementById('divAnnual').textContent=fe(0);
     document.getElementById('divMonthly').textContent=fe(0);
     document.getElementById('divDaily').textContent=fe(0);
@@ -2085,6 +2559,7 @@ async function renderDividends(){
       const _yocPct=d.annualPerShare>0&&a.buyPrice>0?d.annualPerShare/a.buyPrice:(d.yieldOnCostPct||0);
       return{...a,divData:d,annualIncome,perPay,nextMonth:nextM,nextYear,payMonths:pm,yieldPct:_yPct,yieldOnCostPct:_yocPct};
     }).filter(Boolean);
+  _divItems=divItems;
 
   const totalAnnual=divItems.reduce((s,d)=>s+d.annualIncome,0);
   const totalPortfolio=assets.reduce((s,a)=>s+toDisplay(a.value,assetCcy(a)),0);
@@ -2109,27 +2584,18 @@ async function renderDividends(){
   });
   if(upcomingForNext.length&&upcomingForNext[0].nextMonth!=null){
     const nm=upcomingForNext[0].nextMonth,ny=upcomingForNext[0].nextYear;
-    const monthTotal=divItems.filter(d=>d.nextMonth===nm&&d.nextYear===ny).reduce((s,d)=>s+d.perPay,0);
-    document.getElementById('divNextPayRow').style.display='flex';
+    const sameMonth=divItems.filter(d=>d.nextMonth===nm&&d.nextYear===ny);
+    const monthTotal=sameMonth.reduce((s,d)=>s+d.perPay,0);
+    const firstName=sameMonth.length===1?escapeHtml(sameMonth[0].divData?.symbol||sameMonth[0].name||''):`${sameMonth.length} activos`;
+    document.getElementById('divNextPayRow').style.display='';
     document.getElementById('divNextPay').textContent=`~${months()[nm]} ${ny} · ${fe(monthTotal)}`;
+    document.getElementById('divNextPayName').textContent=firstName;
   }
 
-  // Holdings list — click scrolls to historial detallado
+  // ── Holdings table v2 ──────────────────────────────────────────────────────
   if(divItems.length){
     document.getElementById('divHoldingsCard').style.display='';
-    document.getElementById('divHoldingsList').innerHTML=[...divItems]
-      .sort((a,b)=>(b.annualIncome||0)-(a.annualIncome||0))
-      .map(d=>`<div class="divHoldingRow" onclick="scrollToDivDetail('${d.isin}')" title="${t('verDetalle')}">
-        <div class="icon ${assetType(d)} " style="width:36px;height:36px;border-radius:10px;font-size:11px">${iconInitials(d)}</div>
-        <div class="divHoldingLeft">
-          <div class="divHoldingName">${escapeHtml(d.name)}</div>
-          <div class="divHoldingMeta">${fn(d.quantity)} ${t('shares').toLowerCase()} · ${escapeHtml(d.divData.symbol||'')}</div>
-        </div>
-        <div class="divHoldingRight">
-          <div class="divHoldingAmt">${fe(d.annualIncome)}</div>
-          <div class="divHoldingYield">${d.yieldPct!=null?((d.yieldPct*100).toFixed(2)+'% yield'):'—'}</div>
-        </div>
-      </div>`).join('');
+    _renderDivHoldings(divItems);
   }
 
   // Upcoming payments — with estimated ex-date and payment date
@@ -2198,6 +2664,10 @@ async function renderDividends(){
         </div>
       </div>`;
     }).join('')+`<div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0 2px;margin-top:6px;border-top:1px solid rgba(20,32,24,.06)"><span style="font-size:11px;font-weight:700;color:#8fa090;text-transform:uppercase;letter-spacing:.07em">${currentLang==='es'?'Total recibido':'Total received'}</span><span style="font-size:15px;font-weight:800;color:#15803d">${fe(pastTotal)}</span></div>`;
+    // Update hero total received cell
+    const _ct=document.getElementById('divCalTotal');if(_ct)_ct.textContent=fe(pastTotal);
+    const _tr=document.getElementById('divTotalReceived');
+    if(_tr){_tr.textContent='Recibido: '+fe(pastTotal);_tr.style.display='';}
   }
 
   // Monthly totals — payMonths and paySchedule both 100% from live API data
@@ -2212,73 +2682,394 @@ async function renderDividends(){
       mt[m]+=perShare*d.quantity;
     });
   });
+  _divCalMt=mt;
 
-  // Monthly bar chart
+  // ── Ingresos mensuales chart with year tabs ───────────────────────────────
   if(divItems.length){
     document.getElementById('divChartCard').style.display='';
-    const maxV=Math.max(...mt,0.01);
-    if(analysisCharts._div){try{analysisCharts._div.destroy();}catch(_){}}
-    analysisCharts._div=new Chart(document.getElementById('divMonthlyChart').getContext('2d'),{
-      type:'bar',
-      data:{
-        labels:months().map(m=>m.slice(0,3)),
-        datasets:[{
-          data:mt,
-          backgroundColor:mt.map((v,i)=>i===cm?(v>0?'rgba(21,128,61,.85)':'rgba(21,128,61,.2)'):(v>0?'rgba(234,179,8,.85)':'rgba(234,179,8,.15)')),
-          borderRadius:5,
-          borderSkipped:false,
-        }]
-      },
-      options:{
-        responsive:true,maintainAspectRatio:false,
-        plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>fe(c.parsed.y)}}},
-        scales:{
-          x:{grid:{display:false},border:{display:false},ticks:{color:'#8fa090',font:{size:10,weight:'600'}}},
-          y:{grid:{color:'rgba(20,32,24,.05)'},border:{display:false},ticks:{color:'#8fa090',font:{size:10},callback:v=>v>0?fe(Math.round(v)):''}}
-        }
-      }
-    });
+    _setDivYear(today.getFullYear(), mt);
   }
 
-  // Asset allocation donut
+  // ── Calendar ──────────────────────────────────────────────────────────────
+  document.getElementById('divCalendarCard').style.display='';
+  _renderDivCalInteractive(mt, divItems);
+
+  // ── Meta anual ───────────────────────────────────────────────────────────
   if(divItems.length){
-    document.getElementById('divAllocCard').style.display='';
+    const _gc2=document.getElementById('divGoalCard');if(_gc2)_gc2.style.display='';
+    _renderDivGoal(totalAnnual);
+  }
+
+  // ── DRIP ─────────────────────────────────────────────────────────────────
+  if(divItems.length){
+    const _dc2=document.getElementById('divDripCard');if(_dc2)_dc2.style.display='';
+    _renderDivDrip(totalAnnual);
+  }
+
+  // ── Future Value ──────────────────────────────────────────────────────────
+  if(divItems.length){
+    const _fc2=document.getElementById('divFVCard');if(_fc2)_fc2.style.display='';
+    _divFVTotalAnnual=totalAnnual;
+    _initDivFV(totalAnnual);
+  }
+
+  // Asset allocation donut (hidden compat canvas, still build chart for other references)
+  if(divItems.length){
     const allocLabels=divItems.map(d=>d.divData?.symbol||d.name);
     const allocData=divItems.map(d=>d.annualIncome||0);
     const _allocPalette=['#3b82f6','#f97316','#22c55e','#ef4444','#a855f7','#eab308','#06b6d4','#ec4899','#14b8a6','#f43f5e','#8b5cf6','#fb923c'];
     const allocColors=allocData.map((_,i)=>_allocPalette[i%_allocPalette.length]);
     if(analysisCharts._divAlloc){try{analysisCharts._divAlloc.destroy();}catch(_){}}
-    analysisCharts._divAlloc=new Chart(document.getElementById('divAllocChart').getContext('2d'),{
+    const _ac=document.getElementById('divAllocChart');
+    if(_ac)analysisCharts._divAlloc=new Chart(_ac.getContext('2d'),{
       type:'doughnut',
-      data:{
-        labels:allocLabels,
-        datasets:[{data:allocData,backgroundColor:allocColors,borderWidth:2,borderColor:'#fff'}]
-      },
-      options:{
-        responsive:true,maintainAspectRatio:false,
-        cutout:'60%',
-        plugins:{
-          legend:{display:true,position:'right',labels:{color:'#374151',font:{size:11,weight:'600'},padding:10,boxWidth:12}},
-          tooltip:{callbacks:{label:c=>`${c.label}: ${fe(c.parsed)}`}}
-        }
-      }
+      data:{labels:allocLabels,datasets:[{data:allocData,backgroundColor:allocColors,borderWidth:2,borderColor:'#fff'}]},
+      options:{responsive:true,maintainAspectRatio:false,cutout:'60%',plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>`${c.label}: ${fe(c.parsed)}`}}}}
     });
   }
 
-  // Calendar grid
-  document.getElementById('divCalendarCard').style.display='';
-  document.getElementById('divCalendar').innerHTML=months().map((m,i)=>{
-    const a=mt[i],h=a>0.5;
-    return`<div class="calCell${h?' hasPay':''}${i===cm?' curMonth':''}"><div class="cm">${m}</div><div class="ca">${h?fe(a):'—'}</div></div>`;
-  }).join('');
-
   // Load detailed history from Digrin for all ETF-type assets — NOT just those with
   // annualPerShare>0 from EODHD/Yahoo. This is the authoritative source for the calendar.
-  // Rationale: ISPA (EXW1.DE) EODHD can return 0/wrong payMonths; Digrin always has the
-  // real ex-dates. By including all ETFs we guarantee JAN/APR/JUL/OCT (ISPA) are covered.
   const _etfIsins = assets.filter(a => a.mapping?.type === 'etf').map(a => a.isin);
   const _detailIsins = [...new Set([...divItems.map(d => d.isin), ..._etfIsins])];
   loadDividendDetail(_detailIsins);
+}
+
+// ── Rendimiento por activo — compact table with sparkline ────────────────────
+function _renderDivHoldings(divItems){
+  const palette=['#3b82f6','#f97316','#22c55e','#ef4444','#a855f7','#eab308','#06b6d4','#ec4899'];
+  const sorted=[...divItems].sort((a,b)=>(b.annualIncome||0)-(a.annualIncome||0));
+  const wrap=document.getElementById('divHoldingsList');
+  wrap.innerHTML=`<table class="div-tbl" style="width:100%">
+    <thead><tr>
+      <th style="width:38%">Activo</th>
+      <th style="width:16%">Trimestral</th>
+      <th style="width:22%">Yield / YoC</th>
+      <th style="width:24%">Anual</th>
+    </tr></thead>
+    <tbody id="divHoldingsTbody"></tbody>
+  </table>`;
+  const tbody=document.getElementById('divHoldingsTbody');
+  tbody.innerHTML=sorted.map((d,i)=>{
+    const color=palette[i%palette.length];
+    const yieldPct=d.yieldPct!=null?(d.yieldPct*100).toFixed(1)+'%':'—';
+    const yocPct=d.yieldOnCostPct!=null?(d.yieldOnCostPct*100).toFixed(1)+'%':'—';
+    const sparkId=`div-spark-${d.isin.replace(/[^a-z0-9]/gi,'_')}`;
+    return`<tr onclick="scrollToDivDetail('${d.isin}')">
+      <td>
+        <div style="display:flex;align-items:center;gap:8px">
+          <div class="icon ${assetType(d)}" style="width:28px;height:28px;border-radius:8px;font-size:9px;flex-shrink:0">${iconInitials(d)}</div>
+          <div>
+            <div class="div-tbl-name">${escapeHtml(d.divData?.symbol||d.name)}</div>
+            <div class="div-tbl-meta">${fn(d.quantity)} acc.</div>
+          </div>
+        </div>
+      </td>
+      <td><canvas id="${sparkId}" class="div-spark-wrap" width="54" height="28"></canvas></td>
+      <td>
+        <div class="div-tbl-yield">${yieldPct}</div>
+        <div class="div-tbl-yoc">YoC ${yocPct}</div>
+      </td>
+      <td>
+        <div class="div-tbl-amt">${fe(d.annualIncome)}</div>
+        <div class="div-tbl-yoc">${fe(d.annualIncome/12)}/mes</div>
+      </td>
+    </tr>`;
+  }).join('');
+  // Draw sparklines after DOM insert
+  requestAnimationFrame(()=>{
+    sorted.forEach((d,i)=>{
+      const color=palette[i%palette.length];
+      const sparkId=`div-spark-${d.isin.replace(/[^a-z0-9]/gi,'_')}`;
+      const cv=document.getElementById(sparkId);
+      if(!cv)return;
+      // Build quarterly data from detail cache or estimate from annual
+      let qData=[0,0,0,0];
+      if(_divDetailCache){
+        const r=_divDetailCache.find(x=>x.isin===d.isin);
+        if(r&&r.payments&&r.payments.length){
+          const cut=new Date();cut.setFullYear(cut.getFullYear()-1);
+          const cutS=cut.toISOString().slice(0,10);
+          r.payments.filter(p=>p.exDate>=cutS).forEach(p=>{
+            const mo=new Date(p.exDate+'T12:00:00Z').getMonth();
+            const qi=Math.floor(mo/3);
+            qData[qi]+=(p.amountEur??p.amount??0)*(r.quantity||d.quantity||0);
+          });
+        }
+      }
+      if(qData.every(v=>v===0)){
+        // Fallback: equal split
+        const q=d.annualIncome/4;
+        qData=[q,q,q,q];
+      }
+      const max=Math.max(...qData,0.001);
+      const ctx=cv.getContext('2d');
+      const W=cv.width,H=cv.height,bw=9,gap=3;
+      ctx.clearRect(0,0,W,H);
+      qData.forEach((v,qi)=>{
+        const bh=Math.max(2,Math.round((v/max)*(H-4)));
+        const x=qi*(bw+gap)+2;
+        ctx.fillStyle=color+'cc';
+        ctx.roundRect(x,H-bh,bw,bh,2);
+        ctx.fill();
+      });
+    });
+  });
+}
+
+// ── Interactive annual calendar ───────────────────────────────────────────────
+function _renderDivCalInteractive(mt, divItems){
+  const cm=new Date().getMonth();
+  const cal=document.getElementById('divCalendar');
+  if(!cal)return;
+  cal.innerHTML=months().map((m,i)=>{
+    const a=mt[i],h=a>0.5;
+    const isActive=i===_divActiveCalMonth;
+    return`<div class="div-cal-cell${h?' hasPay':''}${i===cm?' curMonth':''}${isActive?' active-cal':''}" onclick="_divCalClick(${i})" data-mi="${i}">
+      <div class="cm">${m.slice(0,3)}</div>
+      <div class="ca">${h?fe(a):'—'}</div>
+    </div>`;
+  }).join('');
+  _divCalShowDetail(_divActiveCalMonth, mt, divItems);
+}
+
+function _divCalClick(mi){
+  _divActiveCalMonth=mi;
+  const mt=_divCalMt;
+  // Update active state
+  document.querySelectorAll('#divCalendar .div-cal-cell').forEach(c=>{
+    const i=parseInt(c.dataset.mi);
+    c.classList.toggle('active-cal',i===mi);
+  });
+  _divCalShowDetail(mi, mt, _divItems);
+}
+
+function _divCalShowDetail(mi, mt, divItems){
+  const detail=document.getElementById('divCalDetail');
+  const titleEl=document.getElementById('divCalDetailTitle');
+  const amtEl=document.getElementById('divCalDetailAmt');
+  const rowsEl=document.getElementById('divCalDetailRows');
+  if(!detail||!titleEl||!amtEl||!rowsEl)return;
+  const total=mt[mi];
+  if(!total||total<0.01){
+    detail.style.display='none';
+    return;
+  }
+  detail.style.display='';
+  titleEl.textContent=months()[mi];
+  amtEl.textContent=fe(total);
+  // Per-asset breakdown for this month
+  const rows=divItems.filter(d=>{
+    const pm=d.divData.payMonths||[];
+    return pm.includes(mi);
+  }).map(d=>{
+    const pm=d.divData.payMonths||[];
+    const ps=d.divData.paySchedule||[];
+    const perShare=ps[mi]>0?ps[mi]:d.divData.annualPerShare/(pm.length||1);
+    const amt=perShare*d.quantity;
+    return{name:d.divData?.symbol||d.name,amt};
+  }).sort((a,b)=>b.amt-a.amt);
+  rowsEl.innerHTML=rows.map(r=>`<div class="div-cal-row">
+    <span class="div-cal-row-name">${escapeHtml(r.name)}</span>
+    <span class="div-cal-row-amt">${fe(r.amt)}</span>
+  </div>`).join('');
+}
+
+// ── Meta anual ────────────────────────────────────────────────────────────────
+function _renderDivGoal(totalAnnual){
+  const defaultGoal=Math.ceil(totalAnnual/500)*500*2||1000;
+  const saved=localStorage.getItem('div_goal_target');
+  const target=saved?parseFloat(saved):defaultGoal;
+  const pct=Math.min(100,totalAnnual>0?Math.round(totalAnnual/target*100):0);
+  const remains=Math.max(0,target-totalAnnual);
+  const today=new Date();
+  const daysLeft=Math.round((new Date(today.getFullYear(),11,31)-today)/(1000*60*60*24));
+  document.getElementById('divGoalLabel').textContent=`${fe(totalAnnual)} de ${fe(target)}`;
+  document.getElementById('divGoalPct').textContent=pct+'%';
+  document.getElementById('divGoalFill').style.width=pct+'%';
+  document.getElementById('divGoalRemains').textContent=remains>0?`Faltan ${fe(remains)}`:'Meta alcanzada!';
+  document.getElementById('divGoalDeadline').textContent=`${daysLeft} días para fin de año`;
+  const yrsAtRate=remains>0&&totalAnnual>0?(remains/totalAnnual).toFixed(1)+' años':'—';
+  document.getElementById('divGoalRate').textContent=yrsAtRate;
+  // With DRIP reinvestment estimate
+  const drip10=totalAnnual*(((Math.pow(1.05,10)-1)/0.05));
+  document.getElementById('divGoalReinvest').textContent=fe(drip10);
+  document.getElementById('divGoalTarget').textContent=fe(target);
+}
+
+function _editDivGoal(){
+  const saved=localStorage.getItem('div_goal_target');
+  const cur=saved?parseFloat(saved):'';
+  const val=prompt('Objetivo de dividendos anuales (€):',cur||'');
+  if(val===null)return;
+  const n=parseFloat(val);
+  if(!isNaN(n)&&n>0){
+    localStorage.setItem('div_goal_target',n.toString());
+    _renderDivGoal(_divFVTotalAnnual);
+  }
+}
+
+// ── DRIP comparison ───────────────────────────────────────────────────────────
+function _renderDivDrip(totalAnnual){
+  const years=10,rate=0.05;
+  const simple=totalAnnual*years;
+  const drip=totalAnnual*(((Math.pow(1+rate,years)-1)/rate));
+  const gain=drip-simple;
+  document.getElementById('divDripBase').textContent=fe(simple);
+  document.getElementById('divDripDrip').textContent=fe(drip);
+  document.getElementById('divDripBaseSub').textContent=`en ${years} años (acumulado)`;
+  document.getElementById('divDripDripSub').textContent=`en ${years} años (+${(rate*100).toFixed(0)}%/año)`;
+  document.getElementById('divDripNote').textContent=`Reinvirtiendo los dividendos al ${(rate*100).toFixed(0)}% anual obtendrías ${fe(gain)} más en ${years} años.`;
+}
+
+// ── Future Value ──────────────────────────────────────────────────────────────
+function _initDivFV(totalAnnual){
+  _divFVTotalAnnual=totalAnnual;
+  // Restore modal input values
+  const dgrEl=document.getElementById('divFVDgr');
+  const sgrEl=document.getElementById('divFVSgr');
+  const acEl=document.getElementById('divFVAc');
+  if(dgrEl)dgrEl.value=_divFVParams.dgr;
+  if(sgrEl)sgrEl.value=_divFVParams.sgr;
+  if(acEl)acEl.value=_divFVParams.ac;
+  _calcAndRenderFV();
+}
+
+function _calcAndRenderFV(){
+  const totalAnnual=_divFVTotalAnnual;
+  const years=_divFVParams.years;
+  const sgr=_divFVParams.sgr/100;
+  const dgr=_divFVParams.dgr/100;
+  const ac=_divFVParams.ac*12; // annual contributions
+  const totalPortfolio=assets.reduce((s,a)=>s+toDisplay(a.value,assetCcy(a)),0);
+  const yieldRate=totalPortfolio>0?totalAnnual/totalPortfolio:0.04;
+  // Year-by-year projection
+  const labels=[],divData=[],portData=[];
+  let port=totalPortfolio;
+  let annualDiv=totalAnnual;
+  for(let y=1;y<=years;y++){
+    port=port*(1+sgr)+ac+annualDiv; // reinvest dividends + contributions + portfolio growth
+    annualDiv=port*yieldRate*(1+dgr); // dividends grow with portfolio and dgr
+    labels.push(new Date().getFullYear()+y);
+    divData.push(Math.round(annualDiv*100)/100);
+    portData.push(Math.round(port*100)/100);
+  }
+  const finalDiv=divData[divData.length-1]||0;
+  const lbl=`en ${years} año${years===1?'':'s'}`;
+  document.getElementById('divFVValue').textContent=fe(finalDiv);
+  document.getElementById('divFVLabel').textContent=lbl+'/año en dividendos';
+  // Chart
+  const canvas=document.getElementById('divFVChart');
+  if(!canvas)return;
+  if(_divFVChart){try{_divFVChart.destroy();}catch(_){}}
+  _divFVChart=new Chart(canvas.getContext('2d'),{
+    type:'bar',
+    data:{
+      labels,
+      datasets:[
+        {label:'Dividendo anual',data:divData,backgroundColor:'rgba(59,130,246,.7)',borderRadius:4,borderSkipped:false,order:2},
+        {label:'Portfolio',data:portData,type:'line',borderColor:'rgba(34,197,94,.8)',backgroundColor:'transparent',borderWidth:2,pointRadius:0,order:1,yAxisID:'yPort'}
+      ]
+    },
+    options:{
+      responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>c.dataset.label+': '+fe(c.parsed.y)}}},
+      scales:{
+        x:{grid:{display:false},border:{display:false},ticks:{color:'#8fa090',font:{size:9,weight:'600'},maxTicksLimit:8}},
+        y:{grid:{color:'rgba(30,58,95,.06)'},border:{display:false},ticks:{color:'#8fa090',font:{size:9},callback:v=>v>0?fe(Math.round(v)):''}},
+        yPort:{display:false,position:'right'}
+      }
+    }
+  });
+}
+
+function _setDivFVPeriod(years,btn){
+  _divFVParams.years=years;
+  document.querySelectorAll('.div-fv-chip').forEach(c=>c.classList.remove('active'));
+  if(btn)btn.classList.add('active');
+  _calcAndRenderFV();
+}
+
+function _openDivFVModal(){
+  const m=document.getElementById('divFVModal');
+  if(m){m.style.display='flex';}
+}
+function _closeDivFVModal(){
+  const m=document.getElementById('divFVModal');
+  if(m){m.style.display='none';}
+}
+function _saveDivFVModal(){
+  const dgr=parseFloat(document.getElementById('divFVDgr').value)||0;
+  const sgr=parseFloat(document.getElementById('divFVSgr').value)||7;
+  const ac=parseFloat(document.getElementById('divFVAc').value)||0;
+  _divFVParams={..._divFVParams,dgr,sgr,ac};
+  _closeDivFVModal();
+  _calcAndRenderFV();
+}
+
+// ── Monthly chart with year tabs ──────────────────────────────────────────────
+function _setDivYear(year, fallbackMt){
+  const cm=new Date().getMonth();
+  const curYear=new Date().getFullYear();
+  // Build year tabs: current year + up to 3 past years available in detail cache
+  const availYears=new Set([curYear]);
+  if(_divDetailCache){
+    for(const r of _divDetailCache){
+      for(const p of(r.payments||[])){
+        if(p.exDate)availYears.add(new Date(p.exDate+'T12:00:00Z').getFullYear());
+      }
+    }
+  }
+  const yearList=[...availYears].sort((a,b)=>b-a).slice(0,4).reverse();
+  // Render tabs
+  const tabWrap=document.getElementById('divYrTabs');
+  if(tabWrap){
+    tabWrap.innerHTML=yearList.map(y=>`<span class="div-yr-tab${y===year?' active':''}" onclick="_setDivYear(${y})">${y}</span>`).join('');
+  }
+  // Build monthly data for selected year
+  let mt=Array(12).fill(0);
+  if(year===curYear&&(!_divDetailCache||(fallbackMt&&fallbackMt.some(v=>v>0)))){
+    mt=fallbackMt||_divCalMt||Array(12).fill(0);
+  }
+  if(_divDetailCache){
+    const yrMt=Array(12).fill(0);
+    let hasYrData=false;
+    for(const r of _divDetailCache){
+      const qty=r.quantity||assets.find(a=>a.isin===r.isin)?.quantity||0;
+      if(!qty)continue;
+      for(const p of(r.payments||[])){
+        if(!p.exDate)continue;
+        const pDate=new Date(p.exDate+'T12:00:00Z');
+        if(pDate.getFullYear()===year){
+          yrMt[pDate.getMonth()]+=(p.amountEur??p.amount??0)*qty;
+          hasYrData=true;
+        }
+      }
+    }
+    if(hasYrData)mt=yrMt;
+  }
+  // Render chart
+  if(analysisCharts._div){try{analysisCharts._div.destroy();}catch(_){}}
+  analysisCharts._div=new Chart(document.getElementById('divMonthlyChart').getContext('2d'),{
+    type:'bar',
+    data:{
+      labels:months().map(m=>m.slice(0,3)),
+      datasets:[{
+        data:mt,
+        backgroundColor:mt.map((v,i)=>(year===curYear&&i===cm)?(v>0?'rgba(21,128,61,.85)':'rgba(21,128,61,.2)'):(v>0?'rgba(234,179,8,.85)':'rgba(234,179,8,.15)')),
+        borderRadius:5,
+        borderSkipped:false,
+      }]
+    },
+    options:{
+      responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>fe(c.parsed.y)}}},
+      scales:{
+        x:{grid:{display:false},border:{display:false},ticks:{color:'#8fa090',font:{size:10,weight:'600'}}},
+        y:{grid:{color:'rgba(20,32,24,.05)'},border:{display:false},ticks:{color:'#8fa090',font:{size:10},callback:v=>v>0?fe(Math.round(v)):''}}
+      }
+    }
+  });
 }
 
 // ── Dividend detail history (Digrin / StockAnalysis) ─────────────────────────
@@ -2367,16 +3158,20 @@ async function loadDividendDetail(isins){
       const pct=((last12-prev12)/prev12)*100;
       const up=pct>=0;
       el.style.display='';
-      el.style.background=up?'rgba(255,255,255,.12)':'rgba(255,255,255,.12)';
-      el.style.color='rgba(239,249,242,.9)';
       el.textContent=(up?'↑ ':'↓ ')+Math.abs(pct).toFixed(1)+'% vs '+(currentYear-1);
     } else {
       // New dividend income — no prior year to compare
       el.style.display='';
-      el.style.background='rgba(255,255,255,.12)';
-      el.style.color='rgba(239,249,242,.9)';
       el.textContent='↑ '+(currentLang==='es'?'Nuevo':'New');
     }
+  }
+
+  // ── Refresh holdings sparklines now that detail cache is available ─────────
+  if(_divItems&&_divItems.length)_renderDivHoldings(_divItems);
+
+  // ── Refresh year tabs with new detail data ─────────────────────────────────
+  if(document.getElementById('divChartCard').style.display!=='none'){
+    _setDivYear(new Date().getFullYear(), _divCalMt);
   }
 
   // ── Historial por ETF ─────────────────────────────────────────────────────
@@ -2476,16 +3271,16 @@ function updateCalendarFromDetail(){
   }
 
   if(!hasData)return;
-  const _cm=new Date().getMonth();
-  document.getElementById('divCalendar').innerHTML=months().map((m,i)=>{
-    const a=mt[i],h=a>0.5;
-    return`<div class="calCell${h?' hasPay':''}${i===_cm?' curMonth':''}"><div class="cm">${m}</div><div class="ca">${h?fe(a):'—'}</div></div>`;
-  }).join('');
-  if(analysisCharts._div){
-    analysisCharts._div.data.datasets[0].data=mt;
-    analysisCharts._div.data.datasets[0].backgroundColor=mt.map((v,i)=>i===_cm?(v>0?'rgba(21,128,61,.85)':'rgba(21,128,61,.2)'):(v>0?'rgba(234,179,8,.85)':'rgba(234,179,8,.15)'));
-    analysisCharts._div.update('none');
+  _divCalMt=mt;
+  // Re-render interactive calendar with refined data
+  _renderDivCalInteractive(mt, _divItems);
+  // Also update monthly chart
+  if(document.getElementById('divChartCard').style.display!=='none'){
+    _setDivYear(new Date().getFullYear(), mt);
   }
+  // Update goal with refined annual
+  const refinedAnnual=mt.reduce((s,v)=>s+v,0);
+  if(refinedAnnual>0)_renderDivGoal(refinedAnnual);
 }
 
 // ========== IA ==========
