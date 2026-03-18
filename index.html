@@ -2385,14 +2385,14 @@ function _anRenderCorrelation(){
   const el=document.getElementById('anCorrContent');
   if(!el)return;
   const isEs=currentLang==='es';
-  const pool=assets.filter(a=>a.hasRealHistory&&a.history?.length>=30).slice(0,6);
+  const pool=assets.filter(a=>a.history?.length>=5).slice(0,6);
   if(pool.length<2){
     el.innerHTML=`<div style="padding:14px 16px;font-size:11px;color:#8fa090;text-align:center">${isEs?'Se necesitan ≥2 activos con histórico para calcular correlaciones.':'Need ≥2 assets with history to compute correlations.'}</div>`;
     return;
   }
   const IC=['#e63946','#4f8ef7','#7c5cbf','#f5b731','#2dc98a','#0ea5e9'];
   function dailyRet(hist){const m={};for(let i=1;i<hist.length;i++){const p=hist[i-1].close,c=hist[i].close;if(p>0)m[hist[i].date]=(c-p)/p;}return m;}
-  function pearson(mA,mB){const d=Object.keys(mA).filter(k=>mB[k]!==undefined);if(d.length<20)return null;const xs=d.map(k=>mA[k]),ys=d.map(k=>mB[k]),n=d.length;const mx=xs.reduce((s,v)=>s+v,0)/n,my=ys.reduce((s,v)=>s+v,0)/n;let num=0,dx2=0,dy2=0;for(let i=0;i<n;i++){const dx=xs[i]-mx,dy=ys[i]-my;num+=dx*dy;dx2+=dx*dx;dy2+=dy*dy;}const dn=Math.sqrt(dx2*dy2);return dn===0?null:Math.max(-1,Math.min(1,num/dn));}
+  function pearson(mA,mB){const d=Object.keys(mA).filter(k=>mB[k]!==undefined);if(d.length<4)return null;const xs=d.map(k=>mA[k]),ys=d.map(k=>mB[k]),n=d.length;const mx=xs.reduce((s,v)=>s+v,0)/n,my=ys.reduce((s,v)=>s+v,0)/n;let num=0,dx2=0,dy2=0;for(let i=0;i<n;i++){const dx=xs[i]-mx,dy=ys[i]-my;num+=dx*dy;dx2+=dx*dx;dy2+=dy*dy;}const dn=Math.sqrt(dx2*dy2);return dn===0?null:Math.max(-1,Math.min(1,num/dn));}
   const retMaps=pool.map(a=>dailyRet(a.history));
   const n=pool.length;
   const corr=Array.from({length:n},(_,i)=>Array.from({length:n},(_,j)=>i===j?1:pearson(retMaps[i],retMaps[j])));
