@@ -529,8 +529,188 @@ table.an-corr-mtx{border-collapse:separate;border-spacing:4px}
 .div-drip-cell.drip .div-drip-val{color:#15803d}
 .div-drip-sub{font-size:10px;color:#8fa090;font-weight:500}
 .div-drip-note{font-size:11px;color:#8fa090;text-align:center;margin-top:10px;line-height:1.5}
-/* === IA === */
-.iaHeader{background:linear-gradient(160deg,#2d1a4a 0%,#1a0f2a 100%);color:#f5f0fb}.iaInsightCard{background:#faf8fd;border:1px solid rgba(90,30,140,.08);border-radius:18px;padding:14px;margin-bottom:10px}.iaInsightCard .icat{font-size:10px;text-transform:uppercase;letter-spacing:.1em;font-weight:700;color:#7c5fa8;margin-bottom:6px}.iaInsightCard .itxt{font-size:13px;line-height:1.6;color:#2d1a4a;font-weight:500}.iaTag{display:inline-block;padding:3px 8px;border-radius:6px;font-size:10px;font-weight:700;margin-top:8px}.iaTag.warn{background:rgba(245,158,11,.12);color:#92400e}.iaTag.good{background:rgba(22,163,74,.1);color:#166534}.iaTag.info{background:rgba(90,30,140,.08);color:#5a1e8c}.iaStar{font-size:22px;margin-bottom:6px}
+/* === IA v2 === */
+#screen-ia{--ia-bg:#f0f5f2;--ia-surface:#fff;--ia-text:#1a2e22;--ia-muted:#8a9e93;--ia-green:#2dc98a;--ia-green2:#1aab70;--ia-dark:#0e1f15;--ia-dark2:#193226;--ia-red:#f05252;--ia-yellow:#f5b731;--ia-blue:#4f8ef7;--ia-purple:#7c5cbf;--ia-r:18px;--ia-shadow:0 2px 20px rgba(0,0,0,.07)}
+#screen-ia .ia-page-header{padding:14px 0 18px}
+#screen-ia .ia-page-header h1{font-size:2rem;font-weight:800;letter-spacing:-.04em;line-height:1.1;color:var(--ia-text)}
+#screen-ia .ia-page-header p{font-size:.78rem;color:var(--ia-muted);margin-top:4px}
+#screen-ia .ia-scroll{display:flex;flex-direction:column;gap:12px;padding-bottom:4px}
+#screen-ia .vera-strip{display:flex;align-items:center;gap:14px;padding:20px 20px 16px;border-bottom:1px solid rgba(255,255,255,.07)}
+#screen-ia .vera-av{width:48px;height:48px;border-radius:14px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);display:flex;align-items:center;justify-content:center;flex-shrink:0;position:relative}
+#screen-ia .vera-dot{position:absolute;bottom:-2px;right:-2px;width:11px;height:11px;border-radius:50%;background:var(--ia-green);border:2px solid var(--ia-dark);box-shadow:0 0 8px rgba(45,201,138,.7)}
+#screen-ia .vera-name{font-size:.95rem;font-weight:800;color:#fff;letter-spacing:-.02em}
+#screen-ia .vera-role{font-size:.62rem;color:rgba(255,255,255,.4);margin-top:2px;font-weight:500}
+#screen-ia .vera-pro-pill{background:linear-gradient(135deg,rgba(167,139,250,.25),rgba(124,92,191,.2));border:1px solid rgba(167,139,250,.35);color:#c4b5fd;font-size:.58rem;font-weight:800;padding:3px 9px;border-radius:20px;letter-spacing:.08em;text-transform:uppercase}
+#screen-ia .vera-brief{padding:16px 20px;border-bottom:1px solid rgba(255,255,255,.07)}
+#screen-ia .brief-date{font-size:.55rem;font-weight:700;color:rgba(255,255,255,.3);text-transform:uppercase;letter-spacing:.1em;display:flex;align-items:center;gap:6px;margin-bottom:8px}
+#screen-ia .brief-pulse{width:6px;height:6px;border-radius:50%;background:var(--ia-green);box-shadow:0 0 8px rgba(45,201,138,.7);flex-shrink:0;animation:iaPulse 2s infinite}
+@keyframes iaPulse{0%,100%{opacity:1}50%{opacity:.4}}
+#screen-ia .brief-body{font-size:.82rem;color:rgba(255,255,255,.82);line-height:1.65}
+#screen-ia .brief-body b{color:#fff;font-weight:700}
+#screen-ia .brief-down{color:#f87171;font-weight:700}
+#screen-ia .brief-up{color:var(--ia-green);font-weight:700}
+#screen-ia .vera-metrics{display:grid;grid-template-columns:1fr 1fr 1fr;padding:14px 20px 16px}
+#screen-ia .vm-cell{text-align:center}
+#screen-ia .vm-cell+.vm-cell{border-left:1px solid rgba(255,255,255,.08)}
+#screen-ia .vm-label{font-size:.52rem;font-weight:700;color:rgba(255,255,255,.3);text-transform:uppercase;letter-spacing:.08em}
+#screen-ia .vm-val{font-size:1rem;font-weight:800;margin-top:4px}
+#screen-ia .vm-val.good{color:var(--ia-green)}
+#screen-ia .vm-val.warn{color:var(--ia-yellow)}
+#screen-ia .vm-val.neutral{color:#fff}
+#screen-ia .chat-card{background:var(--ia-surface);border-radius:var(--ia-r);overflow:hidden;box-shadow:var(--ia-shadow)}
+#screen-ia .chat-msgs{padding:14px 14px 8px;display:flex;flex-direction:column;gap:10px;min-height:120px}
+#screen-ia .ia-msg{display:flex;gap:7px;align-items:flex-end}
+#screen-ia .ia-msg.user{flex-direction:row-reverse}
+#screen-ia .ia-msg-av{width:26px;height:26px;border-radius:7px;flex-shrink:0;display:flex;align-items:center;justify-content:center}
+#screen-ia .av-vera2{background:var(--ia-dark)}
+#screen-ia .av-user2{background:#ede9fe}
+#screen-ia .ia-bubble{max-width:78%;padding:9px 12px;font-size:.76rem;line-height:1.55;font-weight:500;border-radius:14px}
+#screen-ia .ia-bubble.vera{background:#f4f6f5;color:var(--ia-text);border-bottom-left-radius:4px}
+#screen-ia .ia-bubble.user{background:var(--ia-dark);color:#fff;border-bottom-right-radius:4px}
+#screen-ia .ia-typing-wrap{display:flex;gap:3px;align-items:center;padding:6px 2px}
+#screen-ia .ia-typing-wrap span{width:5px;height:5px;border-radius:50%;background:var(--ia-muted);animation:iaTdot .9s infinite}
+#screen-ia .ia-typing-wrap span:nth-child(2){animation-delay:.18s}
+#screen-ia .ia-typing-wrap span:nth-child(3){animation-delay:.36s}
+@keyframes iaTdot{0%,80%,100%{transform:scale(.5);opacity:.4}40%{transform:scale(1);opacity:1}}
+#screen-ia .chat-chips{display:flex;flex-wrap:wrap;gap:6px;padding:8px 14px 10px;border-top:1px solid #f5f5f5}
+#screen-ia .ia-chip{font-size:.65rem;font-weight:600;color:var(--ia-text);background:#f4f6f5;border:1px solid #e8ebe9;border-radius:20px;padding:5px 11px;cursor:pointer;transition:all .15s;white-space:nowrap}
+#screen-ia .ia-chip:hover{background:#e6faf3;border-color:var(--ia-green2);color:var(--ia-green2)}
+#screen-ia .chat-input-row{display:flex;gap:8px;padding:8px 14px 14px;border-top:1px solid #f5f5f5}
+#screen-ia .cinput{flex:1;background:#f4f6f5;border:1px solid #e8ebe9;border-radius:24px;padding:9px 16px;font-family:inherit;font-size:.78rem;color:var(--ia-text);outline:none;transition:border-color .15s}
+#screen-ia .cinput:focus{border-color:var(--ia-green2);background:#fff}
+#screen-ia .cinput::placeholder{color:var(--ia-muted)}
+#screen-ia .csend{width:38px;height:38px;border-radius:50%;background:var(--ia-dark);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:background .15s}
+#screen-ia .card{background:var(--ia-surface);border-radius:var(--ia-r);padding:18px;box-shadow:var(--ia-shadow);margin-bottom:0;border:none;backdrop-filter:none}
+#screen-ia .card-title{font-size:.88rem;font-weight:800;margin-bottom:14px;display:flex;align-items:center;justify-content:space-between;letter-spacing:-.01em}
+#screen-ia .ctitle-left{display:flex;align-items:center;gap:8px}
+#screen-ia .ctitle-icon{width:28px;height:28px;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+#screen-ia .ci-amber{background:#fefce8}
+#screen-ia .ci-green{background:#e6faf3}
+#screen-ia .ci-blue{background:#eff6ff}
+#screen-ia .ci-red{background:#fef2f2}
+#screen-ia .ci-purple{background:#f5f3ff}
+#screen-ia .card-link{font-size:.68rem;color:var(--ia-green2);font-weight:700;cursor:pointer}
+#screen-ia .insight-list{display:flex;flex-direction:column;gap:2px}
+#screen-ia .ins-row{display:flex;align-items:flex-start;gap:12px;padding:12px 10px;border-radius:12px;cursor:pointer;transition:background .15s}
+#screen-ia .ins-row:hover{background:#f8faf9}
+#screen-ia .ins-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-top:5px}
+#screen-ia .ins-body{flex:1}
+#screen-ia .ins-tag{font-size:.58rem;font-weight:800;text-transform:uppercase;letter-spacing:.09em;margin-bottom:3px}
+#screen-ia .ins-text{font-size:.75rem;color:var(--ia-text);line-height:1.5}
+#screen-ia .ins-text b{font-weight:700}
+#screen-ia .ins-cta{font-size:.65rem;font-weight:700;color:var(--ia-green2);margin-top:5px;display:inline-block}
+#screen-ia .ins-badge{font-size:.58rem;font-weight:700;padding:2px 7px;border-radius:5px;display:inline-flex;align-items:center;margin-top:5px}
+#screen-ia .b-red{background:#fef2f2;color:var(--ia-red)}
+#screen-ia .b-yellow{background:#fefce8;color:#b45309}
+#screen-ia .b-green{background:#e6faf3;color:var(--ia-green2)}
+#screen-ia .b-blue{background:#eff6ff;color:#1d4ed8}
+#screen-ia .dot-red{background:var(--ia-red)}
+#screen-ia .dot-yellow{background:var(--ia-yellow)}
+#screen-ia .dot-green{background:var(--ia-green2)}
+#screen-ia .dot-blue{background:var(--ia-blue)}
+#screen-ia .tag-red{color:var(--ia-red)}
+#screen-ia .tag-yellow{color:#b45309}
+#screen-ia .tag-green{color:var(--ia-green2)}
+#screen-ia .tag-blue{color:#1d4ed8}
+#screen-ia .hs-row{display:flex;align-items:center;gap:16px;margin-bottom:14px}
+#screen-ia .hs-ring{position:relative;width:76px;height:76px;flex-shrink:0}
+#screen-ia .hs-ring canvas{position:absolute;top:0;left:0}
+#screen-ia .hs-ring-lbl{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+#screen-ia .hs-num{font-size:1.35rem;font-weight:800;color:var(--ia-text);line-height:1}
+#screen-ia .hs-den{font-size:.58rem;color:var(--ia-muted);font-weight:600}
+#screen-ia .hs-pillars{flex:1;display:flex;flex-direction:column;gap:8px}
+#screen-ia .pr{display:flex;align-items:center;gap:8px}
+#screen-ia .pr-label{font-size:.64rem;font-weight:600;color:var(--ia-muted);width:76px}
+#screen-ia .pr-track{flex:1;height:5px;background:#f0f0f0;border-radius:10px;overflow:hidden}
+#screen-ia .pr-fill{height:100%;border-radius:10px}
+#screen-ia .pr-val{font-size:.64rem;font-weight:800;width:22px;text-align:right}
+#screen-ia .plan-steps{display:flex;flex-direction:column;gap:7px;margin:12px 0}
+#screen-ia .plan-step{display:flex;align-items:center;gap:10px;padding:10px 12px;background:#f8faf9;border-radius:10px;font-size:.72rem;color:var(--ia-text)}
+#screen-ia .plan-step-num{width:20px;height:20px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:.62rem;font-weight:800;color:#fff;background:var(--ia-dark);flex-shrink:0}
+#screen-ia .plan-pts{margin-left:auto;font-size:.68rem;font-weight:800;color:var(--ia-green2);flex-shrink:0}
+#screen-ia .improve-btn{width:100%;padding:12px;background:var(--ia-dark);color:#fff;border:none;border-radius:12px;font-family:inherit;font-size:.78rem;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:opacity .15s}
+#screen-ia .improve-btn:hover{opacity:.88}
+#screen-ia .prem-card{background:linear-gradient(150deg,#0e1a2e 0%,#1a1240 100%);border-radius:var(--ia-r);padding:20px;box-shadow:0 8px 32px rgba(14,18,46,.25);overflow:hidden;position:relative}
+#screen-ia .prem-card::after{content:'';position:absolute;top:-50px;right:-50px;width:160px;height:160px;border-radius:50%;background:radial-gradient(circle,rgba(124,92,191,.2),transparent 70%);pointer-events:none}
+#screen-ia .prem-top{display:flex;align-items:center;gap:12px;margin-bottom:16px}
+#screen-ia .prem-av{width:44px;height:44px;border-radius:14px;background:linear-gradient(135deg,#7c5cbf,#5b21b6);display:flex;align-items:center;justify-content:center;box-shadow:0 4px 16px rgba(124,92,191,.4)}
+#screen-ia .prem-title{font-size:.95rem;font-weight:800;color:#fff;letter-spacing:-.02em}
+#screen-ia .prem-sub{font-size:.62rem;color:rgba(255,255,255,.38);margin-top:2px}
+#screen-ia .prem-feats{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:16px}
+#screen-ia .pf{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:12px;display:flex;align-items:flex-start;gap:9px}
+#screen-ia .pf-dot{width:6px;height:6px;border-radius:50%;background:#a78bfa;flex-shrink:0;margin-top:4px}
+#screen-ia .pf-name{font-size:.72rem;font-weight:700;color:#fff}
+#screen-ia .pf-desc{font-size:.58rem;color:rgba(255,255,255,.38);margin-top:2px;line-height:1.4}
+#screen-ia .prem-price-row{display:flex;align-items:baseline;gap:5px;margin-bottom:14px}
+#screen-ia .prem-price-num{font-size:1.8rem;font-weight:800;color:#fff;letter-spacing:-.05em}
+#screen-ia .prem-price-mo{font-size:.72rem;color:rgba(255,255,255,.38)}
+#screen-ia .prem-price-old{font-size:.72rem;color:rgba(255,255,255,.25);text-decoration:line-through;margin-left:4px}
+#screen-ia .prem-btn{width:100%;padding:13px;border-radius:12px;background:linear-gradient(135deg,#8b5cf6,#6d28d9);color:#fff;font-family:inherit;font-size:.8rem;font-weight:800;border:none;cursor:pointer;box-shadow:0 4px 16px rgba(109,40,217,.4);transition:opacity .15s}
+#screen-ia .prem-btn:hover{opacity:.9}
+#screen-ia .prem-note{text-align:center;font-size:.6rem;color:rgba(255,255,255,.25);margin-top:8px}
+#screen-ia .ai-action-btn{display:flex;align-items:center;gap:10px;padding:12px;background:#fafafa;border:1px solid rgba(0,0,0,.06);border-radius:13px;cursor:pointer;text-align:left;font-family:inherit;transition:all .15s;width:100%}
+#screen-ia .ai-action-btn:hover{background:#f0faf5;border-color:var(--ia-green2);transform:translateY(-1px);box-shadow:0 4px 12px rgba(0,0,0,.06)}
+#screen-ia .ai-action-btn.active{background:#e6faf3;border-color:var(--ia-green2)}
+#screen-ia .ai-action-full{display:flex;align-items:center;gap:10px;width:100%;padding:13px 16px;margin-bottom:8px;background:linear-gradient(135deg,var(--ia-green2),var(--ia-green));border:none;border-radius:13px;cursor:pointer;font-family:inherit;font-size:.8rem;font-weight:800;color:#fff;text-align:left;transition:opacity .15s,transform .15s;box-shadow:0 4px 16px rgba(26,171,112,.3)}
+#screen-ia .ai-action-full:hover{opacity:.9;transform:translateY(-1px)}
+#screen-ia .aab-icon{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+#screen-ia .aab-name{font-size:.7rem;font-weight:700;color:var(--ia-text)}
+#screen-ia .aab-desc{font-size:.58rem;color:var(--ia-muted);margin-top:2px}
+#screen-ia .ps-card{background:var(--ia-surface);border-radius:var(--ia-r);padding:20px 18px 16px;box-shadow:var(--ia-shadow);overflow:hidden}
+#screen-ia .ps-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:4px}
+#screen-ia .ps-title-row{display:flex;align-items:center;gap:8px}
+#screen-ia .ps-ai-badge{display:flex;align-items:center;gap:5px;font-size:.65rem;font-weight:800;color:#fff;background:var(--ia-dark);border-radius:8px;padding:4px 10px}
+#screen-ia .ps-update-btn{display:flex;align-items:center;gap:5px;font-size:.6rem;font-weight:700;background:var(--ia-dark);color:#fff;border:none;border-radius:20px;padding:5px 10px;cursor:pointer;font-family:inherit;transition:opacity .15s}
+#screen-ia .ps-update-btn:hover{opacity:.85}
+#screen-ia .ps-updated{font-size:.58rem;color:var(--ia-muted);margin-top:2px}
+#screen-ia .ps-gauge-wrap{display:flex;flex-direction:column;align-items:center;padding:8px 0 12px;position:relative}
+#screen-ia .ps-gauge-canvas{display:block}
+#screen-ia .ps-gauge-center{position:absolute;top:50%;left:50%;transform:translate(-50%,-38%);text-align:center;pointer-events:none}
+#screen-ia .ps-gauge-num{font-size:2.4rem;font-weight:800;color:var(--ia-text);letter-spacing:-.04em;line-height:1}
+#screen-ia .ps-gauge-den{font-size:.72rem;color:var(--ia-muted);font-weight:600}
+#screen-ia .ps-gauge-label{font-size:.65rem;color:var(--ia-muted);margin-top:2px;text-align:center}
+#screen-ia .ps-gauge-sub{font-size:.6rem;color:var(--ia-muted);margin-top:6px;text-align:center}
+#screen-ia .ps-categories{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:8px;margin-top:4px}
+#screen-ia .ps-cat{background:#f8faf9;border:1.5px solid transparent;border-radius:14px;padding:12px 8px 10px;display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer;transition:all .18s;position:relative;overflow:hidden}
+#screen-ia .ps-cat:hover{background:#f0faf5;border-color:var(--ia-green2);transform:translateY(-1px)}
+#screen-ia .ps-cat.active{background:var(--ia-dark);border-color:var(--ia-dark)}
+#screen-ia .ps-cat-score{font-size:.95rem;font-weight:800;color:var(--ia-text);line-height:1}
+#screen-ia .ps-cat.active .ps-cat-score{color:#fff}
+#screen-ia .ps-cat-denom{font-size:.55rem;color:var(--ia-muted);font-weight:600}
+#screen-ia .ps-cat.active .ps-cat-denom{color:rgba(255,255,255,.45)}
+#screen-ia .ps-cat-pill{font-size:.52rem;font-weight:800;padding:2px 7px;border-radius:20px;text-transform:uppercase;letter-spacing:.05em}
+#screen-ia .pill-orange{background:#fef3e8;color:#d97706}
+#screen-ia .pill-green{background:#e6faf3;color:var(--ia-green2)}
+#screen-ia .ps-cat.active .pill-orange{background:rgba(245,183,49,.22);color:#fcd34d}
+#screen-ia .ps-cat.active .pill-green{background:rgba(45,201,138,.22);color:#6ee7b7}
+#screen-ia .ps-cat-name{font-size:.58rem;font-weight:700;color:var(--ia-text);text-align:center;line-height:1.3}
+#screen-ia .ps-cat.active .ps-cat-name{color:rgba(255,255,255,.8)}
+#screen-ia .ps-cat-arrow{font-size:.55rem;color:var(--ia-muted)}
+#screen-ia .ps-cat.active .ps-cat-arrow{color:rgba(255,255,255,.4)}
+#screen-ia .ps-detail{display:none;margin-top:14px;background:#f8faf9;border-radius:14px;padding:16px;animation:iaSlideIn .2s ease}
+#screen-ia .ps-detail.open{display:block}
+@keyframes iaSlideIn{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:translateY(0)}}
+#screen-ia .ps-detail-header{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+#screen-ia .ps-detail-gauge-wrap{position:relative;width:70px;height:44px;flex-shrink:0}
+#screen-ia .ps-detail-info{flex:1}
+#screen-ia .ps-detail-status{font-size:.58rem;font-weight:800;text-transform:uppercase;letter-spacing:.07em;margin-bottom:3px}
+#screen-ia .ps-detail-score{font-size:1.5rem;font-weight:800;letter-spacing:-.04em;line-height:1}
+#screen-ia .ps-detail-score span{font-size:.65rem;color:var(--ia-muted);font-weight:600}
+#screen-ia .ps-detail-title{font-size:.78rem;font-weight:800;color:var(--ia-text);margin-bottom:8px}
+#screen-ia .ps-detail-body{font-size:.72rem;color:#374151;line-height:1.65}
+#screen-ia .ps-detail-body b{font-weight:700;color:var(--ia-text)}
+#screen-ia .ps-detail-section{margin-top:12px}
+#screen-ia .ps-detail-section-title{font-size:.65rem;font-weight:800;color:var(--ia-text);margin-bottom:6px;text-transform:uppercase;letter-spacing:.07em}
+#screen-ia .ps-bar-row{display:flex;align-items:center;gap:8px;margin-bottom:6px}
+#screen-ia .ps-bar-label{font-size:.62rem;font-weight:600;color:var(--ia-muted);width:90px;flex-shrink:0}
+#screen-ia .ps-bar-track{flex:1;height:5px;background:#e8ebe9;border-radius:10px;overflow:hidden}
+#screen-ia .ps-bar-fill{height:100%;border-radius:10px}
+#screen-ia .ps-bar-val{font-size:.62rem;font-weight:800;width:30px;text-align:right;flex-shrink:0}
+#screen-ia .ps-rec-list{display:flex;flex-direction:column;gap:6px;margin-top:10px}
+#screen-ia .ps-rec-item{display:flex;align-items:flex-start;gap:8px;background:#fff;border-radius:10px;padding:9px 11px;cursor:pointer;transition:background .15s}
+#screen-ia .ps-rec-item:hover{background:#f0faf5}
+#screen-ia .ps-rec-num{width:18px;height:18px;border-radius:5px;background:var(--ia-dark);color:#fff;font-size:.55rem;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+#screen-ia .ps-rec-text{font-size:.7rem;color:var(--ia-text);line-height:1.45;flex:1}
 /* === Auth modal === */
 .authOverlay{position:absolute;inset:0;background:rgba(20,32,24,.4);z-index:60;opacity:0;pointer-events:none;visibility:hidden;transition:opacity .25s,visibility 0s .25s}
 .authOverlay.open{opacity:1;pointer-events:auto;visibility:visible;transition:opacity .25s,visibility 0s}
@@ -638,7 +818,7 @@ table.an-corr-mtx{border-collapse:separate;border-spacing:4px}
 .tgPopupTitle{font-size:10px;font-weight:700;color:#8fa090;text-transform:uppercase;letter-spacing:.07em;margin-bottom:8px;padding:0 6px}.tgPopupLink{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:12px;text-decoration:none;color:#142018;font-size:14px;font-weight:600;transition:background .12s}.tgPopupLink:active{background:#f0f4f1}
 .ob-lang-row{display:flex;justify-content:flex-end;padding:16px 20px 0}
 .settingsProfileCard{display:flex;align-items:center;gap:14px;padding:16px 0 20px;border-bottom:1px solid rgba(20,32,24,.08);margin-bottom:16px}
-.iaChatMsg{display:flex;flex-direction:column;max-width:85%}.iaChatMsg.user{align-self:flex-end}.iaChatMsg.ai{align-self:flex-start}.iaChatBubble{padding:10px 14px;border-radius:14px;font-size:14px;line-height:1.5}.iaChatMsg.user .iaChatBubble{background:#142018;color:#f5fbf6;border-bottom-right-radius:4px}.iaChatMsg.ai .iaChatBubble{background:#f0f4f1;color:#142018;border-bottom-left-radius:4px}.iaChatTime{font-size:10px;color:#9aada0;margin-top:3px;padding:0 4px}.iaQuickBtn{background:#f0f4f1;border:1.5px solid rgba(20,32,24,.08);border-radius:20px;padding:6px 14px;font:inherit;font-size:12px;font-weight:600;color:#4a5f4e;cursor:pointer;transition:all .12s}.iaQuickBtn:active{background:#e2eae3}.iaTyping{display:flex;gap:4px;padding:12px 14px;background:#f0f4f1;border-radius:14px;border-bottom-left-radius:4px;align-self:flex-start}.iaTypingDot{width:6px;height:6px;border-radius:50%;background:#8fa090;animation:typingBounce .8s infinite}.iaTypingDot:nth-child(2){animation-delay:.15s}.iaTypingDot:nth-child(3){animation-delay:.3s}@keyframes typingBounce{0%,60%,100%{transform:translateY(0)}30%{transform:translateY(-6px)}}
+.settingsProfileAvatar{width:48px;height:48px;border-radius:14px;background:linear-gradient(135deg,#142018,#1a3f2c);display:flex;align-items:center;justify-content:center;color:#f5fbf6;font-size:20px;font-weight:800;flex-shrink:0}
 </style>
 </head>
 <body>
@@ -1474,37 +1654,321 @@ table.an-corr-mtx{border-collapse:separate;border-spacing:4px}
 
 <!-- ============ IA ============ -->
 <div id="screen-ia" class="screen">
-  <div class="top">
-    <div>
-      <div class="title">Finasset AI</div>
-      <div class="sub" id="iaSubtitle">Tu asistente financiero</div>
-    </div>
-    <button id="iaClearBtn" style="background:none;border:none;color:#8fa090;font-size:22px;cursor:pointer;padding:4px">🗑</button>
+  <div class="ia-page-header">
+    <h1>Finasset AI</h1>
+    <p id="iaSubtitle">Your personal financial analyst</p>
   </div>
+  <div class="ia-scroll">
 
-  <!-- Static insights card (keep existing) -->
-  <div class="card" id="iaInsightsCard" style="margin-bottom:12px">
-    <div class="sectionTitle">📊 Análisis del portfolio</div>
-    <div id="iaInsightsList"></div>
-  </div>
+    <!-- VERA HERO + CHAT -->
+    <div class="chat-card">
+      <div style="background:linear-gradient(150deg,var(--ia-dark) 0%,var(--ia-dark2) 100%);padding:16px 18px 14px;border-radius:18px 18px 0 0;">
+        <div class="vera-strip" style="padding:0 0 14px;margin-bottom:0;">
+          <div class="vera-av">
+            <svg viewBox="0 0 26 26" fill="none" width="24" height="24"><rect x="4" y="7" width="18" height="13" rx="3" fill="rgba(255,255,255,0.15)" stroke="rgba(255,255,255,0.3)" stroke-width="1.2"/><circle cx="10" cy="13" r="2" fill="#2dc98a"/><circle cx="16" cy="13" r="2" fill="#2dc98a"/><path d="M10 7V5" stroke="rgba(255,255,255,0.4)" stroke-width="1.2" stroke-linecap="round"/><path d="M16 7V5" stroke="rgba(255,255,255,0.4)" stroke-width="1.2" stroke-linecap="round"/></svg>
+            <div class="vera-dot"></div>
+          </div>
+          <div style="flex:1;">
+            <div class="vera-name">Vera</div>
+            <div class="vera-role">Financial analyst · Finasset</div>
+          </div>
+          <span class="vera-pro-pill">PRO</span>
+        </div>
+        <div class="vera-brief" style="padding:0;border:none;margin-bottom:12px;">
+          <div style="background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.1);border-radius:10px;padding:12px 14px;">
+            <div class="brief-date"><div class="brief-pulse"></div><span id="iaBriefDate">Briefing · —</span></div>
+            <div class="brief-body" id="iaBriefBody">Analizando tu cartera…</div>
+          </div>
+        </div>
+        <div class="vera-metrics">
+          <div class="vm-cell"><div class="vm-label">Health</div><div class="vm-val warn" id="iaVmHealth">—</div></div>
+          <div class="vm-cell"><div class="vm-label">Return</div><div class="vm-val good" id="iaVmReturn">—</div></div>
+          <div class="vm-cell"><div class="vm-label">Risk</div><div class="vm-val warn" id="iaVmRisk">Medium</div></div>
+        </div>
+      </div>
 
-  <!-- Chat interface -->
-  <div class="card" style="padding:0;overflow:hidden;display:flex;flex-direction:column;min-height:320px;max-height:480px">
-    <div id="iaChatMessages" style="flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:10px;min-height:280px">
-      <div class="iaWelcome" style="text-align:center;padding:20px 0;color:#8fa090">
-        <div style="font-size:32px;margin-bottom:8px">🤖</div>
-        <div style="font-size:14px;font-weight:600">Pregúntame sobre tu cartera</div>
-        <div style="font-size:12px;margin-top:4px">Análisis, sugerencias, comparativas...</div>
+      <div class="chat-msgs" id="iaChatMsgs" style="min-height:120px;">
+        <div class="ia-msg">
+          <div class="ia-msg-av av-vera2"><svg viewBox="0 0 16 16" fill="none"><rect x="2" y="4" width="12" height="8" rx="2" fill="rgba(255,255,255,0.15)" stroke="rgba(255,255,255,0.5)" stroke-width="1"/><circle cx="6" cy="8" r="1.3" fill="#2dc98a"/><circle cx="10" cy="8" r="1.3" fill="#2dc98a"/></svg></div>
+          <div class="ia-bubble vera" style="font-size:.8rem;padding:10px 14px;line-height:1.6;">Hola, tengo acceso completo a tu portfolio. ¿Qué quieres saber?</div>
+        </div>
+      </div>
+
+      <div class="chat-chips">
+        <div class="ia-chip" onclick="askChip(this)">¿Por qué bajó hoy?</div>
+        <div class="ia-chip" onclick="askChip(this)">¿Cómo diversificar?</div>
+        <div class="ia-chip" onclick="askChip(this)">Comparar con MSCI</div>
+        <div class="ia-chip" onclick="askChip(this)">¿Cuándo rebalancear?</div>
+        <div class="ia-chip" onclick="askChip(this)">Simular +€500/mes</div>
+        <div class="ia-chip" onclick="askChip(this)">¿Cuál es mi riesgo?</div>
+      </div>
+
+      <div class="chat-input-row">
+        <input class="cinput" id="iaChatInput" placeholder="Pregunta a Vera sobre tu portfolio…" onkeydown="if(event.key==='Enter')doSend()">
+        <button class="csend" onclick="doSend()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" width="15" height="15"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+        </button>
       </div>
     </div>
-    <div style="border-top:1px solid rgba(20,32,24,.08);padding:10px 12px;display:flex;gap:8px;background:#fff">
-      <input id="iaChatInput" placeholder="Escribe tu pregunta..." style="flex:1;border:1.5px solid rgba(20,32,24,.12);border-radius:12px;padding:10px 14px;font:inherit;font-size:14px;color:#142018;background:#f7faf8;outline:none" />
-      <button id="iaSendBtn" style="background:#142018;color:#f5fbf6;border:none;border-radius:12px;padding:10px 18px;font:inherit;font-size:14px;font-weight:700;cursor:pointer;flex-shrink:0">→</button>
-    </div>
-  </div>
 
-  <!-- Quick questions -->
-  <div style="margin-top:10px;display:flex;flex-wrap:wrap;gap:6px" id="iaQuickBtns"></div>
+    <!-- PORTFOLIO SCORE -->
+    <div class="ps-card" id="portfolioScoreCard">
+      <div class="ps-header">
+        <div>
+          <div class="ps-title-row">
+            <div class="ps-ai-badge">
+              <svg viewBox="0 0 12 12" fill="none" stroke="#fff" stroke-width="1.5" width="11" height="11"><rect x="1" y="3" width="10" height="7" rx="1.5"/><circle cx="4.5" cy="6.5" r="1" fill="#2dc98a"/><circle cx="7.5" cy="6.5" r="1" fill="#2dc98a"/></svg>
+              Vera AI
+            </div>
+          </div>
+          <div class="ps-updated" id="psUpdated">Actualizado: hace 1 min · 1/5 análisis usados</div>
+        </div>
+        <button class="ps-update-btn" onclick="refreshScore()">
+          <svg viewBox="0 0 14 14" fill="none" stroke="#fff" stroke-width="1.8" width="12" height="12"><path d="M12 2v4H8"/><path d="M2 12v-4h4"/><path d="M12 6A5 5 0 0 0 2.5 5M2 8a5 5 0 0 0 9.5 1"/></svg>
+          Actualizar
+        </button>
+      </div>
+      <div class="ps-gauge-wrap">
+        <canvas id="psMainGauge" class="ps-gauge-canvas" width="220" height="120"></canvas>
+        <div class="ps-gauge-center"><div class="ps-gauge-num" id="psScoreNum">0</div><div class="ps-gauge-den">/100</div></div>
+      </div>
+      <div class="ps-gauge-label" style="margin-top:-6px;font-weight:600;color:var(--ia-text);font-size:.75rem;">Portfolio score</div>
+      <div class="ps-gauge-sub">Tu portfolio supera al <b id="psPctile" style="color:var(--ia-text);">—</b> de los usuarios</div>
+
+      <div class="ps-categories" style="margin-top:14px;">
+        <div class="ps-cat" id="cat-diversificacion" onclick="openCat('diversificacion')">
+          <canvas class="ps-mini-gauge" data-score="4" data-color="#f97316" width="50" height="30"></canvas>
+          <div style="display:flex;align-items:baseline;gap:1px;"><span class="ps-cat-score">4</span><span class="ps-cat-denom">/10</span></div>
+          <div class="ps-cat-pill pill-orange">Mejorar</div>
+          <div class="ps-cat-name">Diversific.</div>
+          <div class="ps-cat-arrow">›</div>
+        </div>
+        <div class="ps-cat" id="cat-riesgo" onclick="openCat('riesgo')">
+          <canvas class="ps-mini-gauge" data-score="4" data-color="#f97316" width="50" height="30"></canvas>
+          <div style="display:flex;align-items:baseline;gap:1px;"><span class="ps-cat-score">4</span><span class="ps-cat-denom">/10</span></div>
+          <div class="ps-cat-pill pill-orange">Medio</div>
+          <div class="ps-cat-name">Riesgo</div>
+          <div class="ps-cat-arrow">›</div>
+        </div>
+        <div class="ps-cat" id="cat-fees" onclick="openCat('fees')">
+          <canvas class="ps-mini-gauge" data-score="7" data-color="#2dc98a" width="50" height="30"></canvas>
+          <div style="display:flex;align-items:baseline;gap:1px;"><span class="ps-cat-score">7</span><span class="ps-cat-denom">/10</span></div>
+          <div class="ps-cat-pill pill-green">Bajo</div>
+          <div class="ps-cat-name">Fees</div>
+          <div class="ps-cat-arrow">›</div>
+        </div>
+        <div class="ps-cat" id="cat-macro" onclick="openCat('macro')">
+          <canvas class="ps-mini-gauge" data-score="5" data-color="#f97316" width="50" height="30"></canvas>
+          <div style="display:flex;align-items:baseline;gap:1px;"><span class="ps-cat-score">5</span><span class="ps-cat-denom">/10</span></div>
+          <div class="ps-cat-pill pill-orange">Medio</div>
+          <div class="ps-cat-name">Macro</div>
+          <div class="ps-cat-arrow">›</div>
+        </div>
+      </div>
+
+      <!-- DIVERSIFICACIÓN detail -->
+      <div class="ps-detail" id="detail-diversificacion">
+        <div class="ps-detail-header">
+          <div class="ps-detail-gauge-wrap"><canvas class="ps-detail-gauge" data-score="4" data-color="#f97316" width="70" height="42"></canvas></div>
+          <div class="ps-detail-info"><div class="ps-detail-status" style="color:#f97316;">Margen de mejora</div><div class="ps-detail-score" style="color:#f97316;">4 <span>/10</span></div></div>
+          <div style="margin-left:auto;background:#fef3e8;border-radius:8px;padding:6px 10px;text-align:center;"><div style="font-size:.55rem;font-weight:700;color:#d97706;text-transform:uppercase;letter-spacing:.06em;">Impacto potencial</div><div style="font-size:.9rem;font-weight:800;color:#d97706;">+20 pts</div></div>
+        </div>
+        <div style="background:#fef3e8;border:1px solid #fed7aa;border-radius:10px;padding:10px 12px;margin-bottom:12px;display:flex;gap:8px;align-items:flex-start;"><svg viewBox="0 0 16 16" fill="none" stroke="#f97316" stroke-width="1.8" width="15" height="15" style="flex-shrink:0;margin-top:1px;"><path d="M8 2L1.5 13h13L8 2z"/><path d="M8 6v4M8 11.5v.5" stroke-linecap="round"/></svg><div style="font-size:.7rem;color:#92400e;line-height:1.5;">Alta concentración en pocos emisores y sectores. Eleva tu riesgo idiosincrático significativamente.</div></div>
+        <div class="ps-detail-title">¿Por qué es importante la diversificación?</div>
+        <div class="ps-detail-body">Distribuir las inversiones minimiza el riesgo de grandes pérdidas. Activos no correlacionados responden de forma distinta a los ciclos económicos, reduciendo la volatilidad total sin sacrificar retorno esperado.</div>
+        <div class="ps-detail-section">
+          <div class="ps-detail-section-title">Exposición por clase de activo</div>
+          <div class="ps-bar-row"><span class="ps-bar-label">Renta variable</span><div class="ps-bar-track"><div class="ps-bar-fill" style="width:80%;background:#1a2e22;"></div></div><span class="ps-bar-val" style="color:#1a2e22;">80%</span></div>
+          <div class="ps-bar-row"><span class="ps-bar-label">Materia prima</span><div class="ps-bar-track"><div class="ps-bar-fill" style="width:12%;background:#f59e0b;"></div></div><span class="ps-bar-val" style="color:#f59e0b;">12%</span></div>
+          <div class="ps-bar-row"><span class="ps-bar-label">Liquidez</span><div class="ps-bar-track"><div class="ps-bar-fill" style="width:8%;background:#8a9e93;"></div></div><span class="ps-bar-val" style="color:#8a9e93;">8%</span></div>
+        </div>
+        <div class="ps-detail-section">
+          <div class="ps-detail-section-title">Acciones recomendadas</div>
+          <div class="ps-rec-list">
+            <div class="ps-rec-item" onclick="runAction(this,'diversificacion')"><div class="ps-rec-num">1</div><div style="flex:1;"><div class="ps-rec-text" style="font-weight:700;">Reducir concentración en un solo emisor</div><div style="font-size:.6rem;color:var(--ia-muted);margin-top:2px;">Limitar cualquier posición individual al 60-70%</div></div><span style="font-size:.58rem;font-weight:800;color:#f97316;background:#fef3e8;padding:2px 6px;border-radius:5px;flex-shrink:0;">+12 pts</span></div>
+            <div class="ps-rec-item" onclick="runAction(this,'diversificacion')"><div class="ps-rec-num">2</div><div style="flex:1;"><div class="ps-rec-text" style="font-weight:700;">Añadir ETF mercados emergentes</div><div style="font-size:.6rem;color:var(--ia-muted);margin-top:2px;">EMIM o VWRD — correlación 0.47 con tu fondo</div></div><span style="font-size:.58rem;font-weight:800;color:#f97316;background:#fef3e8;padding:2px 6px;border-radius:5px;flex-shrink:0;">+5 pts</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- RIESGO detail -->
+      <div class="ps-detail" id="detail-riesgo">
+        <div class="ps-detail-header">
+          <div class="ps-detail-gauge-wrap"><canvas class="ps-detail-gauge" data-score="4" data-color="#f97316" width="70" height="42"></canvas></div>
+          <div class="ps-detail-info"><div class="ps-detail-status" style="color:#f97316;">Riesgo Alto</div><div class="ps-detail-score" style="color:#f97316;">4 <span>/10</span></div></div>
+          <div style="margin-left:auto;background:#fef2f2;border-radius:8px;padding:6px 10px;text-align:center;"><div style="font-size:.55rem;font-weight:700;color:#dc2626;text-transform:uppercase;letter-spacing:.06em;">Volatilidad</div><div style="font-size:.9rem;font-weight:800;color:#dc2626;">~14%</div></div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:14px;">
+          <div style="background:#fff;border:1px solid #e8ebe9;border-radius:10px;padding:10px 8px;text-align:center;"><div style="font-size:.52rem;font-weight:700;color:var(--ia-muted);text-transform:uppercase;margin-bottom:4px;">Volatilidad</div><div style="font-size:1rem;font-weight:800;color:#f97316;">14.2%</div><div style="font-size:.52rem;color:var(--ia-muted);">MSCI: 14.8%</div></div>
+          <div style="background:#fff;border:1px solid #e8ebe9;border-radius:10px;padding:10px 8px;text-align:center;"><div style="font-size:.52rem;font-weight:700;color:var(--ia-muted);text-transform:uppercase;margin-bottom:4px;">Max drawdown</div><div style="font-size:1rem;font-weight:800;color:#dc2626;">−57%</div><div style="font-size:.52rem;color:var(--ia-muted);">Crisis 2008</div></div>
+          <div style="background:#fff;border:1px solid #e8ebe9;border-radius:10px;padding:10px 8px;text-align:center;"><div style="font-size:.52rem;font-weight:700;color:var(--ia-muted);text-transform:uppercase;margin-bottom:4px;">Sharpe ratio</div><div style="font-size:1rem;font-weight:800;color:#2dc98a;">1.28</div><div style="font-size:.52rem;color:var(--ia-muted);">Bueno (&gt;1)</div></div>
+        </div>
+        <div class="ps-detail-title">¿Cómo se define el riesgo?</div>
+        <div class="ps-detail-body">Los activos de alto riesgo tienen mayor volatilidad histórica. Tu cartera tiene riesgo concentrado en renta variable de mercados desarrollados.</div>
+        <div class="ps-detail-section">
+          <div class="ps-detail-section-title">Escenarios de estrés históricos</div>
+          <div style="display:flex;flex-direction:column;gap:6px;">
+            <div style="background:#fff;border-radius:10px;padding:10px 12px;border:1px solid #e8ebe9;display:flex;justify-content:space-between;align-items:center;"><div><div style="font-size:.68rem;font-weight:700;color:var(--ia-text);">Crisis financiera 2008</div><div style="font-size:.58rem;color:var(--ia-muted);">MSCI World −57%</div></div><div style="font-size:.85rem;font-weight:800;color:#dc2626;" id="iaStress2008">—</div></div>
+            <div style="background:#fff;border-radius:10px;padding:10px 12px;border:1px solid #e8ebe9;display:flex;justify-content:space-between;align-items:center;"><div><div style="font-size:.68rem;font-weight:700;color:var(--ia-text);">COVID crash 2020</div><div style="font-size:.58rem;color:var(--ia-muted);">MSCI World −34%</div></div><div style="font-size:.85rem;font-weight:800;color:#f97316;" id="iaStressCovid">—</div></div>
+            <div style="background:#fff;border-radius:10px;padding:10px 12px;border:1px solid #e8ebe9;display:flex;justify-content:space-between;align-items:center;"><div><div style="font-size:.68rem;font-weight:700;color:var(--ia-text);">Bear market 2022</div><div style="font-size:.58rem;color:var(--ia-muted);">MSCI World −19.5%</div></div><div style="font-size:.85rem;font-weight:800;color:#f59e0b;" id="iaStress2022">—</div></div>
+          </div>
+        </div>
+        <div class="ps-detail-section">
+          <div class="ps-detail-section-title">Acciones recomendadas</div>
+          <div class="ps-rec-list">
+            <div class="ps-rec-item" onclick="runAction(this,'riesgo')"><div class="ps-rec-num">1</div><div style="flex:1;"><div class="ps-rec-text" style="font-weight:700;">Formalizar límites de exposición</div><div style="font-size:.6rem;color:var(--ia-muted);margin-top:2px;">Máx. 70% en un solo activo</div></div></div>
+            <div class="ps-rec-item" onclick="runAction(this,'riesgo')"><div class="ps-rec-num">2</div><div style="flex:1;"><div class="ps-rec-text" style="font-weight:700;">Añadir bonos (10-15%) como buffer</div><div style="font-size:.6rem;color:var(--ia-muted);margin-top:2px;">Reduce volatilidad de ~14% a ~9%</div></div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- FEES detail -->
+      <div class="ps-detail" id="detail-fees">
+        <div class="ps-detail-header">
+          <div class="ps-detail-gauge-wrap"><canvas class="ps-detail-gauge" data-score="7" data-color="#2dc98a" width="70" height="42"></canvas></div>
+          <div class="ps-detail-info"><div class="ps-detail-status" style="color:#2dc98a;">Fees Bajos ✓</div><div class="ps-detail-score" style="color:#2dc98a;">7 <span>/10</span></div></div>
+          <div style="margin-left:auto;background:#e6faf3;border-radius:8px;padding:6px 10px;text-align:center;"><div style="font-size:.55rem;font-weight:700;color:#065f46;text-transform:uppercase;letter-spacing:.06em;">TER medio</div><div style="font-size:.9rem;font-weight:800;color:#059669;">~0.12%</div></div>
+        </div>
+        <div style="background:#e6faf3;border:1px solid #a7f3d0;border-radius:10px;padding:10px 12px;margin-bottom:12px;display:flex;gap:8px;align-items:flex-start;"><svg viewBox="0 0 16 16" fill="none" stroke="#059669" stroke-width="1.8" width="15" height="15" style="flex-shrink:0;margin-top:1px;"><path d="M13 4L6 11l-3-3" stroke-linecap="round" stroke-linejoin="round"/></svg><div style="font-size:.7rem;color:#065f46;line-height:1.5;">Tu cartera es <b>muy eficiente en costes</b>. TER de 0.12% — mínimo para fondos indexados en España.</div></div>
+        <div class="ps-detail-title">¿Cómo influyen los fees en el retorno?</div>
+        <div class="ps-detail-body">Un 1% extra de comisión puede suponer hasta un <b>20-25% menos de capital</b> en 30 años por el efecto del interés compuesto.</div>
+        <div class="ps-detail-section">
+          <div class="ps-detail-section-title">Comparativa TER</div>
+          <div class="ps-bar-row"><span class="ps-bar-label" style="width:110px;">Fidelity MSCI W.</span><div class="ps-bar-track"><div class="ps-bar-fill" style="width:12%;background:#2dc98a;"></div></div><span class="ps-bar-val" style="color:#2dc98a;">0.12%</span></div>
+          <div class="ps-bar-row"><span class="ps-bar-label" style="width:110px;">iShares Core MSCI</span><div class="ps-bar-track"><div class="ps-bar-fill" style="width:20%;background:#f59e0b;"></div></div><span class="ps-bar-val" style="color:#f59e0b;">0.20%</span></div>
+          <div class="ps-bar-row"><span class="ps-bar-label" style="width:110px;">Fondo activo típico</span><div class="ps-bar-track"><div class="ps-bar-fill" style="width:100%;background:#dc2626;"></div></div><span class="ps-bar-val" style="color:#dc2626;">1.75%</span></div>
+        </div>
+      </div>
+
+      <!-- MACRO detail -->
+      <div class="ps-detail" id="detail-macro">
+        <div class="ps-detail-header">
+          <div class="ps-detail-gauge-wrap"><canvas class="ps-detail-gauge" data-score="5" data-color="#f97316" width="70" height="42"></canvas></div>
+          <div class="ps-detail-info"><div class="ps-detail-status" style="color:#f97316;">Correlación Media</div><div class="ps-detail-score" style="color:#f97316;">5 <span>/10</span></div></div>
+          <div style="margin-left:auto;background:#fef3e8;border-radius:8px;padding:6px 10px;text-align:center;"><div style="font-size:.55rem;font-weight:700;color:#d97706;text-transform:uppercase;letter-spacing:.06em;">Sensibilidad</div><div style="font-size:.9rem;font-weight:800;color:#d97706;">Media</div></div>
+        </div>
+        <div class="ps-detail-title">¿Qué son los factores macroeconómicos?</div>
+        <div class="ps-detail-body">Los factores macro influyen en los mercados. Entender la exposición de tu cartera a estas tendencias es clave para identificar riesgos y oportunidades.</div>
+        <div class="ps-detail-section">
+          <div class="ps-detail-section-title">Sensibilidad a factores macro</div>
+          <div class="ps-bar-row"><span class="ps-bar-label">Tipos de interés</span><div class="ps-bar-track"><div class="ps-bar-fill" style="width:75%;background:#f97316;"></div></div><span class="ps-bar-val" style="color:#f97316;">Alta</span></div>
+          <div class="ps-bar-row"><span class="ps-bar-label">Inflación</span><div class="ps-bar-track"><div class="ps-bar-fill" style="width:55%;background:#f59e0b;"></div></div><span class="ps-bar-val" style="color:#f59e0b;">Media</span></div>
+          <div class="ps-bar-row"><span class="ps-bar-label">USD / divisas</span><div class="ps-bar-track"><div class="ps-bar-fill" style="width:80%;background:#f97316;"></div></div><span class="ps-bar-val" style="color:#f97316;">Alta</span></div>
+          <div class="ps-bar-row"><span class="ps-bar-label">Ciclo económico</span><div class="ps-bar-track"><div class="ps-bar-fill" style="width:65%;background:#f59e0b;"></div></div><span class="ps-bar-val" style="color:#f59e0b;">Media</span></div>
+          <div class="ps-bar-row"><span class="ps-bar-label">Geopolítica</span><div class="ps-bar-track"><div class="ps-bar-fill" style="width:45%;background:#2dc98a;"></div></div><span class="ps-bar-val" style="color:#2dc98a;">Baja</span></div>
+        </div>
+        <div class="ps-detail-section">
+          <div class="ps-detail-section-title">Escenarios macroeconómicos</div>
+          <div style="display:flex;flex-direction:column;gap:6px;">
+            <div style="background:#fff;border-radius:10px;padding:10px 12px;border:1px solid #e8ebe9;border-left:3px solid #2dc98a;"><div style="display:flex;justify-content:space-between;align-items:center;"><div style="font-size:.68rem;font-weight:700;color:var(--ia-text);">📈 Aterrizaje suave</div><div style="font-size:.75rem;font-weight:800;color:#2dc98a;">+12% est.</div></div><div style="font-size:.58rem;color:var(--ia-muted);margin-top:3px;">Inflación controlada + tipos bajando. Favorable para renta variable.</div></div>
+            <div style="background:#fff;border-radius:10px;padding:10px 12px;border:1px solid #e8ebe9;border-left:3px solid #f59e0b;"><div style="display:flex;justify-content:space-between;align-items:center;"><div style="font-size:.68rem;font-weight:700;color:var(--ia-text);">⚡ Shock inflacionario</div><div style="font-size:.75rem;font-weight:800;color:#f59e0b;">−5% est.</div></div><div style="font-size:.58rem;color:var(--ia-muted);margin-top:3px;">Tipos más altos prolongados. Presión en growth y tecnología.</div></div>
+            <div style="background:#fff;border-radius:10px;padding:10px 12px;border:1px solid #e8ebe9;border-left:3px solid #dc2626;"><div style="display:flex;justify-content:space-between;align-items:center;"><div style="font-size:.68rem;font-weight:700;color:var(--ia-text);">🔻 Recesión global</div><div style="font-size:.75rem;font-weight:800;color:#dc2626;">−28% est.</div></div><div style="font-size:.58rem;color:var(--ia-muted);margin-top:3px;">Renta variable cae con fuerza. Sin bonos como amortiguador.</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- AI ACTIONS -->
+    <div class="card">
+      <div class="card-title">
+        <div class="ctitle-left">
+          <div class="ctitle-icon ci-green"><svg viewBox="0 0 16 16" fill="none" stroke="#1aab70" stroke-width="1.8" width="15" height="15"><path d="M8 2v4M8 10v4M2 8h4M10 8h4M4.6 4.6l2.8 2.8M8.6 8.6l2.8 2.8M4.6 11.4l2.8-2.8M8.6 5.4l2.8-2.8"/></svg></div>
+          What Vera can do
+        </div>
+      </div>
+      <button class="ai-action-full" onclick="runAction(this,'full')">
+        <svg viewBox="0 0 18 18" fill="none" stroke="#fff" stroke-width="1.7" width="17" height="17"><rect x="2" y="2" width="14" height="14" rx="3"/><path d="M5 9h8M5 6h5M5 12h3"/></svg>
+        Full Portfolio Analysis
+        <svg viewBox="0 0 14 14" fill="none" stroke="#fff" stroke-width="2" width="12" height="12" style="margin-left:auto;"><polyline points="5 2 10 7 5 12"/></svg>
+      </button>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:0;">
+        <button class="ai-action-btn" onclick="runAction(this,'balance')"><div class="aab-icon" style="background:#e6faf3;"><svg viewBox="0 0 18 18" fill="none" stroke="#1aab70" stroke-width="1.6" width="17" height="17"><circle cx="9" cy="9" r="7"/><path d="M9 5v4l2.5 2.5"/></svg></div><div class="aab-text"><div class="aab-name">Portfolio Balance</div><div class="aab-desc">Current state overview</div></div></button>
+        <button class="ai-action-btn" onclick="runAction(this,'diversificacion')"><div class="aab-icon" style="background:#eff6ff;"><svg viewBox="0 0 18 18" fill="none" stroke="#1d4ed8" stroke-width="1.6" width="17" height="17"><circle cx="6" cy="9" r="3"/><circle cx="12" cy="6" r="2.5"/><circle cx="12" cy="12" r="2.5"/><line x1="8.6" y1="7.9" x2="10" y2="7.2"/><line x1="8.6" y1="10.1" x2="10" y2="10.8"/></svg></div><div class="aab-text"><div class="aab-name">Diversification</div><div class="aab-desc">Reduce concentration</div></div></button>
+        <button class="ai-action-btn" onclick="runAction(this,'dividendos')"><div class="aab-icon" style="background:#fefce8;"><svg viewBox="0 0 18 18" fill="none" stroke="#b45309" stroke-width="1.6" width="17" height="17"><path d="M9 2v14M5 5h5.5a2.5 2.5 0 0 1 0 5H5M5 10h6a3 3 0 0 1 0 6H5"/></svg></div><div class="aab-text"><div class="aab-name">Improve Dividends</div><div class="aab-desc">Boost passive income</div></div></button>
+        <button class="ai-action-btn" onclick="runAction(this,'rentabilidad')"><div class="aab-icon" style="background:#f0fdf4;"><svg viewBox="0 0 18 18" fill="none" stroke="#166534" stroke-width="1.6" width="17" height="17"><polyline points="2 12 6 7 10 9 16 3"/><polyline points="13 3 16 3 16 6"/></svg></div><div class="aab-text"><div class="aab-name">Boost Returns</div><div class="aab-desc">Strategy for more yield</div></div></button>
+        <button class="ai-action-btn" onclick="runAction(this,'riesgo')"><div class="aab-icon" style="background:#fef2f2;"><svg viewBox="0 0 18 18" fill="none" stroke="#f05252" stroke-width="1.6" width="17" height="17"><path d="M9 2L3 6v5c0 3.5 2.6 6.8 6 7.5 3.4-.7 6-4 6-7.5V6L9 2z"/><path d="M6.5 9l2 2 3-3"/></svg></div><div class="aab-text"><div class="aab-name">Reduce Risk</div><div class="aab-desc">Protect your portfolio</div></div></button>
+        <button class="ai-action-btn" onclick="runAction(this,'rebalanceo')"><div class="aab-icon" style="background:#f5f3ff;"><svg viewBox="0 0 18 18" fill="none" stroke="#7c5cbf" stroke-width="1.6" width="17" height="17"><path d="M3 9h12M9 3l3 3-3 3M9 15l-3-3 3-3"/></svg></div><div class="aab-text"><div class="aab-name">Rebalance Plan</div><div class="aab-desc">Return to target weights</div></div></button>
+      </div>
+      <div id="actionResult" style="display:none;margin-top:12px;padding:14px;background:#f8faf9;border-radius:12px;border-left:3px solid #1aab70;">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;"><div style="width:22px;height:22px;border-radius:6px;background:#0e1f15;display:flex;align-items:center;justify-content:center;flex-shrink:0;"><svg viewBox="0 0 16 16" fill="none"><rect x="2" y="4" width="12" height="8" rx="2" fill="rgba(255,255,255,0.15)" stroke="rgba(255,255,255,0.5)" stroke-width="1"/><circle cx="6" cy="8" r="1.2" fill="#2dc98a"/><circle cx="10" cy="8" r="1.2" fill="#2dc98a"/></svg></div><span id="actionResultTitle" style="font-size:.75rem;font-weight:800;"></span></div>
+        <div id="actionResultText" style="font-size:.74rem;color:#374151;line-height:1.65;"></div>
+      </div>
+    </div>
+
+    <!-- VERA'S INSIGHTS -->
+    <div class="card">
+      <div class="card-title">
+        <div class="ctitle-left">
+          <div class="ctitle-icon ci-amber"><svg viewBox="0 0 16 16" fill="none" stroke="#b45309" stroke-width="1.8" width="16" height="16"><path d="M8 2l1.5 3 3.5.5-2.5 2.5.6 3.5L8 10l-3.1 1.5.6-3.5L3 5.5l3.5-.5L8 2z"/></svg></div>
+          Vera's Insights
+        </div>
+        <span class="card-link">Ver todo</span>
+      </div>
+      <div class="insight-list" id="iaInsightsList">
+        <div class="ins-row"><div class="ins-dot dot-red" style="margin-top:6px;"></div><div class="ins-body"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:3px;"><div class="ins-tag tag-red">Concentración · Urgente</div></div><div class="ins-text">Tienes <b>alta concentración</b> en pocos activos. Diversificar reduciría tu riesgo idiosincrático.</div><div class="ins-cta">Cómo diversificar →</div></div></div>
+        <div class="ins-row"><div class="ins-dot dot-yellow" style="margin-top:6px;"></div><div class="ins-body"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:3px;"><div class="ins-tag tag-yellow">Rendimiento · Watch</div></div><div class="ins-text" id="iaInsightReturn">Calculando rentabilidad…</div><div class="ins-cta">Ver comparativa →</div></div></div>
+        <div class="ins-row"><div class="ins-dot dot-blue" style="margin-top:6px;"></div><div class="ins-body"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:3px;"><div class="ins-tag tag-blue">Oportunidad</div></div><div class="ins-text">Añadir un ETF de mercados emergentes bajaría tu correlación a <b>0.47</b> y subiría tu Health Score a ~72.</div><div class="ins-badge b-blue" style="margin-top:6px;">+25 puntos de diversificación</div></div></div>
+        <div class="ins-row"><div class="ins-dot dot-green" style="margin-top:6px;"></div><div class="ins-body"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:3px;"><div class="ins-tag tag-green">Positivo</div></div><div class="ins-text" id="iaInsightFees">TER muy eficiente. Pagas mínimo en comisiones de gestión.</div><div class="ins-badge b-green" style="margin-top:6px;">Coste óptimo</div></div></div>
+      </div>
+    </div>
+
+    <!-- HEALTH SCORE -->
+    <div class="card">
+      <div class="card-title">
+        <div class="ctitle-left">
+          <div class="ctitle-icon ci-red"><svg viewBox="0 0 16 16" fill="none" width="16" height="16"><path d="M8 13.5S2 9.5 2 5.5A3.5 3.5 0 0 1 8 3.5 3.5 3.5 0 0 1 14 5.5C14 9.5 8 13.5 8 13.5z" fill="rgba(240,82,82,0.2)" stroke="#f05252" stroke-width="1.4"/></svg></div>
+          Health Score
+        </div>
+      </div>
+      <div class="hs-row">
+        <div class="hs-ring">
+          <canvas id="hsCanvas" width="76" height="76"></canvas>
+          <div class="hs-ring-lbl"><span class="hs-num" id="hsNum">—</span><span class="hs-den">/100</span></div>
+        </div>
+        <div class="hs-pillars">
+          <div class="pr"><span class="pr-label">Diversif.</span><div class="pr-track"><div class="pr-fill" id="hsDiversifBar" style="width:0%;background:#e0e0e0;"></div></div><span class="pr-val" id="hsDiversifVal" style="color:#f05252;">—</span></div>
+          <div class="pr"><span class="pr-label">Riesgo</span><div class="pr-track"><div class="pr-fill" id="hsRiskBar" style="width:57%;background:#2dc98a;"></div></div><span class="pr-val" id="hsRiskVal" style="color:#2dc98a;">—</span></div>
+          <div class="pr"><span class="pr-label">Rentabilidad</span><div class="pr-track"><div class="pr-fill" id="hsRentBar" style="width:86%;background:#f5b731;"></div></div><span class="pr-val" id="hsRentVal" style="color:#d97706;">—</span></div>
+        </div>
+      </div>
+      <div class="plan-steps">
+        <div class="plan-step"><div class="plan-step-num">1</div>Añadir un 2º activo no correlacionado<span class="plan-pts">+20 pts</span></div>
+        <div class="plan-step"><div class="plan-step-num">2</div>Limitar peso máximo de un activo al 70%<span class="plan-pts">+8 pts</span></div>
+      </div>
+      <div style="margin:12px 0 14px;">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;"><span style="font-size:.65rem;font-weight:700;color:var(--ia-muted);text-transform:uppercase;letter-spacing:.07em;">Score history · 6 months</span><span style="font-size:.65rem;font-weight:700;color:#1aab70;" id="hsHistLabel">↑ mejorando</span></div>
+        <div style="position:relative;height:52px;"><canvas id="scoreHistCanvas"></canvas></div>
+        <div style="display:flex;align-items:center;gap:8px;margin-top:10px;padding:9px 12px;background:#f0faf5;border-radius:10px;"><svg viewBox="0 0 16 16" fill="none" stroke="#1aab70" stroke-width="1.6" width="16" height="16"><circle cx="8" cy="8" r="6"/><path d="M5 8l2 2 4-4"/></svg><span style="font-size:.7rem;color:#166534;line-height:1.4;">Tu Health Score supera al <b id="hsPercentile">63%</b> de usuarios con portfolio similar.</span></div>
+      </div>
+      <button class="improve-btn">
+        <svg viewBox="0 0 16 16" fill="none" stroke="#fff" stroke-width="1.8" width="15" height="15"><path d="M8 2v3M8 11v3M2 8h3M11 8h3M4.2 4.2l2.1 2.1M9.7 9.7l2.1 2.1M4.2 11.8l2.1-2.1M9.7 6.3l2.1-2.1"/></svg>
+        Generar plan de mejora personalizado
+      </button>
+    </div>
+
+    <!-- PREMIUM -->
+    <div class="prem-card">
+      <div class="prem-top">
+        <div class="prem-av"><svg viewBox="0 0 22 22" fill="none" width="22" height="22"><path d="M11 2l2 6h6l-5 4 2 6-5-3.5L6 18l2-6L3 8h6l2-6z" fill="rgba(255,255,255,0.2)" stroke="rgba(255,255,255,0.6)" stroke-width="1.2" stroke-linejoin="round"/></svg></div>
+        <div><div class="prem-title">Vera Pro</div><div class="prem-sub">Análisis ilimitado · Sin restricciones</div></div>
+      </div>
+      <div class="prem-feats">
+        <div class="pf"><div class="pf-dot"></div><div><div class="pf-name">PDF Reports</div><div class="pf-desc">Análisis completo descargable</div></div></div>
+        <div class="pf"><div class="pf-dot"></div><div><div class="pf-name">AI Alerts</div><div class="pf-desc">Vera te avisa antes de movimientos clave</div></div></div>
+        <div class="pf"><div class="pf-dot"></div><div><div class="pf-name">Simulaciones</div><div class="pf-desc">Escenarios ilimitados</div></div></div>
+        <div class="pf"><div class="pf-dot"></div><div><div class="pf-name">Benchmark global</div><div class="pf-desc">Vs índices y top portfolios</div></div></div>
+      </div>
+      <div class="prem-price-row">
+        <span class="prem-price-num">4,99 €</span>
+        <span class="prem-price-mo">/mes</span>
+        <span class="prem-price-old">9,99 €</span>
+        <span style="margin-left:6px;background:rgba(45,201,138,.2);color:#6ee7b7;font-size:.58rem;font-weight:800;padding:2px 7px;border-radius:5px;text-transform:uppercase;letter-spacing:.06em;">−50%</span>
+      </div>
+      <button class="prem-btn">Empezar prueba gratuita 7 días →</button>
+      <div class="prem-note">Sin tarjeta de crédito · Cancela cuando quieras</div>
+    </div>
+
+  </div>
 </div>
 
 <!-- ============ DETALLE ACTIVO ============ -->
@@ -4290,40 +4754,77 @@ function updateCalendarFromDetail(){
   if(refinedAnnual>0)_renderDivGoal(refinedAnnual);
 }
 
-// ========== IA ==========
+// ========== IA v2 ==========
+let _iaGaugesDrawn = false;
+
 function renderIA(){
-  const total=assets.reduce((s,a)=>s+toDisplay(a.value,assetCcy(a)),0),invested=assets.reduce((s,a)=>s+toDisplay(a.invested,costCcy(a)),0),gainPct=invested>0?((total-invested)/invested)*100:0;
-  const sorted=[...assets].sort((a,b)=>toDisplay(b.value,assetCcy(b))-toDisplay(a.value,assetCcy(a))),top=sorted[0],topVal=top?toDisplay(top.value,assetCcy(top)):0,topPct=total>0?topVal/total*100:0;
-  const{score,diversif,riesgo,rentab}=computeHealthScore(),catMap={};assets.forEach(a=>{const c=assetCategory(a);catMap[c]=(catMap[c]||0)+toDisplay(a.value,assetCcy(a));});
-  const fondPct=total>0?(catMap['Fondos']||0)/total*100:0,negA=assets.filter(a=>a.gainPct<-5).sort((a,b)=>a.gainPct-b.gainPct);
-  const isEs=currentLang==='es';
-  const ins=[
-    {icon:'📊',cat:isEs?'Resumen general':'Overview',txt:isEs?`Portfolio de ${assets.length} activos valorado en ${fe(total)}. Rentabilidad acumulada ${gainPct>=0?'+':''}${gainPct.toFixed(2)}% sobre ${fe(invested)} invertido.`:`${assets.length}-asset portfolio worth ${fe(total)}. ${gainPct>=0?'+':''}${gainPct.toFixed(2)}% accumulated return on ${fe(invested)} invested.`,tag:gainPct>5?{t:isEs?'Rendimiento positivo':'Positive return',c:'good'}:gainPct<0?{t:isEs?'En pérdidas':'In loss',c:'warn'}:{t:isEs?'Rendimiento moderado':'Moderate return',c:'info'}},
-    {icon:'⚖️',cat:isEs?'Concentración':'Concentration',txt:isEs?`Mayor posición: ${escapeHtml(top?.name||'')} (${topPct.toFixed(1)}% · ${fe(topVal)}). ${topPct>30?'Alta concentración, considera diversificar.':'Concentración razonable.'}`:`Largest position: ${escapeHtml(top?.name||'')} (${topPct.toFixed(1)}% · ${fe(topVal)}). ${topPct>30?'High concentration — consider diversifying.':'Concentration looks reasonable.'}`,tag:topPct>30?{t:isEs?'Concentración elevada':'High concentration',c:'warn'}:{t:isEs?'Bien diversificado':'Well diversified',c:'good'}},
-    {icon:'📡',cat:isEs?'Cobertura de datos':'Data coverage',txt:isEs?`${counts().ok}/${assets.length} activos con histórico real. ${counts().ok===assets.length?'Cobertura completa.':counts().missing+' activos sin histórico.'}`:`${counts().ok}/${assets.length} assets with real history. ${counts().ok===assets.length?'Full coverage.':counts().missing+' assets missing history.'}`,tag:counts().ok===assets.length?{t:isEs?'Cobertura 100%':'100% coverage',c:'good'}:{t:isEs?'Cobertura parcial':'Partial coverage',c:'warn'}},
-    negA.length>0?{icon:'📉',cat:isEs?'Posiciones en pérdidas':'Positions in loss',txt:(isEs?`${negA.length} posición${negA.length>1?'es':''} con >-5%: `:`${negA.length} position${negA.length>1?'s':''} >-5%: `)+negA.slice(0,3).map(a=>`${escapeHtml(a.name)} (${a.gainPct.toFixed(1)}%)`).join(', '),tag:{t:isEs?'Revisar posiciones':'Review positions',c:'warn'}}:{icon:'✅',cat:isEs?'Posiciones en pérdidas':'Positions in loss',txt:isEs?'Ninguna posición con pérdidas superiores al 5%.':'No positions with losses exceeding 5%.',tag:{t:isEs?'Sin alertas':'No alerts',c:'good'}},
-    {icon:'❤️',cat:isEs?'Score de salud':'Health score',txt:isEs?`Score ${score}/100 (Diversif. ${diversif} · Riesgo ${riesgo} · Rentab. ${rentab}). ${score>=70?'Portfolio bien equilibrado.':score>=50?'Hay margen de mejora.':'Considera revisar la composición.'}`:`Score ${score}/100 (Diversif. ${diversif} · Risk ${riesgo} · Return ${rentab}). ${score>=70?'Well-balanced portfolio.':score>=50?'Room for improvement.':'Consider reviewing composition.'}`,tag:score>=70?{t:isEs?'Salud alta':'High health',c:'good'}:score>=50?{t:isEs?'Salud media':'Medium health',c:'info'}:{t:isEs?'Mejorable':'Improvable',c:'warn'}}
-  ];
-  document.getElementById('iaInsightsList').innerHTML=ins.map(i=>`<div class="iaInsightCard"><div class="iaStar">${i.icon}</div><div class="icat">${i.cat}</div><div class="itxt">${i.txt}</div>${i.tag?`<span class="iaTag ${i.tag.c}">${i.tag.t}</span>`:''}</div>`).join('');
-  // Update quick question buttons language
-  const quickBtns = document.getElementById('iaQuickBtns');
-  if(quickBtns) {
-    const questions = currentLang==='es' ? [
-      '¿Cómo está mi cartera?',
-      '¿Cuál es mi mejor activo?',
-      '¿Estoy bien diversificado?',
-      '¿Qué activo tiene más riesgo?',
-      'Dame un resumen de dividendos',
-    ] : [
-      'How is my portfolio?',
-      'What is my best asset?',
-      'Am I well diversified?',
-      'What asset has most risk?',
-      'Summarize my dividends',
-    ];
-    quickBtns.innerHTML = questions.map((q,i)=>`<button class="iaQuickBtn" data-qi="${i}">${q}</button>`).join('');
-    quickBtns.querySelectorAll('.iaQuickBtn').forEach((btn,i)=>btn.addEventListener('click',()=>sendIaMessage(questions[i])));
+  const total=assets.reduce((s,a)=>s+toDisplay(a.value,assetCcy(a)),0);
+  const invested=assets.reduce((s,a)=>s+toDisplay(a.invested,costCcy(a)),0);
+  const gainPct=invested>0?((total-invested)/invested)*100:0;
+  const gainAmt=total-invested;
+  const{score,diversif,riesgo,rentab}=computeHealthScore();
+
+  // Brief date
+  const now=new Date();
+  const dateStr=now.toLocaleDateString(currentLang==='es'?'es-ES':'en-GB',{day:'numeric',month:'short',year:'numeric'});
+  const briefDateEl=document.getElementById('iaBriefDate');
+  if(briefDateEl) briefDateEl.textContent='Briefing · '+dateStr;
+
+  // Brief body
+  const briefEl=document.getElementById('iaBriefBody');
+  if(briefEl){
+    const gainSign=gainAmt>=0?'+':'';
+    const cls=gainAmt>=0?'brief-up':'brief-down';
+    briefEl.innerHTML=`Tu portfolio vale <b>${fe(total)}</b>. Rentabilidad acumulada: <span class="${cls}">${gainSign}${fe(gainAmt)} (${gainSign}${gainPct.toFixed(2)}%)</span>. Health Score: <b>${score}/100</b>.`;
   }
+
+  // Metrics strip
+  const vmHealth=document.getElementById('iaVmHealth');
+  const vmReturn=document.getElementById('iaVmReturn');
+  if(vmHealth){vmHealth.textContent=score+'/100';vmHealth.className='vm-val '+(score>=70?'good':score>=50?'warn':'warn');}
+  if(vmReturn){vmReturn.textContent=(gainPct>=0?'+':'')+gainPct.toFixed(1)+'%';vmReturn.className='vm-val '+(gainPct>=0?'good':'');}
+
+  // Dynamic insight: return
+  const insRet=document.getElementById('iaInsightReturn');
+  if(insRet) insRet.innerHTML=`Tu portfolio lleva <b>${gainPct>=0?'+':''}${gainPct.toFixed(2)}%</b> acumulado sobre ${fe(invested)} invertido.`;
+
+  // Stress scenarios (based on total portfolio value)
+  const s2008=document.getElementById('iaStress2008');
+  const sCovid=document.getElementById('iaStressCovid');
+  const s2022=document.getElementById('iaStress2022');
+  if(s2008) s2008.textContent=fe(-total*0.57);
+  if(sCovid) sCovid.textContent=fe(-total*0.34);
+  if(s2022) s2022.textContent=fe(-total*0.195);
+
+  // Health score pillars
+  const hsNumEl=document.getElementById('hsNum');
+  if(hsNumEl) hsNumEl.textContent=score;
+  const hsDivBar=document.getElementById('hsDiversifBar');
+  const hsDivVal=document.getElementById('hsDiversifVal');
+  const hsRiskBar=document.getElementById('hsRiskBar');
+  const hsRiskVal=document.getElementById('hsRiskVal');
+  const hsRentBar=document.getElementById('hsRentBar');
+  const hsRentVal=document.getElementById('hsRentVal');
+  if(hsDivBar){hsDivBar.style.width=diversif+'%';hsDivBar.style.background=diversif>=70?'#2dc98a':diversif>=50?'#f5b731':'#f05252';}
+  if(hsDivVal){hsDivVal.textContent=diversif;hsDivVal.style.color=diversif>=70?'#2dc98a':diversif>=50?'#d97706':'#f05252';}
+  if(hsRiskBar){hsRiskBar.style.width=riesgo+'%';hsRiskBar.style.background=riesgo>=70?'#2dc98a':riesgo>=50?'#f5b731':'#f05252';}
+  if(hsRiskVal){hsRiskVal.textContent=riesgo;hsRiskVal.style.color=riesgo>=70?'#2dc98a':riesgo>=50?'#d97706':'#f05252';}
+  if(hsRentBar){hsRentBar.style.width=rentab+'%';hsRentBar.style.background=rentab>=70?'#2dc98a':rentab>=50?'#f5b731':'#f05252';}
+  if(hsRentVal){hsRentVal.textContent=rentab;hsRentVal.style.color=rentab>=70?'#2dc98a':rentab>=50?'#d97706':'#f05252';}
+
+  // Gauges (draw once per session, or re-draw if score changed)
+  iaDrawAllGauges(score);
+
+  // Percentile (rough estimate based on score)
+  const pct=document.getElementById('psPctile');
+  if(pct) pct.textContent=score<40?'5%':score<50?'10%':score<60?'25%':score<70?'45%':score<80?'65%':'80%';
+  const hsPct=document.getElementById('hsPercentile');
+  if(hsPct) hsPct.textContent=score<40?'10%':score<50?'25%':score<60?'40%':score<70?'60%':'75%';
+
+  // Portfolio actions data — inject real values
+  _iaActionData.full.text=`📊 <b>Resumen:</b> Portfolio valorado en ${fe(total)} · ${gainPct>=0?'+':''}${gainPct.toFixed(2)}% rentabilidad (+${fe(gainAmt)}) sobre ${fe(invested)} invertido · ${assets.length} posiciones.<br><br>✅ <b>Fortalezas:</b> Rentabilidad sólida. Bajo TER.<br><br>⚠️ <b>Áreas de mejora:</b> Concentración elevada. Health Score ${score}/100.<br><br>🎯 <b>Acciones prioritarias:</b> (1) Añadir 2º activo no correlacionado → +20 pts. (2) Limitar peso máximo al 70%.`;
+  _iaActionData.balance.text=`Tu portfolio vale <b>${fe(total)}</b> con rentabilidad acumulada de <b>${gainPct>=0?'+':''}${gainPct.toFixed(2)}%</b> (${fe(gainAmt)}) sobre ${fe(invested)} invertido. ${assets.length} posiciones activas. Health Score ${score}/100.`;
+  _iaActionData.riesgo.text=`Tu principal riesgo es la <b>concentración</b>. Acciones: (1) Limita cualquier activo al 60-70% del portfolio. (2) Añade bonos (10-15%) — reduce volatilidad de ~14% a ~9%. (3) Mantén liquidez por encima del 10%. Escenario 2008: ${fe(-total*0.57)}.`;
 }
 
 // ========== Lists ==========
@@ -5521,117 +6022,207 @@ Liquidity:
 ${liqLines||'No liquidity entries'}`;
 }
 
-async function sendIaMessage(userText) {
-  if(!userText.trim()) return;
+// ========== IA v2 – chat + gauges + actions ==========
 
-  const messagesEl = document.getElementById('iaChatMessages');
+const _iaActionData = {
+  full:          { title:'Full Portfolio Analysis', color:'#1aab70', text:'' },
+  balance:       { title:'Portfolio Balance', color:'#1aab70', text:'' },
+  diversificacion:{ title:'Plan de Diversificación', color:'#1d4ed8', text:'Con alta concentración en renta variable, los próximos pasos son: <b>(1)</b> Vanguard FTSE EM (VWRD/EMIM) — mercados emergentes, correlación 0.47. <b>(2)</b> iShares MSCI Europe (IEUR) — mayor peso europeo. <b>(3)</b> AGGH bonos — reducción volatilidad. Asignación sugerida: 60% RV global · 25% Emergentes · 15% Bonos. Health Score estimado: 72/100.' },
+  dividendos:    { title:'Plan de Dividendos', color:'#b45309', text:'Tu yield actual es moderado. Para aumentar ingresos pasivos sin cambiar perfil de riesgo: <b>(1)</b> EHDV (Invesco EURO STOXX, yield ~4.2%). <b>(2)</b> TDIV (VanEck, yield ~3.3%). Asignando parte de liquidez a ETFs de dividendo podrías generar <b>~€180/año extra</b>.' },
+  rentabilidad:  { title:'Estrategia para Más Retorno', color:'#166534', text:'Tu portfolio tiene buena rentabilidad. Para mejorar: <b>(1)</b> Aportaciones periódicas (DCA). <b>(2)</b> Reinvertir dividendos (+0.8% anual por capitalización). <b>(3)</b> Considera 10-15% en small caps (WSML) — históricamente +2.5% sobre el índice. <b>(4)</b> No vender en caídas cortas — coste de oportunidad medio: −7%/año.' },
+  riesgo:        { title:'Plan de Reducción de Riesgo', color:'#f05252', text:'' },
+  rebalanceo:    { title:'Plan de Rebalanceo', color:'#7c5cbf', text:'Con alta concentración aún no hay mucho que rebalancear. Cuando diversifiques: <b>(1)</b> Define pesos objetivo (ej. 60/25/15). <b>(2)</b> Rebalancear cuando cualquier activo se desvíe ±5% del objetivo. <b>(3)</b> Usa nuevas aportaciones cuando sea posible — evita plusvalías.' }
+};
 
-  // Remove welcome message
-  const welcome = messagesEl.querySelector('.iaWelcome');
-  if(welcome) welcome.remove();
+const _iaVeraReplies = {
+  drop:    'Tu portfolio depende de la evolución de los mercados globales. Las caídas diarias del 0.5-1% son normales en renta variable. Mientras tu horizonte sea largo plazo (+10 años), no hay señal de alarma.',
+  diversi: 'Estás expuesto principalmente a renta variable de mercados desarrollados. Te sugiero añadir: VWRD (global más amplio), EMIM (emergentes, correlación 0.47), o AGGH (bonos). Un split 70/20/10 subiría tu Health Score a ~72.',
+  msci:    'Tu portfolio sigue de cerca a MSCI World. La ventaja de fondos indexados es que replica el índice con mínimo tracking error y TER bajísimo (0.12%). Para batir al índice necesitarías gestión activa, pero históricamente el 90% de fondos activos lo pierde a largo plazo.',
+  rebalanc:'Rebalancear cuando cualquier posición se desvíe ±5% de tu objetivo. Usa nuevas aportaciones para rebalancear (flow rebalancing) — así evitas tributar por plusvalías. Revisión trimestral recomendada.',
+  simul:   'Aportando €500/mes a 8% anualizado (media histórica MSCI): en 5 años ~€40.000, en 10 años ~€91.000, en 20 años ~€294.000. La magia del interés compuesto: €120.000 aportados → €174.000 adicionales de rendimiento.',
+  risk:    'Tu principal riesgo es la concentración (pocos activos). Volatilidad anualizada ~14%, normal para renta variable global. El max drawdown del MSCI World es −57% (crisis 2008). En ese escenario tu portfolio perdería significativamente — diversificar con bonos reduciría ese impacto a la mitad.'
+};
 
-  // Add user message
-  _iaChatHistory.push({role:'user', content:userText});
-  appendChatMsg('user', userText);
-
-  // Typing indicator
-  const typingEl = document.createElement('div');
-  typingEl.className='iaTyping';
-  typingEl.innerHTML='<div class="iaTypingDot"></div><div class="iaTypingDot"></div><div class="iaTypingDot"></div>';
-  messagesEl.appendChild(typingEl);
-  messagesEl.scrollTop = messagesEl.scrollHeight;
-
-  try {
-    const systemPrompt = `Eres Finasset AI, un asistente financiero experto en gestión de carteras de inversión. Tienes acceso a los datos reales del portfolio del usuario. Responde en el mismo idioma que el usuario (español o inglés). Sé conciso, claro y útil. No inventes datos. Solo analiza lo que tienes.
-
-${buildPortfolioContext()}`;
-
-    const messages = [
-      {role:'system', content:systemPrompt},
-      ..._iaChatHistory.slice(-10) // last 10 messages for context
-    ];
-
-    const res = await fetch('/api/ai/chat', {
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({messages})
-    });
-
-    typingEl.remove();
-
-    if(!res.ok) {
-      const err = await res.json().catch(()=>({error:'Error desconocido'}));
-      appendChatMsg('ai', '⚠️ ' + (err.error || 'Error al conectar con la IA. Verifica la configuración.'));
-      return;
-    }
-
-    const data = await res.json();
-    const reply = data.choices?.[0]?.message?.content || 'Sin respuesta';
-    _iaChatHistory.push({role:'assistant', content:reply});
-    appendChatMsg('ai', reply);
-  } catch(e) {
-    typingEl.remove();
-    appendChatMsg('ai', '⚠️ Error de red: ' + e.message);
-  }
+function _iaGetKey(t) {
+  const map = {baj:'drop',drop:'drop','por qué':'drop',subió:'drop',diversif:'diversi',msci:'msci','comparar':'msci',rebalanc:'rebalanc','500':'simul','aportac':'simul',riesgo:'risk',risk:'risk'};
+  t = t.toLowerCase();
+  for(const[k,v] of Object.entries(map)) if(t.includes(k)) return v;
+  return null;
 }
 
-function appendChatMsg(role, text) {
-  const messagesEl = document.getElementById('iaChatMessages');
-  const now = new Date().toLocaleTimeString(currentLang==='es'?'es-ES':'en-GB', {hour:'2-digit',minute:'2-digit'});
-  const div = document.createElement('div');
-  div.className = 'iaChatMsg ' + role;
-  div.innerHTML = `<div class="iaChatBubble">${escapeHtml(text).replace(/\n/g,'<br>')}</div><div class="iaChatTime">${now}</div>`;
-  messagesEl.appendChild(div);
-  messagesEl.scrollTop = messagesEl.scrollHeight;
-}
-
-let _iaChatInitialized = false;
-function initIaChat() {
-  if(_iaChatInitialized) return;
-  _iaChatInitialized = true;
-
-  const input = document.getElementById('iaChatInput');
-  const sendBtn = document.getElementById('iaSendBtn');
-  const clearBtn = document.getElementById('iaClearBtn');
-
-  const send = () => {
-    const txt = input.value.trim();
-    if(!txt) return;
-    input.value = '';
-    sendIaMessage(txt);
-  };
-
-  sendBtn.addEventListener('click', send);
-  input.addEventListener('keydown', e => { if(e.key==='Enter' && !e.shiftKey) { e.preventDefault(); send(); } });
-  clearBtn.addEventListener('click', () => {
-    _iaChatHistory = [];
-    const el = document.getElementById('iaChatMessages');
-    el.innerHTML = '<div class="iaWelcome" style="text-align:center;padding:20px 0;color:#8fa090"><div style="font-size:32px;margin-bottom:8px">🤖</div><div style="font-size:14px;font-weight:600">Pregúntame sobre tu cartera</div><div style="font-size:12px;margin-top:4px">Análisis, sugerencias, comparativas...</div></div>';
+function iaPulseVera() {
+  document.querySelectorAll('.av-vera2').forEach(av => {
+    av.style.boxShadow = '0 0 0 3px rgba(45,201,138,0.35)';
+    setTimeout(() => { av.style.boxShadow=''; }, 1200);
   });
+}
 
-  // Quick questions
-  const quickBtns = document.getElementById('iaQuickBtns');
-  const questions = currentLang==='es' ? [
-    '¿Cómo está mi cartera?',
-    '¿Cuál es mi mejor activo?',
-    '¿Estoy bien diversificado?',
-    '¿Qué activo tiene más riesgo?',
-    'Dame un resumen de dividendos',
-  ] : [
-    'How is my portfolio?',
-    'What is my best asset?',
-    'Am I well diversified?',
-    'What asset has most risk?',
-    'Summarize my dividends',
-  ];
-  if(quickBtns){
-    quickBtns.innerHTML = questions.map((q,i)=>`<button class="iaQuickBtn" data-qi="${i}">${escapeHtml(q)}</button>`).join('');
-    quickBtns.querySelectorAll('.iaQuickBtn').forEach((btn,i)=>btn.addEventListener('click',()=>sendIaMessage(questions[i])));
+function iaAddMsg(text, isUser) {
+  const msgs = document.getElementById('iaChatMsgs');
+  if(!msgs) return;
+  const div = document.createElement('div');
+  div.className = 'ia-msg' + (isUser?' user':'');
+  if(isUser){
+    div.innerHTML=`<div class="ia-bubble user">${escapeHtml(text)}</div><div class="ia-msg-av av-user2"><svg viewBox="0 0 16 16" fill="none" stroke="#7c5cbf" stroke-width="1.5" width="13" height="13"><circle cx="8" cy="5" r="3"/><path d="M2 14c0-3.3 2.7-6 6-6s6 2.7 6 6"/></svg></div>`;
+  } else {
+    div.innerHTML=`<div class="ia-msg-av av-vera2"><svg viewBox="0 0 16 16" fill="none"><rect x="2" y="4" width="12" height="8" rx="2" fill="rgba(255,255,255,0.12)" stroke="rgba(255,255,255,0.5)" stroke-width="1"/><circle cx="6" cy="8" r="1.3" fill="#2dc98a"/><circle cx="10" cy="8" r="1.3" fill="#2dc98a"/></svg></div><div class="ia-bubble vera">${text}</div>`;
   }
+  msgs.appendChild(div);
+  msgs.scrollTop = msgs.scrollHeight;
+}
+
+function iaAddVeraMsg(text, confidence) {
+  const msgs = document.getElementById('iaChatMsgs');
+  if(!msgs) return;
+  const confColor = confidence>=90?'#1aab70':confidence>=80?'#d97706':'#8a9e93';
+  const div = document.createElement('div');
+  div.className = 'ia-msg';
+  div.innerHTML=`<div class="ia-msg-av av-vera2"><svg viewBox="0 0 16 16" fill="none"><rect x="2" y="4" width="12" height="8" rx="2" fill="rgba(255,255,255,0.12)" stroke="rgba(255,255,255,0.5)" stroke-width="1"/><circle cx="6" cy="8" r="1.3" fill="#2dc98a"/><circle cx="10" cy="8" r="1.3" fill="#2dc98a"/></svg></div><div style="display:flex;flex-direction:column;gap:4px;max-width:78%;"><div class="ia-bubble vera">${text}</div><div style="display:flex;align-items:center;gap:5px;padding:0 2px;"><div style="flex:1;height:3px;background:#f0f0f0;border-radius:2px;overflow:hidden;"><div style="width:${confidence}%;height:100%;background:${confColor};border-radius:2px;"></div></div><span style="font-size:.55rem;font-weight:700;color:${confColor};flex-shrink:0;">Confianza ${confidence}%</span></div></div>`;
+  msgs.appendChild(div);
+  msgs.scrollTop = msgs.scrollHeight;
+}
+
+function iaShowTyping(question) {
+  iaPulseVera();
+  const msgs = document.getElementById('iaChatMsgs');
+  if(!msgs) return;
+  const t = document.createElement('div');
+  t.className='ia-msg'; t.id='iaTypingIndicator';
+  t.innerHTML=`<div class="ia-msg-av av-vera2"><svg viewBox="0 0 16 16" fill="none"><rect x="2" y="4" width="12" height="8" rx="2" fill="rgba(255,255,255,0.12)" stroke="rgba(255,255,255,0.5)" stroke-width="1"/><circle cx="6" cy="8" r="1.3" fill="#2dc98a"/><circle cx="10" cy="8" r="1.3" fill="#2dc98a"/></svg></div><div class="ia-bubble vera"><div class="ia-typing-wrap"><span></span><span></span><span></span></div></div>`;
+  msgs.appendChild(t);
+  msgs.scrollTop = msgs.scrollHeight;
+  setTimeout(() => {
+    t.remove();
+    const key = _iaGetKey(question);
+    const confidence = key ? [91,87,94,89,92,88][Math.floor(Math.random()*6)] : 72;
+    const reply = key ? _iaVeraReplies[key] : 'Analizando tu portfolio… Basándome en tus datos, te recomiendo revisar la composición y diversificación. ¿Puedes darme más contexto sobre lo que buscas?';
+    iaAddVeraMsg(reply, confidence);
+  }, 1300);
+}
+
+function askChip(el) {
+  const text = el.textContent.trim();
+  el.style.opacity='0.4'; el.style.pointerEvents='none';
+  iaAddMsg(text, true);
+  setTimeout(() => iaShowTyping(text), 350);
+}
+
+function doSend() {
+  const input = document.getElementById('iaChatInput');
+  if(!input) return;
+  const text = input.value.trim();
+  if(!text) return;
+  iaAddMsg(text, true);
+  input.value = '';
+  setTimeout(() => iaShowTyping(text), 350);
+}
+
+// ── Portfolio Score Gauge drawing ──────────────────────────────────────────
+function iaDrawAllGauges(score) {
+  // Main semi-gauge
+  const mainC = document.getElementById('psMainGauge');
+  if(mainC) {
+    const ctx=mainC.getContext('2d');
+    const W=mainC.width,H=mainC.height,cx=W/2,cy=H*0.82,r=W*0.41;
+    const start=Math.PI,total=Math.PI,segs=12;
+    function drawMain(prog){
+      ctx.clearRect(0,0,W,H);
+      for(let i=0;i<segs;i++){const a=start+(i/segs)*total,a2=start+((i+0.85)/segs)*total;ctx.beginPath();ctx.arc(cx,cy,r,a,a2);ctx.strokeStyle='#e8ebe9';ctx.lineWidth=12;ctx.lineCap='round';ctx.stroke();}
+      const sf=Math.floor((prog/100)*segs);
+      for(let i=0;i<segs;i++){if(i>sf)break;const a=start+(i/segs)*total,a2=start+((i+0.85)/segs)*total;const pct=i/segs;const c=pct<0.4?'#f05252':pct<0.6?'#f5b731':pct<0.75?'#f97316':'#2dc98a';ctx.beginPath();ctx.arc(cx,cy,r,a,a2);ctx.strokeStyle=c;ctx.lineWidth=12;ctx.lineCap='round';ctx.stroke();}
+    }
+    const numEl=document.getElementById('psScoreNum');
+    let prog=0;
+    const iv=setInterval(()=>{prog=Math.min(prog+1.2,score);drawMain(prog);if(numEl)numEl.textContent=Math.round(prog);if(prog>=score)clearInterval(iv);},16);
+  }
+  // Mini gauges
+  document.querySelectorAll('#screen-ia .ps-mini-gauge').forEach(c=>{
+    const s=parseFloat(c.dataset.score),col=c.dataset.color||'#f97316';
+    const ctx=c.getContext('2d'),W=c.width,H=c.height,cx=W/2,cy=H*0.92,r=W*0.38,segs=10,start=Math.PI,arc=Math.PI;
+    for(let i=0;i<segs;i++){const a=start+(i/segs)*arc,a2=start+((i+0.7)/segs)*arc;ctx.beginPath();ctx.arc(cx,cy,r,a,a2);ctx.strokeStyle='#e0e5e2';ctx.lineWidth=5;ctx.lineCap='round';ctx.stroke();}
+    for(let i=0;i<segs;i++){if(i>=s)break;const a=start+(i/segs)*arc,a2=start+((i+0.7)/segs)*arc;ctx.beginPath();ctx.arc(cx,cy,r,a,a2);ctx.strokeStyle=col;ctx.lineWidth=5;ctx.lineCap='round';ctx.stroke();}
+  });
+  // Health score ring
+  const hc=document.getElementById('hsCanvas');
+  if(hc){
+    const ctx=hc.getContext('2d'),cx=38,cy=38,r=28,s=Math.PI*0.75,t=Math.PI*1.5;
+    ctx.beginPath();ctx.arc(cx,cy,r,s,s+t);ctx.strokeStyle='#f0f0f0';ctx.lineWidth=7;ctx.lineCap='round';ctx.stroke();
+    let prog=0;
+    const color=score>=70?'#2dc98a':score>=50?'#f5b731':'#f05252';
+    const iv=setInterval(()=>{prog=Math.min(prog+2,score);ctx.clearRect(0,0,76,76);ctx.beginPath();ctx.arc(cx,cy,r,s,s+t);ctx.strokeStyle='#f0f0f0';ctx.lineWidth=7;ctx.lineCap='round';ctx.stroke();ctx.beginPath();ctx.arc(cx,cy,r,s,s+(prog/100)*t);ctx.strokeStyle=color;ctx.lineWidth=7;ctx.lineCap='round';ctx.stroke();if(prog>=score)clearInterval(iv);},18);
+  }
+  // Score history mini chart
+  const sc=document.getElementById('scoreHistCanvas');
+  if(sc){
+    const dpr=window.devicePixelRatio||1,W=sc.parentElement.offsetWidth||320,H=52;
+    sc.width=W*dpr;sc.height=H*dpr;sc.style.width=W+'px';sc.style.height=H+'px';
+    const ctx=sc.getContext('2d');ctx.scale(dpr,dpr);
+    const base=Math.max(20,score-15);
+    const pts=[base,base+2,base+3,base+4,base+4,score];
+    const labels=['Oct','Nov','Dic','Ene','Feb','Mar'];
+    const mn=base-4,mx=score+6,rng=mx-mn,padL=28,padR=8,padT=6,padB=18;
+    const w=W-padL-padR,h=H-padT-padB;
+    const sx=i=>padL+i*(w/(pts.length-1));
+    const sy=v=>padT+h-((v-mn)/rng)*h;
+    ctx.strokeStyle='rgba(245,183,49,0.15)';ctx.setLineDash([3,3]);ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(padL,sy(score));ctx.lineTo(W-padR,sy(score));ctx.stroke();ctx.setLineDash([]);
+    const grad=ctx.createLinearGradient(0,padT,0,padT+h);grad.addColorStop(0,'rgba(245,183,49,0.18)');grad.addColorStop(1,'rgba(245,183,49,0)');
+    ctx.beginPath();ctx.moveTo(sx(0),sy(pts[0]));pts.forEach((v,i)=>{if(i>0)ctx.lineTo(sx(i),sy(v));});ctx.lineTo(sx(pts.length-1),padT+h);ctx.lineTo(sx(0),padT+h);ctx.closePath();ctx.fillStyle=grad;ctx.fill();
+    ctx.beginPath();pts.forEach((v,i)=>i===0?ctx.moveTo(sx(i),sy(v)):ctx.lineTo(sx(i),sy(v)));ctx.strokeStyle='#f5b731';ctx.lineWidth=2;ctx.lineJoin='round';ctx.lineCap='round';ctx.stroke();
+    pts.forEach((v,i)=>{ctx.beginPath();ctx.arc(sx(i),sy(v),3,0,Math.PI*2);ctx.fillStyle=i===pts.length-1?'#f5b731':'rgba(245,183,49,0.5)';ctx.fill();});
+    ctx.fillStyle='#8a9e93';ctx.font='600 9px system-ui,sans-serif';ctx.textAlign='center';
+    labels.forEach((l,i)=>ctx.fillText(l,sx(i),H-2));
+  }
+}
+
+// ── Portfolio Score: category open/close ───────────────────────────────────
+function openCat(key) {
+  ['diversificacion','riesgo','fees','macro'].forEach(k=>{
+    const el=document.getElementById('cat-'+k);
+    const det=document.getElementById('detail-'+k);
+    if(!el||!det) return;
+    if(k===key){
+      const isOpen=el.classList.contains('active');
+      el.classList.toggle('active',!isOpen);
+      det.classList.toggle('open',!isOpen);
+      if(!isOpen){
+        det.querySelectorAll('.ps-detail-gauge').forEach(c=>{
+          const s=parseFloat(c.dataset.score),col=c.dataset.color||'#f97316';
+          const ctx=c.getContext('2d'),W=c.width,H=c.height,cx=W/2,cy=H*0.92,r=W*0.36,segs=10,start=Math.PI,arc=Math.PI;
+          ctx.clearRect(0,0,W,H);
+          for(let i=0;i<segs;i++){const a=start+(i/segs)*arc,a2=start+((i+0.75)/segs)*arc;ctx.beginPath();ctx.arc(cx,cy,r,a,a2);ctx.strokeStyle='#e0e5e2';ctx.lineWidth=6;ctx.lineCap='round';ctx.stroke();}
+          for(let i=0;i<segs;i++){if(i>=s)break;const a=start+(i/segs)*arc,a2=start+((i+0.75)/segs)*arc;ctx.beginPath();ctx.arc(cx,cy,r,a,a2);ctx.strokeStyle=col;ctx.lineWidth=6;ctx.lineCap='round';ctx.stroke();}
+        });
+        det.scrollIntoView({behavior:'smooth',block:'nearest'});
+      }
+    } else {
+      el.classList.remove('active');
+      det.classList.remove('open');
+    }
+  });
+}
+
+function refreshScore() {
+  const btn=document.querySelector('#portfolioScoreCard .ps-update-btn');
+  if(btn){btn.style.opacity='0.5';btn.disabled=true;setTimeout(()=>{btn.style.opacity='1';btn.disabled=false;const upd=document.getElementById('psUpdated');if(upd)upd.textContent='Actualizado: ahora mismo · 2/5 análisis usados';},1500);}
+}
+
+function runAction(btn, key) {
+  document.querySelectorAll('#screen-ia .ai-action-btn, #screen-ia .ai-action-full').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  const data=_iaActionData[key];
+  if(!data) return;
+  const res=document.getElementById('actionResult');
+  res.style.borderLeftColor=data.color;
+  const title=document.getElementById('actionResultTitle');
+  const text=document.getElementById('actionResultText');
+  title.textContent=data.title; title.style.color=data.color;
+  text.innerHTML=data.text;
+  res.style.display='block';
+  res.scrollIntoView({behavior:'smooth',block:'nearest'});
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-  initIaChat();
+  // nothing needed for IA init — renderIA() is called when tab opens
 });
 </script>
 </body>
