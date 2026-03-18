@@ -5381,12 +5381,6 @@ function showToast(msg, duration=2200) {
   t.textContent=msg;t.style.opacity='1';clearTimeout(t._to);t._to=setTimeout(()=>t.style.opacity='0',duration);
 }
 
-  t.textContent = currentLang==='es' ? '👁 Modo demo · Solo lectura' : '👁 Demo mode · View only';
-  t.style.opacity='1';
-  clearTimeout(t._to);
-  t._to=setTimeout(()=>t.style.opacity='0',2200);
-}
-
 function enterMainApp() {
   // Hide all cover screens and show main app
   document.querySelectorAll('.cover-screen').forEach(el => el.classList.remove('cs-active'));
