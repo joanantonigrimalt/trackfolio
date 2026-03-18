@@ -698,7 +698,7 @@ table.an-corr-mtx{border-collapse:separate;border-spacing:4px}
     <div class="card" id="anBrokerCard" style="display:none">
       <div class="sectionTitle">Distribución por broker</div>
       <div style="display:flex;align-items:center;gap:14px;margin-bottom:12px">
-        <div style="width:110px;height:110px;flex-shrink:0;position:relative"><canvas id="brokerPie" style="width:110px!important;height:110px!important"></canvas></div>
+        <div style="width:110px;height:110px;flex-shrink:0;position:relative"><canvas id="brokerPie" width="110" height="110" style="width:110px!important;height:110px!important"></canvas></div>
         <div id="brokerLegend" style="flex:1;display:flex;flex-direction:column;gap:6px"></div>
       </div>
       <div id="brokerBars"></div>
@@ -2089,7 +2089,7 @@ function _anRenderBroker(){
     `<div style="margin-bottom:8px"><div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:4px"><span style="font-weight:600;color:#142018;display:flex;align-items:center;gap:5px"><span style="display:inline-block;width:6px;height:6px;border-radius:50%;background:${cols[i]};flex-shrink:0"></span>${escapeHtml(n)}</span><span style="font-weight:700;color:#142018">${fe(v)}</span></div><div style="height:8px;background:#f0f0f0;border-radius:10px;overflow:hidden"><div style="width:${Math.round(v/tot*100)}%;height:100%;background:${cols[i]};border-radius:10px"></div></div></div>`
   ).join('');
   if(analysisCharts._broker){try{analysisCharts._broker.destroy();}catch(_){}}
-  analysisCharts._broker=new Chart(document.getElementById('brokerPie').getContext('2d'),{type:'doughnut',data:{datasets:[{data:entries.map(([,v])=>v),backgroundColor:cols,borderWidth:2,borderColor:'#fff'}]},options:{cutout:'68%',responsive:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>` ${entries[c.dataIndex][0]}: ${fe(c.raw)}`}}},animation:{duration:600}}});
+  analysisCharts._broker=new Chart(document.getElementById('brokerPie').getContext('2d'),{type:'doughnut',data:{datasets:[{data:entries.map(([,v])=>v),backgroundColor:cols,borderWidth:2,borderColor:'#fff'}]},options:{cutout:'72%',responsive:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>` ${entries[c.dataIndex][0]}: ${fe(c.raw)}`}}},animation:{duration:600}}});
 }
 function _anRenderBestWorst(){
   const bestEl=document.getElementById('anBestSection'),worstEl=document.getElementById('anWorstSection');
