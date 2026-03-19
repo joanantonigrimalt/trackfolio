@@ -32,7 +32,7 @@ module.exports = async (req, res) => {
     const results = await Promise.all(
       uniqueIsins.map((isin, i) => {
         const cached = cacheResults[i];
-        if (cached && cached.data?.coverage?.status !== 'MISSING') return cached; // already have data
+        if (!skipCache && cached && cached.data?.coverage?.status !== 'MISSING') return cached; // already have data
         if (skipCache || !cached) {
           return withTimeout(isin, resolveAssetData(isin, { skipCache }), PER_ASSET_TIMEOUT);
         }

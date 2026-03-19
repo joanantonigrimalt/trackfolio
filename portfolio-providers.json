@@ -13,14 +13,34 @@
   },
   "assets": [
     {
-      "isin": "IE00BYX5NK04",
-      "name": "iShares Core MSCI World UCITS ETF USD (Acc)",
+      "isin": "IE00B9CQXS71",
+      "name": "SPDR S&P Global Dividend Aristocrats UCITS ETF",
       "type": "etf",
       "status": "mapped",
-      "recommendedProvider": "twelvedata",
-      "providerSymbol": "SWDA",
-      "yahooSymbol": "IWDA.AS",
-      "notes": "Yahoo: try ISIN direct first, then IWDA.AS (Amsterdam). TwelveData SWDA as secondary."
+      "recommendedProvider": "yahoo",
+      "providerSymbol": null,
+      "yahooSymbol": "GLDV.MI",
+      "notes": "SPDR Global Dividend Aristocrats ETF. GLDV.MI (Borsa Italiana, EUR) for correct EUR price."
+    },
+    {
+      "isin": "IE00BZ4BMM98",
+      "name": "Invesco Euro STOXX High Dividend Low Volatility UCITS ETF",
+      "type": "etf",
+      "status": "mapped",
+      "recommendedProvider": "yahoo",
+      "providerSymbol": null,
+      "yahooSymbol": "EUHD.MI",
+      "notes": "Invesco Euro STOXX High Div Low Vol ETF. EUHD.MI (Borsa Italiana, EUR). EUHD.L is London in GBp — use MI for correct EUR price."
+    },
+    {
+      "isin": "IE00BYX5NK04",
+      "name": "Fidelity MSCI World Index Fund P-ACC-USD",
+      "type": "fund",
+      "status": "mapped",
+      "recommendedProvider": "yahoo",
+      "providerSymbol": null,
+      "yahooSymbol": "0P0001CJGW.F",
+      "notes": "Fidelity MSCI World mutual fund (USD). Yahoo: 0P0001CJGW.F. Morningstar used as primary for live NAV."
     },
     {
       "isin": "ES0146309002",

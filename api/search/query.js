@@ -2,10 +2,11 @@
 // Multi-source asset search: Yahoo + EODHD + TwelveData + known providers
 // Features: scoring, dedup by ISIN/symbol, encoding fix, clean type labels
 
-const { setupApi, sanitizeQuery, validateSymbol, sendError } = require('../../lib/security');
+const { setupApi, sanitizeQuery, validateSymbol, validateIsins, sendError } = require('../../lib/security');
 const { search: eodhdSearch } = require('../../lib/eodhd');
 const { searchSymbol: twelveSearch } = require('../../lib/twelvedata');
 const { fmpFetch } = require('../../lib/fmp');
+const { resolveAssetData } = require('../../lib/providers');
 
 // ── Known assets from portfolio-providers.json ─────────────────────────────
 let KNOWN_ASSETS = [];
@@ -329,18 +330,26 @@ function dedup(sorted) {
 module.exports = async (req, res) => {
   if (!setupApi(req, res, { maxRequests: 60 })) return;
 
-  // ── ?symbol=XX — chart data mode (unchanged behaviour) ──────────────────
+  // ── ?symbol=XX — chart data mode ─────────────────────────────────────────
   const symbol = String(req.query?.symbol || '').trim();
   if (symbol) {
     if (!validateSymbol(symbol)) return sendError(res, 400, 'Invalid symbol format');
+    const isinParam = String(req.query?.isin || '').trim().toUpperCase();
     const ck = `quote:${symbol}`;
     const cached = cget(ck);
     if (cached) { res.statusCode = 200; return res.end(JSON.stringify(cached)); }
-    try {
+
+    // Try Yahoo with the given symbol, then without exchange suffix (e.g. 0P0001CJGW.F → 0P0001CJGW)
+    const symbolVariants = [symbol];
+    const dotIdx = symbol.lastIndexOf('.');
+    if (dotIdx > 0) symbolVariants.push(symbol.slice(0, dotIdx));
+
+    async function tryYahooChart(sym) {
       for (const host of ['query1', 'query2']) {
-        const url = `https://${host}.finance.yahoo.com/v8/finance/chart/${encodeURIComponent(symbol)}?range=5y&interval=1d`;
+        const url = `https://${host}.finance.yahoo.com/v8/finance/chart/${encodeURIComponent(sym)}?range=5y&interval=1d`;
         const r = await fetch(url, {
-          headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)', Accept: 'application/json' }
+          headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)', Accept: 'application/json' },
+          signal: AbortSignal.timeout(6000),
         });
         if (!r.ok) continue;
         const d = await r.json();
@@ -355,18 +364,48 @@ module.exports = async (req, res) => {
           if (Number.isFinite(c) && c > 0)
             history.push({ date: new Date(ts[i] * 1000).toISOString().slice(0, 10), close: c });
         }
-        const out = {
-          symbol,
-          name:         fixText(meta.longName || meta.shortName || symbol),
-          currentPrice: Number(meta.regularMarketPrice ?? cls[cls.length - 1] ?? 0),
+        const price = Number(meta.regularMarketPrice ?? cls[cls.length - 1] ?? 0);
+        if (!price && !history.length) continue;
+        return {
+          symbol: sym,
+          name:         fixText(meta.longName || meta.shortName || sym),
+          currentPrice: price,
           currency:     meta.currency || 'USD',
           history,
         };
-        if (history.length > 10) cset(ck, out);
-        res.statusCode = 200;
-        return res.end(JSON.stringify(out));
       }
-      throw new Error('No data from Yahoo');
+      return null;
+    }
+
+    try {
+      // 1. Try Yahoo with each symbol variant
+      let out = null;
+      for (const sym of symbolVariants) {
+        out = await tryYahooChart(sym);
+        if (out) break;
+      }
+
+      // 2. ISIN fallback: use full provider chain (Morningstar etc.) when Yahoo fails
+      if (!out && isinParam) {
+        const resolved = await resolveAssetData(isinParam).catch(() => null);
+        if (resolved?.data) {
+          const d = resolved.data;
+          const pts = (d.history || []).map(p => ({ date: p.date, close: p.close }));
+          const price = Number(d.quote?.price || d.quote?.close || (pts.length ? pts[pts.length-1].close : 0));
+          out = {
+            symbol,
+            name:         resolved.mapping?.name || symbol,
+            currentPrice: price,
+            currency:     d.quote?.currency || 'EUR',
+            history:      pts,
+          };
+        }
+      }
+
+      if (!out) throw new Error('No data from any provider');
+      if (out.history.length > 10) cset(ck, out);
+      res.statusCode = 200;
+      return res.end(JSON.stringify(out));
     } catch {
       res.statusCode = 500;
       return res.end(JSON.stringify({ error: 'Failed to fetch chart data' }));

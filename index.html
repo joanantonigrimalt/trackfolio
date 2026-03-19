@@ -55,7 +55,7 @@
   crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js" crossorigin="anonymous"></script>
 <style>
-*{box-sizing:border-box;margin:0;padding:0}html,body{height:100%}body{font-family:'DM Sans',sans-serif;background:linear-gradient(180deg,#e8f2eb 0%,#f2f5f3 40%,#eaecef 100%);display:flex;justify-content:center;align-items:flex-start;padding:12px;color:#142018}.shell{width:min(100vw - 16px,430px);display:flex;justify-content:center}.phone{width:min(100%,390px);height:min(calc(100dvh - 24px),844px);background:linear-gradient(180deg,#f7faf8 0%,#f2f5f3 100%);border-radius:38px;border:1px solid rgba(20,32,24,.08);overflow:hidden;position:relative;box-shadow:0 28px 80px rgba(20,32,24,.16)}.notch{position:absolute;top:10px;left:50%;transform:translateX(-50%);width:120px;height:24px;background:#111;border-radius:0 0 16px 16px;z-index:3;opacity:.92}.status{display:flex;justify-content:space-between;align-items:center;padding:18px 20px 6px;font-size:12px;color:#688071;font-weight:500}.screen{display:none;padding:12px 16px 114px;height:100%;overflow-y:auto;-webkit-overflow-scrolling:touch}.screen.active{display:block}.screen::-webkit-scrollbar{width:0}
+*{box-sizing:border-box;margin:0;padding:0}html,body{height:100%}body{font-family:'DM Sans',sans-serif;background:linear-gradient(180deg,#e8f2eb 0%,#f2f5f3 40%,#eaecef 100%);display:flex;justify-content:center;align-items:flex-start;padding:12px;color:#142018}.shell{width:min(100vw - 16px,430px);display:flex;justify-content:center}.phone{width:min(100%,390px);height:min(calc(100dvh - 24px),844px);background:linear-gradient(180deg,#f7faf8 0%,#f2f5f3 100%);border-radius:38px;border:1px solid rgba(20,32,24,.08);overflow:hidden;position:relative;box-shadow:0 28px 80px rgba(20,32,24,.16)}.notch{position:absolute;top:10px;left:50%;transform:translateX(-50%);width:120px;height:24px;background:#111;border-radius:0 0 16px 16px;z-index:3;opacity:.92}.status{display:flex;justify-content:space-between;align-items:center;padding:18px 20px 6px;font-size:12px;color:#688071;font-weight:500}.screen{display:none;padding:12px 16px 114px;height:100%;overflow-y:auto;-webkit-overflow-scrolling:touch}.screen.active{display:block}.screen::-webkit-scrollbar{width:0}#screen-asset{padding-bottom:134px}
 .top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:14px;gap:10px}.title{font-size:28px;font-weight:800;letter-spacing:-.03em;line-height:1.1}.sub{font-size:12px;color:#7d9080;margin-top:5px;line-height:1.4}.badge{padding:7px 12px;border-radius:999px;background:rgba(21,128,61,.09);color:#15803d;font-size:11px;font-weight:700;border:1px solid rgba(21,128,61,.13);white-space:nowrap}
 .card{background:rgba(255,255,255,.82);border:1px solid rgba(20,32,24,.06);border-radius:26px;padding:18px;margin-bottom:12px;backdrop-filter:blur(12px)}.hero{background:linear-gradient(160deg,#1a3f2c 0%,#0f2a1e 100%);border:none;color:#f5fbf6;box-shadow:0 20px 48px rgba(12,36,22,.3)}.hero .sectionEyebrow{color:rgba(239,249,242,.6)}.hero .valueLarge{font-size:44px;font-weight:800;letter-spacing:-.045em;margin-top:2px;line-height:1}.hero .valueSub{margin-top:12px;display:flex;flex-wrap:wrap;gap:8px}
 .pill{display:inline-flex;align-items:center;gap:5px;padding:7px 13px;border-radius:999px;font-size:12px;font-weight:700;border:1px solid transparent;letter-spacing:-.01em}.pill.pos{background:rgba(74,222,128,.13);color:#a7f3c0;border-color:rgba(167,243,192,.15)}.pill.neg{background:rgba(248,113,113,.15);color:#fca5a5;border-color:rgba(252,165,165,.18)}.pill.info{background:rgba(255,255,255,.08);color:rgba(239,249,242,.8);border-color:rgba(255,255,255,.1)}.hero .pill{background:rgba(255,255,255,.1);color:rgba(255,255,255,.92);border-color:rgba(255,255,255,.14)}
@@ -122,7 +122,7 @@
 .buySellRow{display:flex;justify-content:center;gap:24px;padding:20px 20px 8px}.bsBtn{display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer;border:none;background:none;font-family:inherit;outline:none}.bsBtnCircle{width:52px;height:52px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:700;border:2px solid transparent;transition:all .15s}.bsBtn.buy .bsBtnCircle{background:#22c55e;color:#fff;box-shadow:0 6px 18px rgba(34,197,94,.3)}.bsBtn.sell .bsBtnCircle{background:transparent;border-color:#e8f0e9;color:#8fa090}.bsBtn.sell.active .bsBtnCircle{background:#f87171;color:#fff;border-color:transparent;box-shadow:0 6px 18px rgba(248,113,113,.3)}.bsBtn.buy.inactive .bsBtnCircle{background:transparent;border-color:#e8f0e9;color:#8fa090}.bsBtn .bsLabel{font-size:12px;font-weight:700;color:#8fa090;transition:color .15s}.bsBtn.buy .bsLabel,.bsBtn.buy.active .bsLabel{color:#22c55e}.bsBtn.sell.active .bsLabel{color:#f87171}
 /* Form fields in modal */
 .mContent{padding:0 20px}
-.mFieldGroup{margin-bottom:14px}.mLabel{font-size:12px;font-weight:700;color:#4a5f4e;margin-bottom:6px;text-transform:uppercase;letter-spacing:.06em}.mFieldRow{display:flex;align-items:center;gap:0;border:1.5px solid #e0e8e2;border-radius:12px;overflow:hidden;background:#fff;transition:border-color .15s}.mFieldRow:focus-within{border-color:#15803d}.mFieldRow input{flex:1;border:none;outline:none;padding:12px 14px;font:inherit;font-size:15px;font-weight:600;color:#142018;background:transparent}.mFieldRow input::placeholder{color:#c4d4c8;font-weight:500}.mCurrencyBadge{padding:8px 12px;font-size:12px;font-weight:700;color:#6d7e72;background:#f4f7f5;border-left:1px solid #e0e8e2;display:flex;align-items:center;gap:4px;white-space:nowrap}.mFieldRow input[type=date]{color:#142018}
+.mFieldGroup{margin-bottom:14px}.brokerChips{display:flex;flex-wrap:wrap;gap:6px;margin-top:7px}.brokerChip{padding:5px 12px;background:#f0f7f2;border:1.5px solid #c8e0ce;border-radius:20px;font-size:12px;font-weight:700;color:#1a5c38;cursor:pointer;transition:background .15s,border-color .15s}.brokerChip:active{background:#d4edd9}.mLabel{font-size:12px;font-weight:700;color:#4a5f4e;margin-bottom:6px;text-transform:uppercase;letter-spacing:.06em}.mFieldRow{display:flex;align-items:center;gap:0;border:1.5px solid #e0e8e2;border-radius:12px;overflow:hidden;background:#fff;transition:border-color .15s}.mFieldRow:focus-within{border-color:#15803d}.mFieldRow input{flex:1;border:none;outline:none;padding:12px 14px;font:inherit;font-size:15px;font-weight:600;color:#142018;background:transparent}.mFieldRow input::placeholder{color:#c4d4c8;font-weight:500}.mCurrencyBadge{padding:8px 12px;font-size:12px;font-weight:700;color:#6d7e72;background:#f4f7f5;border-left:1px solid #e0e8e2;display:flex;align-items:center;gap:4px;white-space:nowrap}.mFieldRow input[type=date]{color:#142018}
 .mHint{font-size:11px;color:#9aada0;margin-top:5px}.mRemoveBtn{display:block;width:100%;padding:11px;border:1.5px solid #e8f0e9;border-radius:12px;background:transparent;font:inherit;font-size:13px;font-weight:700;color:#8fa090;cursor:pointer;text-align:center;margin-bottom:14px;transition:all .15s}.mRemoveBtn:hover{border-color:#f87171;color:#f87171}
 .mTags{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}.mTag{padding:7px 12px;border:1.5px solid #e8f0e9;border-radius:999px;font-size:12px;font-weight:700;color:#6d7e72;cursor:pointer;transition:all .15s;background:#fff}.mTag:hover{border-color:#15803d;color:#15803d}
 .mMoreOpts{display:flex;align-items:center;justify-content:center;gap:4px;padding:8px;font-size:13px;font-weight:700;color:#8fa090;cursor:pointer;margin-bottom:12px}
@@ -576,7 +576,7 @@ table.an-corr-mtx{border-collapse:separate;border-spacing:4px}
 .liqTypeBtn{padding:9px 14px;border:1.5px solid rgba(20,32,24,.1);border-radius:12px;font:inherit;font-size:13px;font-weight:600;color:#4a5f4e;background:#fff;cursor:pointer;transition:all .15s}.liqTypeBtn.active{background:#142018;color:#f5fbf6;border-color:#142018}
 .liqSaveBtn{display:block;width:100%;padding:15px;background:#15803d;color:#fff;border:none;border-radius:16px;font:inherit;font-size:15px;font-weight:700;cursor:pointer;margin-top:6px}.liqSaveBtn:active{opacity:.85}
 .liqDelBtn{display:block;width:100%;padding:13px;background:transparent;border:1.5px solid rgba(185,28,28,.2);border-radius:16px;font:inherit;font-size:14px;font-weight:600;color:#b91c1c;cursor:pointer;margin-top:10px}.liqDelBtn:active{opacity:.7}
-@media (max-width:430px){body{padding:0;background:#f2f5f3}.shell{width:100vw}.phone{width:100vw;height:100dvh;max-width:none;border-radius:0;border:none;box-shadow:none;background:#f2f5f3}.notch{top:0;border-radius:0 0 16px 16px}.screen{padding:10px 14px calc(104px + env(safe-area-inset-bottom, 0px))}.tab{left:12px;right:12px;bottom:calc(12px + env(safe-area-inset-bottom, 0px));border-radius:22px;background:rgba(255,255,255,.96);backdrop-filter:blur(20px);border:1px solid rgba(20,32,24,.08);padding:10px 4px 12px;box-shadow:0 8px 28px rgba(20,32,24,.13)}}
+@media (max-width:430px){body{padding:0;background:#f2f5f3}.shell{width:100vw}.phone{width:100vw;height:100dvh;max-width:none;border-radius:0;border:none;box-shadow:none;background:#f2f5f3}.notch{top:0;border-radius:0 0 16px 16px}.screen{padding:10px 14px calc(104px + env(safe-area-inset-bottom, 0px))}#screen-asset{padding-bottom:calc(130px + env(safe-area-inset-bottom, 0px))}.tab{left:12px;right:12px;bottom:calc(12px + env(safe-area-inset-bottom, 0px));border-radius:22px;background:rgba(255,255,255,.96);backdrop-filter:blur(20px);border:1px solid rgba(20,32,24,.08);padding:10px 4px 12px;box-shadow:0 8px 28px rgba(20,32,24,.13)}}
 /* ── Splash / Onboarding / Auth ─────────────────────────────────────── */
 @keyframes faIn{from{opacity:0}to{opacity:1}}
 @keyframes scIn{from{opacity:0;transform:scale(.88)}to{opacity:1;transform:none}}
@@ -1815,6 +1815,7 @@ table.an-corr-mtx{border-collapse:separate;border-spacing:4px}
         <div class="mFieldGroup">
           <div class="mLabel">Broker / Entidad <span style="font-weight:400;color:#8fa090">(opcional)</span></div>
           <div class="mFieldRow"><input type="text" id="simpleBroker" placeholder="e.g. DEGIRO, MyInvestor, IB..."></div>
+          <div id="simpleBrokerChips" class="brokerChips"></div>
         </div>
         <button class="mRemoveBtn" id="btnRemovePosition" data-i18n="removePos">Eliminar posición</button>
         <button class="mSaveBtn" id="btnSimpleSave" data-i18n="save">Guardar</button>
@@ -1922,6 +1923,7 @@ table.an-corr-mtx{border-collapse:separate;border-spacing:4px}
         <div class="mFieldGroup">
           <div class="mLabel">Broker / Entidad <span style="font-weight:400;color:#8fa090">(opcional)</span></div>
           <div class="mFieldRow"><input type="text" id="addBroker" placeholder="e.g. DEGIRO, MyInvestor, IB..."></div>
+          <div id="addBrokerChips" class="brokerChips"></div>
         </div>
         <button class="mSaveBtn" id="btnSaveNewAsset">Añadir a cartera</button>
         <button class="mCancelBtn" id="btnCancelAddAsset">Cancelar</button>
@@ -2519,6 +2521,8 @@ function tick(){const cl=document.getElementById('clock');if(cl)cl.textContent=n
 
 // ========== localStorage positions ==========
 function getOverrides(){try{const o=JSON.parse(localStorage.getItem('tf_positions')||'{}');return o!==null&&typeof o==='object'&&!Array.isArray(o)?o:{};}catch{return {};}}
+function getKnownBrokers(){const ov=getOverrides();const s=new Set();Object.values(ov).forEach(v=>{if(v.broker)s.add(v.broker);});try{const liq=JSON.parse(localStorage.getItem('tf_liquidity')||'[]');liq.forEach(e=>{if(e.broker)s.add(e.broker);});}catch{}return[...s];}
+function renderBrokerChips(inputId,chipsId){const brokers=getKnownBrokers();const el=document.getElementById(chipsId);if(!el)return;if(!brokers.length){el.innerHTML='';return;}el.innerHTML=brokers.map(b=>`<span class="brokerChip" data-broker="${escapeHtml(b)}">${escapeHtml(b)}</span>`).join('');el.querySelectorAll('.brokerChip').forEach(chip=>{chip.addEventListener('click',()=>{const inp=document.getElementById(inputId);if(inp){inp.value=chip.dataset.broker;inp.dispatchEvent(new Event('input'));}});});}
 function saveOverrides(o){localStorage.setItem('tf_positions',JSON.stringify(o));_debouncedSync();}
 function applyOverridesToAssets(rawAssets){
   const ov=getOverrides();
@@ -2713,7 +2717,7 @@ function showAssetDetail(asset,from){
 
   // Button: Gestionar vs Añadir
   const btn=document.getElementById('btnOpenModal');
-  if(btn)btn.textContent=hasPos?(isEs?'✎ Gestionar posición':'✎ Manage position'):(isEs?'+ Añadir posición':'+ Add position');
+  if(btn){if(_isDemo){btn.style.display='none';}else{btn.style.display='';btn.textContent=hasPos?(isEs?'✎ Gestionar posición':'✎ Manage position'):(isEs?'+ Añadir posición':'+ Add position');}}
 
   showScreen('asset',true);
   renderAssetChart();
@@ -2760,16 +2764,20 @@ function divValidBadge(status){
 const _etfProfileCache={};
 async function loadETFProfile(isin){
   if(_etfProfileCache[isin]){renderETFProfile(_etfProfileCache[isin]);return;}
+  const isFundAsset=selectedAsset?.mapping?.type==='fund';
+  const endpoint=isFundAsset?`/api/fund/profile?isin=${isin}`:`/api/etf/profile?isin=${isin}`;
   try{
-    const data=await getJson(`/api/etf/profile?isin=${isin}`);
+    const data=await getJson(endpoint);
     const r=(data.results||[])[0];
-    if(!r||r.error||!r.overview)return;
+    const hasOv=r?.overview&&Object.values(r.overview).some(v=>v!=null&&v!==false);
+    const hasHoldings=r?.holdings?.length>0;
+    if(!r||r.error||(!hasOv&&!hasHoldings))return;
     _etfProfileCache[isin]=r;
-    renderETFProfile(r);
+    renderETFProfile(r,isFundAsset);
   }catch(e){console.warn('[etfProfile] failed for '+isin+':',e.message);}
 }
 
-function renderETFProfile(r){
+function renderETFProfile(r,isFundAsset){
   const ov=r.overview;
   if(!ov)return;
   const isEs=currentLang==='es';
@@ -2784,6 +2792,7 @@ function renderETFProfile(r){
     [isEs?'Gastos (TER)':'Expense Ratio (TER)', fmtTer],
     [isEs?'Tamaño del fondo':'Fund size',         fmtSize],
     [isEs?'Fecha de lanzamiento':'Launch date',   fmtLaunch],
+    [isEs?'Categoría':'Category',                 ov.category],
     [isEs?'Distribución':'Distribution',          ov.distribution||(ov.is_distributing?'Distributing':'Accumulating')],
     [isEs?'Moneda base':'Base currency',          ov.currency],
     [isEs?'Domicilio':'Domicile',                 ov.domicile],
@@ -2799,7 +2808,8 @@ function renderETFProfile(r){
   const srcBadge=`<span style="font-size:10px;color:#8fa090;font-weight:500;margin-left:6px">${r.source||'extraetf'}${srcDate?' · '+srcDate:''}</span>`;
 
   const valBadge=r.validationStatus&&r.validationStatus!=='unvalidated'?divValidBadge(r.validationStatus):'';
-  document.getElementById('etfOverviewTitle').innerHTML=(isEs?'Ficha del ETF':'ETF Profile')+srcBadge+valBadge;
+  const profileTitle=isFundAsset?(isEs?'Ficha del Fondo':'Fund Profile'):(isEs?'Ficha del ETF':'ETF Profile');
+  document.getElementById('etfOverviewTitle').innerHTML=profileTitle+srcBadge+valBadge;
   document.getElementById('etfOverviewContent').innerHTML=rows.map(([l,v])=>
     `<div class="etfInfoRow"><span class="etfInfoLabel">${escapeHtml(String(l))}</span><span class="etfInfoValue">${escapeHtml(String(v))}</span></div>`
   ).join('');
@@ -2867,6 +2877,7 @@ function openModal(isin){
   document.getElementById('simpleAvgCost').value=(ov.avgCost??a.buyPrice).toFixed(2);
   const _scl=document.getElementById('simpleAvgCostCcy');if(_scl)_scl.textContent=costCcy(a)||'EUR';
   document.getElementById('simpleBroker').value=ov.broker||'';
+  renderBrokerChips('simpleBroker','simpleBrokerChips');
   // Tx defaults
   document.getElementById('txQty').value='0';
   document.getElementById('txDate').value=new Date().toISOString().slice(0,10);
@@ -4696,7 +4707,8 @@ function renderLists(){
       <div class="icon ${assetType(a)}">${iconInitials(a)}</div>
       <div style="min-width:0;flex:1">
         <div class="name" title="${a.fullName||a.name}">${a.name}</div>
-        <div class="meta">${fn(a.quantity)} ${t('shares').toLowerCase()} · ${fc(a.currentPrice,assetCcy(a))}${a.broker?' · '+escapeHtml(a.broker):''}</div>
+        <div class="meta">${fn(a.quantity)} ${t('shares').toLowerCase()}${a.broker?' · '+escapeHtml(a.broker):''}</div>
+        <div class="meta" style="margin-top:1px;font-size:10px;color:#8fa090">${currentLang==='es'?'Compra':'Buy'} <span style="color:#374151;font-weight:600">${fc(a.buyPrice,assetCcy(a))}</span> · ${currentLang==='es'?'Actual':'Now'} <span style="color:#374151;font-weight:600">${fc(a.currentPrice,assetCcy(a))}</span></div>
       </div>
       <div class="right">
         <div class="money">${fe(_av)}</div>
@@ -4966,6 +4978,7 @@ function showAddForm(result,price,currency,history){
   document.getElementById('addAvgCost').value=price>0?price.toFixed(2):'';
   document.getElementById('addQty').value='';
   document.getElementById('addBroker').value='';
+  renderBrokerChips('addBroker','addBrokerChips');
   document.getElementById('addQty').focus();
 }
 
@@ -5006,9 +5019,20 @@ function renderSearchResults(results){
         <div class="meta">${escapeHtml(r.symbol||'')}${r.exchange?' · '+escapeHtml(r.exchange):''}${r.isin?' · '+escapeHtml(r.isin):''}</div>
         <span class="srType" style="background:${lblColor}22;color:${lblColor}">${escapeHtml(lbl||'')}</span>
       </div>
-      <div style="font-size:12px;color:#8fa090;font-weight:600;flex-shrink:0">${escapeHtml(r.currency||'')}</div>
+      <div style="text-align:right;flex-shrink:0;min-width:52px"><div style="font-size:11px;color:#374151;font-weight:700">${escapeHtml(r.currency||'')}</div><div class="sr-price" data-idx="${i}" style="font-size:13px;color:#111827;font-weight:800;margin-top:2px">—</div></div>
     </div>`;
   }).join('');
+  // Background: fetch prices for each result and fill in placeholder
+  results.forEach((r,i)=>{
+    if(!r.symbol)return;
+    const _priceUrl='/api/search/query?symbol='+encodeURIComponent(r.symbol)+(r.isin?'&isin='+encodeURIComponent(r.isin):'');
+    getJson(_priceUrl).then(q=>{
+      const el=document.querySelector('.sr-price[data-idx="'+i+'"]');
+      if(!el)return;
+      const p=Number(q.currentPrice);const ccy=q.currency||r.currency||'USD';
+      if(p>0)el.textContent=fc(p,ccy);
+    }).catch(()=>{});
+  });
   // Attach click handlers
   document.querySelectorAll('#searchResultsList .searchResult').forEach(el=>{
     el.addEventListener('click',async()=>{
@@ -5016,7 +5040,8 @@ function renderSearchResults(results){
       const r=results[_idx];
       el.innerHTML=`<div style="flex:1;text-align:center;color:#8fa090;font-size:13px">Cargando precio…</div>`;
       try{
-        const q=await getJson(`/api/search/query?symbol=${encodeURIComponent(r.symbol)}`);
+        const _qUrl=`/api/search/query?symbol=${encodeURIComponent(r.symbol)}`+(r.isin?`&isin=${encodeURIComponent(r.isin)}`:'');
+        const q=await getJson(_qUrl);
         showAddForm(r,q.currentPrice,q.currency,q.history||[]);
       }catch(e){
         el.innerHTML=`<div style="flex:1;text-align:center;color:#b91c1c;font-size:13px">Error obteniendo precio</div>`;
@@ -5653,20 +5678,43 @@ _alertCheckInterval = setInterval(checkAlertsTrigger, 60000);
 let _isDemo = false;
 const _demoLiquidity = [];
 const DEMO_ASSETS_RAW = [];
-function enterDemo(){
+async function enterDemo(){
   _isDemo=true;
   window._isDemo=true;
-  // Demo starts empty — user adds their own assets (saved in localStorage)
-  _rawSeedAssets = [];
-  loadCustomIntoAssets();
-  dataReady=true;
-  // Enter app
+  // Navigate to app immediately
   document.querySelectorAll('.cover-screen').forEach(el=>el.classList.remove('cs-active'));
   document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
   document.getElementById('screen-home').classList.add('active');
   const db=document.getElementById('demoBanner');if(db)db.classList.add('show');
-  // Fetch FX rates and render
-  fetchGlobalFxRates().then(()=>render()).catch(()=>render());
+  // Load seed portfolio (fixed, read-only — no user overrides applied)
+  try{
+    const seed=await getJson('/api/portfolio/seed',10000);
+    function _buildDemo(cvMap){
+      return seed.positions.filter(p=>Number(p.quantity)>0).map(pos=>{
+        const entry=cvMap[pos.isin]||{},mapping=entry.mapping||null;
+        const currentPrice=Number(entry.data?.quote?.price||entry.data?.quote?.close||pos.currentPrice)||0;
+        const buyPrice=Number(pos.buyPrice)||0,quantity=Number(pos.quantity)||0;
+        const history=normalizeHistory(entry.data?.history||[]);
+        const gain=quantity*(currentPrice-buyPrice);
+        return{isin:pos.isin,name:pos.shortName||pos.name||pos.isin,fullName:pos.name||pos.isin,quantity,buyPrice,currentPrice,invested:quantity*buyPrice,value:quantity*currentPrice,gain,gainPct:buyPrice?((currentPrice-buyPrice)/buyPrice)*100:0,mapping,provider:entry.data?.provider||null,coverageStatus:entry.data?.coverage?.status||'MISSING',coverage:entry.data?.coverage||{status:'MISSING'},history,hasRealHistory:history.length>1,_rawQty:quantity,_rawBuyPrice:buyPrice};
+      });
+    }
+    _rawSeedAssets=_buildDemo({});
+    assets=_rawSeedAssets.slice();
+    dataReady=true;
+    fetchGlobalFxRates().then(()=>render()).catch(()=>render());
+    // Background: load live prices + history
+    const isinList=seed.positions.map(p=>p.isin).join(',');
+    getJson('/api/portfolio/coverage?isin='+encodeURIComponent(isinList),9500)
+      .then(cov=>{
+        _rawSeedAssets=_buildDemo(Object.fromEntries((cov.results||[]).map(e=>[e.isin,e])));
+        assets=_rawSeedAssets.slice();
+        render();
+      }).catch(()=>{});
+  }catch(e){
+    dataReady=true;
+    fetchGlobalFxRates().then(()=>render()).catch(()=>render());
+  }
 }
 function exitDemo(){
   _isDemo=false;window._isDemo=false;assets=[];dataReady=false;
