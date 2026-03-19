@@ -6551,35 +6551,28 @@ function exportTaxPDF(){
 
 
 
-// ── Insiders (FMP Search Insider Trades API) ──────────────────────────────
-// FMP key moved to server — insiders now proxied through /api/insiders
+// ── Insiders — SEC EDGAR Form 4 filings ─────────────────────────────────
 let _insData = null;
 let _insFilterVal = 'all';
 let _insCurrentSymbol = '';
 let _insLoading = false;
 let _insSearchDebounceTimer = null;
+let _insIsDiscovery = false;
 
 async function _insLoad(symbol) {
   if(symbol === undefined) symbol = _insCurrentSymbol;
-  _insCurrentSymbol = symbol || '';
-  // No symbol → show search hint, no API call needed
-  if(!_insCurrentSymbol) {
-    _insData = null;
-    _insLoading = false;
-    const el0 = document.getElementById('insidersContent');
-    if(el0) el0.innerHTML = '<div style="text-align:center;padding:60px 20px;color:#8fa090;font-size:13px"><div style="font-size:32px;margin-bottom:10px">🔍</div>'+(currentLang==='es'?'Escribe un símbolo para ver las operaciones de directivos<br><span style="font-size:11px;opacity:.7">Ej: AAPL, MSFT, NVDA</span>':'Type a symbol to view insider transactions<br><span style="font-size:11px;opacity:.7">E.g.: AAPL, MSFT, NVDA</span>')+'</div>';
-    return;
-  }
+  _insCurrentSymbol = (symbol||'').trim().toUpperCase();
   if(_insLoading) return;
   _insLoading = true;
+  _insIsDiscovery = !_insCurrentSymbol;
   const el = document.getElementById('insidersContent');
-  if(el) el.innerHTML = '<div style="text-align:center;padding:50px 0;color:#8fa090;font-size:13px"><div style="font-size:28px;margin-bottom:10px">⌛</div>Cargando insiders…</div>';
+  if(el) el.innerHTML = '<div style="text-align:center;padding:50px 0;color:#8fa090;font-size:13px"><div style="font-size:28px;margin-bottom:10px">⌛</div>'+(currentLang==='es'?'Cargando datos de insiders…':'Loading insider data…')+'</div>';
   try {
-    const url = '/api/insiders?symbol='+encodeURIComponent(_insCurrentSymbol.toUpperCase());
+    const url = _insCurrentSymbol ? '/api/insiders?symbol='+encodeURIComponent(_insCurrentSymbol) : '/api/insiders';
     const r = await fetch(url);
     if(!r.ok) throw new Error('HTTP '+r.status);
     const json = await r.json();
-    _insData = Array.isArray(json) ? json : (json.data || json.results || []);
+    _insData = Array.isArray(json) ? json : (json.data||json.results||[]);
   } catch(e) {
     _insLoading = false;
     const el2 = document.getElementById('insidersContent');
@@ -6591,104 +6584,149 @@ async function _insLoad(symbol) {
 }
 
 function _fmtMoney(v) {
-  if(v >= 1e9) return (v/1e9).toFixed(1)+'B';
-  if(v >= 1e6) return (v/1e6).toFixed(1)+'M';
-  if(v >= 1e3) return (v/1e3).toFixed(0)+'K';
-  return v.toFixed(0);
+  if(v >= 1e9) return '$'+(v/1e9).toFixed(1)+'B';
+  if(v >= 1e6) return '$'+(v/1e6).toFixed(1)+'M';
+  if(v >= 1e3) return '$'+(v/1e3).toFixed(0)+'K';
+  return '$'+Math.round(v);
+}
+
+function _insCard(r) {
+  const isBuy  = /^P/i.test(r.transactionType||'');
+  const isSell = /^S/i.test(r.transactionType||'');
+  const color   = isBuy ? '#15803d' : isSell ? '#dc2626' : '#8fa090';
+  const bgBadge = isBuy ? '#e6faf3' : isSell ? '#fef2f2' : '#f0f4f2';
+  const label   = isBuy ? '▲ COMPRA' : isSell ? '▼ VENTA' : (r.transactionType||'—');
+  const sym     = ((r.symbol||r.ticker||'')+'').toUpperCase()||'??';
+  const co      = r.companyName||'';
+  const shares  = Number(r.securitiesTransacted)||0;
+  const price   = Number(r.price)||0;
+  const value   = shares * price;
+  const sharesStr = shares ? shares.toLocaleString('es-ES') : '—';
+  const priceStr  = price  ? '$'+price.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2}) : '—';
+  const valueStr  = value > 500 ? _fmtMoney(value) : '';
+  const date    = ((r.transactionDate||r.date||'')+'').slice(0,10);
+  const insider = r.reportingName||r.insiderName||'—';
+  const role    = r.typeOfOwner||r.position||'';
+  const link    = r.link||r.secLink||'';
+  const isDeriv = r.isDerivative;
+  return '<div class="ins-card">'
+    +'<div class="ins-icon'+(isBuy?'':isSell?' sell':' neutral')+'" style="flex-shrink:0">'+sym.slice(0,2)+'</div>'
+    +'<div style="flex:1;min-width:0">'
+    +'<div style="display:flex;align-items:center;gap:5px;margin-bottom:2px;flex-wrap:wrap">'
+    +'<span style="font-size:14px;font-weight:800;color:#142018">'+sym+'</span>'
+    +(co?'<span style="font-size:11px;color:#8fa090;font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1;min-width:0">'+co+'</span>':'')
+    +'<span style="background:'+bgBadge+';color:'+color+';font-size:9px;font-weight:700;padding:2px 7px;border-radius:6px;flex-shrink:0">'+label+(isDeriv?' (RSU)':'')+'</span>'
+    +'</div>'
+    +'<div style="font-size:12px;color:#3d4f41;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+insider+'</div>'
+    +(role?'<div style="font-size:10px;color:#8fa090;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+role+'</div>':'')
+    +'<div style="display:flex;align-items:center;gap:8px;margin-top:5px;flex-wrap:wrap">'
+    +'<span style="font-size:11px;font-weight:700;color:#142018">'+sharesStr+' acc.</span>'
+    +'<span style="font-size:11px;color:#8fa090">@ '+priceStr+'</span>'
+    +(valueStr?'<span style="font-size:11px;font-weight:700;color:'+color+'">'+valueStr+'</span>':'')
+    +'<span style="font-size:11px;color:#b0bfb5;margin-left:auto">'+date+'</span>'
+    +'</div>'
+    +'</div>'
+    +(link?'<a href="'+link+'" target="_blank" rel="noopener" style="color:#b0bfb5;font-size:13px;flex-shrink:0;text-decoration:none;align-self:flex-start;padding:2px 0" title="SEC Filing">↗</a>':'')
+    +'</div>';
 }
 
 function _insRender() {
   const el = document.getElementById('insidersContent');
   if(!el) return;
-  let rows = Array.isArray(_insData) ? _insData.slice() : [];
+  const all = Array.isArray(_insData) ? _insData : [];
 
-  if(_insFilterVal === 'buy') {
-    rows = rows.filter(function(r){ return r.transactionType && /^P/i.test(r.transactionType); });
-  } else if(_insFilterVal === 'sell') {
-    rows = rows.filter(function(r){ return r.transactionType && /^S/i.test(r.transactionType); });
-  }
-
-  if(!rows.length) {
-    el.innerHTML = '<div style="text-align:center;padding:60px 0;color:#8fa090;font-size:13px"><div style="font-size:32px;margin-bottom:10px">📭</div>'+(currentLang==='es'?'Sin resultados para este filtro':'No results for this filter')+'</div>';
+  // Discovery mode: two sections Compras / Ventas sorted by value
+  if(_insIsDiscovery) {
+    if(!all.length) {
+      el.innerHTML = '<div style="text-align:center;padding:60px 20px;color:#8fa090;font-size:13px">'
+        +'<div style="font-size:32px;margin-bottom:10px">🔍</div>'
+        +(currentLang==='es'?'Busca un símbolo arriba para ver operaciones<br><br><span style="font-size:11px;opacity:.7">Ej: AAPL · MSFT · NVDA · TSLA</span>':'Search a symbol above to view insider trades<br><br><span style="font-size:11px;opacity:.7">E.g.: AAPL · MSFT · NVDA · TSLA</span>')
+        +'</div>';
+      return;
+    }
+    const buys  = all.filter(r => /^P/i.test(r.transactionType||'') && !r.isDerivative)
+                     .sort((a,b) => (b.securitiesTransacted*b.price)-(a.securitiesTransacted*a.price))
+                     .slice(0,20);
+    const sells = all.filter(r => /^S/i.test(r.transactionType||''))
+                     .sort((a,b) => (b.securitiesTransacted*b.price)-(a.securitiesTransacted*a.price))
+                     .slice(0,20);
+    const buyTot  = buys.reduce((s,r)=>s+(Number(r.securitiesTransacted)||0)*(Number(r.price)||0),0);
+    const sellTot = sells.reduce((s,r)=>s+(Number(r.securitiesTransacted)||0)*(Number(r.price)||0),0);
+    let html = '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:18px">'
+      +'<div style="background:#e6faf3;border-radius:14px;padding:12px;text-align:center">'
+      +'<div style="font-size:20px;font-weight:800;color:#15803d">'+buys.length+'</div>'
+      +'<div style="font-size:10px;color:#15803d;font-weight:700;text-transform:uppercase;letter-spacing:.05em">'+(currentLang==='es'?'Compras directas':'Direct Buys')+'</div>'
+      +(buyTot>0?'<div style="font-size:11px;color:#15803d;margin-top:3px;opacity:.8">'+_fmtMoney(buyTot)+'</div>':'')
+      +'</div>'
+      +'<div style="background:#fef2f2;border-radius:14px;padding:12px;text-align:center">'
+      +'<div style="font-size:20px;font-weight:800;color:#dc2626">'+sells.length+'</div>'
+      +'<div style="font-size:10px;color:#dc2626;font-weight:700;text-transform:uppercase;letter-spacing:.05em">'+(currentLang==='es'?'Ventas':'Sells')+'</div>'
+      +(sellTot>0?'<div style="font-size:11px;color:#dc2626;margin-top:3px;opacity:.8">'+_fmtMoney(sellTot)+'</div>':'')
+      +'</div></div>';
+    if(buys.length){
+      html += '<div style="font-size:12px;font-weight:700;color:#15803d;text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px">▲ '+(currentLang==='es'?'Compras por volumen':'Top Buys by Value')+'</div>';
+      html += buys.map(_insCard).join('');
+    }
+    if(sells.length){
+      html += '<div style="font-size:12px;font-weight:700;color:#dc2626;text-transform:uppercase;letter-spacing:.06em;margin:14px 0 8px">▼ '+(currentLang==='es'?'Ventas por volumen':'Top Sells by Value')+'</div>';
+      html += sells.map(_insCard).join('');
+    }
+    el.innerHTML = html;
     return;
   }
 
-  const allBuys = (_insData||[]).filter(function(r){ return r.transactionType && /^P/i.test(r.transactionType); });
-  const allSells = (_insData||[]).filter(function(r){ return r.transactionType && /^S/i.test(r.transactionType); });
-  const buyVol = allBuys.reduce(function(s,r){ return s + (Number(r.securitiesTransacted)||0)*(Number(r.price)||0); }, 0);
-  const sellVol = allSells.reduce(function(s,r){ return s + (Number(r.securitiesTransacted)||0)*(Number(r.price)||0); }, 0);
+  // Symbol mode: filter + list
+  let rows = all.slice();
+  if(_insFilterVal === 'buy')  rows = rows.filter(r => /^P/i.test(r.transactionType||''));
+  if(_insFilterVal === 'sell') rows = rows.filter(r => /^S/i.test(r.transactionType||''));
 
-  var summaryHtml = '';
-  if(_insFilterVal === 'all') {
-    summaryHtml = '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:16px">'
-      + '<div style="background:#e6faf3;border-radius:14px;padding:14px;text-align:center">'
-      + '<div style="font-size:22px;font-weight:800;color:#15803d">'+allBuys.length+'</div>'
-      + '<div style="font-size:10px;color:#15803d;font-weight:700;text-transform:uppercase;letter-spacing:.05em;margin-top:2px">'+(currentLang==='es'?'Compras':'Buys')+'</div>'
-      + (buyVol>0?'<div style="font-size:11px;color:#15803d;margin-top:4px;opacity:.8">'+_fmtMoney(buyVol)+'</div>':'')
-      + '</div>'
-      + '<div style="background:#fef2f2;border-radius:14px;padding:14px;text-align:center">'
-      + '<div style="font-size:22px;font-weight:800;color:#dc2626">'+allSells.length+'</div>'
-      + '<div style="font-size:10px;color:#dc2626;font-weight:700;text-transform:uppercase;letter-spacing:.05em;margin-top:2px">'+(currentLang==='es'?'Ventas':'Sells')+'</div>'
-      + (sellVol>0?'<div style="font-size:11px;color:#dc2626;margin-top:4px;opacity:.8">'+_fmtMoney(sellVol)+'</div>':'')
-      + '</div></div>';
+  if(!rows.length) {
+    const notFound = !all.length;
+    el.innerHTML = '<div style="text-align:center;padding:60px 0;color:#8fa090;font-size:13px">'
+      +'<div style="font-size:32px;margin-bottom:10px">'+(notFound?'🏢':'📭')+'</div>'
+      +(notFound
+        ?(currentLang==='es'?'No hay datos SEC para este símbolo<br><span style="font-size:11px;opacity:.7">Solo empresas cotizadas en EE.UU. (NYSE/NASDAQ)</span>':'No SEC data for this symbol<br><span style="font-size:11px;opacity:.7">US-listed companies only (NYSE/NASDAQ)</span>')
+        :(currentLang==='es'?'Sin resultados para este filtro':'No results for this filter'))
+      +'</div>';
+    return;
   }
 
-  var cardsHtml = rows.map(function(r) {
-    var isBuy = r.transactionType && /^P/i.test(r.transactionType);
-    var isSell = r.transactionType && /^S/i.test(r.transactionType);
-    var color = isBuy ? '#15803d' : isSell ? '#dc2626' : '#8fa090';
-    var bgBadge = isBuy ? '#e6faf3' : isSell ? '#fef2f2' : '#f0f4f2';
-    var iconCls = isBuy ? '' : isSell ? ' sell' : ' neutral';
-    var label = isBuy ? ('▲ '+(currentLang==='es'?'COMPRA':'BUY')) : isSell ? ('▼ '+(currentLang==='es'?'VENTA':'SELL')) : (r.transactionType||'—');
-    var sym = ((r.symbol||r.ticker||'—')+'').toUpperCase();
-    var initials = sym.replace(/[^A-Z]/g,'').slice(0,2)||sym.slice(0,2);
-    var shares = r.securitiesTransacted != null ? Number(r.securitiesTransacted).toLocaleString(currentLang==='es'?'es-ES':'en-US') : '—';
-    var priceVal = r.price ? Number(r.price).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2}) : '—';
-    var priceStr = r.price ? ('$'+priceVal) : '—';
-    var date = ((r.transactionDate||r.date||'—')+'').slice(0,10);
-    var insider = r.reportingName||r.insiderName||'—';
-    var role = r.typeOfOwner||r.position||'';
-    var value = (Number(r.securitiesTransacted)||0) * (Number(r.price)||0);
-    var valueStr = value > 1000 ? _fmtMoney(value) : '';
-    var link = r.link||r.secLink||'';
-
-    return '<div class="ins-card">'
-      + '<div class="ins-icon'+iconCls+'">'+initials+'</div>'
-      + '<div style="flex:1;min-width:0">'
-      + '<div style="display:flex;align-items:center;gap:6px;margin-bottom:3px">'
-      + '<span style="font-size:15px;font-weight:800;color:#142018">'+sym+'</span>'
-      + '<span style="background:'+bgBadge+';color:'+color+';font-size:9px;font-weight:700;padding:2px 7px;border-radius:6px;letter-spacing:.04em;flex-shrink:0">'+label+'</span>'
-      + (valueStr?'<span style="font-size:11px;font-weight:700;color:'+color+';margin-left:auto;flex-shrink:0">'+valueStr+'</span>':'')
-      + '</div>'
-      + '<div style="font-size:12px;color:#3d4f41;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+insider+'</div>'
-      + (role?'<div style="font-size:10px;color:#8fa090;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+role+'</div>':'')
-      + '<div style="display:flex;align-items:center;gap:8px;margin-top:6px;flex-wrap:wrap">'
-      + '<span style="font-size:11px;font-weight:700;color:#142018">'+shares+' acc.</span>'
-      + '<span style="font-size:11px;color:#8fa090">a '+priceStr+'</span>'
-      + '<span style="font-size:11px;color:#b0bfb5;margin-left:auto">'+date+'</span>'
-      + '</div>'
-      + '</div>'
-      + (link?'<a href="'+link+'" target="_blank" rel="noopener" style="color:#b0bfb5;font-size:13px;flex-shrink:0;text-decoration:none;padding:2px 0;align-self:flex-start" title="SEC Filing">↗</a>':'')
-      + '</div>';
-  }).join('');
-
-  el.innerHTML = summaryHtml + cardsHtml;
+  const buys  = all.filter(r => /^P/i.test(r.transactionType||''));
+  const sells = all.filter(r => /^S/i.test(r.transactionType||''));
+  const bVol  = buys.reduce((s,r)=>s+(Number(r.securitiesTransacted)||0)*(Number(r.price)||0),0);
+  const sVol  = sells.reduce((s,r)=>s+(Number(r.securitiesTransacted)||0)*(Number(r.price)||0),0);
+  const co    = (all[0]||{}).companyName;
+  const summary = (_insFilterVal==='all')
+    ? (co?'<div style="font-size:13px;font-weight:700;color:#142018;margin-bottom:10px">'+co+'</div>':'')
+      +'<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px">'
+      +'<div style="background:#e6faf3;border-radius:12px;padding:12px;text-align:center">'
+      +'<div style="font-size:20px;font-weight:800;color:#15803d">'+buys.length+'</div>'
+      +'<div style="font-size:10px;color:#15803d;font-weight:700;text-transform:uppercase">'+(currentLang==='es'?'Compras':'Buys')+'</div>'
+      +(bVol>0?'<div style="font-size:11px;color:#15803d;opacity:.8">'+_fmtMoney(bVol)+'</div>':'')
+      +'</div>'
+      +'<div style="background:#fef2f2;border-radius:12px;padding:12px;text-align:center">'
+      +'<div style="font-size:20px;font-weight:800;color:#dc2626">'+sells.length+'</div>'
+      +'<div style="font-size:10px;color:#dc2626;font-weight:700;text-transform:uppercase">'+(currentLang==='es'?'Ventas':'Sells')+'</div>'
+      +(sVol>0?'<div style="font-size:11px;color:#dc2626;opacity:.8">'+_fmtMoney(sVol)+'</div>':'')
+      +'</div></div>'
+    : '';
+  el.innerHTML = summary + rows.map(_insCard).join('');
 }
 
 function _insFilter(type) {
   _insFilterVal = type;
-  var chips = {all:'insChipAll', buy:'insChipBuy', sell:'insChipSell'};
-  Object.keys(chips).forEach(function(t) {
-    var el = document.getElementById(chips[t]);
-    if(el) el.classList.toggle('ins-chip-active', t === type);
+  const chips = {all:'insChipAll', buy:'insChipBuy', sell:'insChipSell'};
+  Object.keys(chips).forEach(t => {
+    const el2 = document.getElementById(chips[t]);
+    if(el2) el2.classList.toggle('ins-chip-active', t === type);
   });
-  if(_insData) _insRender(); else _insLoad();
+  if(_insData !== null) _insRender(); else _insLoad();
 }
 
 function _insSearchDebounce() {
   clearTimeout(_insSearchDebounceTimer);
-  var val = ((document.getElementById('insSearchInput')||{}).value||'').trim();
-  var clr = document.getElementById('insSearchClear');
+  const val = ((document.getElementById('insSearchInput')||{}).value||'').trim();
+  const clr = document.getElementById('insSearchClear');
   if(clr) clr.style.display = val ? '' : 'none';
   _insSearchDebounceTimer = setTimeout(function() {
     _insData = null;
@@ -6697,9 +6735,9 @@ function _insSearchDebounce() {
 }
 
 function _insClearSearch() {
-  var inp = document.getElementById('insSearchInput');
+  const inp = document.getElementById('insSearchInput');
   if(inp) inp.value = '';
-  var clr = document.getElementById('insSearchClear');
+  const clr = document.getElementById('insSearchClear');
   if(clr) clr.style.display = 'none';
   _insData = null;
   _insLoad('');
