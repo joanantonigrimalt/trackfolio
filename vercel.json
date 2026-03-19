@@ -1,5 +1,9 @@
 {
   "version": 2,
+  "rewrites": [
+    { "source": "/mobile", "destination": "/mobile.html" },
+    { "source": "/mobile/", "destination": "/mobile.html" }
+  ],
   "headers": [
     {
       "source": "/(.*)",
@@ -45,19 +49,25 @@
     {
       "source": "/index.html",
       "headers": [
-        {
-          "key": "Cache-Control",
-          "value": "no-store, no-cache, must-revalidate"
-        }
+        { "key": "Cache-Control", "value": "no-store, no-cache, must-revalidate" }
       ]
     },
     {
       "source": "/",
       "headers": [
-        {
-          "key": "Cache-Control",
-          "value": "no-store, no-cache, must-revalidate"
-        }
+        { "key": "Cache-Control", "value": "no-store, no-cache, must-revalidate" }
+      ]
+    },
+    {
+      "source": "/mobile.html",
+      "headers": [
+        { "key": "Cache-Control", "value": "no-store, no-cache, must-revalidate" }
+      ]
+    },
+    {
+      "source": "/tracker-dividendos.html",
+      "headers": [
+        { "key": "Cache-Control", "value": "public, max-age=3600" }
       ]
     },
     {
