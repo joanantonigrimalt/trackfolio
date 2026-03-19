@@ -2497,12 +2497,14 @@ function toEur(amount,ccy){ if(!ccy||ccy==='EUR')return amount; const r=_fxRates
 function toDisplay(amount,fromCcy){ return toEur(amount,fromCcy)*(_fxRates[_displayCcy]||1); }
 // fd() — convert fromCcy → _displayCcy and format
 function fd(n,fromCcy){ return fe(toDisplay(Number.isFinite(n)?n:0,fromCcy)); }
-// fetchGlobalFxRates() — fetch live EUR→X rates at boot
+// fetchGlobalFxRates() — fetch live EUR→X rates at boot (localStorage cached 1h)
 async function fetchGlobalFxRates(){
   try{
+    const _LS='fa_fx_rates',_stored=localStorage.getItem(_LS);
+    if(_stored){const _p=JSON.parse(_stored);if(_p?.rates&&(Date.now()-_p.ts)<3_600_000){_fxRates={EUR:1,..._p.rates};return;}}
     const r=await fetch('https://api.frankfurter.app/latest?from=EUR&to=USD,GBP,CHF');
     const d=await r.json();
-    if(d.rates) _fxRates={EUR:1,...d.rates};
+    if(d.rates){_fxRates={EUR:1,...d.rates};localStorage.setItem(_LS,JSON.stringify({rates:d.rates,ts:Date.now()}));}
   }catch(_){}
 }
 // setDisplayCcy() — change display currency and re-render
@@ -4861,6 +4863,7 @@ function loadCustomIntoAssets(){
 
 // ========== Search Sheet ==========
 let _searchTimer=null,_searchResult=null,_searchReqId=0;
+const _searchCache=new Map(); // client-side query cache (max 50, FIFO)
 
 function openSearch(){
   // Force-hide settings immediately (no animation) before search opens
@@ -4909,14 +4912,14 @@ function toggleAddCurrency() {
 
 async function fetchFxRate(toCcy) {
   if (!toCcy || toCcy === 'EUR') return;
+  // Use boot-time cached rate if available — no network call needed
+  const _r=_fxRates[toCcy];
+  if(_r&&_r>0){document.getElementById('addFxRate').value=_r.toFixed(4);updateFxHint();return;}
   try {
     const r = await fetch(`https://api.frankfurter.app/latest?from=EUR&to=${toCcy}`);
     const d = await r.json();
     const rate = d.rates?.[toCcy];
-    if (rate) {
-      document.getElementById('addFxRate').value = rate.toFixed(4);
-      updateFxHint();
-    }
+    if (rate) { _fxRates[toCcy]=rate; document.getElementById('addFxRate').value=rate.toFixed(4); updateFxHint(); }
   } catch (_) { /* user enters manually */ }
 }
 
@@ -4973,10 +4976,14 @@ async function onSearchInput(){
   document.getElementById('searchHint').style.display='none';
   document.getElementById('searchResultsList').innerHTML=`<div class="searchHint">Buscando…</div>`;
   const reqId=++_searchReqId;
+  // Check client cache first — avoids repeat API calls for same query
+  if(_searchCache.has(q)){renderSearchResults(_searchCache.get(q));return;}
   _searchTimer=setTimeout(async()=>{
     try{
       const data=await getJson(`/api/search/query?q=${encodeURIComponent(q)}`);
-      if(reqId!==_searchReqId)return; // stale response — a newer search is in progress
+      if(reqId!==_searchReqId)return;
+      if(_searchCache.size>=50){_searchCache.delete(_searchCache.keys().next().value);}
+      _searchCache.set(q,data.results||[]);
       renderSearchResults(data.results||[]);
     }catch(e){
       if(reqId!==_searchReqId)return;
@@ -6545,7 +6552,7 @@ function exportTaxPDF(){
 
 
 // ── Insiders (FMP Search Insider Trades API) ──────────────────────────────
-const _INS_KEY = 'EYRk2QXBpsogqFUfHFb9CcR4bEqk3OZ7L0';
+// FMP key moved to server — insiders now proxied through /api/insiders
 let _insData = null;
 let _insFilterVal = 'all';
 let _insCurrentSymbol = '';
@@ -6561,7 +6568,7 @@ async function _insLoad(symbol) {
   if(el) el.innerHTML = '<div style="text-align:center;padding:50px 0;color:#8fa090;font-size:13px"><div style="font-size:28px;margin-bottom:10px">⌛</div>Cargando insiders…</div>';
   try {
     const sym = _insCurrentSymbol ? '&symbol='+encodeURIComponent(_insCurrentSymbol.toUpperCase()) : '';
-    const url = 'https://financialmodelingprep.com/stable/insider-trading/search?page=0&limit=100'+sym+'&apikey='+_INS_KEY;
+    const url = '/api/insiders?page=0&limit=100'+sym; // server-side proxy (key hidden)
     const r = await fetch(url);
     if(!r.ok) throw new Error('HTTP '+r.status);
     const json = await r.json();
