@@ -4700,12 +4700,15 @@ function renderLists(){
       ?`<span style="color:${dp>=0?'#15803d':'#b91c1c'}">${dp>=0?'+':''}${dp.toFixed(2)}%</span><span style="color:#b0c0b5;font-size:10px;margin-left:2px">${currentLang==='es'?'hoy':'1D'}</span>`
       :'';
     const totalColor=_agp>=0?'#15803d':'#b91c1c';
+    const _ccy=assetCcy(a);const _csym=_ccy==='USD'?'$':_ccy==='GBP'?'£':_ccy==='CHF'?'Fr':'€';
+    const _bp=`${_csym}${Number(a.buyPrice).toFixed(2)}`;
+    const _cp=`${_csym}${Number(a.currentPrice).toFixed(2)}`;
     return`<div class="asset" data-isin="${a.isin}">
       <div class="icon ${assetType(a)}">${iconInitials(a)}</div>
       <div style="min-width:0;flex:1">
         <div class="name" title="${a.fullName||a.name}">${a.name}</div>
         <div class="meta">${fn(a.quantity)} ${t('shares').toLowerCase()}${a.broker?' · '+escapeHtml(a.broker):''}</div>
-        <div class="meta" style="margin-top:1px;font-size:9.5px;color:#8fa090">${currentLang==='es'?'Compra':'Buy'} <span style="color:#374151;font-weight:600">${fc(a.buyPrice,assetCcy(a))}</span> &nbsp;·&nbsp; ${currentLang==='es'?'Actual':'Now'} <span style="color:#374151;font-weight:600">${fc(a.currentPrice,assetCcy(a))}</span></div>
+        <div class="meta" style="margin-top:1px;font-size:9.5px;color:#8fa090;white-space:nowrap">${currentLang==='es'?'Compra':'Buy'} <span style="color:#374151;font-weight:600">${_bp}</span> · ${currentLang==='es'?'Actual':'Now'} <span style="color:#374151;font-weight:600">${_cp}</span></div>
       </div>
       <div class="right">
         <div class="money">${fe(_av)}</div>
