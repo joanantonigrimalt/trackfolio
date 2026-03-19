@@ -3280,16 +3280,70 @@ function _anRenderAllocContent(tab) {
 
 // ── Costs & Fees ─────────────────────────────────────────────────────────────
 const AN_TER_MAP = {
+  // ── Portfolio assets ────────────────────────────────────────────────────
   'IE00BYX5NK04':0.12,'IE00BYX5P602':0.12,'IE00B4ND3602':0.15,'IE00B579F325':0.12,
   'DE000A0F5UH1':0.10,'IE00BZ4BMM98':0.29,'IE00B9CQXS71':0.45,'NL0011683594':0.38,
   'IE000QAZP7L2':0.17,'LU0084617165':0.80,'LU2145461757':0.80,
   'ES0146309002':1.35,'ES0112611001':1.50,'ES0146311008':1.35,'LU1598719752':1.40,
-  'ES0173311103':1.35,'ES0159259011':1.35,'ES0174115057':1.35
+  'ES0173311103':1.35,'ES0159259011':1.35,'ES0174115057':1.35,
+  // ── iShares / BlackRock ─────────────────────────────────────────────────
+  'IE00B52MJD48':0.20,'IE00B4L5Y983':0.20,'IE00B02KXK85':0.40,'IE00B1XNHC34':0.40,
+  'IE00B3YLTY66':0.12,'IE00B0M62Q58':0.20,'IE00B0M62X26':0.40,'IE00B27YCF74':0.20,
+  'IE00B3RBWM25':0.07,'IE00B3WJKG14':0.20,'IE00B2QWDY88':0.20,'IE00B4ND3602':0.15,
+  'IE00B579F325':0.12,'IE00BD45KH83':0.07,'IE00BKM4GZ66':0.18,'IE00B3YCGJ38':0.18,
+  'IE00B1W57M07':0.40,'IE00B6RBWC93':0.20,'IE00B4WXJJ64':0.20,'IE00B3ZW0K18':0.20,
+  'IE00B52SF786':0.15,'IE00B52VJ196':0.20,'IE00B19Z2J52':0.20,'IE00B3F81R35':0.07,
+  // ── Vanguard ────────────────────────────────────────────────────────────
+  'IE00B3RBWM25':0.07,'IE00B3XXRP09':0.22,'IE00B42THM37':0.22,'IE00BFMXXD54':0.10,
+  'IE00B3VVMM84':0.12,'IE00B246KL88':0.25,'IE00B810Q511':0.25,'IE00BKX55T58':0.12,
+  'IE00B40QCL76':0.25,'IE00B9F5YL18':0.29,'IE00BGCZ0933':0.20,'IE00B77D4428':0.22,
+  'IE00B3VVMM84':0.12,'IE00B18GCK57':0.22,'IE00B4PY7Y77':0.22,'IE00BH04GL39':0.12,
+  // ── Amundi / Lyxor ──────────────────────────────────────────────────────
+  'LU1681043599':0.17,'LU1681048804':0.17,'FR0010315770':0.20,'FR0010429068':0.20,
+  'LU1829221024':0.18,'LU0252633754':0.30,'LU1650490474':0.25,'LU1437016972':0.22,
+  'LU1681041680':0.18,'LU1681043516':0.18,'LU1650490987':0.15,'LU0908500753':0.25,
+  // ── SPDR / State Street ─────────────────────────────────────────────────
+  'IE00B9CQXS71':0.45,'IE00B3WJKG14':0.20,'IE00BJ0KDQ92':0.12,'IE00BYTH5S47':0.06,
+  'IE00B44Z5B48':0.12,'IE00B7MXVS93':0.35,'IE00B8FHGS14':0.35,'IE00BF4KKG22':0.12,
+  // ── Xtrackers / DWS ─────────────────────────────────────────────────────
+  'IE00BJ0KDQ92':0.12,'LU0274208692':0.20,'LU0411075020':0.20,'LU0292096186':0.20,
+  'LU0490618542':0.25,'LU0659580079':0.25,'LU0514695690':0.20,'LU0292107645':0.20,
+  // ── Invesco ──────────────────────────────────────────────────────────────
+  'IE00B3YCGJ38':0.18,'IE00B60SWX25':0.05,'IE00BLNMYC90':0.05,'IE00B23LNQ02':0.25,
+  // ── WisdomTree ────────────────────────────────────────────────────────────
+  'JE00B588CD74':0.35,'JE00B1VS3770':0.39,'DE000A0S9GB0':0.39,'IE00BYXVGZ48':0.49,
+  // ── VanEck ───────────────────────────────────────────────────────────────
+  'NL0011683594':0.38,'IE00BQQP9F84':0.50,'IE00BFXR7892':0.35,'DE000A1C22M3':0.75,
+  // ── HANetf ───────────────────────────────────────────────────────────────
+  'IE00BLRPQH31':0.29,'IE00BN4Q0601':0.30,'IE00BHBX3Z21':0.49,
 };
+// Populate a.ter from ETF profile for assets not in AN_TER_MAP
+async function _prefetchMissingTers() {
+  const missing = assets.filter(a => a.quantity > 0 && (a.ter ?? AN_TER_MAP[a.isin]) == null && a.isin);
+  if (!missing.length) return false;
+  try {
+    const isins = missing.map(a => a.isin).join(',');
+    const data = await getJson(`/api/etf/profile?isin=${encodeURIComponent(isins)}`, 8000);
+    let updated = false;
+    (data.results || []).forEach(r => {
+      if (r.overview?.ter != null) {
+        const a = assets.find(x => x.isin === r.isin);
+        if (a) { a.ter = r.overview.ter; updated = true; }
+      }
+    });
+    return updated;
+  } catch { return false; }
+}
+
 function _anRenderCosts() {
   const el = document.getElementById('anCostsContent');
   if (!el) return;
   const isEs = currentLang === 'es';
+  // If any assets are missing TER, fetch from ETF profile then re-render
+  const hasMissingTers = assets.some(a => a.quantity > 0 && (a.ter ?? AN_TER_MAP[a.isin]) == null);
+  if (hasMissingTers) {
+    _prefetchMissingTers().then(updated => { if (updated) _anRenderCosts(); });
+  }
   const rows = assets
     .filter(a => a.quantity > 0)
     .map(a => {
@@ -3306,9 +3360,9 @@ function _anRenderCosts() {
   if (!rows.length) { el.innerHTML = `<div style="font-size:12px;color:#8fa090;text-align:center;padding:8px 0">${isEs?'No hay datos de TER disponibles.':'No TER data available.'}</div>`; return; }
   const maxCost = rows[0].annualCost || 1;
   let html = `<div class="an-costs-chips">
-    <div class="an-costs-chip" style="background:#fef2f2"><div class="cc-lbl">Coste total</div><div class="cc-val" style="color:#f87171">${fe(totalCost)}</div></div>
-    <div class="an-costs-chip" style="background:#fefce8"><div class="cc-lbl">TER medio</div><div class="cc-val" style="color:#b45309">${avgTer.toFixed(2)}%</div></div>
-    <div class="an-costs-chip" style="background:#e6faf3"><div class="cc-lbl">Activos</div><div class="cc-val" style="color:#15803d">${rows.length}</div></div>
+    <div class="an-costs-chip" style="background:#fef2f2"><div class="cc-lbl">${isEs?'Coste total':'Total cost'}</div><div class="cc-val" style="color:#f87171">${fe(totalCost)}</div></div>
+    <div class="an-costs-chip" style="background:#fefce8"><div class="cc-lbl">${isEs?'TER medio':'Avg TER'}</div><div class="cc-val" style="color:#b45309">${avgTer.toFixed(2)}%</div></div>
+    <div class="an-costs-chip" style="background:#e6faf3"><div class="cc-lbl">${isEs?'Activos':'Assets'}</div><div class="cc-val" style="color:#15803d">${rows.length}</div></div>
   </div><div>`;
   rows.forEach(r => {
     const isEtf = r.cat==='ETFs'||r.cat==='ETC'||r.cat==='Oro';
@@ -3319,10 +3373,10 @@ function _anRenderCosts() {
       <div style="flex:1;min-width:0">
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:3px">
           <div style="display:flex;align-items:center;min-width:0;flex:1">
-            <span class="an-costs-badge" style="background:${typeBg};color:${typeColor}">${isEtf?'ETF':'FONDO'}</span>
+            <span class="an-costs-badge" style="background:${typeBg};color:${typeColor}">${isEtf?'ETF':(isEs?'FONDO':'FUND')}</span>
             <span class="an-costs-name">${escapeHtml(shortName)}</span>
           </div>
-          <span class="an-costs-amt" style="flex-shrink:0;margin-left:8px">${r.ter}% · ${fe(r.annualCost)}/año</span>
+          <span class="an-costs-amt" style="flex-shrink:0;margin-left:8px">${r.ter}% · ${fe(r.annualCost)}/${isEs?'año':'yr'}</span>
         </div>
         <div class="an-ter-bar-track"><div class="an-ter-bar-fill" style="width:${barW}%"></div></div>
       </div>
@@ -3332,7 +3386,7 @@ function _anRenderCosts() {
   if (noTer.length) {
     html += `<div style="display:flex;align-items:center;gap:6px;padding:8px 10px;background:#f8faf9;border-radius:8px;border-left:3px solid #2dc98a;margin-top:10px">
       <span style="font-size:11px">ℹ️</span>
-      <span style="font-size:10px;color:#6b7280;line-height:1.4">Las <strong style="color:#142018">acciones individuales</strong> no llevan TER (${noTer.map(a=>escapeHtml(a.name.split(' ')[0])).slice(0,3).join(', ')}${noTer.length>3?'…':''})</span>
+      <span style="font-size:10px;color:#6b7280;line-height:1.4">${isEs?'Las <strong style="color:#142018">acciones individuales</strong> no llevan TER':'<strong style="color:#142018">Individual stocks</strong> have no TER'} (${noTer.map(a=>escapeHtml(a.name.split(' ')[0])).slice(0,3).join(', ')}${noTer.length>3?'…':''})</span>
     </div>`;
   }
   html += `<div style="margin-top:12px">

@@ -5,6 +5,7 @@
 const { setupApi, sanitizeQuery, validateSymbol, sendError } = require('../../lib/security');
 const { search: eodhdSearch } = require('../../lib/eodhd');
 const { searchSymbol: twelveSearch } = require('../../lib/twelvedata');
+const { fmpFetch } = require('../../lib/fmp');
 
 // ── Known assets from portfolio-providers.json ─────────────────────────────
 let KNOWN_ASSETS = [];
@@ -26,9 +27,9 @@ const YAHOO_TYPE = {
 };
 
 const TYPE_LABEL = {
-  stock: 'Acción', etf: 'ETF', fund: 'Fondo',
-  crypto: 'Cripto', index: 'Índice', future: 'Futuro',
-  fx: 'Divisa', etc: 'ETC', unknown: 'Activo',
+  stock: 'Stock', etf: 'ETF', fund: 'Fund',
+  crypto: 'Crypto', index: 'Index', future: 'Future',
+  fx: 'Currency', etc: 'ETC', unknown: 'Asset',
 };
 
 const EODHD_TYPE = {
@@ -101,7 +102,7 @@ const EURO_EXC    = ['XETR', 'LSE', 'AMS', 'EPA', 'MIL', 'BRU', 'STO', 'HEL', 'O
 function geoScore(symbol, exchange) {
   const s = (symbol || '').toUpperCase();
   const e = (exchange || '').toUpperCase();
-  if (SPANISH_SYM.some(x => s.endsWith(x)) || SPANISH_EXC.some(x => e.includes(x))) return 40;
+  if (SPANISH_SYM.some(x => s.endsWith(x)) || SPANISH_EXC.some(x => e.includes(x))) return 10;
   if (EURO_SYM.some(x => s.endsWith(x)) || EURO_EXC.some(x => e.includes(x))) return 15;
   return 0;
 }
@@ -148,7 +149,7 @@ function score(item, qLower, qType) {
   if (t === 'crypto' && !/btc|eth|crypto|coin|token/i.test(qLower)) s -= 15;
 
   // Source priority
-  const srcBonus = { known_asset: 30, yahoo: 10, eodhd: 8, twelvedata: 6 };
+  const srcBonus = { known_asset: 30, yahoo: 10, eodhd: 8, fmp: 7, twelvedata: 6 };
   s += srcBonus[item._src] || 0;
 
   return s;
@@ -190,6 +191,34 @@ function fromKnown(qLower, qType) {
       currency: null,
       _known:   true,
     }, 'known_asset'));
+}
+
+// ── Source: FMP (good for ISIN/ticker lookup with sector + country data) ──
+async function fromFmp(q, qType) {
+  try {
+    const key = process.env.FMP_API_KEY;
+    if (!key) return [];
+    // Use FMP search endpoint
+    const url = `https://financialmodelingprep.com/stable/search?query=${encodeURIComponent(q)}&limit=10&apikey=${key}`;
+    const r = await fetch(url, { headers: { Accept: 'application/json' }, signal: AbortSignal.timeout(5000) });
+    if (!r.ok) return [];
+    const data = await r.json();
+    const list = Array.isArray(data) ? data : (data?.symbolsList || []);
+    return list.map(item => {
+      const rawType = (item.stockExchange || item.exchangeShortName || '').toLowerCase();
+      const type = /etf/i.test(item.name || '') ? 'etf'
+        : /fund|fonds/i.test(item.name || '') ? 'fund'
+        : 'stock';
+      return norm({
+        symbol:   item.symbol || '',
+        isin:     item.isin || null,
+        name:     item.name || item.companyName || item.symbol || '',
+        type,
+        exchange: item.exchangeShortName || item.stockExchange || '',
+        currency: item.currency || null,
+      }, 'fmp');
+    });
+  } catch { return []; }
 }
 
 // ── Source: Yahoo Finance ──────────────────────────────────────────────────
@@ -361,17 +390,18 @@ module.exports = async (req, res) => {
   // ── 1. Gather results from all sources in parallel ───────────────────────
   const known = fromKnown(qLower, qType);
 
-  const [yahooRes, eodhdRes, twelveRes] = await Promise.allSettled([
+  // TwelveData excluded: doesn't return ISINs (makes results hard to dedup / use)
+  const [yahooRes, eodhdRes, fmpRes] = await Promise.allSettled([
     fromYahoo(q),
     fromEodhd(q),
-    fromTwelve(q),
+    fromFmp(q, qType),
   ]);
 
   const all = [
     ...known,
-    ...(yahooRes.status  === 'fulfilled' ? yahooRes.value  : []),
-    ...(eodhdRes.status  === 'fulfilled' ? eodhdRes.value  : []),
-    ...(twelveRes.status === 'fulfilled' ? twelveRes.value : []),
+    ...(yahooRes.status === 'fulfilled' ? yahooRes.value  : []),
+    ...(eodhdRes.status === 'fulfilled' ? eodhdRes.value  : []),
+    ...(fmpRes.status   === 'fulfilled' ? fmpRes.value    : []),
   ];
 
   // ── 2. Score every candidate ─────────────────────────────────────────────

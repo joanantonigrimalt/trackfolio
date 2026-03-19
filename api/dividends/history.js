@@ -128,33 +128,36 @@ async function tdDiv(symbol) {
   return [];  // do NOT cache empty
 }
 
-// ── Fetch with fallback chain ─────────────────────────────────────────────
+// ── Fetch with fallback chain — returns { divs, source } ──────────────────
 async function fetchDivs(isin, symbolOverride) {
   const s = DIV_ASSETS[isin];
   if (s) {
-    if (s.eodhd) { const d = await eodhdDiv(s.eodhd); if (d.length) return d; }
-    if (s.yahoo)  { const d = await yahooDiv(s.yahoo);  if (d.length) return d; }
-    if (s.td)     { const d = await tdDiv(s.td);         if (d.length) return d; }
+    if (s.eodhd) { const d = await eodhdDiv(s.eodhd); if (d.length) return { divs: d, source: 'eodhd' }; }
+    if (s.yahoo)  { const d = await yahooDiv(s.yahoo);  if (d.length) return { divs: d, source: 'yahoo' }; }
+    if (s.td)     { const d = await tdDiv(s.td);         if (d.length) return { divs: d, source: 'twelvedata' }; }
   } else {
     // Use symbol override (e.g. "KO" for Coca-Cola) — works for both tickers and ISIN-less assets
-    if (symbolOverride && symbolOverride !== isin) { const d = await yahooDiv(symbolOverride); if (d.length) return d; }
+    if (symbolOverride && symbolOverride !== isin) { const d = await yahooDiv(symbolOverride); if (d.length) return { divs: d, source: 'yahoo' }; }
     // If isin is itself a ticker (not ISIN format), query it directly
     const d = await yahooDiv(isin);
-    if (d.length) return d;
+    if (d.length) return { divs: d, source: 'yahoo' };
   }
-  // Final fallback: Digrin / StockAnalysis scraper
+  // Final fallback: Digrin / StockAnalysis scraper (via lib/dividends)
   try {
     const hist = await fetchDividendHistory(isin);
     if (hist.payments?.length) {
-      return hist.payments.map(p => ({
-        date: p.exDate,
-        paymentDate: null,
-        amount: p.amount,
-        currency: p.currency || 'EUR',
-      }));
+      return {
+        divs: hist.payments.map(p => ({
+          date: p.exDate,
+          paymentDate: null,
+          amount: p.amount,
+          currency: p.currency || 'EUR',
+        })),
+        source: hist.source || 'scraper',
+      };
     }
   } catch (_) {}
-  return [];
+  return { divs: [], source: 'no_data' };
 }
 
 // ── Helpers ───────────────────────────────────────────────────────────────
@@ -282,7 +285,7 @@ module.exports = async (req, res) => {
     const seed = portfolioSeed.positions.find(p => p.isin === isin);
 
     try {
-      const divs = await fetchDivs(isin, symbolOverrides[isin]);
+      const { divs, source: divSource } = await fetchDivs(isin, symbolOverrides[isin]);
       const aps  = await annualEurPerShare(divs, gbpRate);
       const pm   = derivePayMonths(divs);
       const ps   = await buildPaySchedule(divs, gbpRate);
@@ -298,10 +301,14 @@ module.exports = async (req, res) => {
       const nextYear = today.getFullYear() + (nextM != null && nextM <= cm ? 1 : 0);
       const { exDate: nextExDate, payDate: nextPayDate } = estimateNextDates(divs, nextM, nextYear);
 
+      const lastEx = divs.length > 0 ? divs[divs.length-1].date : null;
+      const dataAgeHours = lastEx ? Math.round((Date.now() - new Date(lastEx).getTime()) / 3600000) : null;
       results.push({
         isin,
         symbol:         syms?.eodhd || syms?.yahoo || isin,
-        source:         divs.length ? 'live' : 'no_data',
+        source:         divSource,
+        fetchedAt:      new Date().toISOString(),
+        dataAgeHours,
         gbpEurRate:     gbpRate,
         annualPerShare: aps,
         annualIncome:   aps * qty,
