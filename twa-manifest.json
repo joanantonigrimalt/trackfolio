@@ -1,0 +1,49 @@
+{
+  "packageId": "app.finasset.twa",
+  "host": "finasset.app",
+  "name": "Finasset – Cartera de Inversión",
+  "launcherName": "Finasset",
+  "display": "standalone",
+  "themeColor": "#142018",
+  "navigationColor": "#142018",
+  "navigationColorDark": "#142018",
+  "navigationDividerColor": "#142018",
+  "navigationDividerColorDark": "#142018",
+  "backgroundColor": "#f2f5f3",
+  "enableNotifications": false,
+  "startUrl": "/",
+  "iconUrl": "https://finasset.app/icons/icon-512.png",
+  "maskableIconUrl": "https://finasset.app/icons/icon-512.png",
+  "monochromeIconUrl": "https://finasset.app/icons/icon-512.png",
+  "splashScreenFadeOutDuration": 400,
+  "signingKey": {
+    "path": "./android.keystore",
+    "alias": "finasset"
+  },
+  "appVersionCode": 3,
+  "appVersionName": "1.3.0",
+  "shortcuts": [
+    {
+      "name": "Mi Cartera",
+      "short_name": "Cartera",
+      "url": "/",
+      "icons": [{"src": "https://finasset.app/icons/icon-96.png", "sizes": "96x96"}]
+    }
+  ],
+  "generatorApp": "bubblewrap-cli",
+  "webManifestUrl": "https://finasset.app/manifest.json",
+  "fallbackType": "customtabs",
+  "features": {
+    "locationDelegation": {"enabled": false},
+    "playBilling": {"enabled": false}
+  },
+  "alphaDependencies": {"enabled": false},
+  "enableSiteSettingsShortcut": true,
+  "isChromeOSOnly": false,
+  "isMetaQuest": false,
+  "fullScopeUrl": "https://finasset.app/",
+  "minSdkVersion": 21,
+  "targetSdkVersion": 35,
+  "orientation": "portrait",
+  "fingerprints": []
+}
