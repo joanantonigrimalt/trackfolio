@@ -993,7 +993,7 @@ table.an-corr-mtx{border-collapse:separate;border-spacing:4px}
     </div>
     <!-- Price -->
     <div style="margin-bottom:14px">
-      <div class="liqLabel">Precio objetivo (€)</div>
+      <div class="liqLabel" id="alertsPriceLabel">Precio objetivo (€)</div>
       <input class="liqInp" id="alertsPriceInput" type="number" min="0" step="0.01" placeholder="0.00">
     </div>
     <!-- Notif toggle -->
@@ -1146,7 +1146,7 @@ table.an-corr-mtx{border-collapse:separate;border-spacing:4px}
       <div style="padding:16px 18px 10px;display:flex;align-items:flex-start;justify-content:space-between">
         <div>
           <div style="font-size:15px;font-weight:800;color:#142018;letter-spacing:-.02em" data-i18n="performance">Performance by asset</div>
-          <div style="font-size:11px;color:#8fa090;margin-top:2px">Rendimiento acumulado · YTD 2025</div>
+          <div id="ytdYearLabel" style="font-size:11px;color:#8fa090;margin-top:2px">Rendimiento acumulado · YTD 2025</div>
         </div>
         <div style="display:flex;align-items:center;gap:10px;flex-shrink:0;margin-top:2px">
           <div style="display:flex;align-items:center;gap:4px;font-size:10px;font-weight:600;color:#4a5f4e"><span style="width:8px;height:8px;border-radius:50%;background:#22c55e;display:inline-block"></span>Positivo</div>
@@ -1486,7 +1486,7 @@ table.an-corr-mtx{border-collapse:separate;border-spacing:4px}
               Vera AI
             </div>
           </div>
-          <div class="ps-updated" id="psUpdated">Actualizado: hace 1 min · 1/5 análisis usados</div>
+          <div class="ps-updated" id="psUpdated">Actualizado: hace 1 min · 1/5 análisis usados · reset lunes</div>
         </div>
         <button class="ps-update-btn" onclick="refreshScore()">
           <svg viewBox="0 0 14 14" fill="none" stroke="#fff" stroke-width="1.8" width="12" height="12"><path d="M12 2v4H8"/><path d="M2 12v-4h4"/><path d="M12 6A5 5 0 0 0 2.5 5M2 8a5 5 0 0 0 9.5 1"/></svg>
@@ -1592,9 +1592,9 @@ table.an-corr-mtx{border-collapse:separate;border-spacing:4px}
         <div class="ps-detail-header">
           <div class="ps-detail-gauge-wrap"><canvas class="ps-detail-gauge" data-score="7" data-color="#2dc98a" width="70" height="42"></canvas></div>
           <div class="ps-detail-info"><div class="ps-detail-status" style="color:#2dc98a;">Fees Bajos ✓</div><div class="ps-detail-score" style="color:#2dc98a;">7 <span>/10</span></div></div>
-          <div style="margin-left:auto;background:#e6faf3;border-radius:8px;padding:6px 10px;text-align:center;"><div style="font-size:.55rem;font-weight:700;color:#065f46;text-transform:uppercase;letter-spacing:.06em;">TER medio</div><div style="font-size:.9rem;font-weight:800;color:#059669;">~0.12%</div></div>
+          <div id="psTerBadge" style="margin-left:auto;background:#e6faf3;border-radius:8px;padding:6px 10px;text-align:center;"><div style="font-size:.55rem;font-weight:700;color:#065f46;text-transform:uppercase;letter-spacing:.06em;">TER medio</div><div id="psTerVal" style="font-size:.9rem;font-weight:800;color:#059669;">~0.12%</div></div>
         </div>
-        <div style="background:#e6faf3;border:1px solid #a7f3d0;border-radius:10px;padding:10px 12px;margin-bottom:12px;display:flex;gap:8px;align-items:flex-start;"><svg viewBox="0 0 16 16" fill="none" stroke="#059669" stroke-width="1.8" width="15" height="15" style="flex-shrink:0;margin-top:1px;"><path d="M13 4L6 11l-3-3" stroke-linecap="round" stroke-linejoin="round"/></svg><div style="font-size:.7rem;color:#065f46;line-height:1.5;">Tu cartera es <b>muy eficiente en costes</b>. TER de 0.12% — mínimo para fondos indexados en España.</div></div>
+        <div style="background:#e6faf3;border:1px solid #a7f3d0;border-radius:10px;padding:10px 12px;margin-bottom:12px;display:flex;gap:8px;align-items:flex-start;"><svg viewBox="0 0 16 16" fill="none" stroke="#059669" stroke-width="1.8" width="15" height="15" style="flex-shrink:0;margin-top:1px;"><path d="M13 4L6 11l-3-3" stroke-linecap="round" stroke-linejoin="round"/></svg><div id="psTerText" style="font-size:.7rem;color:#065f46;line-height:1.5;">Tu cartera es <b>muy eficiente en costes</b>. TER de 0.12% — mínimo para fondos indexados en España.</div></div>
         <div class="ps-detail-title">¿Cómo influyen los fees en el retorno?</div>
         <div class="ps-detail-body">Un 1% extra de comisión puede suponer hasta un <b>20-25% menos de capital</b> en 30 años por el efecto del interés compuesto.</div>
         <div class="ps-detail-section">
@@ -1669,12 +1669,7 @@ table.an-corr-mtx{border-collapse:separate;border-spacing:4px}
         </div>
         <span class="card-link">Ver todo</span>
       </div>
-      <div class="insight-list" id="iaInsightsList">
-        <div class="ins-row"><div class="ins-dot dot-red" style="margin-top:6px;"></div><div class="ins-body"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:3px;"><div class="ins-tag tag-red">Concentración · Urgente</div></div><div class="ins-text">Tienes <b>alta concentración</b> en pocos activos. Diversificar reduciría tu riesgo idiosincrático.</div><div class="ins-cta">Cómo diversificar →</div></div></div>
-        <div class="ins-row"><div class="ins-dot dot-yellow" style="margin-top:6px;"></div><div class="ins-body"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:3px;"><div class="ins-tag tag-yellow">Rendimiento · Watch</div></div><div class="ins-text" id="iaInsightReturn">Calculando rentabilidad…</div><div class="ins-cta">Ver comparativa →</div></div></div>
-        <div class="ins-row"><div class="ins-dot dot-blue" style="margin-top:6px;"></div><div class="ins-body"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:3px;"><div class="ins-tag tag-blue">Oportunidad</div></div><div class="ins-text">Añadir un ETF de mercados emergentes bajaría tu correlación a <b>0.47</b> y subiría tu Health Score a ~72.</div><div class="ins-badge b-blue" style="margin-top:6px;">+25 puntos de diversificación</div></div></div>
-        <div class="ins-row"><div class="ins-dot dot-green" style="margin-top:6px;"></div><div class="ins-body"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:3px;"><div class="ins-tag tag-green">Positivo</div></div><div class="ins-text" id="iaInsightFees">TER muy eficiente. Pagas mínimo en comisiones de gestión.</div><div class="ins-badge b-green" style="margin-top:6px;">Coste óptimo</div></div></div>
-      </div>
+      <div class="insight-list" id="iaInsightsList"></div>
     </div>
 
     <!-- HEALTH SCORE -->
@@ -1692,8 +1687,8 @@ table.an-corr-mtx{border-collapse:separate;border-spacing:4px}
         </div>
         <div class="hs-pillars">
           <div class="pr"><span class="pr-label">Diversif.</span><div class="pr-track"><div class="pr-fill" id="hsDiversifBar" style="width:0%;background:#e0e0e0;"></div></div><span class="pr-val" id="hsDiversifVal" style="color:#f05252;">—</span></div>
-          <div class="pr"><span class="pr-label">Riesgo</span><div class="pr-track"><div class="pr-fill" id="hsRiskBar" style="width:57%;background:#2dc98a;"></div></div><span class="pr-val" id="hsRiskVal" style="color:#2dc98a;">—</span></div>
-          <div class="pr"><span class="pr-label">Rentabilidad</span><div class="pr-track"><div class="pr-fill" id="hsRentBar" style="width:86%;background:#f5b731;"></div></div><span class="pr-val" id="hsRentVal" style="color:#d97706;">—</span></div>
+          <div class="pr"><span class="pr-label">Riesgo</span><div class="pr-track"><div class="pr-fill" id="hsRiskBar" style="width:0%;background:#e0e0e0;"></div></div><span class="pr-val" id="hsRiskVal" style="color:#8fa090;">—</span></div>
+          <div class="pr"><span class="pr-label">Rentabilidad</span><div class="pr-track"><div class="pr-fill" id="hsRentBar" style="width:0%;background:#e0e0e0;"></div></div><span class="pr-val" id="hsRentVal" style="color:#8fa090;">—</span></div>
         </div>
       </div>
       <div class="plan-steps">
@@ -3146,7 +3141,7 @@ function _anRenderBestWorst(){
     const badge=`<div class="an-bw-badge"${sm?' style="align-items:flex-start"':''}><span class="an-bw-pct ${cl}">${arrow(a.gainPct)} ${pctStr}</span><span class="an-bw-eur ${cl}">${eurStr}</span></div>`;
     const nameWrap=`<div class="an-bw-nameWrap"><div class="an-bw-ticker">${ticker}</div><div class="an-bw-fname">${fname}</div></div>`;
     const logoDiv=`<div class="an-bw-logo" style="background:${col}">${escapeHtml(iconInitials(a))}</div>`;
-    const price=fc(a.currentPrice,assetCcy(a));
+    const _hasPriceErr=coverageStatus(a)==='MISSING'&&!(a.currentPrice>0);const price=_hasPriceErr?'<span style="color:#f05252;font-size:10px;font-weight:700">⚠ sin precio</span>':fc(a.currentPrice,assetCcy(a));
     const bottom=sm
       ?`<div class="an-bw-bottom"><span class="an-bw-price" style="font-size:9px">${price}</span><span class="an-bw-total ${cl}">€${smValStr}</span></div>`
       :`<div class="an-bw-bottom"><span class="an-bw-price">${price}</span><span class="an-bw-total ${cl}">${valStr}</span></div>`;
@@ -3408,12 +3403,25 @@ function _anRenderCosts() {
 // ========== Analysis: main entry point ==========
 function renderAnalysisCharts(){
   destroyAnalysisCharts();
+  try{const _hs=computeHealthScore();const _hsEl=document.getElementById('hsNum');if(_hsEl&&_hs.score>0)_hsEl.textContent=_hs.score;}catch(_){}
   try{_anRenderSummary();}catch(e){console.warn('_anRenderSummary',e);}
   try{_anRenderPeriodStrip();}catch(e){console.warn('_anRenderPeriodStrip',e);}
   try{_anRenderWeightDonut();}catch(e){console.warn('_anRenderWeightDonut',e);}
   try{_anRenderAllocTabs();}catch(e){console.warn('_anRenderAllocTabs',e);}
   try{_anRenderPerfBars();}catch(e){console.warn('_anRenderPerfBars',e);}
   try{_anRenderCosts();}catch(e){console.warn('_anRenderCosts',e);}
+  // B1: sync TER badge in portfolio score card with computed avg TER
+  try{
+    const _tRows=assets.filter(a=>a.quantity>0&&(a.ter??AN_TER_MAP[a.isin])!=null);
+    const _tVal=assets.reduce((s,a)=>s+toDisplay(a.value,assetCcy(a)),0);
+    if(_tRows.length>0&&_tVal>0){
+      const _tCost=_tRows.reduce((s,a)=>{const t=a.ter??AN_TER_MAP[a.isin];return s+toDisplay(a.value,assetCcy(a))*t/100;},0);
+      const _avgT=(_tCost/_tVal*100).toFixed(2);
+      const _tv=document.getElementById('psTerVal');if(_tv)_tv.textContent='~'+_avgT+'%';
+      const _tt=document.getElementById('psTerText');
+      if(_tt){const _isEs=currentLang==='es';const _good=parseFloat(_avgT)<0.30;_tt.innerHTML=_good?(_isEs?'Tu cartera es <b>muy eficiente en costes</b>. TER de '+_avgT+'% — mínimo para fondos indexados.':'Your portfolio is <b>very cost-efficient</b>. TER of '+_avgT+'% — near minimum for index funds.'):(_isEs?'TER de <b>'+_avgT+'%</b>. Considera ETFs con menor comisión para optimizar retorno neto.':'TER of <b>'+_avgT+'%</b>. Consider lower-cost ETFs to optimise net return.');}
+    }
+  }catch(_){}
   try{_anRenderBestWorst();}catch(e){console.warn('_anRenderBestWorst',e);}
   try{_anRenderTreemap();}catch(e){console.warn('_anRenderTreemap',e);}
   try{_anRenderTrendVsWorld();}catch(e){console.warn('_anRenderTrendVsWorld',e);}
@@ -3514,7 +3522,7 @@ function _anRenderWeightDonut(){
 }
 
 // ── Performance by Asset (diverging bar chart) ────────────────────────────────
-function _anRenderPerfBars(){
+function _anRenderPerfBars(){const _ytdEl=document.getElementById('ytdYearLabel');if(_ytdEl){const _yr=new Date().getFullYear();_ytdEl.textContent=(currentLang==='es'?'Rendimiento acumulado · YTD ':'YTD performance · ')+_yr;}
   const wrap=document.getElementById('perfBarWrap');
   if(!wrap)return;
   const active=assets.filter(a=>a.quantity>0&&a.buyPrice>0&&a.currentPrice>0);
@@ -4582,9 +4590,36 @@ function renderIA(){
   if(vmHealth){vmHealth.textContent=score+'/100';vmHealth.className='vm-val '+(score>=70?'good':score>=50?'warn':'warn');}
   if(vmReturn){vmReturn.textContent=(gainPct>=0?'+':'')+gainPct.toFixed(1)+'%';vmReturn.className='vm-val '+(gainPct>=0?'good':'');}
 
-  // Dynamic insight: return
-  const insRet=document.getElementById('iaInsightReturn');
-  if(insRet) insRet.innerHTML=`Tu portfolio lleva <b>${gainPct>=0?'+':''}${gainPct.toFixed(2)}%</b> acumulado sobre ${fe(invested)} invertido.`;
+  // B5: Dynamic Vera insights — rebuilt from real portfolio data
+  const _insEl=document.getElementById('iaInsightsList');
+  if(_insEl){
+    const isEs=currentLang==='es';
+    const _rows=[];
+    if(assets.length===0){
+      _rows.push(`<div class="ins-row"><div class="ins-dot dot-blue" style="margin-top:6px;"></div><div class="ins-body"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:3px;"><div class="ins-tag tag-blue">${isEs?'Primeros pasos':'Getting started'}</div></div><div class="ins-text">${isEs?'Añade tu primera posición para recibir análisis personalizados de Vera.':'Add your first position to receive personalised insights from Vera.'}</div></div></div>`);
+    } else if(diversif<40){
+      const _topW=assets.length>0?Math.round(Math.max(...assets.map(a=>toDisplay(a.value,assetCcy(a))))/total*100):100;
+      _rows.push(`<div class="ins-row"><div class="ins-dot dot-red" style="margin-top:6px;"></div><div class="ins-body"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:3px;"><div class="ins-tag tag-red">${isEs?'Concentración · Urgente':'Concentration · Urgent'}</div></div><div class="ins-text">${isEs?'Tu activo mayor pesa un <b>'+_topW+'%</b> del portfolio. Alta concentración aumenta el riesgo.':'Your largest holding is <b>'+_topW+'%</b> of portfolio. High concentration increases risk.'}</div><div class="ins-cta">${isEs?'Cómo diversificar →':'How to diversify →'}</div></div></div>`);
+    } else {
+      _rows.push(`<div class="ins-row"><div class="ins-dot dot-green" style="margin-top:6px;"></div><div class="ins-body"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:3px;"><div class="ins-tag tag-green">${isEs?'Diversificación · Buena':'Diversification · Good'}</div></div><div class="ins-text">${isEs?'Buena distribución entre activos. Tu portfolio está bien diversificado.':'Good distribution across assets. Your portfolio is well diversified.'}</div></div></div>`);
+    }
+    const _retSign=gainPct>=0?'+':'';
+    const _retCls=gainPct>=0?'brief-up':'brief-down';
+    _rows.push(`<div class="ins-row"><div class="ins-dot dot-yellow" style="margin-top:6px;"></div><div class="ins-body"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:3px;"><div class="ins-tag tag-yellow">${isEs?'Rendimiento · Watch':'Performance · Watch'}</div></div><div class="ins-text" id="iaInsightReturn">${isEs?'Tu portfolio lleva <b class="'+_retCls+'">'+_retSign+gainPct.toFixed(2)+'%</b> acumulado sobre '+fe(invested)+' invertido.':'Your portfolio is <b class="'+_retCls+'">'+_retSign+gainPct.toFixed(2)+'%</b> on '+fe(invested)+' invested.'}</div><div class="ins-cta">${isEs?'Ver comparativa →':'See comparison →'}</div></div></div>`);
+    if(assets.length>0&&assets.length<5){
+      const _projScore=Math.min(100,score+Math.round(15*(1-assets.length/5)));
+      _rows.push(`<div class="ins-row"><div class="ins-dot dot-blue" style="margin-top:6px;"></div><div class="ins-body"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:3px;"><div class="ins-tag tag-blue">${isEs?'Oportunidad':'Opportunity'}</div></div><div class="ins-text">${isEs?'Añadir un ETF de mercados emergentes reduciría tu correlación y subiría tu Health Score a ~'+_projScore+'.':'Adding an emerging markets ETF would reduce correlation and raise your Health Score to ~'+_projScore+'.'}</div><div class="ins-badge b-blue" style="margin-top:6px;">+${_projScore-score} pts</div></div></div>`);
+    }
+    const _tRows=assets.filter(a=>a.quantity>0&&(a.ter??AN_TER_MAP[a.isin])!=null);
+    const _tTotV=assets.reduce((s,a)=>s+toDisplay(a.value,assetCcy(a)),0);
+    if(_tRows.length>0&&_tTotV>0){
+      const _tCostTotal=_tRows.reduce((s,a)=>{const t=a.ter??AN_TER_MAP[a.isin];return s+toDisplay(a.value,assetCcy(a))*t/100;},0);
+      const _avgTer=(_tCostTotal/_tTotV*100);
+      const _feeGood=_avgTer<0.30;
+      _rows.push(`<div class="ins-row"><div class="ins-dot ${_feeGood?'dot-green':'dot-yellow'}" style="margin-top:6px;"></div><div class="ins-body"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:3px;"><div class="ins-tag ${_feeGood?'tag-green':'tag-yellow'}">${isEs?'Comisiones':'Fees'}</div></div><div class="ins-text" id="iaInsightFees">${isEs?'TER medio: ':'Avg TER: '}<b>${_avgTer.toFixed(2)}%</b>. ${_feeGood?(isEs?'Coste muy eficiente para fondos indexados.':'Very efficient cost for index funds.'):(isEs?'Considera ETFs con menor TER para optimizar el retorno neto.':'Consider lower TER ETFs to optimise net return.')}</div>${_feeGood?'<div class="ins-badge b-green" style="margin-top:6px;">'+(isEs?'Coste óptimo':'Optimal cost')+'</div>':''}</div></div>`);
+    }
+    _insEl.innerHTML=_rows.join('');
+  }
 
   // Stress scenarios (based on total portfolio value)
   const s2008=document.getElementById('iaStress2008');
@@ -4594,6 +4629,9 @@ function renderIA(){
   if(sCovid) sCovid.textContent=fe(-total*0.34);
   if(s2022) s2022.textContent=fe(-total*0.195);
 
+  // B7: update score history trend label
+  const _hsTrend=document.getElementById('hsHistLabel');
+  if(_hsTrend){const isEs7=currentLang==='es';if(score>=70)_hsTrend.textContent=isEs7?'↑ mejorando':'↑ improving';else if(score>=50)_hsTrend.textContent=isEs7?'→ estable':'→ stable';else _hsTrend.textContent=isEs7?'↓ mejorable':'↓ needs work';_hsTrend.style.color=score>=70?'#1aab70':score>=50?'#d97706':'#f05252';}
   // Health score pillars
   const hsNumEl=document.getElementById('hsNum');
   if(hsNumEl) hsNumEl.textContent=score;
@@ -5500,6 +5538,8 @@ function selectAlertsAsset(isin,el){
   el.classList.add('sel');
   const asset=assets.find(a=>a.isin===isin);
   if(asset){
+    const _lbl=document.getElementById('alertsPriceLabel');
+    if(_lbl){const _c=assetCcy(asset)||'EUR';const _s=_c==='USD'?'$':_c==='GBP'?'£':_c==='CHF'?'Fr':'€';_lbl.textContent=(currentLang==='es'?'Precio objetivo (':'Target price (')+_s+_c+')';}
     const price=asset.currentPrice||(asset.value/(asset.quantity||1));
     const sw=document.getElementById('alertsSelWrap');
     document.getElementById('alertsSelName').textContent=asset.shortName||asset.name;
@@ -6140,7 +6180,7 @@ function iaDrawAllGauges(score) {
     const ctx=sc.getContext('2d');ctx.scale(dpr,dpr);
     const base=Math.max(20,score-15);
     const pts=[base,base+2,base+3,base+4,base+4,score];
-    const labels=['Oct','Nov','Dic','Ene','Feb','Mar'];
+    const _now=new Date();const _mNames=currentLang==='es'?['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic']:['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];const labels=Array.from({length:6},(_,i)=>{const d=new Date(_now.getFullYear(),_now.getMonth()-5+i,1);return _mNames[d.getMonth()];});
     const mn=base-4,mx=score+6,rng=mx-mn,padL=28,padR=8,padT=6,padB=18;
     const w=W-padL-padR,h=H-padT-padB;
     const sx=i=>padL+i*(w/(pts.length-1));
@@ -6184,7 +6224,7 @@ function openCat(key) {
 
 function refreshScore() {
   const btn=document.querySelector('#portfolioScoreCard .ps-update-btn');
-  if(btn){btn.style.opacity='0.5';btn.disabled=true;setTimeout(()=>{btn.style.opacity='1';btn.disabled=false;const upd=document.getElementById('psUpdated');if(upd)upd.textContent='Actualizado: ahora mismo · 2/5 análisis usados';},1500);}
+  if(btn){btn.style.opacity='0.5';btn.disabled=true;setTimeout(()=>{btn.style.opacity='1';btn.disabled=false;const upd=document.getElementById('psUpdated');if(upd)upd.textContent='Actualizado: ahora mismo · 2/5 análisis usados · reset lunes';},1500);}
 }
 
 function runAction(btn, key) {
