@@ -4705,7 +4705,7 @@ function renderLists(){
       <div style="min-width:0;flex:1">
         <div class="name" title="${a.fullName||a.name}">${a.name}</div>
         <div class="meta">${fn(a.quantity)} ${t('shares').toLowerCase()}${a.broker?' · '+escapeHtml(a.broker):''}</div>
-        <div class="meta" style="margin-top:1px;font-size:10px;color:#8fa090">${currentLang==='es'?'Compra':'Buy'} <span style="color:#374151;font-weight:600">${fc(a.buyPrice,assetCcy(a))}</span> · ${currentLang==='es'?'Actual':'Now'} <span style="color:#374151;font-weight:600">${fc(a.currentPrice,assetCcy(a))}</span></div>
+        <div class="meta" style="margin-top:1px;font-size:10px;color:#8fa090;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${currentLang==='es'?'Compra':'Buy'} <span style="color:#374151;font-weight:600">${fc(a.buyPrice,assetCcy(a))}</span> · ${currentLang==='es'?'Actual':'Now'} <span style="color:#374151;font-weight:600">${fc(a.currentPrice,assetCcy(a))}</span></div>
       </div>
       <div class="right">
         <div class="money">${fe(_av)}</div>
