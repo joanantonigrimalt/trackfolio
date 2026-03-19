@@ -1,5 +1,15 @@
 const { setupApi, validateIsins, sendError } = require('../../lib/security');
-const { resolveAssetData } = require('../../lib/providers');
+const { resolveAssetData, resolveFromCache } = require('../../lib/providers');
+
+// Wrap a promise with a per-asset timeout returning a MISSING result instead of throwing
+function withTimeout(isin, promise, ms) {
+  return Promise.race([
+    promise,
+    new Promise(resolve => setTimeout(() => resolve({
+      isin, data: { coverage: { status: 'MISSING' }, provider: 'timeout', history: [] }, error: 'timeout',
+    }), ms)),
+  ]);
+}
 
 module.exports = async (req, res) => {
   if (!setupApi(req, res, { maxRequests: 20 })) return;
@@ -13,9 +23,21 @@ module.exports = async (req, res) => {
     const skipCache = req.query.refresh === '1';
     const uniqueIsins = [...new Set(isins)];
 
-    // Run in parallel — sequential was causing Vercel timeout with large portfolios
+    // Phase 1: check L1 + Supabase cache (instant — no external API calls)
+    const cacheResults = await Promise.all(uniqueIsins.map(isin => resolveFromCache(isin)));
+
+    // Phase 2: for ISINs not in any cache, try live fetch with a tight per-asset timeout
+    // Budget: Vercel Hobby = 10s limit; allow ~7s for live fetches (Phase 1 takes <1s)
+    const PER_ASSET_TIMEOUT = 6500;
     const results = await Promise.all(
-      uniqueIsins.map(isin => resolveAssetData(isin, { skipCache }))
+      uniqueIsins.map((isin, i) => {
+        const cached = cacheResults[i];
+        if (cached && cached.data?.coverage?.status !== 'MISSING') return cached; // already have data
+        if (skipCache || !cached) {
+          return withTimeout(isin, resolveAssetData(isin, { skipCache }), PER_ASSET_TIMEOUT);
+        }
+        return cached || { isin, data: { coverage: { status: 'MISSING' }, history: [] }, error: null };
+      })
     );
 
     // Summary with OK / PARTIAL / MISSING counts

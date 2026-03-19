@@ -4766,7 +4766,7 @@ async function boot(){
 
   // Step 2: coverage (history) — runs AFTER first render, best-effort
   let coverage={results:[]};
-  try{ coverage=await getJson('/api/portfolio/coverage?isin='+encodeURIComponent(isinList),8000); }
+  try{ coverage=await getJson('/api/portfolio/coverage?isin='+encodeURIComponent(isinList),9500); }
   catch(e){ console.warn('[boot] coverage failed:',e.message); }
 
   _rawSeedAssets=buildAssets(Object.fromEntries((coverage.results||[]).map(e=>[e.isin,e])));
@@ -6562,13 +6562,20 @@ let _insSearchDebounceTimer = null;
 async function _insLoad(symbol) {
   if(symbol === undefined) symbol = _insCurrentSymbol;
   _insCurrentSymbol = symbol || '';
+  // No symbol → show search hint, no API call needed
+  if(!_insCurrentSymbol) {
+    _insData = null;
+    _insLoading = false;
+    const el0 = document.getElementById('insidersContent');
+    if(el0) el0.innerHTML = '<div style="text-align:center;padding:60px 20px;color:#8fa090;font-size:13px"><div style="font-size:32px;margin-bottom:10px">🔍</div>'+(currentLang==='es'?'Escribe un símbolo para ver las operaciones de directivos<br><span style="font-size:11px;opacity:.7">Ej: AAPL, MSFT, NVDA</span>':'Type a symbol to view insider transactions<br><span style="font-size:11px;opacity:.7">E.g.: AAPL, MSFT, NVDA</span>')+'</div>';
+    return;
+  }
   if(_insLoading) return;
   _insLoading = true;
   const el = document.getElementById('insidersContent');
   if(el) el.innerHTML = '<div style="text-align:center;padding:50px 0;color:#8fa090;font-size:13px"><div style="font-size:28px;margin-bottom:10px">⌛</div>Cargando insiders…</div>';
   try {
-    const sym = _insCurrentSymbol ? '&symbol='+encodeURIComponent(_insCurrentSymbol.toUpperCase()) : '';
-    const url = '/api/insiders?page=0&limit=100'+sym; // server-side proxy (key hidden)
+    const url = '/api/insiders?symbol='+encodeURIComponent(_insCurrentSymbol.toUpperCase());
     const r = await fetch(url);
     if(!r.ok) throw new Error('HTTP '+r.status);
     const json = await r.json();
