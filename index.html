@@ -5655,35 +5655,13 @@ const _demoLiquidity = [
   {id:'demo-liq-1',name:'Cuenta MyInvestor',type:'savings',amount:5000,currency:'EUR',rate:2.50,since:'2024-01-15'},
   {id:'demo-liq-2',name:'Fondo Monetario Pictet',type:'moneymarket',amount:3000,currency:'EUR',rate:3.40,since:'2024-04-01'},
 ];
-const DEMO_ASSETS_RAW = [
-  {isin:'IE00B4L5Y983',name:'iShares Core MSCI World UCITS ETF',shortName:'MSCI World',qty:45,bp:81.20,cp:95.40,type:'etf'},
-  {isin:'IE00B3RBWM25',name:'Vanguard FTSE All-World UCITS ETF',shortName:'All-World',qty:28,bp:99.50,cp:119.80,type:'etf'},
-  {isin:'IE00BYX5NK04',name:'iShares Core MSCI EM IMI UCITS ETF',shortName:'EM IMI',qty:120,bp:27.50,cp:29.20,type:'etf'},
-  {isin:'IE00B4ND3602',name:'iShares Physical Gold ETC',shortName:'Gold ETC',qty:85,bp:42.10,cp:54.30,type:'etc'},
-  {isin:'IE00BZ4BMM98',name:'iShares MSCI Europe Dividend ETF',shortName:'EU Dividend',qty:60,bp:21.40,cp:24.10,type:'etf'},
-  {isin:'LU0084617165',name:'Fidelity Funds European Growth',shortName:'Fidelity EU',qty:200,bp:14.30,cp:16.90,type:'fund'},
-  {isin:'ES0112611001',name:'Bestinver Internacional FI',shortName:'Bestinver',qty:150,bp:9.80,cp:11.20,type:'fund'},
-  {isin:'IE00B579F325',name:'iShares Physical Gold CHF ETC',shortName:'Gold CHF',qty:40,bp:18.60,cp:22.40,type:'etc'},
-];
+const DEMO_ASSETS_RAW = [];
 function enterDemo(){
   _isDemo=true;
   window._isDemo=true;
-  // Build demo assets
-  assets=DEMO_ASSETS_RAW.map(p=>{
-    const gain=p.qty*(p.cp-p.bp);
-    return{
-      isin:p.isin,name:p.name,fullName:p.name,
-      shortName:p.shortName||(p.name||'').split(' ').slice(0,2).join(' '),
-      quantity:p.qty,buyPrice:p.bp,currentPrice:p.cp,
-      invested:p.qty*p.bp,value:p.qty*p.cp,gain,
-      gainPct:((p.cp-p.bp)/p.bp)*100,
-      mapping:{type:p.type||'etf',yahooSymbol:null},
-      costCurrency:'EUR',history:[],hasRealHistory:false,
-      _rawQty:p.qty,_rawBuyPrice:p.bp,
-      coverageStatus:'MISSING',coverage:{status:'MISSING'},
-      provider:null
-    };
-  });
+  // Demo starts empty — user adds their own assets (saved in localStorage)
+  _rawSeedAssets = [];
+  loadCustomIntoAssets();
   dataReady=true;
   // Enter app
   document.querySelectorAll('.cover-screen').forEach(el=>el.classList.remove('cs-active'));
@@ -5692,25 +5670,6 @@ function enterDemo(){
   const db=document.getElementById('demoBanner');if(db)db.classList.add('show');
   // Fetch FX rates and render
   fetchGlobalFxRates().then(()=>render()).catch(()=>render());
-  // Background: fetch real price history for demo assets so chart works
-  const _demoIsins = DEMO_ASSETS_RAW.map(p=>p.isin).join(',');
-  getJson('/api/portfolio/coverage?isin='+encodeURIComponent(_demoIsins), 12000)
-    .then(cov => {
-      if(!cov||!cov.results) return;
-      const cvMap = Object.fromEntries(cov.results.map(e=>[e.isin,e]));
-      assets = assets.map(a => {
-        const entry = cvMap[a.isin];
-        if(!entry) return a;
-        const history = (entry.data?.history||[])
-          .map(p=>({date:String(p.date).slice(0,10),close:Number(p.close)}))
-          .filter(p=>p.date&&p.close>0)
-          .sort((a,b)=>a.date.localeCompare(b.date));
-        if(!history.length) return a;
-        return {...a, history, hasRealHistory:true, coverageStatus:entry.data?.coverage?.status||'PARTIAL', provider:entry.data?.provider||null};
-      });
-      render();
-    })
-    .catch(()=>{});
 }
 function exitDemo(){
   _isDemo=false;window._isDemo=false;assets=[];dataReady=false;
