@@ -638,6 +638,14 @@ table.an-corr-mtx{border-collapse:separate;border-spacing:4px}
 .demoBanner{position:fixed;top:0;left:50%;transform:translateX(-50%);z-index:9999;background:#b45309;color:#fff;font-size:12px;font-weight:700;padding:8px 16px 8px 14px;border-radius:0 0 14px 14px;display:none;align-items:center;gap:10px;box-shadow:0 4px 16px rgba(0,0,0,.18);white-space:nowrap;max-width:360px;width:calc(100% - 32px)}
 .demoBanner.show{display:flex}
 .demoBanner button{background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.4);color:#fff;font-family:inherit;font-size:11px;font-weight:700;padding:4px 10px;border-radius:8px;cursor:pointer;flex-shrink:0}
+.ins-chip{padding:7px 13px;border-radius:20px;border:1.5px solid rgba(20,32,24,.1);background:#fff;font:inherit;font-size:12px;font-weight:700;color:#8fa090;cursor:pointer;transition:all .15s;white-space:nowrap;flex-shrink:0}
+.ins-chip-active{background:#142018;color:#fff;border-color:#142018}
+.ins-buy-chip.ins-chip-active{background:#15803d;border-color:#15803d}
+.ins-sell-chip.ins-chip-active{background:#dc2626;border-color:#dc2626}
+.ins-card{display:flex;align-items:flex-start;gap:12px;padding:13px 14px;background:#fff;border-radius:14px;margin-bottom:8px;border:1px solid rgba(20,32,24,.07);box-shadow:0 1px 4px rgba(20,32,24,.05)}
+.ins-icon{width:40px;height:40px;border-radius:10px;background:linear-gradient(135deg,#e6faf3,#b7f0d8);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;color:#15803d;flex-shrink:0}
+.ins-icon.sell{background:linear-gradient(135deg,#fef2f2,#fecaca);color:#dc2626}
+.ins-icon.neutral{background:linear-gradient(135deg,#f8f9fa,#e9ecef);color:#8fa090}
 .ob-lang-row{display:flex;justify-content:flex-end;padding:16px 20px 0}
 .settingsProfileCard{display:flex;align-items:center;gap:14px;padding:16px 0 20px;border-bottom:1px solid rgba(20,32,24,.08);margin-bottom:16px}
 .settingsProfileAvatar{width:48px;height:48px;border-radius:14px;background:linear-gradient(135deg,#142018,#1a3f2c);display:flex;align-items:center;justify-content:center;color:#f5fbf6;font-size:20px;font-weight:800;flex-shrink:0}
@@ -1009,46 +1017,37 @@ table.an-corr-mtx{border-collapse:separate;border-spacing:4px}
   </div>
 </div>
 
-<!-- ============ MEJORES INVERSORES ============ -->
+<!-- ============ INSIDERS ============ -->
 <div id="screen-topinvestors" class="screen">
   <div class="top"><div>
-    <div class="title">Mejores Inversores</div>
-    <div class="sub">Ranking de rendimiento · YTD 2025</div>
+    <div class="title">Insiders</div>
+    <div class="sub">Compras y ventas de directivos · SEC filings</div>
   </div></div>
-  <div style="padding:0 16px 16px">
-    <!-- Podium top 3 -->
-    <div style="display:flex;align-items:flex-end;justify-content:center;gap:10px;padding:24px 0 20px">
-      <div style="text-align:center;flex:1">
-        <div style="width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,#94a3b8,#64748b);margin:0 auto 6px;display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:800;color:#fff;border:3px solid #e2e8f0">JL</div>
-        <div style="font-size:11px;font-weight:700;color:#142018">JLuis_inv</div>
-        <div style="font-size:13px;font-weight:800;color:#22c55e">+28.4%</div>
-        <div style="background:#e2e8f0;height:56px;border-radius:8px 8px 0 0;margin-top:6px;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:800;color:#64748b">2</div>
-      </div>
-      <div style="text-align:center;flex:1">
-        <div style="width:64px;height:64px;border-radius:50%;background:linear-gradient(135deg,#fbbf24,#f59e0b);margin:0 auto 6px;display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:800;color:#fff;border:3px solid #fde68a">GR</div>
-        <div style="font-size:12px;font-weight:700;color:#142018">Grigom</div>
-        <div style="font-size:15px;font-weight:800;color:#22c55e">+41.2%</div>
-        <div style="background:linear-gradient(135deg,#fbbf24,#f59e0b);height:72px;border-radius:8px 8px 0 0;margin-top:6px;display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:800;color:#fff">1</div>
-      </div>
-      <div style="text-align:center;flex:1">
-        <div style="width:48px;height:48px;border-radius:50%;background:linear-gradient(135deg,#fb923c,#ea580c);margin:0 auto 6px;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:800;color:#fff;border:3px solid #fed7aa">MP</div>
-        <div style="font-size:11px;font-weight:700;color:#142018">MarPer</div>
-        <div style="font-size:13px;font-weight:800;color:#22c55e">+24.7%</div>
-        <div style="background:#fed7aa;height:44px;border-radius:8px 8px 0 0;margin-top:6px;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:800;color:#ea580c">3</div>
+  <div style="padding:0 16px 80px">
+
+    <!-- Filter chips -->
+    <div style="display:flex;gap:6px;margin-bottom:12px;flex-wrap:nowrap;overflow-x:auto;padding-bottom:2px">
+      <button class="ins-chip ins-chip-active" onclick="_insFilter('all')" id="insChipAll">Todos</button>
+      <button class="ins-chip ins-buy-chip" onclick="_insFilter('buy')" id="insChipBuy">▲ Compras</button>
+      <button class="ins-chip ins-sell-chip" onclick="_insFilter('sell')" id="insChipSell">▼ Ventas</button>
+    </div>
+
+    <!-- Symbol search -->
+    <div style="position:relative;margin-bottom:14px">
+      <svg style="position:absolute;left:12px;top:50%;transform:translateY(-50%);pointer-events:none" viewBox="0 0 16 16" fill="none" stroke="#8fa090" stroke-width="1.8" width="14" height="14"><circle cx="6.5" cy="6.5" r="4.5"/><line x1="10" y1="10" x2="14" y2="14"/></svg>
+      <input id="insSearchInput" type="text" placeholder="Buscar por símbolo (ej: AAPL, MSFT)…"
+        style="width:100%;padding:11px 36px 11px 34px;border:1.5px solid rgba(20,32,24,.12);border-radius:12px;font:inherit;font-size:14px;background:#fff;color:#142018;outline:none;box-sizing:border-box"
+        oninput="_insSearchDebounce()" />
+      <button onclick="_insClearSearch()" id="insSearchClear" style="display:none;position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;font-size:14px;color:#8fa090;padding:4px">✕</button>
+    </div>
+
+    <!-- Content -->
+    <div id="insidersContent">
+      <div style="text-align:center;padding:60px 0;color:#8fa090;font-size:13px">
+        <div style="font-size:32px;margin-bottom:12px">🔍</div>
+        Cargando datos de insiders…
       </div>
     </div>
-    <!-- Leaderboard list -->
-    <div class="card" style="padding:0;overflow:hidden">
-      ${[{n:'AlexFI',r:'+19.1%',p:'Value + ETFs'},{n:'BeatrizK',r:'+17.8%',p:'Dividendos'},{n:'DavidQ',r:'+15.3%',p:'MSCI World'},{n:'SofiaVal',r:'+12.9%',p:'Asia Pacific'},{n:'CarlosM',r:'+11.4%',p:'Mixto'},{n:'LauraB',r:'+8.6%',p:'Oro + Bonds'},{n:'RobertoP',r:'-2.1%',p:'Growth'}].map((u,i)=>`
-        <div style="display:flex;align-items:center;gap:12px;padding:12px 16px;border-bottom:1px solid rgba(20,32,24,.06)">
-          <div style="width:22px;text-align:center;font-size:12px;font-weight:800;color:#8fa090">${i+4}</div>
-          <div style="width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#e6faf3,#b7f0d8);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;color:#15803d;flex-shrink:0">${u.n.slice(0,2).toUpperCase()}</div>
-          <div style="flex:1;min-width:0"><div style="font-size:13px;font-weight:700;color:#142018">${u.n}</div><div style="font-size:11px;color:#8fa090">${u.p}</div></div>
-          <div style="font-size:14px;font-weight:800;color:${u.r.startsWith('-')?'#dc2626':'#15803d'}">${u.r}</div>
-        </div>
-      `).join('')}
-    </div>
-    <div style="text-align:center;padding:14px;font-size:11px;color:#8fa090">🔒 Próximamente: comparte tu portfolio y compite</div>
   </div>
 </div>
 
@@ -2317,7 +2316,7 @@ table.an-corr-mtx{border-collapse:separate;border-spacing:4px}
     <div style="flex:1"></div>
     <div style="flex:1"></div>
     <button data-screen="alerts" onclick="closeExtraTabRow()"><b>◉</b><span>Alertas</span></button>
-    <button data-screen="topinvestors" onclick="closeExtraTabRow()"><b>◆</b><span>Mejores Inv.</span></button>
+    <button data-screen="topinvestors" onclick="closeExtraTabRow()"><b>◆</b><span>Insiders</span></button>
     <button data-screen="impuestos" onclick="closeExtraTabRow()"><b>◫</b><span>Impuestos</span></button>
   </div>
   <div class="tab-row tab-row-main">
@@ -2553,6 +2552,7 @@ function showScreen(name,keepTab=false){
   if(name==='ia'&&dataReady)renderIA();
   if(name==='alerts')renderAlertsScreen();
   if(name==='impuestos'&&dataReady)renderImpuestos();
+  if(name==='topinvestors')_insLoad(_insCurrentSymbol);
 }
 function normalizeHistory(h){return(Array.isArray(h)?h:[]).map(p=>({date:String(p.date).slice(0,10),close:Number(p.close)})).filter(p=>p.date&&Number.isFinite(p.close)&&p.close>0).sort((a,b)=>a.date.localeCompare(b.date));}
 function getPriceOnOrBefore(s,date){if(!s.length)return null;let lo=0,hi=s.length-1,best=-1;while(lo<=hi){const m=Math.floor((lo+hi)/2);if(s[m].date<=date){best=m;lo=m+1;}else hi=m-1;}return best>=0?s[best].close:null;}
@@ -6427,6 +6427,154 @@ function exportTaxPDF(){
   showToast('Exportación PDF próximamente');
 }
 
+
+
+// ── Insiders (FMP Search Insider Trades API) ──────────────────────────────
+const _INS_KEY = 'EYRk2QXBpsogqFUfHFb9CcR4bEqk3OZ7L0';
+let _insData = null;
+let _insFilterVal = 'all';
+let _insCurrentSymbol = '';
+let _insLoading = false;
+let _insSearchDebounceTimer = null;
+
+async function _insLoad(symbol) {
+  if(symbol === undefined) symbol = _insCurrentSymbol;
+  _insCurrentSymbol = symbol || '';
+  if(_insLoading) return;
+  _insLoading = true;
+  const el = document.getElementById('insidersContent');
+  if(el) el.innerHTML = '<div style="text-align:center;padding:50px 0;color:#8fa090;font-size:13px"><div style="font-size:28px;margin-bottom:10px">⌛</div>Cargando insiders…</div>';
+  try {
+    const sym = _insCurrentSymbol ? '&symbol='+encodeURIComponent(_insCurrentSymbol.toUpperCase()) : '';
+    const url = 'https://financialmodelingprep.com/stable/insider-trading/search?page=0&limit=100'+sym+'&apikey='+_INS_KEY;
+    const r = await fetch(url);
+    if(!r.ok) throw new Error('HTTP '+r.status);
+    const json = await r.json();
+    _insData = Array.isArray(json) ? json : (json.data || json.results || []);
+  } catch(e) {
+    _insLoading = false;
+    const el2 = document.getElementById('insidersContent');
+    if(el2) el2.innerHTML = '<div style="text-align:center;padding:50px 0"><div style="font-size:28px;margin-bottom:10px">⚠️</div><div style="color:#dc2626;font-size:13px;font-weight:600">'+e.message+'</div><button onclick="_insLoad()" style="margin-top:14px;padding:9px 20px;background:#142018;color:#fff;border:none;border-radius:10px;font:inherit;font-size:13px;font-weight:700;cursor:pointer">Reintentar</button></div>';
+    return;
+  }
+  _insLoading = false;
+  _insRender();
+}
+
+function _fmtMoney(v) {
+  if(v >= 1e9) return (v/1e9).toFixed(1)+'B';
+  if(v >= 1e6) return (v/1e6).toFixed(1)+'M';
+  if(v >= 1e3) return (v/1e3).toFixed(0)+'K';
+  return v.toFixed(0);
+}
+
+function _insRender() {
+  const el = document.getElementById('insidersContent');
+  if(!el) return;
+  let rows = Array.isArray(_insData) ? _insData.slice() : [];
+
+  if(_insFilterVal === 'buy') {
+    rows = rows.filter(function(r){ return r.transactionType && /^P/i.test(r.transactionType); });
+  } else if(_insFilterVal === 'sell') {
+    rows = rows.filter(function(r){ return r.transactionType && /^S/i.test(r.transactionType); });
+  }
+
+  if(!rows.length) {
+    el.innerHTML = '<div style="text-align:center;padding:60px 0;color:#8fa090;font-size:13px"><div style="font-size:32px;margin-bottom:10px">📭</div>Sin resultados para este filtro</div>';
+    return;
+  }
+
+  const allBuys = (_insData||[]).filter(function(r){ return r.transactionType && /^P/i.test(r.transactionType); });
+  const allSells = (_insData||[]).filter(function(r){ return r.transactionType && /^S/i.test(r.transactionType); });
+  const buyVol = allBuys.reduce(function(s,r){ return s + (Number(r.securitiesTransacted)||0)*(Number(r.price)||0); }, 0);
+  const sellVol = allSells.reduce(function(s,r){ return s + (Number(r.securitiesTransacted)||0)*(Number(r.price)||0); }, 0);
+
+  var summaryHtml = '';
+  if(_insFilterVal === 'all') {
+    summaryHtml = '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:16px">'
+      + '<div style="background:#e6faf3;border-radius:14px;padding:14px;text-align:center">'
+      + '<div style="font-size:22px;font-weight:800;color:#15803d">'+allBuys.length+'</div>'
+      + '<div style="font-size:10px;color:#15803d;font-weight:700;text-transform:uppercase;letter-spacing:.05em;margin-top:2px">Compras</div>'
+      + (buyVol>0?'<div style="font-size:11px;color:#15803d;margin-top:4px;opacity:.8">'+_fmtMoney(buyVol)+'</div>':'')
+      + '</div>'
+      + '<div style="background:#fef2f2;border-radius:14px;padding:14px;text-align:center">'
+      + '<div style="font-size:22px;font-weight:800;color:#dc2626">'+allSells.length+'</div>'
+      + '<div style="font-size:10px;color:#dc2626;font-weight:700;text-transform:uppercase;letter-spacing:.05em;margin-top:2px">Ventas</div>'
+      + (sellVol>0?'<div style="font-size:11px;color:#dc2626;margin-top:4px;opacity:.8">'+_fmtMoney(sellVol)+'</div>':'')
+      + '</div></div>';
+  }
+
+  var cardsHtml = rows.map(function(r) {
+    var isBuy = r.transactionType && /^P/i.test(r.transactionType);
+    var isSell = r.transactionType && /^S/i.test(r.transactionType);
+    var color = isBuy ? '#15803d' : isSell ? '#dc2626' : '#8fa090';
+    var bgBadge = isBuy ? '#e6faf3' : isSell ? '#fef2f2' : '#f0f4f2';
+    var iconCls = isBuy ? '' : isSell ? ' sell' : ' neutral';
+    var label = isBuy ? '▲ COMPRA' : isSell ? '▼ VENTA' : (r.transactionType||'—');
+    var sym = ((r.symbol||r.ticker||'—')+'').toUpperCase();
+    var initials = sym.replace(/[^A-Z]/g,'').slice(0,2)||sym.slice(0,2);
+    var shares = r.securitiesTransacted != null ? Number(r.securitiesTransacted).toLocaleString('es-ES') : '—';
+    var priceVal = r.price ? Number(r.price).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2}) : '—';
+    var priceStr = r.price ? ('$'+priceVal) : '—';
+    var date = ((r.transactionDate||r.date||'—')+'').slice(0,10);
+    var insider = r.reportingName||r.insiderName||'—';
+    var role = r.typeOfOwner||r.position||'';
+    var value = (Number(r.securitiesTransacted)||0) * (Number(r.price)||0);
+    var valueStr = value > 1000 ? _fmtMoney(value) : '';
+    var link = r.link||r.secLink||'';
+
+    return '<div class="ins-card">'
+      + '<div class="ins-icon'+iconCls+'">'+initials+'</div>'
+      + '<div style="flex:1;min-width:0">'
+      + '<div style="display:flex;align-items:center;gap:6px;margin-bottom:3px">'
+      + '<span style="font-size:15px;font-weight:800;color:#142018">'+sym+'</span>'
+      + '<span style="background:'+bgBadge+';color:'+color+';font-size:9px;font-weight:700;padding:2px 7px;border-radius:6px;letter-spacing:.04em;flex-shrink:0">'+label+'</span>'
+      + (valueStr?'<span style="font-size:11px;font-weight:700;color:'+color+';margin-left:auto;flex-shrink:0">'+valueStr+'</span>':'')
+      + '</div>'
+      + '<div style="font-size:12px;color:#3d4f41;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+insider+'</div>'
+      + (role?'<div style="font-size:10px;color:#8fa090;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+role+'</div>':'')
+      + '<div style="display:flex;align-items:center;gap:8px;margin-top:6px;flex-wrap:wrap">'
+      + '<span style="font-size:11px;font-weight:700;color:#142018">'+shares+' acc.</span>'
+      + '<span style="font-size:11px;color:#8fa090">a '+priceStr+'</span>'
+      + '<span style="font-size:11px;color:#b0bfb5;margin-left:auto">'+date+'</span>'
+      + '</div>'
+      + '</div>'
+      + (link?'<a href="'+link+'" target="_blank" rel="noopener" style="color:#b0bfb5;font-size:13px;flex-shrink:0;text-decoration:none;padding:2px 0;align-self:flex-start" title="SEC Filing">↗</a>':'')
+      + '</div>';
+  }).join('');
+
+  el.innerHTML = summaryHtml + cardsHtml;
+}
+
+function _insFilter(type) {
+  _insFilterVal = type;
+  var chips = {all:'insChipAll', buy:'insChipBuy', sell:'insChipSell'};
+  Object.keys(chips).forEach(function(t) {
+    var el = document.getElementById(chips[t]);
+    if(el) el.classList.toggle('ins-chip-active', t === type);
+  });
+  if(_insData) _insRender(); else _insLoad();
+}
+
+function _insSearchDebounce() {
+  clearTimeout(_insSearchDebounceTimer);
+  var val = ((document.getElementById('insSearchInput')||{}).value||'').trim();
+  var clr = document.getElementById('insSearchClear');
+  if(clr) clr.style.display = val ? '' : 'none';
+  _insSearchDebounceTimer = setTimeout(function() {
+    _insData = null;
+    _insLoad(val);
+  }, 600);
+}
+
+function _insClearSearch() {
+  var inp = document.getElementById('insSearchInput');
+  if(inp) inp.value = '';
+  var clr = document.getElementById('insSearchClear');
+  if(clr) clr.style.display = 'none';
+  _insData = null;
+  _insLoad('');
+}
 
 </script>
 </body>
