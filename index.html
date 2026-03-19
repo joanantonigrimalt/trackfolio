@@ -769,53 +769,58 @@ table.an-corr-mtx{border-collapse:separate;border-spacing:4px}
 </div>
 
 <!-- ============ AUTH ============ -->
-<div id="cs-auth" class="cover-screen">
-  <div class="auth-body">
-    <div class="auth-lang-row">
-      <button class="auth-lang-btn" id="auth-lang-es" onclick="switchLang('es')">ES</button>
-      <button class="auth-lang-btn active" id="auth-lang-en" onclick="switchLang('en')">EN</button>
+<div id="cs-auth" class="cover-screen" style="background:linear-gradient(170deg,#f2f5f3 0%,#e8f0ea 100%)">
+
+  <!-- Language switcher -->
+  <div class="auth-lang-row" style="position:absolute;top:0;right:0;padding:16px 20px;z-index:2">
+    <button class="auth-lang-btn" id="auth-lang-es" onclick="switchLang('es')">ES</button>
+    <button class="auth-lang-btn active" id="auth-lang-en" onclick="switchLang('en')">EN</button>
+  </div>
+
+  <div style="flex:1;display:flex;flex-direction:column;padding:60px 24px 32px;overflow-y:auto">
+
+    <!-- Brand -->
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:32px">
+      <div style="width:46px;height:46px;background:#142018;border-radius:14px;display:flex;align-items:center;justify-content:center;color:#f5fbf6;font-size:22px;font-weight:900;flex-shrink:0">F</div>
+      <span style="font-size:21px;font-weight:800;color:#142018;letter-spacing:-.02em">Finasset</span>
     </div>
-    <div class="auth-title" id="auth-title">Welcome</div>
-    <div class="auth-sub" id="auth-sub">Sign in to your portfolio</div>
-    <label class="auth-lbl" id="auth-email-lbl">Email or username</label>
-    <input class="auth-inp" id="auth-email" type="text" placeholder="Email or username" autocomplete="email username">
-    <label class="auth-lbl" id="auth-name-lbl" style="display:none">Username</label>
-    <input class="auth-inp" id="auth-name" type="text" placeholder="Username" style="display:none" autocomplete="username">
-    <label class="auth-lbl" id="auth-pass-lbl">Password</label>
-    <div style="position:relative">
-      <input class="auth-inp" id="auth-pass" type="password" placeholder="••••••••" autocomplete="current-password" style="padding-right:44px">
-      <button type="button" id="passToggleBtn" onclick="const i=document.getElementById('auth-pass');const show=i.type==='password';i.type=show?'text':'password';document.getElementById('passEyeIcon').innerHTML=show?'<path d=\'M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94\'/><path d=\'M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19\'/><line x1=\'1\' y1=\'1\' x2=\'23\' y2=\'23\'/>':'<path d=\'M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z\'/><circle cx=\'12\' cy=\'12\' r=\'3\'/>';" style="position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;padding:6px;display:flex;align-items:center;justify-content:center;color:#8fa090;line-height:0">
-        <svg id="passEyeIcon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
-      </button>
+
+    <!-- Hero -->
+    <div id="auth-hero-title" style="font-size:27px;font-weight:800;color:#142018;letter-spacing:-.03em;line-height:1.2;margin-bottom:10px">Track your entire portfolio<br>in one place</div>
+    <div id="auth-hero-sub" style="font-size:15px;color:#5a6e5e;line-height:1.6;margin-bottom:24px">Stocks, ETFs, funds, cash &amp; dividends.<br>Spot risks and improve with AI.</div>
+
+    <!-- Benefits -->
+    <div style="display:flex;flex-direction:column;gap:9px;margin-bottom:28px">
+      <div style="display:flex;align-items:center;gap:10px"><div style="width:22px;height:22px;border-radius:6px;background:#e6faf3;display:flex;align-items:center;justify-content:center;flex-shrink:0"><svg viewBox="0 0 12 12" fill="none" stroke="#15803d" stroke-width="2" stroke-linecap="round" width="10" height="10"><polyline points="2,6 5,9 10,3"/></svg></div><span id="auth-b1" style="font-size:13px;color:#3d4f41;font-weight:600">Real prices &amp; 5-year history, auto-updated</span></div>
+      <div style="display:flex;align-items:center;gap:10px"><div style="width:22px;height:22px;border-radius:6px;background:#e6faf3;display:flex;align-items:center;justify-content:center;flex-shrink:0"><svg viewBox="0 0 12 12" fill="none" stroke="#15803d" stroke-width="2" stroke-linecap="round" width="10" height="10"><polyline points="2,6 5,9 10,3"/></svg></div><span id="auth-b2" style="font-size:13px;color:#3d4f41;font-weight:600">Dividends tracked &amp; upcoming payments</span></div>
+      <div style="display:flex;align-items:center;gap:10px"><div style="width:22px;height:22px;border-radius:6px;background:#e6faf3;display:flex;align-items:center;justify-content:center;flex-shrink:0"><svg viewBox="0 0 12 12" fill="none" stroke="#15803d" stroke-width="2" stroke-linecap="round" width="10" height="10"><polyline points="2,6 5,9 10,3"/></svg></div><span id="auth-b3" style="font-size:13px;color:#3d4f41;font-weight:600">AI analyses concentration, risk &amp; fees</span></div>
+      <div style="display:flex;align-items:center;gap:10px"><div style="width:22px;height:22px;border-radius:6px;background:#e6faf3;display:flex;align-items:center;justify-content:center;flex-shrink:0"><svg viewBox="0 0 12 12" fill="none" stroke="#15803d" stroke-width="2" stroke-linecap="round" width="10" height="10"><polyline points="2,6 5,9 10,3"/></svg></div><span id="auth-b4" style="font-size:13px;color:#3d4f41;font-weight:600">Alerts, benchmarks &amp; tax overview</span></div>
     </div>
-    <div class="auth-terms" id="auth-terms-wrap" style="display:none;font-size:11px;color:#8fa090;line-height:1.45;margin:4px 0 6px;text-align:center">
-      By creating an account you accept the <a href="/privacy.html" target="_blank" style="color:#15803d;font-weight:700">terms and conditions</a>
-    </div>
-    <div class="auth-err" id="auth-err" style="display:none"></div>
-    <button class="auth-btn-main" id="auth-btn-main" onclick="authSubmit()"><span id="auth-btn-label">Sign in</span><span class="auth-spinner"></span></button>
-    <div style="display:flex;align-items:center;gap:10px;margin:10px 0 4px">
-      <div style="flex:1;height:1px;background:rgba(20,32,24,.1)"></div>
-      <span style="font-size:11px;color:#8fa090;font-weight:600">OR</span>
-      <div style="flex:1;height:1px;background:rgba(20,32,24,.1)"></div>
-    </div>
-    <button class="auth-btn-google" id="auth-btn-google" onclick="signInWithGoogle()">
-      <svg width="18" height="18" viewBox="0 0 48 48" style="flex-shrink:0"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.31-8.16 2.31-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/><path fill="none" d="M0 0h48v48H0z"/></svg>
-      <span id="auth-btn-google-text">Continue with Google</span>
+
+    <!-- Primary CTA -->
+    <button onclick="enterDemo()" style="width:100%;padding:16px;background:#142018;color:#f5fbf6;border:none;border-radius:16px;font:inherit;font-size:15px;font-weight:700;cursor:pointer;letter-spacing:-.01em;margin-bottom:10px;transition:opacity .15s">
+      <span id="auth-demo-label">Try the demo — no account needed</span>
     </button>
-    <div class="auth-mode-link" id="auth-mode-link" onclick="toggleAuthMode()">
-      Don't have an account? <span>Create one</span>
+
+    <!-- Secondary CTAs -->
+    <div style="display:flex;gap:8px;margin-bottom:20px">
+      <button onclick="_openAuthAs('login')" style="flex:1;padding:13px;background:#fff;border:1.5px solid rgba(20,32,24,.15);border-radius:14px;font:inherit;font-size:14px;font-weight:700;color:#142018;cursor:pointer"><span id="auth-signin-label">Sign in</span></button>
+      <button onclick="_openAuthAs('register')" style="flex:1;padding:13px;background:#fff;border:1.5px solid rgba(20,32,24,.15);border-radius:14px;font:inherit;font-size:14px;font-weight:700;color:#15803d;cursor:pointer"><span id="auth-register-label">Create account</span></button>
     </div>
-    <div style="display:flex;align-items:center;gap:10px;margin:14px 0 8px">
-      <div style="flex:1;height:1px;background:rgba(20,32,24,.08)"></div>
-      <span style="font-size:11px;color:#c0cfca;font-weight:600">DEMO</span>
-      <div style="flex:1;height:1px;background:rgba(20,32,24,.08)"></div>
+
+    <!-- Trust note -->
+    <div id="auth-privacy-note" style="text-align:center;font-size:10.5px;color:#a0b0a5;line-height:1.6;margin-top:auto;padding-top:8px">
+      By using Finasset you accept our <a href="/privacy.html" target="_blank" rel="noopener" style="color:#15803d;font-weight:600;text-decoration:none">Privacy Policy</a> and <a href="/privacy.html#terms" target="_blank" rel="noopener" style="color:#15803d;font-weight:600;text-decoration:none">Terms of Use</a>. Not financial advice.
     </div>
-    <button class="auth-btn-sec" onclick="enterDemo()">Ver demo sin cuenta →</button>
-    <div class="auth-privacy-note">
-      Al usar esta app aceptas nuestra
-      <a href="/privacy.html" target="_blank" rel="noopener">Política de Privacidad</a>
-      y <a href="/privacy.html#terms" target="_blank" rel="noopener">Términos de Uso</a>.
+
+    <!-- Hidden legacy IDs for switchLang compat -->
+    <div style="display:none">
+      <div id="auth-title"></div><div id="auth-sub"></div>
+      <input id="auth-email" type="text"><input id="auth-name" type="text"><input id="auth-pass" type="password">
+      <div id="auth-err"></div><button id="auth-btn-main"><span id="auth-btn-label"></span></button>
+      <div id="auth-mode-link"></div><button id="auth-btn-google"><span id="auth-btn-google-text"></span></button>
     </div>
+
   </div>
 </div>
 
@@ -898,8 +903,8 @@ table.an-corr-mtx{border-collapse:separate;border-spacing:4px}
   <b>T&uacute; asumes toda la responsabilidad por tus decisiones.</b>
 </div>
 <div class="legal-footer">
-  <button class="legal-footer-link" onclick="showScreen('privacy')">Pol&iacute;tica de Privacidad</button>
-  <button class="legal-footer-link" onclick="showScreen('terms')">T&eacute;rminos de Uso</button>
+  <button class="legal-footer-link" onclick="showScreen('privacy')">Privacy Policy</button>
+  <button class="legal-footer-link" onclick="showScreen('terms')">Terms of Use</button>
   <a class="legal-footer-link" href="mailto:hola@finasset.app">hola@finasset.app</a>
   <div class="legal-footer-copy">&copy; 2026 Finasset &middot; Herramienta personal de tracking &middot; Datos EODHD</div>
 </div>
@@ -1955,7 +1960,7 @@ table.an-corr-mtx{border-collapse:separate;border-spacing:4px}
     <button class="langBtn ccy-btn" data-ccy="GBP" id="btnCcyGbp" onclick="setDisplayCcy('GBP')">£ GBP</button>
   </div>
   <div class="sheetDivider"></div>
-  <div class="sheetTitle">Cuenta</div>
+  <div class="sheetTitle">Account</div>
   <div id="accountSection">
     <button class="accountLoginBtn" id="btnOpenAuth">Entrar o registrarse</button>
   </div>
@@ -2077,40 +2082,40 @@ table.an-corr-mtx{border-collapse:separate;border-spacing:4px}
 <div class="authSheet" id="authSheet">
   <div class="sheetHandle" style="margin-top:14px"></div>
   <div style="display:flex;justify-content:space-between;align-items:center;padding:14px 20px 0">
-    <div style="font-size:17px;font-weight:800;color:#142018">Cuenta</div>
+    <div style="font-size:17px;font-weight:800;color:#142018">Account</div>
     <button class="modalIconBtn" id="btnCloseAuth">✕</button>
   </div>
   <div class="authTabs">
-    <button class="authTabBtn active" id="authTabLogin">Entrar</button>
-    <button class="authTabBtn" id="authTabRegister">Registro</button>
+    <button class="authTabBtn active" id="authTabLogin">Sign in</button>
+    <button class="authTabBtn" id="authTabRegister">Register</button>
   </div>
   <div id="authFormWrap">
     <div class="authField" id="authNameField" style="display:none">
-      <div class="authFieldLabel">Nombre</div>
-      <div class="authFieldRow"><input type="text" id="authName" placeholder="Tu nombre" autocomplete="name"></div>
+      <div class="authFieldLabel">Name</div>
+      <div class="authFieldRow"><input type="text" id="authName" placeholder="Your name" autocomplete="name"></div>
     </div>
     <div class="authField">
       <div class="authFieldLabel">Email</div>
-      <div class="authFieldRow"><input type="email" id="authEmail" placeholder="correo@ejemplo.com" autocomplete="email"></div>
+      <div class="authFieldRow"><input type="email" id="authEmail" placeholder="you@email.com" autocomplete="email"></div>
     </div>
     <div class="authField">
-      <div class="authFieldLabel">Contraseña</div>
-      <div class="authFieldRow"><input type="password" id="authPassword" placeholder="Mínimo 8 caracteres" autocomplete="current-password"></div>
+      <div class="authFieldLabel">Password</div>
+      <div class="authFieldRow"><input type="password" id="authPassword" placeholder="Min. 8 characters" autocomplete="current-password"></div>
     </div>
-    <button class="authSubmitBtn" id="authSubmitBtn">Entrar</button>
+    <button class="authSubmitBtn" id="authSubmitBtn">Sign in</button>
     <div class="authMsg" id="authMsg" style="display:none"></div>
   </div>
   <div style="font-size:10.5px;color:#8fa090;text-align:center;padding:8px 20px 4px;line-height:1.55;">
-    Finasset es una herramienta de seguimiento personal. No asesoramiento financiero.<br>
+    Finasset is a personal portfolio tracker. Not financial advice.<br>
     <button class="legal-footer-link" style="font-size:10.5px" onclick="closeAuthModal();showScreen('privacy')">Pol&iacute;tica de Privacidad</button>
     &middot;
     <button class="legal-footer-link" style="font-size:10.5px" onclick="closeAuthModal();showScreen('terms')">T&eacute;rminos de Uso</button>
   </div>
   <div id="authVerifyState" style="display:none;text-align:center;padding:24px 24px 8px">
     <div style="font-size:40px;margin-bottom:12px">📧</div>
-    <div style="font-size:17px;font-weight:800;color:#142018;margin-bottom:8px">Revisa tu email</div>
+    <div style="font-size:17px;font-weight:800;color:#142018;margin-bottom:8px">Check your email</div>
     <div style="font-size:13px;color:#6d7e72;line-height:1.6;margin:0 auto;max-width:260px" id="authVerifyMsg"></div>
-    <button style="margin-top:14px;background:none;border:none;color:#15803d;font:inherit;font-size:13px;font-weight:700;cursor:pointer" id="btnResendVerify">Reenviar email</button>
+    <button style="margin-top:14px;background:none;border:none;color:#15803d;font:inherit;font-size:13px;font-weight:700;cursor:pointer" id="btnResendVerify">Resend email</button>
   </div>
 </div>
 
@@ -5144,48 +5149,37 @@ tick();setInterval(tick,30000);
 // ── Onboarding / Auth / Splash flow ──────────────────────────────────────
 const OB_SLIDES = [
   {
-    icon: `<svg width="40" height="40" viewBox="0 0 40 40" fill="none">
-      <rect x="4" y="22" width="7" height="14" rx="3" fill="#15803d" opacity=".5"/>
-      <rect x="14" y="14" width="7" height="22" rx="3" fill="#15803d" opacity=".75"/>
-      <rect x="24" y="6"  width="7" height="30" rx="3" fill="#15803d"/>
-      <polyline points="7,21 17,13 27,5 35,9" stroke="#22c55e" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
-      <circle cx="35" cy="9" r="3" fill="#22c55e"/>
-    </svg>`,
+    icon: `<svg width="44" height="44" viewBox="0 0 44 44" fill="none"><rect x="4" y="24" width="8" height="16" rx="3" fill="#15803d" opacity=".4"/><rect x="15" y="16" width="8" height="24" rx="3" fill="#15803d" opacity=".7"/><rect x="26" y="8" width="8" height="32" rx="3" fill="#15803d"/><polyline points="8,22 19,14 30,7 38,11" stroke="#22c55e" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><circle cx="38" cy="11" r="3.5" fill="#22c55e"/></svg>`,
     bg: 'rgba(21,128,61,.1)',
-    t_en: 'Track your entire portfolio', t_es: 'Controla toda tu inversión',
-    d_en: 'Funds, ETFs, gold and more. Real prices via EODHD, 5-year history automatically cached.',
-    d_es: 'Fondos, ETFs, oro y más. Precios reales vía EODHD, historial de 5 años cacheado automáticamente.',
+    t_en: 'Track everything in one place',
+    t_es: 'Controla todo en un solo lugar',
+    d_en: 'Stocks, ETFs, funds, gold and cash. Real prices, 5-year history and automatic updates \u2014 all without spreadsheets.',
+    d_es: 'Acciones, ETFs, fondos, oro y liquidez. Precios reales, historial de 5 a\u00f1os y actualizaciones autom\u00e1ticas.',
   },
   {
-    icon: `<svg width="40" height="40" viewBox="0 0 40 40" fill="none">
-      <path d="M5 30 L13 18 L20 23 L29 11 L35 16" stroke="#15803d" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
-      <circle cx="35" cy="16" r="3.5" fill="#22c55e"/>
-    </svg>`,
-    bg: 'rgba(34,197,94,.1)',
-    t_en: 'Real 5-year history', t_es: 'Historial real de 5 años',
-    d_en: 'Each time range shows the true % gain for that period. Market data saved and updated automatically.',
-    d_es: 'Cada rango temporal calcula el % real del periodo. Datos de mercado guardados y actualizados solos.',
+    icon: `<svg width="44" height="44" viewBox="0 0 44 44" fill="none"><path d="M8 28 L16 18 L22 23 L30 12 L38 17" stroke="#3b82f6" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><circle cx="38" cy="17" r="3.5" fill="#3b82f6"/><rect x="6" y="6" width="13" height="8" rx="3" fill="rgba(59,130,246,.12)" stroke="#3b82f6" stroke-width="1.5"/><text x="12.5" y="12" text-anchor="middle" font-size="5.5" font-weight="700" fill="#3b82f6">+17%</text></svg>`,
+    bg: 'rgba(59,130,246,.08)',
+    t_en: 'Know your real returns',
+    t_es: 'Conoce tu rentabilidad real',
+    d_en: 'Every range \u2014 1D, 1M, YTD, 5Y \u2014 shows the true % gain for that exact period. Spot concentration, risk and currency exposure at a glance.',
+    d_es: 'Cada rango \u2014 1D, 1M, YTD, 5A \u2014 muestra el % real del periodo. Detecta concentraci\u00f3n, riesgo y exposici\u00f3n de divisa.',
   },
   {
-    icon: `<svg width="40" height="40" viewBox="0 0 40 40" fill="none">
-      <circle cx="20" cy="20" r="14" stroke="#7c3aed" stroke-width="2.5"/>
-      <path d="M20 11v9l6 3.5" stroke="#7c3aed" stroke-width="2.5" stroke-linecap="round"/>
-    </svg>`,
-    bg: 'rgba(124,58,237,.1)',
-    t_en: 'AI that analyses your portfolio', t_es: 'IA que analiza tu cartera',
-    d_en: 'Claude analyses risks, overlaps in value funds and generates personalised suggestions for your portfolio.',
-    d_es: 'Claude analiza riesgos, solapamientos en fondos value y genera sugerencias personalizadas para tu cartera.',
+    icon: `<svg width="44" height="44" viewBox="0 0 44 44" fill="none"><circle cx="22" cy="22" r="15" stroke="#7c3aed" stroke-width="2"/><circle cx="22" cy="22" r="3" fill="#7c3aed"/><path d="M22 7 Q35 22 22 37 Q9 22 22 7Z" fill="rgba(124,58,237,.15)" stroke="#7c3aed" stroke-width="1.5"/><path d="M30 12 L36 6" stroke="#22c55e" stroke-width="2" stroke-linecap="round"/><circle cx="37" cy="5" r="3" fill="#22c55e"/></svg>`,
+    bg: 'rgba(124,58,237,.08)',
+    t_en: 'Your personal portfolio analyst',
+    t_es: 'Tu analista personal de cartera',
+    d_en: 'AI scans your holdings, detects overlaps, flags concentration risk and suggests concrete improvements. Dividends tracked. Benchmarks compared.',
+    d_es: 'La IA analiza tus activos, detecta solapamientos y sugiere mejoras. Dividendos y benchmarks incluidos.',
   },
   {
     type: 'ccy',
-    icon: `<svg width="40" height="40" viewBox="0 0 40 40" fill="none">
-      <circle cx="20" cy="20" r="14" stroke="#d97706" stroke-width="2.5"/>
-      <text x="20" y="25" text-anchor="middle" font-size="14" font-weight="700" fill="#d97706">€$</text>
-    </svg>`,
-    bg: 'rgba(217,119,6,.1)',
-    t_en: 'Choose your display currency', t_es: 'Elige tu moneda de visualización',
-    d_en: 'All portfolio values will be shown in your preferred currency. You can change this later in settings.',
-    d_es: 'Todos los valores se mostrarán en tu moneda preferida. Puedes cambiarlo después en ajustes.',
+    icon: `<svg width="44" height="44" viewBox="0 0 44 44" fill="none"><circle cx="22" cy="22" r="15" stroke="#d97706" stroke-width="2"/><text x="22" y="27" text-anchor="middle" font-size="15" font-weight="800" fill="#d97706">€$</text></svg>`,
+    bg: 'rgba(217,119,6,.08)',
+    t_en: 'Choose your display currency',
+    t_es: 'Elige tu moneda de visualizaci\u00f3n',
+    d_en: 'All portfolio values shown in your preferred currency. Change anytime in settings.',
+    d_es: 'Todos los valores en tu moneda preferida. Puedes cambiarlo en ajustes.',
   },
 ];
 let _obStep = 0;
@@ -5223,6 +5217,14 @@ function obNext() {
   else { localStorage.setItem('fa_ob_done','1'); showAuthScreen(); }
 }
 
+function _openAuthAs(mode) {
+  openAuthModal();
+  setTimeout(function(){ _setAuthMode(mode); }, 50);
+}
+function _openAuthAs(mode){
+  openAuthModal();
+  setTimeout(function(){ _setAuthMode(mode); },50);
+}
 function showAuthScreen() {
   showCover('cs-auth');
 }
@@ -5777,6 +5779,15 @@ function switchLang(lang) {
   });
   // Re-apply i18n to main app
   applyTranslations();
+  // // Update marketing auth screen
+  var _ht=document.getElementById('auth-hero-title');if(_ht)_ht.innerHTML=isEs?'Controla toda tu cartera<br>en un solo lugar':'Track your entire portfolio<br>in one place';
+  var _hs=document.getElementById('auth-hero-sub');if(_hs)_hs.innerHTML=isEs?'Acciones, ETFs, fondos, liquidez y dividendos.<br>Detecta riesgos y mejora con IA.':'Stocks, ETFs, funds, cash &amp; dividends.<br>Spot risks and improve with AI.';
+  var _ab=[['auth-b1',isEs?'Precios reales e historial de 5 a\u00f1os':'Real prices &amp; 5-year history, auto-updated'],['auth-b2',isEs?'Dividendos registrados y pr\u00f3ximos pagos':'Dividends tracked &amp; upcoming payments'],['auth-b3',isEs?'IA analiza concentraci\u00f3n, riesgo y comisiones':'AI analyses concentration, risk &amp; fees'],['auth-b4',isEs?'Alertas, benchmarks y resumen fiscal':'Alerts, benchmarks &amp; tax overview']];
+  _ab.forEach(function(b){var el=document.getElementById(b[0]);if(el)el.innerHTML=b[1];});
+  var _dl=document.getElementById('auth-demo-label');if(_dl)_dl.textContent=isEs?'Ver demo \u2014 sin cuenta':'Try the demo \u2014 no account needed';
+  var _sl=document.getElementById('auth-signin-label');if(_sl)_sl.textContent=isEs?'Iniciar sesi\u00f3n':'Sign in';
+  var _rl=document.getElementById('auth-register-label');if(_rl)_rl.textContent=isEs?'Crear cuenta':'Create account';
+  var _pn=document.getElementById('auth-privacy-note');if(_pn)_pn.innerHTML=isEs?'Al usar Finasset aceptas nuestra <a href="/privacy.html" target="_blank" rel="noopener" style="color:#15803d;font-weight:600;text-decoration:none">Pol\u00edtica de Privacidad</a> y <a href="/privacy.html#terms" target="_blank" rel="noopener" style="color:#15803d;font-weight:600;text-decoration:none">T\u00e9rminos de Uso</a>. No es asesoramiento financiero.':'By using Finasset you accept our <a href="/privacy.html" target="_blank" rel="noopener" style="color:#15803d;font-weight:600;text-decoration:none">Privacy Policy</a> and <a href="/privacy.html#terms" target="_blank" rel="noopener" style="color:#15803d;font-weight:600;text-decoration:none">Terms of Use</a>. Not financial advice.';
   // Update auth cover screen labels if visible
   const isEs = lang === 'es';
   const authTitle = document.getElementById('auth-title');
