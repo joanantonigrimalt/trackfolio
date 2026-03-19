@@ -2535,7 +2535,7 @@ function coverageStatus(a){return a.coverageStatus||(a.coverage?.status)||'MISSI
 function counts(){return{total:assets.length,ok:assets.filter(a=>coverageStatus(a)==='OK').length,partial:assets.filter(a=>coverageStatus(a)==='PARTIAL').length,missing:assets.filter(a=>coverageStatus(a)==='MISSING').length};}
 function assetType(a){const t=a.mapping?.type||'';if(t==='fund')return'fund';if(t==='etc')return'etc';if(t==='stock')return'stock';return'etf';}
 function iconInitials(a){return(a.name||a.isin).replace(/^i([A-Z])/,'I$1').slice(0,2).toUpperCase();}
-function assetCategory(a){if(['IE00B4ND3602','IE00B579F325'].includes(a.isin))return'Oro';if(a.mapping?.type==='etf')return'ETFs';if(a.mapping?.type==='etc')return'Oro';return'Fondos';}
+function assetCategory(a){if(['IE00B4ND3602','IE00B579F325'].includes(a.isin))return'Oro';if(a.mapping?.type==='etf')return'ETFs';if(a.mapping?.type==='etc')return'Oro';if(a.mapping?.type==='stock')return currentLang==='es'?'Acciones':'Stocks';return'Fondos';}
 
 function showScreen(name,keepTab=false){
   if(name==='privacy'||name==='terms'){
@@ -2545,13 +2545,13 @@ function showScreen(name,keepTab=false){
     return;
   }
   document.querySelectorAll('.screen').forEach(el=>el.classList.remove('active'));
-  document.getElementById('screen-'+name).classList.add('active');
+  const _s=document.getElementById('screen-'+name);if(_s)_s.classList.add('active');
   if(!keepTab)document.querySelectorAll('.tab button').forEach(b=>b.classList.toggle('active',b.dataset.screen===name));
   if(name==='analysis'&&dataReady)renderAnalysisCharts();
   if(name==='dividends'&&dataReady)renderDividends();
   if(name==='ia'&&dataReady)renderIA();
   if(name==='alerts')renderAlertsScreen();
-  if(name==='impuestos')renderImpuestos();
+  if(name==='impuestos'&&dataReady)renderImpuestos();
 }
 function normalizeHistory(h){return(Array.isArray(h)?h:[]).map(p=>({date:String(p.date).slice(0,10),close:Number(p.close)})).filter(p=>p.date&&Number.isFinite(p.close)&&p.close>0).sort((a,b)=>a.date.localeCompare(b.date));}
 function getPriceOnOrBefore(s,date){if(!s.length)return null;let lo=0,hi=s.length-1,best=-1;while(lo<=hi){const m=Math.floor((lo+hi)/2);if(s[m].date<=date){best=m;lo=m+1;}else hi=m-1;}return best>=0?s[best].close:null;}
@@ -2561,12 +2561,12 @@ function buildPortfolioTimeSeries(){
   const scaled=real.map(a=>{const lc=a.history[a.history.length-1]?.close||0;return{asset:a,factor:(lc>0&&a.currentPrice>0)?a.currentPrice/lc:1};});
   const ds=new Set();real.forEach(a=>a.history.forEach(p=>ds.add(p.date)));
   const dates=[...ds].sort();if(dates.length<2)return null;
-  const full=dates.map(date=>{let rv=0;for(const{asset,factor}of scaled){const p=getPriceOnOrBefore(asset.history,date);if(p!=null)rv+=toDisplay(asset.quantity*p*factor,assetCcy(asset));}return{date,realValue:rv};}).filter(p=>p.realValue>0);
+  const full=dates.map(date=>{let rv=0;for(const{asset,factor}of scaled){const p=getPriceOnOrBefore(asset.history,date);if(p!=null){const v=toDisplay(asset.quantity*p*factor,assetCcy(asset));if(Number.isFinite(v))rv+=v;}}return{date,realValue:rv};}).filter(p=>p.realValue>0);
   if(full.length<2)return null;
   const fr=full[0].realValue,approx=assets.filter(a=>!a.hasRealHistory),aC=approx.reduce((s,a)=>s+a.value,0),tC=assets.reduce((s,a)=>s+a.value,0);
   return full.map(p=>{const ratio=fr>0?p.realValue/fr:1;const av=approx.reduce((s,a)=>{const b=a.buyPrice>0?a.invested:a.value;const sc=b*ratio;return s+Math.min(Math.max(b,a.value),Math.max(Math.min(b,a.value),sc));},0);return{date:p.date,totalValue:p.realValue+av,realValue:p.realValue,approximatedValue:av,totalCurrent:tC,approximateCurrent:aC};});
 }
-function filterByRange(series,range){if(!Array.isArray(series)||!series.length)return[];let co;if(range==='YTD'){co=new Date(new Date().getFullYear(),0,1);}else{const days=RANGE_DAYS[range]||365;const ld=new Date(series[series.length-1].date+'T00:00:00');co=new Date(ld);co.setDate(co.getDate()-days);}let f=series.filter(p=>new Date(p.date+'T00:00:00')>=co);if(f.length<2)f=series.slice(Math.max(0,series.length-30));return f;}
+function filterByRange(series,range){if(!Array.isArray(series)||!series.length)return[];if(!range)return series;let co;if(range==='YTD'){co=new Date(new Date().getFullYear(),0,1);}else{const days=RANGE_DAYS[range]||365;const ld=new Date(series[series.length-1].date+'T00:00:00');co=new Date(ld);co.setDate(co.getDate()-days);}let f=series.filter(p=>new Date(p.date+'T00:00:00')>=co);if(f.length<2)f=series.slice(Math.max(0,series.length-30));return f;}
 function dateLabel(date,range){const d=new Date(date+'T00:00:00');const loc=currentLang==='es'?'es-ES':'en-GB';if(range==='1W'||range==='1M')return d.toLocaleDateString(loc,{day:'2-digit',month:'short'});if(range==='5Y')return d.toLocaleDateString(loc,{month:'short',year:'2-digit'});if(range==='YTD')return d.toLocaleDateString(loc,{day:'2-digit',month:'short'});return d.toLocaleDateString(loc,{month:'short',year:'numeric'});}
 
 // ========== Home Chart ==========
@@ -2617,7 +2617,7 @@ async function renderChart(){
   const lp=series[series.length-1];
   if(!lp){canvas.style.display='none';fallback.style.display='flex';return;}
   const aPct=lp.totalCurrent>0?lp.approximateCurrent/lp.totalCurrent*100:0;
-  const noteText=aPct>0.5?`${t('histPts').replace('puntos históricos','')}: ${series.length} pts · ${aPct.toFixed(0)}% estimado`:t('histPts').replace('historical points',`${series.length} pts`).replace('puntos históricos',`${series.length} pts`);
+  const noteText=aPct>0.5?`${series.length} pts · ${aPct.toFixed(0)}% ${currentLang==='es'?'estimado':'estimated'}`:currentLang==='es'?`${series.length} puntos históricos`:`${series.length} historical points`;
   _drawChart(canvas,series.map(p=>dateLabel(p.date,selectedRange)),values,note,meta,rv,noteText);
 }
 
@@ -2807,7 +2807,7 @@ function renderETFProfile(r){
           ${h.country?`<div style="font-size:10px;color:#8fa090;font-weight:500;margin-top:1px">${escapeHtml(h.country)}</div>`:''}
         </div>
       </div>`;
-    }).join('');
+    }).filter(Boolean).join('');
     document.getElementById('etfHoldingsCard').style.display='';
   }else{
     document.getElementById('etfHoldingsCard').style.display='none';
@@ -2997,11 +2997,11 @@ function reapplyAndRender(){
 }
 
 // ========== Analysis ==========
-function destroyAnalysisCharts(){Object.values(analysisCharts).forEach(c=>{try{c.destroy();}catch(_){}});analysisCharts={};if(_anAllocChartInst){try{_anAllocChartInst.destroy();}catch(_){}}_anAllocChartInst=null;}
+function destroyAnalysisCharts(){Object.values(analysisCharts).forEach(c=>{try{c.destroy();}catch(_){}});analysisCharts={};if(_anAllocChartInst){try{_anAllocChartInst.destroy();}catch(_){}}_anAllocChartInst=null;if(window._pwDonutChart){try{window._pwDonutChart.destroy();}catch(_){}}window._pwDonutChart=null;if(window._vsWorldChart){try{window._vsWorldChart.destroy();}catch(_){}}window._vsWorldChart=null;}
 function resetDividendDetailCache(){_divDetailCache=null;document.getElementById('divDetailCard').style.display='none';document.getElementById('divAnnualChartWrap').style.display='none';const tr=document.getElementById('divTrend');if(tr)tr.style.display='none';if(analysisCharts._divAlloc){try{analysisCharts._divAlloc.destroy();}catch(_){}analysisCharts._divAlloc=null;}}
 function computeHealthScore(){
   const total=assets.reduce((s,a)=>s+toDisplay(a.value,assetCcy(a)),0);if(!total)return{score:0,diversif:0,riesgo:0,rentab:0};
-  const hhi=assets.reduce((s,a)=>s+Math.pow((toDisplay(a.value,assetCcy(a))/total)*100,2),0)/100,n=assets.length;
+  const hhi=total>0?assets.reduce((s,a)=>{const w=toDisplay(a.value,assetCcy(a))/total;return s+Math.pow(Number.isFinite(w)?w*100:0,2);},0)/100:0,n=assets.length;
   const diversif=n>1?Math.round(Math.max(0,Math.min(100,(1-(hhi-1/n)/(1-1/n))*100))):0;
   const goldPct=assets.filter(a=>assetCategory(a)==='Oro').reduce((s,a)=>s+toDisplay(a.value,assetCcy(a)),0)/total;
   const riesgo=Math.round(Math.min(100,55+goldPct*60+(n>10?15:n*1.5)));
@@ -3050,17 +3050,17 @@ function _anRenderSummary(){
   const elDG=document.getElementById('anSumDayGain'),elInv=document.getElementById('anSumInvested');
   if(elVal)elVal.textContent=fe(total);
   if(elDB){elDB.textContent=todayPct!=null?`${todayPct>=0?'+':''}${todayPct.toFixed(2)}%`:'—';elDB.className='an-sum-badge '+(todayPct==null?'':todayPct>=0?'pos':'neg');}
-  if(elDG&&todayGain!=null)elDG.textContent=`${todayGain>=0?'+':''}${fe(todayGain)} ${isEs?'hoy':'today'}`;
+  if(elDG){elDG.textContent=todayGain!=null?`${todayGain>=0?'+':''}${fe(todayGain)} ${isEs?'hoy':'today'}`:'';}
   if(elInv)elInv.textContent=`${isEs?'Invertido':'Invested'}: ${fe(inv)}`;
   const elG=document.getElementById('anSumGain'),elGB=document.getElementById('anSumGainBadge');
   if(elG){elG.textContent=(isPos?'+':'')+fe(gain);elG.className='an-sum-main '+(isPos?'an-green':'an-red');}
   if(elGB){elGB.textContent=`${isPos?'+':''}${gainPct.toFixed(2)}%`;elGB.className='an-sum-badge '+(isPos?'pos':'neg');}
   const full=buildPortfolioTimeSeries();
   const sp=document.getElementById('anSumSpark');
-  if(sp&&full&&full.length>1)_anDrawSpark(sp,full.slice(-30).map(p=>p.totalValue),isPos);
+  if(sp&&full&&full.length>1){const _spPts=full.slice(-30).map(p=>p.totalValue).filter(v=>Number.isFinite(v)&&v>0);if(_spPts.length>1)_anDrawSpark(sp,_spPts,isPos);}
   // Liquidity
-  const liq=getLiquidity(),liqTot=liq.reduce((s,l)=>s+(Number(l.amount)||0),0);
-  const liqPct=(total+liqTot)>0?liqTot/(total+liqTot):0;
+  const liq=getLiquidity(),liqTot=liq.reduce((s,l)=>s+toDisplay(Number(l.amount)||0,l.currency||'EUR'),0);
+  const liqPct=(total+liqTot)>0?Math.min(liqTot/(total+liqTot),1):0;
   const elC=document.getElementById('anCashAmt'),elCS=document.getElementById('anCashSub');
   if(elC)elC.textContent=fe(liqTot);
   if(elCS)elCS.textContent=isEs?`${liq.length} cuenta${liq.length!==1?'s':''}`:`${liq.length} account${liq.length!==1?'s':''}`;
@@ -3083,7 +3083,7 @@ function _anRenderPeriodStrip(){
     if(full&&full.length>=2){const f=filterByRange(full,key);if(f&&f.length>=2){const b=f[0].totalValue,c=f[f.length-1].totalValue;if(b>0){pct=(c-b)/b*100;abs=c-b;}}}
     const cl=pct==null?'neu':pct>=0?'pos':'neg';
     const ps=pct==null?'—':`${pct>=0?'+':''}${pct.toFixed(1)}%`;
-    const as=abs==null?'—':`${abs>=0?'+':''}${Math.abs(abs)>=1000?(abs>=0?'+':'-')+Math.abs(abs/1000).toFixed(1)+'k':(abs>=0?'+':'')+fe(abs)}`;
+    const as=abs==null?'—':Math.abs(abs)>=1000?`${abs>=0?'+':'-'}${(Math.abs(abs)/1000).toFixed(1)}k`:`${abs>=0?'+':''}${fe(abs)}`;
     return`<div class="an-period-item"><span class="an-period-label">${label}</span><span class="an-period-pct ${cl}">${ps}</span><span class="an-period-abs ${cl}">${as}</span></div>`;
   }).join('');
 }
@@ -3108,7 +3108,7 @@ function _anRenderBroker(){
 function _anRenderBestWorst(){
   const bestEl=document.getElementById('anBestSection'),worstEl=document.getElementById('anWorstSection');
   if(!bestEl||!worstEl)return;
-  const sorted=[...assets].filter(a=>Number.isFinite(a.gainPct)).sort((a,b)=>b.gainPct-a.gainPct);
+  const sorted=[...assets].filter(a=>a.quantity>0&&Number.isFinite(a.gainPct)).sort((a,b)=>b.gainPct-a.gainPct);
   if(!sorted.length){bestEl.innerHTML='';worstEl.innerHTML='';return;}
   const isEs=currentLang==='es';
   const IC=['#15803d','#1d6fa8','#7c3aed','#f59e0b','#ef4444','#0ea5e9','#e91e8c','#e63946','#2d9e5f','#9333ea'];
@@ -3116,8 +3116,8 @@ function _anRenderBestWorst(){
   function mkCard(a,idx,isBest,sm){
     const pos=a.gainPct>=0,cl=pos?'pos':'neg',col=IC[idx%IC.length];
     const sparkId=`anSpk_${isBest?'b':'w'}_${idx}`;
-    const ticker=escapeHtml(a.name.slice(0,sm?8:10));
-    const fname=escapeHtml(a.name.slice(0,sm?12:16));
+    const ticker=escapeHtml((a.name||a.isin||'').slice(0,sm?8:10));
+    const fname=escapeHtml((a.name||a.isin||'').slice(0,sm?12:16));
     const pctStr=(pos?'+':'')+a.gainPct.toFixed(1)+'%';
     const eurStr=(a.gain>=0?'+':'')+fe(toDisplay(a.gain,assetCcy(a)));
     const val=toDisplay(a.value,assetCcy(a));
@@ -3145,7 +3145,7 @@ function _anRenderBestWorst(){
   const top5=sorted.slice(0,5);
   const top5ISINs=new Set(top5.map(a=>a.isin));
   const negatives=sorted.filter(a=>a.gainPct<0&&!top5ISINs.has(a.isin)).reverse();
-  const bot5=negatives.length>=1?negatives.slice(0,5):sorted.filter(a=>!top5ISINs.has(a.isin)).slice(-Math.min(3,sorted.filter(a=>!top5ISINs.has(a.isin)).length)).reverse();
+  const _rem=sorted.filter(a=>!top5ISINs.has(a.isin));const bot5=negatives.length>=1?negatives.slice(0,5):_rem.slice(-5).reverse();
   bestEl.innerHTML=mkSection(top5,true);
   worstEl.innerHTML=bot5.length?mkSection(bot5,false):'';
   document.getElementById('anBestWorstCard').style.display='';
@@ -3153,7 +3153,7 @@ function _anRenderBestWorst(){
     [...top5.map((a,i)=>({a,id:`anSpk_b_${i}`})),...bot5.map((a,i)=>({a,id:`anSpk_w_${i}`}))].forEach(({a,id})=>{
       const cvs=document.getElementById(id);if(!cvs)return;
       const r=cvs.getBoundingClientRect();cvs.width=Math.round(r.width)||100;cvs.height=Math.round(r.height)||28;
-      const pts=a.hasRealHistory&&a.history?.length>1?a.history.slice(-20).map(p=>p.close):[a.buyPrice||1,a.currentPrice||1];
+      const pts=a.hasRealHistory&&a.history?.length>1?a.history.slice(-20).map(p=>p.close).filter(v=>v>0):[a.buyPrice||1,a.currentPrice||1];if(pts.length<2)return;
       _anDrawSpark(cvs,pts,a.gainPct>=0);
     });
   });
@@ -3165,7 +3165,7 @@ function _anRenderTreemap(){
   const all=[...assets.map(a=>({name:a.name.length>18?a.name.slice(0,16)+'…':a.name,weight:toDisplay(a.value,assetCcy(a)),gainPct:a.gainPct??0,today:getDayPct(a)??0}))];
   const liqTot=getLiquidity().reduce((s,l)=>s+(Number(l.amount)||0),0);
   if(liqTot>0)all.push({name:currentLang==='es'?'Efectivo':'Cash',weight:liqTot,gainPct:null,today:0});
-  const tot=all.reduce((s,i)=>s+i.weight,0);if(!tot)return;
+  const tot=all.reduce((s,i)=>s+i.weight,0);if(!tot||!Number.isFinite(tot))return;
   function colFor(item){if(item.gainPct==null)return'#2563eb';const p=item.gainPct;if(p>20)return'#14532d';if(p>5)return'#15803d';if(p>0)return'#22c55e';if(p>-5)return'#dc2626';if(p>-15)return'#b91c1c';return'#7f1d1d';}
   function squarify(itms,x,y,w,h){
     if(!itms.length)return[];
@@ -3233,9 +3233,10 @@ function _anRenderAllocContent(tab) {
   } else if (tab === 'broker') {
     assets.forEach(a => { const b = a.broker||(currentLang==='es'?'Sin broker':'Other'); groups[b]=(groups[b]||0)+toDisplay(a.value,assetCcy(a)); });
   }
-  const entries = Object.entries(groups).sort((a,b) => b[1]-a[1]);
+  const entries = Object.entries(groups).filter(([,v])=>v>0).sort((a,b) => b[1]-a[1]);
+  if(!entries.length){el.innerHTML='';return;}
   const cols = entries.map((_,i) => COLORS[i%COLORS.length]);
-  const pcts = entries.map(([,v]) => Math.round(v/total*100));
+  const pcts = entries.map(([,v]) => total>0?Math.round(v/total*100):0);
   if (_anAllocChartInst) { try { _anAllocChartInst.destroy(); } catch(_) {} _anAllocChartInst = null; }
   const canvasId = 'anAllocDonut';
   const brokerBarsHtml = tab==='broker' ? `<div style="margin-top:12px;display:flex;flex-direction:column;gap:8px">${entries.map(([n,v],i)=>`<div><div style="display:flex;justify-content:space-between;font-size:11px;font-weight:700;margin-bottom:3px"><span style="display:flex;align-items:center;gap:5px"><span style="width:6px;height:6px;border-radius:50%;background:${cols[i]};display:inline-block"></span>${escapeHtml(n)}</span><span style="color:#142018">${fe(v)}</span></div><div style="height:5px;border-radius:3px;background:#f0f5f2;overflow:hidden"><div style="height:100%;border-radius:3px;background:${cols[i]};width:${pcts[i]}%;transition:width .5s"></div></div></div>`).join('')}</div>` : '';
@@ -3246,7 +3247,7 @@ function _anRenderAllocContent(tab) {
     </div>
   </div>${brokerBarsHtml}${tab==='sector'?'<div style="margin-top:10px;font-size:11px;color:#8fa090">Clasificación estimada por nombre del activo</div>':''}`;
 
-  setTimeout(() => {
+  requestAnimationFrame(() => {
     const cv = document.getElementById(canvasId);
     if (!cv) return;
     _anAllocChartInst = new Chart(cv.getContext('2d'), {
@@ -3254,7 +3255,7 @@ function _anRenderAllocContent(tab) {
       data: { datasets: [{ data: entries.map(([,v])=>v), backgroundColor: cols, borderWidth: 2, borderColor: '#fff' }] },
       options: { cutout: '68%', responsive: false, plugins: { legend: { display: false }, tooltip: { callbacks: { label: c => ` ${entries[c.dataIndex][0]}: ${fe(c.raw)}` } } }, animation: { duration: 600 } }
     });
-  }, 0);
+  });
 }
 
 // ── Costs & Fees ─────────────────────────────────────────────────────────────
@@ -3281,7 +3282,7 @@ function _anRenderCosts() {
   const noTer = assets.filter(a => a.quantity > 0 && (a.ter ?? AN_TER_MAP[a.isin]) == null);
   const totalCost = rows.reduce((s,r) => s + r.annualCost, 0);
   const totalVal = assets.reduce((s,a) => s + toDisplay(a.value,assetCcy(a)), 0);
-  const avgTer = totalVal > 0 ? totalCost / totalVal * 100 : 0;
+  const avgTer = totalVal > 0 && Number.isFinite(totalVal) ? totalCost / totalVal * 100 : 0;
   if (!rows.length) { el.innerHTML = `<div style="font-size:12px;color:#8fa090;text-align:center;padding:8px 0">${isEs?'No hay datos de TER disponibles.':'No TER data available.'}</div>`; return; }
   const maxCost = rows[0].annualCost || 1;
   let html = `<div class="an-costs-chips">
@@ -3332,6 +3333,7 @@ function _anRenderCosts() {
 
 // ========== Analysis: main entry point ==========
 function renderAnalysisCharts(){
+  destroyAnalysisCharts();
   try{_anRenderSummary();}catch(e){console.warn('_anRenderSummary',e);}
   try{_anRenderPeriodStrip();}catch(e){console.warn('_anRenderPeriodStrip',e);}
   try{_anRenderWeightDonut();}catch(e){console.warn('_anRenderWeightDonut',e);}
@@ -3354,7 +3356,7 @@ function _anRenderWeightDonut(){
 
   const active=assets.filter(a=>a.quantity>0&&a.value>0);
   const total=active.reduce((s,a)=>s+toDisplay(a.value,assetCcy(a)),0);
-  if(!total){canvas.style.display='none';return;}
+  if(!total||!Number.isFinite(total)){canvas.style.display='none';return;}
   canvas.style.display='';
 
   if(badge)badge.textContent=active.length+' activos';
@@ -3416,7 +3418,7 @@ function _anRenderWeightDonut(){
     options:{
       cutout:'58%',
       responsive:true,
-      maintainAspectRatio:true,
+      maintainAspectRatio:false,
       layout:{padding:50},
       plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>' '+labels[c.dataIndex]+': '+pcts[c.dataIndex].toFixed(1)+'% ('+fe(vals[c.dataIndex])+')'}}}
     }
@@ -3425,7 +3427,7 @@ function _anRenderWeightDonut(){
   if(legend){
     legend.innerHTML=sorted.map((a,i)=>{
       const pct=pcts[i];
-      if(pct<0.5)return'';
+      if(pct<0.5)return null;
       return`<div style="display:flex;align-items:center;gap:5px;overflow:hidden">
         <div style="width:8px;height:8px;border-radius:2px;background:${colors[i]};flex-shrink:0"></div>
         <div style="flex:1;min-width:0">
@@ -3465,7 +3467,7 @@ function _anRenderPerfBars(){
 
   rows.forEach(r=>{
     const isPos=r.pct>=0;
-    const halfW=Math.min(Math.abs(r.pct)/maxAbs*50,50);
+    const halfW=Math.min(Math.abs(r.pct)/maxAbs*46,46);
     const barStyle=isPos
       ?`left:50%;width:${halfW}%;border-radius:0 5px 5px 0;background:linear-gradient(to right,#22c55e,#86efac);`
       :`right:50%;width:${halfW}%;border-radius:5px 0 0 5px;background:linear-gradient(to left,#f87171,#fca5a5);`;
@@ -3496,13 +3498,22 @@ function _anRenderTrendVsWorld(){
   const years=Object.keys(MSCI_WORLD_ANNUAL).sort();
   const msciAnnual=years.map(y=>MSCI_WORLD_ANNUAL[y]);
 
-  // Portfolio annual returns: use actual gain if < 1yr, else distribute equally
+  // Portfolio: use real history when available, otherwise distribute total return
   const total=assets.reduce((s,a)=>s+toDisplay(a.value,assetCcy(a)),0);
   const inv=assets.reduce((s,a)=>s+toDisplay(a.invested,costCcy(a)),0);
   const totalPct=inv>0?((total-inv)/inv)*100:0;
-  // Distribute totalPct over years proportionally to MSCI (so trend looks sensible)
-  const msciAvg=msciAnnual.reduce((s,v)=>s+v,0)/msciAnnual.length;
-  const portAnnual=msciAnnual.map(m=>totalPct*0.5+(m>0?m*0.3:-m*0.1));
+  const _pts=buildPortfolioTimeSeries();
+  let portAnnual;
+  if(_pts&&_pts.length>5){
+    portAnnual=years.map(y=>{
+      const yStart=_pts.find(p=>p.date>=(y+'-01-01'));
+      const yEnd=[..._pts].reverse().find(p=>p.date<=((parseInt(y)+1)+'-01-01'))||_pts[_pts.length-1];
+      if(!yStart||!yEnd||yStart.totalValue<=0)return totalPct/Math.max(years.length,1);
+      return((yEnd.totalValue-yStart.totalValue)/yStart.totalValue)*100;
+    });
+  }else{
+    portAnnual=msciAnnual.map(m=>totalPct/Math.max(years.length,1)+(m>0?m*0.1:m*0.05));
+  }
 
   // Cumulative index (start = 0)
   let cumPort=0,cumMsci=0;
@@ -3515,7 +3526,7 @@ function _anRenderTrendVsWorld(){
   if(chips){
     const portTotal=portCum[portCum.length-1];
     const msciTotal=msciCum[msciCum.length-1];
-    const bestYear=years[portAnnual.indexOf(Math.max(...portAnnual))];
+    const _bi=portAnnual.length?portAnnual.indexOf(Math.max(...portAnnual)):-1;const bestYear=_bi>=0&&years[_bi]?years[_bi]:"—";
     chips.innerHTML=`
       <div style="background:#f0f5f2;border-radius:12px;padding:8px 10px;text-align:center">
         <div style="font-size:8px;font-weight:700;color:#8fa090;text-transform:uppercase;letter-spacing:.07em;margin-bottom:3px">Portfolio</div>
@@ -3559,8 +3570,8 @@ function _anRenderCorrelation(){
   if(!el)return;
 
   const active=assets.filter(a=>a.quantity>0&&a.value>0);
-  if(active.length<2){el.innerHTML='';document.getElementById('anCorrCard').style.display='none';return;}
-  document.getElementById('anCorrCard').style.display='';
+  if(active.length<2){el.innerHTML='';const _cc=document.getElementById('anCorrCard');if(_cc)_cc.style.display='none';return;}
+  const _cc2=document.getElementById('anCorrCard');if(_cc2)_cc2.style.display='';
 
   // Correlation by category (simplified)
   const CORR_TABLE={
@@ -3582,7 +3593,7 @@ function _anRenderCorrelation(){
 
   // Only show top 6 assets to keep matrix manageable
   const top=[...active].sort((a,b)=>toDisplay(b.value,assetCcy(b))-toDisplay(a.value,assetCcy(a))).slice(0,6);
-  const lbls=top.map(a=>a.shortName||(a.name||'').split(' ')[0]||a.isin.slice(0,4));
+  const lbls=top.map(a=>a.shortName||(a.name||'').split(' ')[0]||(a.isin||'????').slice(0,4));
 
   // High correlation pairs
   const highPairs=[];
@@ -3689,7 +3700,7 @@ async function renderDividends(){
 
   if(!_divDataCache){
     try{
-      const allIsins=assets.map(a=>{const sym=a.mapping?.yahooSymbol||a.symbol||'';return sym?`${a.isin}:${sym}`:a.isin;}).join(',');
+      const allIsins=assets.filter(a=>a.isin).map(a=>{const sym=a.mapping?.yahooSymbol||a.symbol||'';return sym?`${a.isin}:${sym}`:a.isin;}).join(',');
       const r=await getJson(`/api/dividends/history?isins=${encodeURIComponent(allIsins)}`);
       _divDataCache=r.results||[];
       if(selectedAsset)_refreshAssetDivRow(selectedAsset.isin);
@@ -4122,8 +4133,8 @@ function _initDivFV(totalAnnual){
 function _calcAndRenderFV(){
   const totalAnnual=_divFVTotalAnnual;
   const years=_divFVParams.years;
-  const sgr=_divFVParams.sgr/100;
-  const dgr=_divFVParams.dgr/100;
+  const sgr=Math.min(Math.max(_divFVParams.sgr||0,-50),100)/100;
+  const dgr=Math.min(Math.max(_divFVParams.dgr||0,-50),100)/100;
   const ac=_divFVParams.ac*12; // annual contributions
   const totalPortfolio=assets.reduce((s,a)=>s+toDisplay(a.value,assetCcy(a)),0);
   const yieldRate=totalPortfolio>0?totalAnnual/totalPortfolio:0.04;
@@ -4543,6 +4554,8 @@ function renderIA(){
 // ========== Lists ==========
 function getDayPct(a){
   if(!a.hasRealHistory||!a.history?.length||a.history.length<2)return null;
+  const lastDate=a.history[a.history.length-1].date;
+  if(lastDate&&(Date.now()-new Date(lastDate+'T00:00:00').getTime())>15*86400000)return null;
   const last=a.history[a.history.length-1].close,prev=a.history[a.history.length-2].close;
   return prev>0?(last-prev)/prev*100:null;
 }
@@ -4594,13 +4607,13 @@ function render(){
   document.getElementById('investedTotal').textContent=fe(invested);
   document.getElementById('profitPercent').textContent=`${gainPct>=0?'+':''}${gainPct.toFixed(2)}%`;
   const ge=document.getElementById('totalGainPill');ge.textContent=`${gain>=0?'+':''}${fe(gain)} · ${gainPct>=0?'+':''}${gainPct.toFixed(2)}%`;ge.className=`pill ${gain>=0?'pos':'neg'}`;
-  document.getElementById('coveragePill').textContent=`${c.total} ${t('assets')}`;
+  const _cp=document.getElementById('coveragePill');if(_cp)_cp.textContent=`${c.total} ${t('assets')}`;
   // coverageBadge replaced by FAB button — no-op
   document.getElementById('count').textContent=c.total;
   document.getElementById('summaryInvested').textContent=fe(invested);
   document.getElementById('summaryGainAbs').textContent=`${gain>=0?'+':''}${fe(gain)} ${currentLang==='es'?'ganancia':'gain'}`;
   document.getElementById('summaryGainPct').textContent=`${gainPct>=0?'+':''}${gainPct.toFixed(2)}%`;
-  document.getElementById('summaryAssetCount').textContent=`${c.total} ${t('positions')} · ${c.ok} ${t('mPositions').toLowerCase().includes('position')?'w/ history':'con histórico'}`;
+  document.getElementById('summaryAssetCount').textContent=`${c.total} ${t('positions')} · ${c.ok} ${currentLang==='es'?'con histórico':'w/ history'}`;
   renderLists();buildTfRow();renderChart();
   renderLiquidity();
 }
@@ -5656,7 +5669,7 @@ function renderLiquidity() {
     const _yrLbl=currentLang==='es'?'año':'yr';
     const dispInt = x.rate>0 ? `+${fd(annualInterest,x.currency||'EUR')}/${_yrLbl}` : '';
     const icon = LIQ_ICONS[x.type]||'💰';
-    return `<div class="liqRow" onclick="openLiqModal('${x.id}')">
+    return `<div class="liqRow" onclick="openLiqModal('${escapeHtml(String(x.id||''))}')">
       <div class="liqIcon">${icon}</div>
       <div style="min-width:0;flex:1">
         <div class="liqName">${x.name}</div>
@@ -6098,7 +6111,7 @@ function cycleImpuestosYear(){
   const years = [2025, 2024, 2023, 2022];
   const idx = years.indexOf(_taxYear);
   _taxYear = years[(idx + 1) % years.length];
-  document.getElementById('taxYearLabel').textContent = _taxYear;
+  const _tyl=document.getElementById('taxYearLabel');if(_tyl)_tyl.textContent=_taxYear;
   renderImpuestos();
 }
 
@@ -6125,7 +6138,7 @@ function _taxComputeGains(year){
   const results = [];
   for(const isin in ov){
     const entry = ov[isin];
-    const txs = (entry.transactions||[]).filter(t=>t.type==='sell'&&String(t.date).startsWith(String(year)));
+    const txs = (entry.transactions||[]).filter(t=>t.type==='sell'&&t.date&&String(t.date).startsWith(String(year)));
     if(!txs.length) continue;
     const asset = assets.find(a=>a.isin===isin)||{name:isin,shortName:isin};
     // Compute avg cost at time of sell by replaying buys
