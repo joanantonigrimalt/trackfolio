@@ -5692,6 +5692,25 @@ function enterDemo(){
   const db=document.getElementById('demoBanner');if(db)db.classList.add('show');
   // Fetch FX rates and render
   fetchGlobalFxRates().then(()=>render()).catch(()=>render());
+  // Background: fetch real price history for demo assets so chart works
+  const _demoIsins = DEMO_ASSETS_RAW.map(p=>p.isin).join(',');
+  getJson('/api/portfolio/coverage?isin='+encodeURIComponent(_demoIsins), 12000)
+    .then(cov => {
+      if(!cov||!cov.results) return;
+      const cvMap = Object.fromEntries(cov.results.map(e=>[e.isin,e]));
+      assets = assets.map(a => {
+        const entry = cvMap[a.isin];
+        if(!entry) return a;
+        const history = (entry.data?.history||[])
+          .map(p=>({date:String(p.date).slice(0,10),close:Number(p.close)}))
+          .filter(p=>p.date&&p.close>0)
+          .sort((a,b)=>a.date.localeCompare(b.date));
+        if(!history.length) return a;
+        return {...a, history, hasRealHistory:true, coverageStatus:entry.data?.coverage?.status||'PARTIAL', provider:entry.data?.provider||null};
+      });
+      render();
+    })
+    .catch(()=>{});
 }
 function exitDemo(){
   _isDemo=false;window._isDemo=false;assets=[];dataReady=false;
