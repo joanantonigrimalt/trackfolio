@@ -9,6 +9,10 @@ const portfolioSeed = require('../../portfolio-seed.json');
 const { resolveAssetData } = require('../../lib/providers');
 const { fetchDividendHistory } = require('../../lib/dividends');
 const { isSupabaseEnabled } = require('../../lib/cache');
+const { fetchInsidersForSymbol } = require('../../lib/insiders');
+
+// Popular US stocks pre-seeded daily for the insiders discovery view
+const INSIDER_SEED = ['AAPL','MSFT','NVDA','JPM','META','TSLA','V','WMT','AMZN','GOOGL'];
 
 // Fetch all unique ISINs across all user portfolios in Supabase
 async function getAllPortfolioIsins() {
@@ -81,6 +85,22 @@ module.exports = async (req, res) => {
     );
   }
 
+  // ── Phase 3: refresh insiders for popular stocks (L2 Supabase → SEC EDGAR) ─
+  // fetchInsidersForSymbol checks Supabase TTL first; only re-fetches if stale.
+  // Run in parallel batches of 3 to stay within the 10s function budget.
+  let insOk = 0, insSkip = 0, insErr = 0;
+  for (let i = 0; i < INSIDER_SEED.length; i += 3) {
+    const batch = INSIDER_SEED.slice(i, i + 3);
+    await Promise.allSettled(batch.map(async sym => {
+      try {
+        const { source } = await fetchInsidersForSymbol(sym);
+        if (source === 'l1' || source === 'l2') insSkip++;
+        else insOk++;
+      } catch (_) { insErr++; }
+    }));
+    if (Date.now() - started > 8500) break; // leave 1.5s margin for response
+  }
+
   const elapsed = Date.now() - started;
   const priceOk = priceResults.filter(r => r.status === 'OK').length;
   const priceMissing = priceResults.filter(r => r.status === 'MISSING' || r.status === 'ERROR').length;
@@ -92,6 +112,7 @@ module.exports = async (req, res) => {
     elapsed_ms: elapsed,
     price: { total: isins.length, ok: priceOk, missing: priceMissing },
     dividends: { ok: divOk, errors: divErrors },
+    insiders: { ok: insOk, skipped: insSkip, errors: insErr },
     results: priceResults,
   }, null, 2));
 };
