@@ -757,14 +757,14 @@ table.an-corr-mtx{border-collapse:separate;border-spacing:4px}
 <!-- ============ ONBOARDING ============ -->
 <div id="cs-ob" class="cover-screen">
   <div class="ob-lang-row">
-    <button class="auth-lang-btn active" id="ob-lang-es" onclick="switchLang('es')">ES</button>
-    <button class="auth-lang-btn" id="ob-lang-en" onclick="switchLang('en')">EN</button>
+    <button class="auth-lang-btn" id="ob-lang-es" onclick="switchLang('es')">ES</button>
+    <button class="auth-lang-btn active" id="ob-lang-en" onclick="switchLang('en')">EN</button>
   </div>
   <div class="ob-body" id="ob-body"></div>
   <div class="ob-dots" id="ob-dots"></div>
   <div class="ob-footer">
-    <button class="ob-btn-main" id="ob-btn-main" onclick="obNext()">Continuar</button>
-    <button class="ob-btn-sec" id="ob-btn-sec" onclick="showAuthScreen()">Ya tengo cuenta</button>
+    <button class="ob-btn-main" id="ob-btn-main" onclick="obNext()">Continue</button>
+    <button class="ob-btn-sec" id="ob-btn-sec" onclick="showAuthScreen()">Already have an account</button>
   </div>
 </div>
 
@@ -2382,9 +2382,9 @@ const I18N = {
 
 const _VALID_LANGS = new Set(['es', 'en']);
 const _VALID_CCYS  = new Set(['EUR', 'USD', 'GBP', 'CHF']);
-const _rawLang = localStorage.getItem('tf_lang') || 'es';
+const _rawLang = localStorage.getItem('tf_lang') || 'en';
 const _rawCcy  = localStorage.getItem('tf_display_ccy') || 'EUR';
-let currentLang = _VALID_LANGS.has(_rawLang) ? _rawLang : 'es';
+let currentLang = _VALID_LANGS.has(_rawLang) ? _rawLang : 'en';
 let _displayCcy = _VALID_CCYS.has(_rawCcy)   ? _rawCcy  : 'EUR';
 let _fxRates = { EUR: 1, USD: 1.09, GBP: 0.86, CHF: 1.06 }; // EUR→X rates, refreshed at boot
 const t = k => I18N[currentLang][k] || I18N.es[k] || k;
@@ -2413,7 +2413,7 @@ const months = () => currentLang === 'es' ? MONTH_ES : MONTH_EN;
 const tfLabels = () => currentLang === 'es' ? TF_RANGES : TF_RANGES_EN;
 
 // ── Intraday (1D) state ────────────────────────────────────────────────────
-let _intradayCache = null, _intradayCacheAt = 0, _intradayRenderSeq = 0;
+let _intradayCache = null, _intradayCacheAt = 0, _intradayRenderSeq = 0, _intradayStale = false;
 const INTRADAY_TTL = 5 * 60 * 1000;
 
 // Yahoo symbol for an asset: seed assets have mapping.yahooSymbol; custom have .symbol
@@ -2421,7 +2421,9 @@ function assetYahooSym(a) { return a.mapping?.yahooSymbol || (a.isCustom ? a.sym
 
 async function buildIntraday1D() {
   const now = Date.now();
-  if (_intradayCache && now - _intradayCacheAt < INTRADAY_TTL) return _intradayCache;
+  // Use stale cache for up to 30 min extra when market is closed (avoid hammering API)
+  const ttl = _intradayStale ? INTRADAY_TTL * 6 : INTRADAY_TTL;
+  if (_intradayCache && now - _intradayCacheAt < ttl) return _intradayCache;
 
   const withSym = assets.filter(a => a.quantity > 0 && assetYahooSym(a));
   if (!withSym.length) return null;
@@ -2464,8 +2466,14 @@ async function buildIntraday1D() {
     return { ts, time, totalValue: Math.round(total * 100) / 100 };
   }).filter(p => p.totalValue > 0);
 
-  _intradayCache = series.length >= 2 ? series : null;
-  _intradayCacheAt = now;
+  if(series.length >= 2){
+    _intradayCache = series;
+    _intradayCacheAt = now;
+    _intradayStale = false;
+  } else {
+    // Market closed or no data — keep old cache, just mark stale
+    _intradayStale = true;
+  }
   return _intradayCache;
 }
 
@@ -2599,13 +2607,14 @@ async function renderChart(){
     if(seq!==_intradayRenderSeq)return; // superseded
     if(!series||series.length<2){
       canvas.style.display='none';fallback.style.display='flex';meta.textContent='';
-      note.textContent=currentLang==='es'?'Intradía no disponible (mercado cerrado o sin datos)':'Intraday unavailable (market closed or no data)';
+      note.textContent=currentLang==='es'?'Sin datos intradía — activa otra franja temporal':'No intraday data — try another time range';
       return;
     }
     fallback.style.display='none';canvas.style.display='block';
-    const noteText=currentLang==='es'
-      ?`Intradía · ${series.length} puntos · retardo ~15 min`
-      :`Intraday · ${series.length} pts · ~15 min delay`;
+    const lastTime=series[series.length-1]?.time||'';
+    const noteText=_intradayStale
+      ?(currentLang==='es'?`Mercado cerrado · Último dato: ${lastTime}`:`Market closed · Last data: ${lastTime}`)
+      :(currentLang==='es'?`Intradía · ${series.length} puntos · retardo ~15 min`:`Intraday · ${series.length} pts · ~15 min delay`);
     _drawChart(canvas,series.map(p=>p.time),series.map(p=>p.totalValue),note,meta,rv,noteText);
     return;
   }
