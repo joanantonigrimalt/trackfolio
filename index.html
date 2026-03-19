@@ -829,10 +829,10 @@ table.an-corr-mtx{border-collapse:separate;border-spacing:4px}
   <div class="top">
     <div>
       <div class="title" data-i18n="appTitle">Finasset</div>
-      <div class="sub" data-i18n="homeSub">Cartera propia · ETFs, fondos y metales preciosos</div>
+      <div class="sub" data-i18n="homeSub">My portfolio · ETFs, funds &amp; precious metals</div>
     </div>
     <div style="position:relative;">
-      <button id="homeFabBtn" onclick="openSearch()" style="width:38px;height:38px;border-radius:50%;background:#15803d;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 14px rgba(21,128,61,.35);transition:transform .15s,box-shadow .15s;flex-shrink:0;" aria-label="Añadir">
+      <button id="homeFabBtn" onclick="openSearch()" style="width:38px;height:38px;border-radius:50%;background:#15803d;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 14px rgba(21,128,61,.35);transition:transform .15s,box-shadow .15s;flex-shrink:0;" aria-label="Add">
         <svg viewBox="0 0 18 18" fill="none" stroke="#fff" stroke-width="2.8" stroke-linecap="round" width="16" height="16"><line x1="9" y1="3" x2="9" y2="15"/><line x1="3" y1="9" x2="15" y2="9"/></svg>
       </button>
     </div>
@@ -843,7 +843,7 @@ table.an-corr-mtx{border-collapse:separate;border-spacing:4px}
     <div class="valueLarge" id="total">—</div>
     <div class="valueSub">
       <div class="pill pos" id="totalGainPill">—</div>
-      <div class="pill info" id="coveragePill">cargando...</div>
+      <div class="pill info" id="coveragePill">loading...</div>
       <div class="pill info" id="heroDivPill" style="display:none"></div>
     </div>
     <div class="heroMetrics">
@@ -1306,8 +1306,8 @@ table.an-corr-mtx{border-collapse:separate;border-spacing:4px}
   <!-- Meta anual -->
   <div class="card" id="divGoalCard" style="display:none">
     <div class="div-goal-hdr">
-      <div class="sectionTitle" style="margin:0">Meta anual</div>
-      <button class="div-goal-edit" onclick="_editDivGoal()">Editar objetivo</button>
+      <div class="sectionTitle" style="margin:0" id="divGoalTitle">Annual goal</div>
+      <button class="div-goal-edit" onclick="_editDivGoal()" id="divGoalEditBtn">Edit goal</button>
     </div>
     <div style="display:flex;justify-content:space-between;align-items:center;margin-top:8px">
       <span id="divGoalLabel" style="font-size:13px;font-weight:600;color:#142018">—</span>
@@ -1962,7 +1962,7 @@ table.an-corr-mtx{border-collapse:separate;border-spacing:4px}
   <div class="sheetDivider"></div>
   <div class="sheetTitle">Account</div>
   <div id="accountSection">
-    <button class="accountLoginBtn" id="btnOpenAuth">Entrar o registrarse</button>
+    <button class="accountLoginBtn" id="btnOpenAuth">Sign in or create account</button>
   </div>
 </div>
 
@@ -2337,7 +2337,7 @@ table.an-corr-mtx{border-collapse:separate;border-spacing:4px}
 <!-- Demo mode banner -->
 <div id="demoBanner" class="demoBanner">
   <span>👁 Modo Demo · Los datos son de ejemplo</span>
-  <button onclick="exitDemo()">Salir</button>
+  <button onclick="exitDemo()" id="demoBannerExitBtn">Exit</button>
 </div>
 </div></div>
 <script>
@@ -2586,10 +2586,12 @@ function dateLabel(date,range){const d=new Date(date+'T00:00:00');const loc=curr
 // ========== Home Chart ==========
 function buildTfRow(){
   const row=document.getElementById('tfRowHome');
+  if(!row)return;
   row.innerHTML=tfLabels().map(([r,l])=>`<button class="tfBtn${r===selectedRange?' active':''}" data-range="${r}">${l}</button>`).join('');
-  row.querySelectorAll('.tfBtn').forEach(btn=>btn.addEventListener('click',()=>{selectedRange=btn.dataset.range;buildTfRow();renderChart();}));
+  row.querySelectorAll('.tfBtn').forEach(btn=>{btn.onclick=function(){selectedRange=btn.dataset.range;buildTfRow();renderChart();};});
 }
 function _drawChart(canvas,labels,values,note,meta,rv,noteText){
+  if(!values||!values.length||!values.some(v=>Number.isFinite(v))){if(note)note.textContent=noteText||'';return;}
   const first=values[0],last=values[values.length-1],delta=last-first,pct=first>0?(delta/first)*100:0,isUp=delta>=0;
   const lc=isUp?'#22c55e':'#f87171';
   const ctx=canvas.getContext('2d'),g=ctx.createLinearGradient(0,0,0,canvas.height||200);
@@ -2629,6 +2631,7 @@ async function renderChart(){
   if(!full){canvas.style.display='none';fallback.style.display='flex';meta.textContent='';rv.textContent=fe(assets.reduce((s,a)=>s+toDisplay(a.value,assetCcy(a)),0));return;}
   const series=filterByRange(full,selectedRange),values=series.map(p=>p.totalValue);
   fallback.style.display='none';canvas.style.display='block';
+  if(!series.length||!values.some(v=>Number.isFinite(v))){canvas.style.display='none';fallback.style.display='flex';meta.textContent='';return;}
   const lp=series[series.length-1];
   if(!lp){canvas.style.display='none';fallback.style.display='flex';return;}
   const aPct=lp.totalCurrent>0?lp.approximateCurrent/lp.totalCurrent*100:0;
@@ -2811,7 +2814,7 @@ function renderETFProfile(r){
     const totalW=holdings.reduce((s,h)=>s+(h.weight||0),0);
     const isEs2=currentLang==='es';
     const hTitle=document.querySelector('#etfHoldingsCard .sectionTitle');
-    if(hTitle)hTitle.innerHTML='Top Holdings'+(totalW>0?` <span style="font-size:11px;color:#8fa090;font-weight:500">(${totalW.toFixed(1)}% ${isEs2?'del fondo':'of fund'})</span>`:'');
+    if(hTitle)hTitle.innerHTML=(currentLang==='es'?'Principales posiciones':'Top Holdings')+(totalW>0?` <span style="font-size:11px;color:#8fa090;font-weight:500">(${totalW.toFixed(1)}% ${isEs2?'del fondo':'of fund'})</span>`:'');
     document.getElementById('etfHoldingsContent').innerHTML=holdings.map(h=>{
       const barW=Math.round((h.weight||0)/maxW*56);
       return`<div class="etfHoldingRow">
@@ -2836,7 +2839,7 @@ function renderAssetChart(){
   const canvas=document.getElementById('assetChart'),fb=document.getElementById('assetChartFallback'),meta=document.getElementById('adChartMeta'),note=document.getElementById('adChartNote');
   const tfRow=document.getElementById('adTfRow');
   tfRow.innerHTML=tfLabels().map(([r,l])=>`<button class="tfBtnA${r===assetRange?' on':''}" data-r="${r}">${l}</button>`).join('');
-  tfRow.querySelectorAll('.tfBtnA').forEach(btn=>btn.addEventListener('click',()=>{assetRange=btn.dataset.r;renderAssetChart();}));
+  tfRow.querySelectorAll('.tfBtnA').forEach(btn=>{btn.onclick=function(){assetRange=btn.dataset.r;renderAssetChart();};});
   if(!selectedAsset?.hasRealHistory||!selectedAsset.history?.length){canvas.style.display='none';fb.style.display='flex';meta.textContent='';note.textContent='';return;}
   canvas.style.display='block';fb.style.display='none';
   const hist=selectedAsset.history,lc=hist[hist.length-1]?.close||0;
@@ -2900,6 +2903,7 @@ function renderTxHistory(){
     const color=isBuy?'#15803d':'#b91c1c';
     const bg=isBuy?'rgba(21,128,61,.08)':'rgba(185,28,28,.08)';
     const a=assets.find(x=>x.isin===currentModalIsin);
+    if(!a)return '';
     const ccy=costCcy(a)||'EUR';
     const sym=ccy==='USD'?'$':ccy==='GBP'?'£':ccy==='CHF'?'Fr':'€';
     return`<div style="display:flex;align-items:center;gap:10px;padding:9px 10px;background:${bg};border-radius:12px;margin-bottom:6px">
@@ -2961,7 +2965,7 @@ function saveTransaction(){
   const qty=parseFloat(document.getElementById('txQty').value)||0;
   const price=parseNum('txPrice');
   const date=document.getElementById('txDate').value;
-  if(qty<=0||price<=0||!date)return;
+  if(qty<=0||price<=0||!date){const _fe=document.getElementById('txError');if(_fe){_fe.textContent=currentLang==='es'?'Completa cantidad, precio y fecha.':'Fill in quantity, price and date.';_fe.style.display='';}return;}
   const ov=getOverrides();
   const a=assets.find(x=>x.isin===currentModalIsin);
   const existing=ov[currentModalIsin]||{quantity:a?.quantity||0,avgCost:a?.buyPrice||0,transactions:[]};
@@ -3017,7 +3021,8 @@ function resetDividendDetailCache(){_divDetailCache=null;document.getElementById
 function computeHealthScore(){
   const total=assets.reduce((s,a)=>s+toDisplay(a.value,assetCcy(a)),0);if(!total)return{score:0,diversif:0,riesgo:0,rentab:0};
   const hhi=total>0?assets.reduce((s,a)=>{const w=toDisplay(a.value,assetCcy(a))/total;return s+Math.pow(Number.isFinite(w)?w*100:0,2);},0)/100:0,n=assets.length;
-  const diversif=n>1?Math.round(Math.max(0,Math.min(100,(1-(hhi-1/n)/(1-1/n))*100))):0;
+  const _divRaw=n>1?((1-(hhi-1/n)/(1-1/n))*100):0;
+  const diversif=Math.round(Math.max(0,Math.min(100,Number.isFinite(_divRaw)?_divRaw:0)));
   const goldPct=assets.filter(a=>assetCategory(a)==='Oro').reduce((s,a)=>s+toDisplay(a.value,assetCcy(a)),0)/total;
   const riesgo=Math.round(Math.min(100,55+goldPct*60+(n>10?15:n*1.5)));
   const inv=assets.reduce((s,a)=>s+toDisplay(a.invested,costCcy(a)),0),gp=inv>0?((total-inv)/inv)*100:0;
@@ -3059,7 +3064,7 @@ function _anRenderSummary(){
   const isEs=currentLang==='es';
   // Today's change
   let todayGain=null,todayPct=null;
-  {let prev=0,has=false;assets.forEach(a=>{const dp=getDayPct(a);if(dp!=null){prev+=toDisplay(a.quantity*(a.history[a.history.length-2]?.close??0),assetCcy(a));has=true;}else prev+=toDisplay(a.value,assetCcy(a));});
+  {let prev=0,has=false;assets.forEach(a=>{const dp=getDayPct(a);if(dp!=null&&a.history&&a.history.length>=2){prev+=toDisplay(a.quantity*(a.history[a.history.length-2].close??0),assetCcy(a));has=true;}else prev+=toDisplay(a.value,assetCcy(a));});
   if(has&&prev>0){todayGain=total-prev;todayPct=(todayGain/prev)*100;}}
   const elVal=document.getElementById('anSumValue'),elDB=document.getElementById('anSumDayBadge');
   const elDG=document.getElementById('anSumDayGain'),elInv=document.getElementById('anSumInvested');
@@ -3374,7 +3379,7 @@ function _anRenderWeightDonut(){
   if(!total||!Number.isFinite(total)){canvas.style.display='none';return;}
   canvas.style.display='';
 
-  if(badge)badge.textContent=active.length+' activos';
+  if(badge)badge.textContent=active.length+' '+(currentLang==='es'?'activos':'assets');
 
   const sorted=[...active].sort((a,b)=>toDisplay(b.value,assetCcy(b))-toDisplay(a.value,assetCcy(a)));
   const COLORS=['#15803d','#22c55e','#86efac','#3b82f6','#60a5fa','#f59e0b','#fbbf24','#8b5cf6','#c084fc','#f87171','#fb923c','#2dd4bf','#a3e635','#e879f9','#f472b6','#94a3b8','#475569','#0ea5e9'];
@@ -3459,7 +3464,7 @@ function _anRenderPerfBars(){
   const wrap=document.getElementById('perfBarWrap');
   if(!wrap)return;
   const active=assets.filter(a=>a.quantity>0&&a.buyPrice>0&&a.currentPrice>0);
-  if(!active.length){wrap.innerHTML='<div style="font-size:12px;color:#8fa090;text-align:center;padding:16px">Sin datos</div>';return;}
+  if(!active.length){wrap.innerHTML='<div style="font-size:12px;color:#8fa090;text-align:center;padding:16px">'+(currentLang==='es'?'Sin datos':'No data')+'</div>';return;}
 
   const rows=active.map(a=>{
     const pct=((a.currentPrice-a.buyPrice)/a.buyPrice)*100;
@@ -4110,7 +4115,7 @@ function _renderDivGoal(totalAnnual){
 function _editDivGoal(){
   const saved=localStorage.getItem('div_goal_target');
   const cur=saved?parseFloat(saved):'';
-  const val=prompt('Objetivo de dividendos anuales (€):',cur||'');
+  const val=prompt(currentLang==='es'?'Objetivo de dividendos anuales (€):':'Annual dividend goal (€):',cur||'');
   if(val===null)return;
   const n=parseFloat(val);
   if(!isNaN(n)&&n>0){
@@ -4127,9 +4132,9 @@ function _renderDivDrip(totalAnnual){
   const gain=drip-simple;
   document.getElementById('divDripBase').textContent=fe(simple);
   document.getElementById('divDripDrip').textContent=fe(drip);
-  document.getElementById('divDripBaseSub').textContent=`en ${years} años (acumulado)`;
-  document.getElementById('divDripDripSub').textContent=`en ${years} años (+${(rate*100).toFixed(0)}%/año)`;
-  document.getElementById('divDripNote').textContent=`Reinvirtiendo los dividendos al ${(rate*100).toFixed(0)}% anual obtendrías ${fe(gain)} más en ${years} años.`;
+  document.getElementById('divDripBaseSub').textContent=`${currentLang==='es'?'en '+years+' años (acumulado)':('in '+years+' years (total)')}`;
+  document.getElementById('divDripDripSub').textContent=`${currentLang==='es'?'en '+years+' años (+'+(rate*100).toFixed(0)+'%/año)':'in '+years+' years (+'+(rate*100).toFixed(0)+'%/yr)'}`;
+  document.getElementById('divDripNote').textContent=`${currentLang==='es'?'Reinvirtiendo los dividendos al '+(rate*100).toFixed(0)+'% anual obtendrías '+fe(gain)+' más en '+years+' años.':'Reinvesting dividends at '+(rate*100).toFixed(0)+'%/yr you would earn '+fe(gain)+' more over '+years+' years.'}`;
 }
 
 // ── Future Value ──────────────────────────────────────────────────────────────
@@ -4644,7 +4649,7 @@ async function boot(){
   // Step 1: seed — fail hard if unavailable
   let seed;
   try{ seed=await getJson('/api/portfolio/seed',10000); }
-  catch(e){ document.getElementById('chartNote').textContent='Error cargando portfolio: '+e.message; return; }
+  catch(e){ document.getElementById('chartNote').textContent=(currentLang==='es'?'Error cargando portfolio: ':'Error loading portfolio: ')+e.message; return; }
 
   // ── Fast first render: show positions immediately with prices (no history yet)
   const isinList=seed.positions.map(p=>p.isin).join(',');
@@ -4997,7 +5002,7 @@ function renderAccountSection(){
     };
     document.getElementById('btnLogout').onclick=async()=>{await _sb.auth.signOut();renderAccountSection();};
   }else{
-    sec.innerHTML=`<button class="accountLoginBtn" id="btnOpenAuth">Entrar o registrarse</button>`;
+    sec.innerHTML=`<button class="accountLoginBtn" id="btnOpenAuth">${currentLang==='es'?'Entrar o registrarse':'Sign in or create account'}</button>`;
     document.getElementById('btnOpenAuth').onclick=()=>{closeSettings();openAuthModal();};
   }
 }
@@ -5078,16 +5083,16 @@ function _setAuthMode(mode){
   document.getElementById('authTabLogin').classList.toggle('active',mode==='login');
   document.getElementById('authTabRegister').classList.toggle('active',mode==='register');
   document.getElementById('authNameField').style.display=mode==='register'?'':'none';
-  document.getElementById('authSubmitBtn').textContent=mode==='login'?'Entrar':'Crear cuenta';
+  document.getElementById('authSubmitBtn').textContent=mode==='login'?(currentLang==='es'?'Entrar':'Sign in'):(currentLang==='es'?'Crear cuenta':'Create account');
   document.getElementById('authMsg').style.display='none';
 }
 async function _submitAuth(){
-  if(!_sb){_showAuthMsg('Servicio no disponible.','err');return;}
+  if(!_sb){_showAuthMsg(currentLang==='es'?'Servicio no disponible.':'Service unavailable.','err');return;}
   const email=document.getElementById('authEmail').value.trim();
   const pass=document.getElementById('authPassword').value;
   const name=document.getElementById('authName').value.trim();
-  if(!email||!pass){_showAuthMsg('Email y contraseña obligatorios.','err');return;}
-  if(pass.length<8){_showAuthMsg('Contraseña mínimo 8 caracteres.','err');return;}
+  if(!email||!pass){_showAuthMsg(currentLang==='es'?'Email y contraseña obligatorios.':'Email and password are required.','err');return;}
+  if(pass.length<8){_showAuthMsg(currentLang==='es'?'Contraseña mínimo 8 caracteres.':'Password must be at least 8 characters.','err');return;}
   const btn=document.getElementById('authSubmitBtn');
   btn.textContent='…';btn.disabled=true;
   try{
@@ -5104,15 +5109,16 @@ async function _submitAuth(){
       document.getElementById('authVerifyMsg').textContent=`Enlace enviado a ${email}. Confirma tu cuenta y vuelve a entrar.`;
     }
   }catch(e){
-    const m=e.message?.includes('Invalid login credentials')?'Email o contraseña incorrectos.':
-             e.message?.includes('not confirmed')?'Confirma tu email antes de entrar.':
-             e.message?.includes('already registered')?'Email ya registrado.':
-             e.message||'Error desconocido.';
+    const _isEs9=currentLang==='es';
+    const m=e.message?.includes('Invalid login credentials')?(_isEs9?'Email o contraseña incorrectos.':'Invalid email or password.'):
+             e.message?.includes('not confirmed')?(_isEs9?'Confirma tu email antes de entrar.':'Please confirm your email first.'):
+             e.message?.includes('already registered')?(_isEs9?'Email ya registrado.':'Email already registered.'):
+             e.message||(_isEs9?'Error desconocido.':'Unknown error.');
     _showAuthMsg(m,'err');
     if(e.message?.includes('already registered'))_setAuthMode('login');
   }finally{
     btn.disabled=false;
-    btn.textContent=_authMode==='login'?'Entrar':'Crear cuenta';
+    btn.textContent=_authMode==='login'?(currentLang==='es'?'Entrar':'Sign in'):(currentLang==='es'?'Crear cuenta':'Create account');
   }
 }
 function _showAuthMsg(txt,type){
@@ -5783,6 +5789,10 @@ function switchLang(lang) {
   var _ab=[['auth-b1',isEs?'Precios reales e historial de 5 a\u00f1os':'Real prices &amp; 5-year history, auto-updated'],['auth-b2',isEs?'Dividendos registrados y pr\u00f3ximos pagos':'Dividends tracked &amp; upcoming payments'],['auth-b3',isEs?'IA analiza concentraci\u00f3n, riesgo y comisiones':'AI analyses concentration, risk &amp; fees'],['auth-b4',isEs?'Alertas, benchmarks y resumen fiscal':'Alerts, benchmarks &amp; tax overview']];
   _ab.forEach(function(b){var el=document.getElementById(b[0]);if(el)el.innerHTML=b[1];});
   var _dl=document.getElementById('auth-demo-label');if(_dl)_dl.textContent=isEs?'Ver demo \u2014 sin cuenta':'Try the demo \u2014 no account needed';
+  var _cpEl=document.getElementById('coveragePill');if(_cpEl&&(_cpEl.textContent==='loading...'||_cpEl.textContent==='cargando...'))_cpEl.textContent=isEs?'cargando...':'loading...';
+  var _dgt=document.getElementById('divGoalTitle');if(_dgt)_dgt.textContent=isEs?'Meta anual':'Annual goal';
+  var _dgb=document.getElementById('divGoalEditBtn');if(_dgb)_dgb.textContent=isEs?'Editar objetivo':'Edit goal';
+  var _dbe=document.getElementById('demoBannerExitBtn');if(_dbe)_dbe.textContent=isEs?'Salir':'Exit';
   var _sl=document.getElementById('auth-signin-label');if(_sl)_sl.textContent=isEs?'Iniciar sesi\u00f3n':'Sign in';
   var _rl=document.getElementById('auth-register-label');if(_rl)_rl.textContent=isEs?'Crear cuenta':'Create account';
   var _pn=document.getElementById('auth-privacy-note');if(_pn)_pn.innerHTML=isEs?'Al usar Finasset aceptas nuestra <a href="/privacy.html" target="_blank" rel="noopener" style="color:#15803d;font-weight:600;text-decoration:none">Pol\u00edtica de Privacidad</a> y <a href="/privacy.html#terms" target="_blank" rel="noopener" style="color:#15803d;font-weight:600;text-decoration:none">T\u00e9rminos de Uso</a>. No es asesoramiento financiero.':'By using Finasset you accept our <a href="/privacy.html" target="_blank" rel="noopener" style="color:#15803d;font-weight:600;text-decoration:none">Privacy Policy</a> and <a href="/privacy.html#terms" target="_blank" rel="noopener" style="color:#15803d;font-weight:600;text-decoration:none">Terms of Use</a>. Not financial advice.';
@@ -6467,7 +6477,7 @@ async function _insLoad(symbol) {
   } catch(e) {
     _insLoading = false;
     const el2 = document.getElementById('insidersContent');
-    if(el2) el2.innerHTML = '<div style="text-align:center;padding:50px 0"><div style="font-size:28px;margin-bottom:10px">⚠️</div><div style="color:#dc2626;font-size:13px;font-weight:600">'+e.message+'</div><button onclick="_insLoad()" style="margin-top:14px;padding:9px 20px;background:#142018;color:#fff;border:none;border-radius:10px;font:inherit;font-size:13px;font-weight:700;cursor:pointer">Reintentar</button></div>';
+    if(el2) el2.innerHTML = '<div style="text-align:center;padding:50px 0"><div style="font-size:28px;margin-bottom:10px">⚠️</div><div style="color:#dc2626;font-size:13px;font-weight:600">'+e.message+'</div><button onclick="_insLoad()" style="margin-top:14px;padding:9px 20px;background:#142018;color:#fff;border:none;border-radius:10px;font:inherit;font-size:13px;font-weight:700;cursor:pointer">"+(currentLang==='es'?'Reintentar':'Retry')+"</button></div>';
     return;
   }
   _insLoading = false;
@@ -6493,7 +6503,7 @@ function _insRender() {
   }
 
   if(!rows.length) {
-    el.innerHTML = '<div style="text-align:center;padding:60px 0;color:#8fa090;font-size:13px"><div style="font-size:32px;margin-bottom:10px">📭</div>Sin resultados para este filtro</div>';
+    el.innerHTML = '<div style="text-align:center;padding:60px 0;color:#8fa090;font-size:13px"><div style="font-size:32px;margin-bottom:10px">📭</div>'+(currentLang==='es'?'Sin resultados para este filtro':'No results for this filter')+'</div>';
     return;
   }
 
@@ -6507,12 +6517,12 @@ function _insRender() {
     summaryHtml = '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:16px">'
       + '<div style="background:#e6faf3;border-radius:14px;padding:14px;text-align:center">'
       + '<div style="font-size:22px;font-weight:800;color:#15803d">'+allBuys.length+'</div>'
-      + '<div style="font-size:10px;color:#15803d;font-weight:700;text-transform:uppercase;letter-spacing:.05em;margin-top:2px">Compras</div>'
+      + '<div style="font-size:10px;color:#15803d;font-weight:700;text-transform:uppercase;letter-spacing:.05em;margin-top:2px">'+(currentLang==='es'?'Compras':'Buys')+'</div>'
       + (buyVol>0?'<div style="font-size:11px;color:#15803d;margin-top:4px;opacity:.8">'+_fmtMoney(buyVol)+'</div>':'')
       + '</div>'
       + '<div style="background:#fef2f2;border-radius:14px;padding:14px;text-align:center">'
       + '<div style="font-size:22px;font-weight:800;color:#dc2626">'+allSells.length+'</div>'
-      + '<div style="font-size:10px;color:#dc2626;font-weight:700;text-transform:uppercase;letter-spacing:.05em;margin-top:2px">Ventas</div>'
+      + '<div style="font-size:10px;color:#dc2626;font-weight:700;text-transform:uppercase;letter-spacing:.05em;margin-top:2px">'+(currentLang==='es'?'Ventas':'Sells')+'</div>'
       + (sellVol>0?'<div style="font-size:11px;color:#dc2626;margin-top:4px;opacity:.8">'+_fmtMoney(sellVol)+'</div>':'')
       + '</div></div>';
   }
@@ -6523,10 +6533,10 @@ function _insRender() {
     var color = isBuy ? '#15803d' : isSell ? '#dc2626' : '#8fa090';
     var bgBadge = isBuy ? '#e6faf3' : isSell ? '#fef2f2' : '#f0f4f2';
     var iconCls = isBuy ? '' : isSell ? ' sell' : ' neutral';
-    var label = isBuy ? '▲ COMPRA' : isSell ? '▼ VENTA' : (r.transactionType||'—');
+    var label = isBuy ? ('▲ '+(currentLang==='es'?'COMPRA':'BUY')) : isSell ? ('▼ '+(currentLang==='es'?'VENTA':'SELL')) : (r.transactionType||'—');
     var sym = ((r.symbol||r.ticker||'—')+'').toUpperCase();
     var initials = sym.replace(/[^A-Z]/g,'').slice(0,2)||sym.slice(0,2);
-    var shares = r.securitiesTransacted != null ? Number(r.securitiesTransacted).toLocaleString('es-ES') : '—';
+    var shares = r.securitiesTransacted != null ? Number(r.securitiesTransacted).toLocaleString(currentLang==='es'?'es-ES':'en-US') : '—';
     var priceVal = r.price ? Number(r.price).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2}) : '—';
     var priceStr = r.price ? ('$'+priceVal) : '—';
     var date = ((r.transactionDate||r.date||'—')+'').slice(0,10);
