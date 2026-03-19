@@ -1,12 +1,14 @@
 // GET /api/insiders?symbol=AAPL  → transactions for a specific ticker
 // GET /api/insiders               → discovery: combined recent data from Supabase cache
 //
-// Data source: SEC EDGAR Form 4 filings (free, official, no API key needed).
-// Cache: L1 in-memory (6h) → L2 Supabase insider_cache → SEC EDGAR live fetch.
+// Provider chain: L1 (memory) → L2 (Supabase) → Finnhub (fast) → SEC EDGAR (free fallback)
+// Discovery auto-seeds AAPL+MSFT+JPM on first call if Supabase is empty and Finnhub is configured.
 
 const { setupApi } = require('../lib/security');
 const { dbGetAllInsiders } = require('../lib/cache');
 const { fetchInsidersForSymbol } = require('../lib/insiders');
+
+const DISCOVERY_SEED = ['AAPL', 'MSFT', 'JPM'];
 
 module.exports = async (req, res) => {
   if (!setupApi(req, res, { maxRequests: 30 })) return;
@@ -14,10 +16,19 @@ module.exports = async (req, res) => {
 
   const symbol = String(req.query?.symbol || '').toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 10);
 
-  // ── Discovery mode (no symbol): return combined data from all cached symbols ─
+  // ── Discovery mode (no symbol) ────────────────────────────────────────────
   if (!symbol) {
     try {
-      const all = await dbGetAllInsiders();
+      let all = await dbGetAllInsiders();
+
+      // If Supabase empty and Finnhub configured: seed inline (fast, ~600ms for 3 stocks)
+      if (!all && process.env.FINNHUB_API_KEY) {
+        for (const sym of DISCOVERY_SEED) {
+          await fetchInsidersForSymbol(sym).catch(() => {});
+        }
+        all = await dbGetAllInsiders();
+      }
+
       res.setHeader('X-Cache', all ? 'L2-HIT' : 'MISS');
       res.statusCode = 200;
       return res.end(JSON.stringify(all || []));
@@ -28,7 +39,7 @@ module.exports = async (req, res) => {
     }
   }
 
-  // ── Symbol mode: L1 → L2 → SEC EDGAR ─────────────────────────────────────
+  // ── Symbol mode: L1 → L2 → Finnhub → SEC EDGAR ───────────────────────────
   try {
     const { data, source } = await fetchInsidersForSymbol(symbol);
     res.setHeader('X-Cache', source === 'l1' ? 'L1-HIT' : source === 'l2' ? 'L2-HIT' : 'MISS');
