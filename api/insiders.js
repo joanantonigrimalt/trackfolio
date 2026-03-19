@@ -5,7 +5,7 @@
 // Caches 6 hours per symbol.
 
 const { setupApi } = require('../lib/security');
-const { getCache, setCache } = require('../lib/cache');
+const { getCache, setCache, dbGetInsiders, dbSaveInsiders } = require('../lib/cache');
 
 const TTL = 6 * 60 * 60; // 6 hours
 const SEC_HDRS = {
@@ -97,13 +97,26 @@ module.exports = async (req, res) => {
   }
 
   const cacheKey = `insiders:sec:${symbol}`;
-  const hit = getCache(cacheKey);
-  if (hit) {
-    res.setHeader('X-Cache', 'HIT');
+
+  // L1: in-memory (warm instance)
+  const l1 = getCache(cacheKey);
+  if (l1) {
+    res.setHeader('X-Cache', 'L1-HIT');
     res.statusCode = 200;
     res.setHeader('Content-Type', 'application/json; charset=utf-8');
-    return res.end(JSON.stringify(hit));
+    return res.end(JSON.stringify(l1));
   }
+
+  // L2: Supabase (survives cold starts, shared across all instances)
+  const l2 = await dbGetInsiders(symbol);
+  if (l2) {
+    setCache(cacheKey, l2, TTL); // populate L1 for this instance
+    res.setHeader('X-Cache', 'L2-HIT');
+    res.statusCode = 200;
+    res.setHeader('Content-Type', 'application/json; charset=utf-8');
+    return res.end(JSON.stringify(l2));
+  }
+
   res.setHeader('X-Cache', 'MISS');
 
   try {
@@ -112,6 +125,7 @@ module.exports = async (req, res) => {
     const cik10  = cikMap[symbol];
     if (!cik10) {
       setCache(cacheKey, [], TTL);
+      dbSaveInsiders(symbol, []).catch(() => {}); // persist "not found" to avoid repeated SEC calls
       res.statusCode = 200;
       res.setHeader('Content-Type', 'application/json; charset=utf-8');
       return res.end(JSON.stringify([]));
@@ -149,7 +163,8 @@ module.exports = async (req, res) => {
     }
 
     const data = all.sort((a, b) => b.transactionDate.localeCompare(a.transactionDate));
-    setCache(cacheKey, data, TTL);
+    setCache(cacheKey, data, TTL);               // L1
+    dbSaveInsiders(symbol, data).catch(() => {}); // L2 (fire-and-forget)
     res.statusCode = 200;
     res.setHeader('Content-Type', 'application/json; charset=utf-8');
     res.end(JSON.stringify(data));

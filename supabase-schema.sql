@@ -109,6 +109,28 @@ CREATE POLICY "Anon write etf_profiles"
   ON public.etf_profiles FOR ALL TO anon, authenticated USING (true) WITH CHECK (true);
 
 -- ─────────────────────────────────────────────────────────────────────────────
+-- Insider transactions cache: one row per ticker symbol
+-- Populated by api/insiders.js after fetching from SEC EDGAR.
+-- Survives Vercel cold starts; 6-hour freshness window.
+
+CREATE TABLE IF NOT EXISTS public.insider_cache (
+  symbol      TEXT PRIMARY KEY,
+  data        JSONB NOT NULL DEFAULT '[]',
+  fetched_at  TIMESTAMPTZ DEFAULT NOW()
+);
+
+ALTER TABLE public.insider_cache ENABLE ROW LEVEL SECURITY;
+
+DROP POLICY IF EXISTS "Public read insider_cache"  ON public.insider_cache;
+DROP POLICY IF EXISTS "Anon write insider_cache"   ON public.insider_cache;
+
+CREATE POLICY "Public read insider_cache"
+  ON public.insider_cache FOR SELECT TO anon, authenticated USING (true);
+
+CREATE POLICY "Anon write insider_cache"
+  ON public.insider_cache FOR ALL TO anon, authenticated USING (true) WITH CHECK (true);
+
+-- ─────────────────────────────────────────────────────────────────────────────
 -- Useful queries after data is populated
 
 -- Coverage summary
