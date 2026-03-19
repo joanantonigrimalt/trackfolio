@@ -635,9 +635,7 @@ table.an-corr-mtx{border-collapse:separate;border-spacing:4px}
 .auth-btn-sec:active{background:rgba(20,32,24,.05)}
 .auth-privacy-note{text-align:center;font-size:10.5px;color:#a0b0a5;line-height:1.6;margin-top:14px;padding-top:12px;border-top:1px solid rgba(20,32,24,.07)}
 .auth-privacy-note a{color:#15803d;font-weight:600;text-decoration:none}
-.demoBanner{position:fixed;top:0;left:50%;transform:translateX(-50%);z-index:9999;background:#b45309;color:#fff;font-size:12px;font-weight:700;padding:8px 16px 8px 14px;border-radius:0 0 14px 14px;display:none;align-items:center;gap:10px;box-shadow:0 4px 16px rgba(0,0,0,.18);white-space:nowrap;max-width:360px;width:calc(100% - 32px)}
-.demoBanner.show{display:flex}
-.demoBanner button{background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.4);color:#fff;font-family:inherit;font-size:11px;font-weight:700;padding:4px 10px;border-radius:8px;cursor:pointer;flex-shrink:0}
+.demoBanner{display:none!important}
 .ins-chip{padding:7px 13px;border-radius:20px;border:1.5px solid rgba(20,32,24,.1);background:#fff;font:inherit;font-size:12px;font-weight:700;color:#8fa090;cursor:pointer;transition:all .15s;white-space:nowrap;flex-shrink:0}
 .ins-chip-active{background:#142018;color:#fff;border-color:#142018}
 .ins-buy-chip.ins-chip-active{background:#15803d;border-color:#15803d}
@@ -1945,7 +1943,7 @@ table.an-corr-mtx{border-collapse:separate;border-spacing:4px}
     <button class="langBtn" data-lang="en" id="btnLangEn">🇬🇧 English</button>
   </div>
   <div class="sheetDivider"></div>
-  <div class="sheetTitle">Display Currency</div>
+  <div class="sheetTitle" data-i18n="displayCurrency">Divisa de visualización</div>
   <div class="langRow">
     <button class="langBtn ccy-btn" data-ccy="EUR" id="btnCcyEur" onclick="setDisplayCcy('EUR')">€ EUR</button>
     <button class="langBtn ccy-btn" data-ccy="USD" id="btnCcyUsd" onclick="setDisplayCcy('USD')">$ USD</button>
@@ -2349,7 +2347,7 @@ const I18N = {
     modeSimple:'Simple',modeTx:'Transacciones',shares:'Acciones',avgCost:'Precio medio (Avg Cost)',avgCostHint:'Precio medio por acción',txHistory:'Historial de transacciones',addTx:'Nueva transacción',
     removePos:'Eliminar posición',save:'Guardar',cancel:'Cancelar',
     buy:'Compra',sell:'Venta',date:'Fecha',pricePerShare:'Precio por acción',
-    deductCash:'Descontar de Efectivo',dividend:'Dividendo',moreOptions:'Más opciones',language:'Idioma',
+    deductCash:'Descontar de Efectivo',dividend:'Dividendo',moreOptions:'Más opciones',language:'Idioma',displayCurrency:'Divisa de visualización',
     valPos:'Valor posición',totalInv:'Total invertido',parts:'Acciones',avgPrice:'Precio medio',gainEur:'Ganancia €',weight:'Peso cartera',
     txQuarterly:'pago trimestral',noDiv:'No hay activos distribuidores en cartera.',
     histPts:'puntos históricos',
@@ -2369,7 +2367,7 @@ const I18N = {
     modeSimple:'Simple',modeTx:'Transactions',shares:'Shares',avgCost:'Avg Cost per Share',avgCostHint:'Average cost per share',txHistory:'Transaction history',addTx:'New transaction',
     removePos:'Remove position',save:'Save',cancel:'Cancel',
     buy:'Buy',sell:'Sell',date:'Date',pricePerShare:'Price per share',
-    deductCash:'Deduct from Cash',dividend:'Dividend',moreOptions:'More Options',language:'Language',
+    deductCash:'Deduct from Cash',dividend:'Dividend',moreOptions:'More Options',language:'Language',displayCurrency:'Display currency',
     valPos:'Position value',totalInv:'Total invested',parts:'Shares',avgPrice:'Avg price',gainEur:'Gain €',weight:'Portfolio weight',
     txQuarterly:'quarterly payment',noDiv:'No distributing assets in portfolio.',
     histPts:'historical points',
@@ -2379,9 +2377,9 @@ const I18N = {
 
 const _VALID_LANGS = new Set(['es', 'en']);
 const _VALID_CCYS  = new Set(['EUR', 'USD', 'GBP', 'CHF']);
-const _rawLang = localStorage.getItem('tf_lang') || 'en';
+const _rawLang = localStorage.getItem('tf_lang') || 'es';
 const _rawCcy  = localStorage.getItem('tf_display_ccy') || 'EUR';
-let currentLang = _VALID_LANGS.has(_rawLang) ? _rawLang : 'en';
+let currentLang = _VALID_LANGS.has(_rawLang) ? _rawLang : 'es';
 let _displayCcy = _VALID_CCYS.has(_rawCcy)   ? _rawCcy  : 'EUR';
 let _fxRates = { EUR: 1, USD: 1.09, GBP: 0.86, CHF: 1.06 }; // EUR→X rates, refreshed at boot
 const t = k => I18N[currentLang][k] || I18N.es[k] || k;
