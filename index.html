@@ -5651,10 +5651,7 @@ _alertCheckInterval = setInterval(checkAlertsTrigger, 60000);
 
 // ========== DEMO MODE ==========
 let _isDemo = false;
-const _demoLiquidity = [
-  {id:'demo-liq-1',name:'Cuenta MyInvestor',type:'savings',amount:5000,currency:'EUR',rate:2.50,since:'2024-01-15'},
-  {id:'demo-liq-2',name:'Fondo Monetario Pictet',type:'moneymarket',amount:3000,currency:'EUR',rate:3.40,since:'2024-04-01'},
-];
+const _demoLiquidity = [];
 const DEMO_ASSETS_RAW = [];
 function enterDemo(){
   _isDemo=true;
@@ -5677,8 +5674,8 @@ function exitDemo(){
   showAuthScreen();
 }
 
-function getLiquidity(){ if(_isDemo)return _demoLiquidity; try{const a=JSON.parse(localStorage.getItem('fa_liquidity')||'[]');return Array.isArray(a)?a:[];}catch{return[];} }
-function saveLiquidity(arr){ if(_isDemo)return; localStorage.setItem('fa_liquidity',JSON.stringify(arr)); }
+function getLiquidity(){ try{const a=JSON.parse(localStorage.getItem('fa_liquidity')||'[]');return Array.isArray(a)?a:[];}catch{return[];} }
+function saveLiquidity(arr){ localStorage.setItem('fa_liquidity',JSON.stringify(arr)); }
 
 let _liqEditId = null;
 let _liqType = 'savings';
