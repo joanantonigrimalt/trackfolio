@@ -5319,8 +5319,6 @@ function _openAuthAs(mode) {
   openAuthModal();
   setTimeout(function(){ _setAuthMode(mode); }, 50);
 }
-,50);
-}
 function showAuthScreen() {
   showCover('cs-auth');
 }
@@ -6571,7 +6569,7 @@ async function _insLoad(symbol) {
   } catch(e) {
     _insLoading = false;
     const el2 = document.getElementById('insidersContent');
-    if(el2) el2.innerHTML = '<div style="text-align:center;padding:50px 0"><div style="font-size:28px;margin-bottom:10px">⚠️</div><div style="color:#dc2626;font-size:13px;font-weight:600">'+e.message+'</div><button onclick="_insLoad()" style="margin-top:14px;padding:9px 20px;background:#142018;color:#fff;border:none;border-radius:10px;font:inherit;font-size:13px;font-weight:700;cursor:pointer">"+(currentLang==='es'?'Reintentar':'Retry')+"</button></div>';
+    if(el2) el2.innerHTML = '<div style="text-align:center;padding:50px 0"><div style="font-size:28px;margin-bottom:10px">⚠️</div><div style="color:#dc2626;font-size:13px;font-weight:600">'+e.message+'</div><button onclick="_insLoad()" style="margin-top:14px;padding:9px 20px;background:#142018;color:#fff;border:none;border-radius:10px;font:inherit;font-size:13px;font-weight:700;cursor:pointer">'+(currentLang==='es'?'Reintentar':'Retry')+'</button></div>';
     return;
   }
   _insLoading = false;
