@@ -757,14 +757,14 @@ table.an-corr-mtx{border-collapse:separate;border-spacing:4px}
 <!-- ============ ONBOARDING ============ -->
 <div id="cs-ob" class="cover-screen">
   <div class="ob-lang-row">
-    <button class="auth-lang-btn" id="ob-lang-es" onclick="switchLang('es')">ES</button>
-    <button class="auth-lang-btn active" id="ob-lang-en" onclick="switchLang('en')">EN</button>
+    <button class="auth-lang-btn active" id="ob-lang-es" onclick="switchLang('es')">ES</button>
+    <button class="auth-lang-btn" id="ob-lang-en" onclick="switchLang('en')">EN</button>
   </div>
   <div class="ob-body" id="ob-body"></div>
   <div class="ob-dots" id="ob-dots"></div>
   <div class="ob-footer">
-    <button class="ob-btn-main" id="ob-btn-main" onclick="obNext()">Continue</button>
-    <button class="ob-btn-sec" id="ob-btn-sec" onclick="showAuthScreen()">Already have an account</button>
+    <button class="ob-btn-main" id="ob-btn-main" onclick="obNext()">Continuar</button>
+    <button class="ob-btn-sec" id="ob-btn-sec" onclick="showAuthScreen()">Ya tengo cuenta</button>
   </div>
 </div>
 
@@ -2382,9 +2382,9 @@ const I18N = {
 
 const _VALID_LANGS = new Set(['es', 'en']);
 const _VALID_CCYS  = new Set(['EUR', 'USD', 'GBP', 'CHF']);
-const _rawLang = localStorage.getItem('tf_lang') || 'en';
+const _rawLang = localStorage.getItem('tf_lang') || 'es';
 const _rawCcy  = localStorage.getItem('tf_display_ccy') || 'EUR';
-let currentLang = _VALID_LANGS.has(_rawLang) ? _rawLang : 'en';
+let currentLang = _VALID_LANGS.has(_rawLang) ? _rawLang : 'es';
 let _displayCcy = _VALID_CCYS.has(_rawCcy)   ? _rawCcy  : 'EUR';
 let _fxRates = { EUR: 1, USD: 1.09, GBP: 0.86, CHF: 1.06 }; // EUR→X rates, refreshed at boot
 const t = k => I18N[currentLang][k] || I18N.es[k] || k;
@@ -5753,13 +5753,8 @@ async function startApp() {
     return;
   }
 
-  const obDone = localStorage.getItem('fa_ob_done');
-  if (obDone) {
-    showAuthScreen();
-  } else {
-    renderOb();
-    showCover('cs-ob');
-  }
+  renderOb();
+  showCover('cs-ob');
 }
 
 function switchLang(lang) {
