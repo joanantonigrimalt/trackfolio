@@ -525,9 +525,9 @@ table.an-corr-mtx{border-collapse:separate;border-spacing:4px}
 #screen-ia .ps-rec-num{width:18px;height:18px;border-radius:5px;background:var(--ia-dark);color:#fff;font-size:.55rem;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0}
 #screen-ia .ps-rec-text{font-size:.7rem;color:var(--ia-text);line-height:1.45;flex:1}
 /* === Auth modal === */
-.authOverlay{position:absolute;inset:0;background:rgba(20,32,24,.4);z-index:60;opacity:0;pointer-events:none;visibility:hidden;transition:opacity .25s,visibility 0s .25s}
+.authOverlay{position:fixed;inset:0;background:rgba(20,32,24,.4);z-index:110;opacity:0;pointer-events:none;visibility:hidden;transition:opacity .25s,visibility 0s .25s}
 .authOverlay.open{opacity:1;pointer-events:auto;visibility:visible;transition:opacity .25s,visibility 0s}
-.authSheet{position:absolute;bottom:0;left:0;right:0;background:#fff;border-radius:24px 24px 0 0;padding:0 0 32px;z-index:61;transform:translateY(100%);visibility:hidden;transition:transform .28s cubic-bezier(.32,.72,0,1),visibility 0s .28s}
+.authSheet{position:fixed;bottom:0;left:0;right:0;background:#fff;border-radius:24px 24px 0 0;padding:0 0 32px;z-index:111;transform:translateY(100%);visibility:hidden;transition:transform .28s cubic-bezier(.32,.72,0,1),visibility 0s .28s}
 .authSheet.open{transform:translateY(0);visibility:visible;transition:transform .28s cubic-bezier(.32,.72,0,1),visibility 0s}
 .authTabs{display:flex;margin:12px 20px 0;background:#f1f5f2;border-radius:12px;padding:3px;gap:3px}
 .authTabBtn{flex:1;padding:9px;border:none;border-radius:9px;font:inherit;font-size:13px;font-weight:700;cursor:pointer;color:#6d7e72;background:transparent;transition:all .15s}
@@ -2085,7 +2085,7 @@ table.an-corr-mtx{border-collapse:separate;border-spacing:4px}
     <div style="font-size:17px;font-weight:800;color:#142018">Account</div>
     <button class="modalIconBtn" id="btnCloseAuth">✕</button>
   </div>
-  <div class="authTabs">
+  <div class="authTabs" id="authTabs">
     <button class="authTabBtn active" id="authTabLogin">Sign in</button>
     <button class="authTabBtn" id="authTabRegister">Register</button>
   </div>
@@ -5221,9 +5221,7 @@ function _openAuthAs(mode) {
   openAuthModal();
   setTimeout(function(){ _setAuthMode(mode); }, 50);
 }
-function _openAuthAs(mode){
-  openAuthModal();
-  setTimeout(function(){ _setAuthMode(mode); },50);
+,50);
 }
 function showAuthScreen() {
   showCover('cs-auth');
