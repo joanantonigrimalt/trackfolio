@@ -170,31 +170,33 @@ footer{background:var(--surface);border-top:1px solid var(--border);padding:56px
 /* BANNER / PHONE MOCKUPS */
 .banner {
   width: 100%; max-width: 920px;
-  background: #ffffff;
-  border-radius: 28px;
+  background: transparent;
+  border-radius: 0;
   display: flex;
   align-items: stretch;
   justify-content: center;
   padding: 32px 36px;
   gap: 20px;
   position: relative;
-  overflow: hidden;
-  box-shadow: 0 20px 60px rgba(0,0,0,0.12);
+  overflow: visible;
+  box-shadow: none;
 }
 .banner::before {
+  display: none;
   content:''; position:absolute;
   top:-60px; right:-60px;
   width:260px; height:260px;
   border-radius:50%;
-  background:rgba(255,255,255,0.16);
+  background:transparent;
   pointer-events:none;
 }
 .banner::after {
+  display: none;
   content:''; position:absolute;
   bottom:-70px; left:-40px;
   width:200px; height:200px;
   border-radius:50%;
-  background:rgba(255,255,255,0.11);
+  background:transparent;
   pointer-events:none;
 }
 
