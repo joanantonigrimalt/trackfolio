@@ -2,7 +2,7 @@
 // Strategy: Cache-First for static assets, Network-First for API calls
 // Provides offline shell + background sync for critical data
 
-const CACHE_VERSION = 'finasset-v97';
+const CACHE_VERSION = 'finasset-v98';
 const STATIC_CACHE  = `${CACHE_VERSION}-static`;
 const DATA_CACHE    = `${CACHE_VERSION}-data`;
 
@@ -10,6 +10,8 @@ const DATA_CACHE    = `${CACHE_VERSION}-data`;
 const STATIC_ASSETS = [
   '/',
   '/index.html',
+  '/desktop.html',
+  '/mobile.html',
   '/manifest.json',
   '/icons/icon-192.png',
   '/icons/icon-512.png',
