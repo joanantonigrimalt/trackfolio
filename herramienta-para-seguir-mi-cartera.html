@@ -147,6 +147,18 @@ footer{background:var(--surface);border-top:1px solid var(--border);padding:56px
 @media(max-width:768px){.footer-inner{grid-template-columns:1fr;gap:32px}.footer-clusters{grid-template-columns:repeat(2,1fr);gap:20px}}
 @media(max-width:480px){footer{padding:40px 20px 28px}.footer-clusters{grid-template-columns:1fr 1fr}}
 .section-divider{height:1px;background:var(--border);margin:0}
+
+.nav-center{display:flex;align-items:center;gap:2px}
+.nav-link{font-size:.82rem;font-weight:600;color:var(--muted);text-decoration:none;padding:6px 12px;border-radius:8px;transition:all .18s;display:flex;align-items:center;gap:5px}.nav-link:hover{color:var(--text);background:var(--bg)}
+.nav-drop{position:relative}
+.nav-drop-panel{display:none;position:absolute;top:calc(100% + 8px);left:50%;transform:translateX(-50%);background:var(--surface);border:1px solid var(--border);border-radius:16px;box-shadow:var(--shadow-lg);padding:8px;min-width:240px;z-index:300}
+.nav-drop:hover .nav-drop-panel,.nav-drop:focus-within .nav-drop-panel{display:flex;flex-direction:column;gap:2px}
+.nav-drop-item{display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:10px;text-decoration:none;transition:background .15s}
+.nav-drop-item:hover{background:var(--bg)}.nav-drop-ico{width:34px;height:34px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0}
+.nav-drop-text strong{font-size:.79rem;font-weight:700;color:var(--text);display:block;line-height:1.2}
+.nav-drop-text span{font-size:.67rem;color:var(--muted);line-height:1.3}
+.nav-chevron{width:12px;height:12px;transition:transform .2s;color:var(--muted);flex-shrink:0}.nav-drop:hover .nav-chevron{transform:rotate(180deg);color:var(--text2)}
+@media(max-width:900px){.nav-center{display:none}}
 </style>
 <script type="application/ld+json">
 {"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"¿Qué herramienta es mejor para seguir mi cartera?","acceptedAnswer":{"@type":"Answer","text":"La mejor herramienta para tu cartera es la que unifica todos tus brokers en una sola vista, calcula tu rentabilidad real (TWR), muestra el valor actual de cada posición y te hace el seguimiento de dividendos si tienes renta variable. Finasset cubre todo esto sin necesidad de conectar tus cuentas del broker."}},{"@type":"Question","name":"¿Tengo que dar acceso a mi broker para usar una herramienta de seguimiento?","acceptedAnswer":{"@type":"Answer","text":"No. Las mejores herramientas de seguimiento permiten introducir tus posiciones manualmente o mediante importación de ficheros CSV, sin necesidad de conectar tu cuenta del broker. Esto es más seguro y funciona igual de bien para el seguimiento diario."}},{"@type":"Question","name":"¿Puedo seguir mi cartera si tengo varios brokers?","acceptedAnswer":{"@type":"Answer","text":"Sí. Una buena herramienta de seguimiento es multi-broker por diseño: introduces tus posiciones de cada cuenta y la app las consolida en una vista unificada. Puedes ver el total de tu patrimonio, la distribución por activo y la rentabilidad global calculada correctamente."}},{"@type":"Question","name":"¿Para qué sirve realmente seguir mi cartera con una herramienta?","acceptedAnswer":{"@type":"Answer","text":"Seguir tu cartera con una herramienta dedicada te permite saber en todo momento cuánto vale lo que tienes, cuánto has ganado o perdido de verdad (no solo por precio actual), cuándo cobras dividendos y si tu distribución por activos y regiones sigue siendo la que querías. Sin seguimiento, tomas decisiones con información parcial."}}]}
@@ -155,6 +167,19 @@ footer{background:var(--surface);border-top:1px solid var(--border);padding:56px
 <body>
 <nav>
   <a class="nav-logo" href="/"><div class="logo-mark"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg></div>FinAsset</a>
+  <div class="nav-center">
+    <div class="nav-drop">
+      <a class="nav-link" href="/funciones.html">Funciones <svg class="nav-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></a>
+      <div class="nav-drop-panel">
+        <a class="nav-drop-item" href="/tracking.html"><div class="nav-drop-ico" style="background:#ecfdf5">📊</div><div class="nav-drop-text"><strong>Seguimiento</strong><span>Cartera consolidada en tiempo real</span></div></a>
+        <a class="nav-drop-item" href="/tracker-dividendos.html"><div class="nav-drop-ico" style="background:#fefce8">💰</div><div class="nav-drop-text"><strong>Dividendos</strong><span>Calendario, cobros y proyección anual</span></div></a>
+        <a class="nav-drop-item" href="/herramientas.html"><div class="nav-drop-ico" style="background:#f0f9ff">🛠️</div><div class="nav-drop-text"><strong>Herramientas</strong><span>Análisis, TWR y comparativas</span></div></a>
+        <a class="nav-drop-item" href="/comunidad.html"><div class="nav-drop-ico" style="background:#f5f3ff">👥</div><div class="nav-drop-text"><strong>Comunidad</strong><span>Foro y portfolios compartidos</span></div></a>
+      </div>
+    </div>
+    <a class="nav-link" href="/precios.html">Precios</a>
+    <a class="nav-link" href="/contacto.html">Contacto</a>
+  </div>
   <div class="nav-right">
     <a class="nav-btn-ghost" href="https://app.finasset.app/mobile"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18" stroke-width="3"/></svg>Abrir APP</a>
     <a class="nav-btn-green" href="https://app.finasset.app"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>Probar gratis</a>

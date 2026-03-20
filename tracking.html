@@ -3,13 +3,12 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Mejor app para dividendos | Qué debes mirar antes de elegir</title>
-<meta name="description" content="Descubre qué debe tener la mejor app para dividendos y cómo elegir una herramienta útil para tu tipo de cartera.">
-<meta name="keywords" content="mejor app para dividendos, app dividendos mejor, herramienta dividendos acciones">
-<meta property="og:title" content="Mejor app para dividendos | Qué debes mirar antes de elegir">
-<meta property="og:description" content="Descubre qué debe tener la mejor app para dividendos y cómo elegir una herramienta útil para tu tipo de cartera.">
+<title>Seguimiento de cartera en tiempo real | FinAsset</title>
+<meta name="description" content="Controla el valor real de tu cartera con precios actualizados, rentabilidad TWR y vista consolidada multi-broker desde cualquier dispositivo.">
+<meta property="og:title" content="Seguimiento de cartera en tiempo real | FinAsset">
+<meta property="og:description" content="Controla el valor real de tu cartera con precios actualizados, rentabilidad TWR y vista consolidada multi-broker desde cualquier dispositivo.">
 <meta name="robots" content="index, follow">
-<link rel="canonical" href="https://finasset.app/mejor-app-para-dividendos.html">
+<link rel="canonical" href="https://finasset.app/tracking.html">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
 <style>
@@ -154,9 +153,21 @@ footer{background:var(--surface);border-top:1px solid var(--border);padding:56px
 .nav-drop-text span{font-size:.67rem;color:var(--muted);line-height:1.3}
 .nav-chevron{width:12px;height:12px;transition:transform .2s;color:var(--muted);flex-shrink:0}.nav-drop:hover .nav-chevron{transform:rotate(180deg);color:var(--text2)}
 @media(max-width:900px){.nav-center{display:none}}
+
+.nav-center{display:flex;align-items:center;gap:2px}
+.nav-link{font-size:.82rem;font-weight:600;color:var(--muted);text-decoration:none;padding:6px 12px;border-radius:8px;transition:all .18s;display:flex;align-items:center;gap:5px}.nav-link:hover{color:var(--text);background:var(--bg)}
+.nav-drop{position:relative}
+.nav-drop-panel{display:none;position:absolute;top:calc(100% + 8px);left:50%;transform:translateX(-50%);background:var(--surface);border:1px solid var(--border);border-radius:16px;box-shadow:var(--shadow-lg);padding:8px;min-width:240px;z-index:300}
+.nav-drop:hover .nav-drop-panel,.nav-drop:focus-within .nav-drop-panel{display:flex;flex-direction:column;gap:2px}
+.nav-drop-item{display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:10px;text-decoration:none;transition:background .15s}
+.nav-drop-item:hover{background:var(--bg)}.nav-drop-ico{width:34px;height:34px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0}
+.nav-drop-text strong{font-size:.79rem;font-weight:700;color:var(--text);display:block;line-height:1.2}
+.nav-drop-text span{font-size:.67rem;color:var(--muted);line-height:1.3}
+.nav-chevron{width:12px;height:12px;transition:transform .2s;color:var(--muted);flex-shrink:0}.nav-drop:hover .nav-chevron{transform:rotate(180deg);color:var(--text2)}
+@media(max-width:900px){.nav-center{display:none}}
 </style>
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"¿Cuál es la mejor app para dividendos?","acceptedAnswer":{"@type":"Answer","text":"No existe una única \"mejor app\" para todos los perfiles. Lo que importa es que la herramienta que elijas muestre próximos pagos con fecha exacta, calcule el importe neto tras retenciones, lleve el historial de cobros por empresa y mes, y proyecte tu renta pasiva anual. Finasset cubre todas estas funciones con una interfaz pensada para inversores particulares."}},{"@type":"Question","name":"¿Una app de dividendos funciona con varios brokers?","acceptedAnswer":{"@type":"Answer","text":"Las mejores apps de dividendos permiten introducir posiciones de varios brokers y calcular los cobros totales sobre el conjunto de tus acciones, no solo sobre las de una cuenta. Finasset es multi-broker por diseño."}},{"@type":"Question","name":"¿Qué diferencia a una buena app de dividendos de una básica?","acceptedAnswer":{"@type":"Answer","text":"Las apps básicas solo muestran el dividendo por acción que paga la empresa. Las buenas calculan tu cobro total según tus posiciones, aplican retenciones, separan cobrado de estimado y te avisan antes de la fecha ex-dividendo. La diferencia práctica es enorme."}},{"@type":"Question","name":"¿La app necesita acceso a mi broker para ver mis dividendos?","acceptedAnswer":{"@type":"Answer","text":"No necesariamente. Finasset funciona con introducción manual de posiciones: dices qué tienes y cuántas acciones, y la app calcula automáticamente los dividendos basándose en los datos de cada empresa. Sin necesidad de conectar tu cuenta del broker."}}]}
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"\u00bfCon cu\u00e1ntos brokers funciona?","acceptedAnswer":{"@type":"Answer","text":"Con tantos como quieras en Premium. En el plan gratuito hasta 1 broker."}},{"@type":"Question","name":"\u00bfHay que conectar el broker?","acceptedAnswer":{"@type":"Answer","text":"No. Introduces posiciones manualmente o importas CSV. Sin acceso a credenciales."}},{"@type":"Question","name":"\u00bfQu\u00e9 es el TWR?","acceptedAnswer":{"@type":"Answer","text":"El Time-Weighted Return calcula la rentabilidad real de carteras con aportaciones peri\u00f3dicas."}},{"@type":"Question","name":"\u00bfFunciona con ETFs y fondos?","acceptedAnswer":{"@type":"Answer","text":"S\u00ed. Soporta acciones, ETFs y fondos. Dividendos y distribuciones incluidos."}}]}
 </script>
 </head>
 <body>
@@ -180,200 +191,92 @@ footer{background:var(--surface);border-top:1px solid var(--border);padding:56px
     <a class="nav-btn-green" href="https://app.finasset.app"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>Probar gratis</a>
   </div>
 </nav>
-
 <section class="hero">
   <div class="hero-inner">
-    <div class="breadcrumb"><a href="/">FinAsset</a><span class="breadcrumb-sep">›</span><span>Mejor app para dividendos</span></div>
-    <div class="hero-badge"><span class="badge-dot"></span>Guía de selección</div>
-    <h1>Qué debe tener la <em>mejor app para dividendos</em></h1>
-    <p class="hero-sub">Antes de elegir una app para seguir tus dividendos, vale la pena saber qué criterios importan de verdad. No todas las herramientas ofrecen lo mismo y la diferencia práctica puede ser enorme.</p>
+    <div class="breadcrumb"><a href="/">FinAsset</a><span class="breadcrumb-sep">&rsaquo;</span><span>Seguimiento</span></div>
+    <div class="hero-badge"><span class="badge-dot"></span>Seguimiento</div>
+    <h1>Seguimiento de cartera <em>en tiempo real</em></h1>
+    <p class="hero-sub">Un &uacute;nico panel con todas tus posiciones de todos tus brokers. Valor actualizado, rentabilidad TWR y distribuci&oacute;n siempre accesibles.</p>
     <div class="cta-group">
-      <a class="btn btn-primary" href="https://app.finasset.app"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>Encuentra una mejor forma de seguir dividendos</a>
-      <a class="btn btn-ghost" href="https://app.finasset.app/demo"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>Ver demo</a>
+      <a class="btn btn-primary" href="https://app.finasset.app">Probar gratis</a>
+      <a class="btn btn-ghost" href="https://app.finasset.app/demo">Ver demo</a>
     </div>
-    <div class="hero-trust"><span class="trust-check">✓ Sin tarjeta de crédito</span><span class="trust-sep"></span><span>Multi-broker</span><span class="trust-sep"></span><span>Neto y bruto automático</span><span class="trust-sep"></span><span>Alertas push</span></div>
-  </div>
-  <div class="demo-wrap">
-    <div class="check-card">
-      <div class="check-card-header"><div class="check-card-title">Criterios de una buena app de dividendos</div><div class="check-card-sub">Lo que deberías exigir antes de elegir</div></div>
-      <div class="check-card-body">
-        <div class="check-row ok"><div class="check-ico" style="background:#ecfdf5">✓</div><div class="check-text"><strong>Próximos pagos con fecha exacta</strong><span>Ex-date y pay date por empresa y posición</span></div></div>
-        <div class="check-row ok"><div class="check-ico" style="background:#ecfdf5">✓</div><div class="check-text"><strong>Neto calculado automáticamente</strong><span>Retenciones en origen y en España aplicadas</span></div></div>
-        <div class="check-row ok"><div class="check-ico" style="background:#ecfdf5">✓</div><div class="check-text"><strong>Historial de cobros por empresa</strong><span>Mes a mes y año a año</span></div></div>
-        <div class="check-row ok"><div class="check-ico" style="background:#ecfdf5">✓</div><div class="check-text"><strong>Proyección anual de renta pasiva</strong><span>Cuánto vas a cobrar este año en total</span></div></div>
-        <div class="check-row warn"><div class="check-ico" style="background:#fffbeb">⚠</div><div class="check-text"><strong>Multi-broker</strong><span>Sin esto, los datos son parciales</span></div></div>
-      </div>
-    </div>
+    <div class="hero-trust"><span class="trust-check">&check; Multi-broker</span><span class="trust-sep"></span><span>Rentabilidad TWR</span><span class="trust-sep"></span><span>Precios en tiempo real</span><span class="trust-sep"></span><span>Sin acceso al broker</span></div>
   </div>
 </section>
-
 <div class="section-divider"></div>
-
 <div class="content-wrap">
-  <main class="content-main">
-    <article class="prose">
-
-      <div class="prose-block" id="caracteristicas">
-        <h2>Qué características importan de verdad</h2>
-        <p>Buscar "mejor app para dividendos" devuelve decenas de resultados. El problema es que muchas herramientas se centran en el <em>yield actual</em> de la acción como dato de marketing, pero no en lo que realmente necesitas como inversor: saber exactamente cuándo cobras tú y cuánto llega neto a tu cuenta.</p>
-        <p>Estas son las tres funciones que marcan la diferencia entre una app útil y una que suena bien en el papel:</p>
-
-        <h3>Próximos pagos</h3>
-        <p>La app debe mostrar claramente la <strong>fecha ex-dividendo</strong> (cuándo tienes que tener las acciones) y la fecha de pago (cuándo entra el dinero), junto con el importe calculado para tus posiciones específicas. No el dividendo genérico por acción: tu cobro real según cuántas acciones tienes.</p>
-
-        <h3>Histórico de cobros</h3>
-        <p>Ver lo que has cobrado en el año, por empresa y por mes, te permite hacer dos cosas importantes: calcular cuánto has recibido en total y detectar si alguna empresa ha recortado o modificado su dividendo respecto al año anterior. Sin historial, solo tienes la mitad de la información.</p>
-
-        <h3>Ingreso anual estimado</h3>
-        <p>La proyección de lo que vas a cobrar en el año en curso —basada en tus posiciones actuales y los pagos históricos de cada empresa— es la métrica más valiosa para un inversor de renta. Te dice cuánto genera tu cartera sin que tengas que vender nada. Una buena app lo calcula automáticamente y lo actualiza cada vez que una empresa confirma su próximo pago.</p>
-
-        <div class="highlight-box"><strong>La distinción entre cobrado y estimado es fundamental.</strong> Una app que mezcla ambos sin diferenciarlos te da una proyección que parece real pero puede incluir pagos aún no confirmados. Exige que la herramienta marque visualmente qué está confirmado y qué es estimación.</div>
+  <main class="content-main"><article class="prose">
+    <div class="prose-block" id="vision">
+      <h2>Vista consolidada de toda tu cartera</h2>
+      <p>Si tienes posiciones en varios brokers, saber cu&aacute;nto tienes en total requiere sumar manualmente el valor de cada cuenta. FinAsset consolida todo en una sola pantalla actualizada autom&aacute;ticamente.</p>
+      <p>Introduces tus activos una vez &mdash; manualmente o mediante importaci&oacute;n de CSV &mdash; y la app actualiza los precios autom&aacute;ticamente. Sin importar cu&aacute;ntos brokers tengas, ves un &uacute;nico n&uacute;mero: el valor real de tu cartera ahora mismo.</p>
+      <div class="highlight-box"><strong>Sin acceso a tu broker.</strong> Introduces posiciones manualmente o importas CSV. Los precios se actualizan solos desde proveedores de datos de mercado.</div>
+    </div>
+    <div class="prose-block" id="twr">
+      <h2>Rentabilidad TWR: la m&eacute;trica que importa</h2>
+      <p>La rentabilidad simple (precio actual &minus; precio de compra) enga&ntilde;a en carteras con aportaciones peri&oacute;dicas. El <strong>Time-Weighted Return (TWR)</strong> ajusta por el momento de cada aportaci&oacute;n y es la &uacute;nica m&eacute;trica que permite comparar tu cartera contra &iacute;ndices de referencia correctamente.</p>
+      <p>FinAsset calcula el TWR autom&aacute;ticamente con cada operaci&oacute;n que introduces. No necesitas conocer la f&oacute;rmula.</p>
+    </div>
+    <div class="prose-block" id="distribucion">
+      <h2>Distribuci&oacute;n y detecci&oacute;n de deriva</h2>
+      <p>Las carteras se desv&iacute;an con el tiempo. FinAsset muestra el peso de cada activo sobre el total, la distribuci&oacute;n geogr&aacute;fica y por sector. Cuando alguna posici&oacute;n supera un umbral, recibes una alerta.</p>
+      <div class="feat-list">
+        <div class="feat-item"><div class="feat-item-ico" style="background:#ecfdf5">&#x1F4CA;</div><div class="feat-item-text"><strong>Vista consolidada multi-broker</strong><span>Todas las cuentas en un &uacute;nico panel actualizado en tiempo real.</span></div></div>
+        <div class="feat-item"><div class="feat-item-ico" style="background:#f0f9ff">&#x1F4C8;</div><div class="feat-item-text"><strong>Rentabilidad TWR correcta</strong><span>Calculada autom&aacute;ticamente en carteras con aportaciones peri&oacute;dicas.</span></div></div>
+        <div class="feat-item"><div class="feat-item-ico" style="background:#fefce8">&#x1F30D;</div><div class="feat-item-text"><strong>Distribuci&oacute;n geogr&aacute;fica y sectorial</strong><span>Detecta concentraciones antes de que se conviertan en un problema.</span></div></div>
+        <div class="feat-item"><div class="feat-item-ico" style="background:#f5f3ff">&#x1F514;</div><div class="feat-item-text"><strong>Alertas de deriva</strong><span>Notificaci&oacute;n cuando una posici&oacute;n supera el peso objetivo.</span></div></div>
       </div>
-
-      <div class="prose-block" id="errores">
-        <h2>Qué errores cometen muchas herramientas</h2>
-        <p>Tras probar distintas opciones, estos son los problemas más comunes que encontrarás en apps de dividendos que no están bien diseñadas:</p>
-        <div class="feat-list">
-          <div class="feat-item"><div class="feat-item-ico" style="background:#fef2f2">⚠️</div><div class="feat-item-text"><strong>Solo muestran el yield actual del mercado</strong><span>No tu yield on cost. El dato que ves es el rendimiento para alguien que compra hoy, no el tuyo real sobre tu precio de compra.</span></div></div>
-          <div class="feat-item"><div class="feat-item-ico" style="background:#fef2f2">⚠️</div><div class="feat-item-text"><strong>No calculan retenciones</strong><span>Muestran el dividendo bruto como si fuera lo que recibes. La diferencia entre bruto y neto puede ser el 30-40% para acciones americanas.</span></div></div>
-          <div class="feat-item"><div class="feat-item-ico" style="background:#fef2f2">⚠️</div><div class="feat-item-text"><strong>No distinguen confirmado de estimado</strong><span>Mezclan pagos ya anunciados con estimaciones del próximo año como si fueran datos iguales de fiables.</span></div></div>
-          <div class="feat-item"><div class="feat-item-ico" style="background:#fef2f2">⚠️</div><div class="feat-item-text"><strong>No son multi-broker</strong><span>Solo ven las posiciones que introduces manualmente sin poder distinguir de qué cuenta viene cada activo, lo que complica el seguimiento fiscal.</span></div></div>
-        </div>
-      </div>
-
-      <div class="prose-block" id="tipo-cartera">
-        <h2>Cómo elegir según tu tipo de cartera</h2>
-        <p>No todos los inversores de dividendos tienen las mismas necesidades. El perfil de tu cartera debe guiar tu elección:</p>
-        <p><strong>Cartera concentrada en pocas posiciones (menos de 10 acciones):</strong> cualquier app decente funciona. Lo que más necesitas es el calendario de fechas y el cálculo del neto.</p>
-        <p><strong>Cartera diversificada (más de 10 posiciones, varios brokers):</strong> necesitas multi-broker nativo, proyección anual automática y alertas de cambios. La gestión manual se vuelve inviable con muchas posiciones.</p>
-        <p><strong>Cartera mixta (ETFs de distribución + acciones):</strong> la app debe tratar igual los dividendos de ETFs y los de acciones, mostrando el ingreso total unificado independientemente del tipo de activo.</p>
-
-        <div class="internal-links">
-          <a class="internal-link" href="/app-dividendos.html"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><polyline points="12 5 19 12 12 19"/></svg>App de dividendos: funciones detalladas</a>
-          <a class="internal-link" href="/tracker-dividendos.html"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><polyline points="12 5 19 12 12 19"/></svg>Tracker de dividendos completo</a>
-          <a class="internal-link" href="/control-dividendos-acciones.html"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><polyline points="12 5 19 12 12 19"/></svg>Control de dividendos de acciones</a>
-        </div>
-      </div>
-
-      <div class="prose-block" id="vista-clara">
-        <h2>Por qué una vista clara marca la diferencia</h2>
-        <p>La mejor app de dividendos no es la que tiene más funciones. Es la que te da la información correcta en el momento en que la necesitas, sin tener que navegar entre pantallas o exportar datos a una hoja de cálculo.</p>
-        <p>Una vista clara de tus dividendos significa: de un vistazo sabes cuánto cobras este mes, cuándo es el próximo pago y cómo evoluciona tu renta pasiva respecto al año anterior. Ese acceso inmediato a la información es lo que distingue una herramienta realmente útil de otra que tienes instalada pero no usas.</p>
-        <p>Finasset está diseñado desde esta premisa: que la información más importante esté visible sin clics adicionales, con los datos actualizados automáticamente y accesible desde el móvil o el navegador en cualquier momento.</p>
-      </div>
-
-      <div class="prose-block" id="faq">
-        <h2>Preguntas frecuentes sobre apps de dividendos</h2>
-        <div class="faq-list">
-          <div class="faq-item open"><div class="faq-q" onclick="this.parentElement.classList.toggle('open')">¿Cuál es la mejor app para dividendos?<span class="faq-icon">+</span></div><div class="faq-a">No existe una única "mejor app" para todos los perfiles. Lo que importa es que la herramienta que elijas muestre próximos pagos con fecha exacta, calcule el importe neto tras retenciones, lleve el historial de cobros por empresa y mes, y proyecte tu renta pasiva anual. Finasset cubre todas estas funciones con una interfaz pensada para inversores particulares.</div></div>
-          <div class="faq-item"><div class="faq-q" onclick="this.parentElement.classList.toggle('open')">¿Una app de dividendos funciona con varios brokers?<span class="faq-icon">+</span></div><div class="faq-a">Las mejores apps de dividendos permiten introducir posiciones de varios brokers y calcular los cobros totales sobre el conjunto de tus acciones, no solo sobre las de una cuenta. Finasset es multi-broker por diseño.</div></div>
-          <div class="faq-item"><div class="faq-q" onclick="this.parentElement.classList.toggle('open')">¿Qué diferencia a una buena app de dividendos de una básica?<span class="faq-icon">+</span></div><div class="faq-a">Las apps básicas solo muestran el dividendo por acción que paga la empresa. Las buenas calculan tu cobro total según tus posiciones, aplican retenciones, separan cobrado de estimado y te avisan antes de la fecha ex-dividendo. La diferencia práctica es enorme.</div></div>
-          <div class="faq-item"><div class="faq-q" onclick="this.parentElement.classList.toggle('open')">¿La app necesita acceso a mi broker para ver mis dividendos?<span class="faq-icon">+</span></div><div class="faq-a">No necesariamente. Finasset funciona con introducción manual de posiciones: dices qué tienes y cuántas acciones, y la app calcula automáticamente los dividendos basándose en los datos de cada empresa. Sin necesidad de conectar tu cuenta del broker.</div></div>
-        </div>
-      </div>
-
-    </article>
-  </main>
-  <aside class="content-aside">
-    <div class="aside-cta">
-      <div class="aside-cta-inner">
-        <h3>Sigue tus dividendos bien</h3>
-        <p>Próximos pagos, neto calculado y proyección anual. Sin configuración compleja.</p>
-        <a class="aside-btn-g" href="https://app.finasset.app"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>Empezar gratis</a>
-        <a class="aside-btn-w" href="https://app.finasset.app/demo"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>Ver demo</a>
-        <div class="aside-mini-stats"><div class="aside-stat"><div class="aside-stat-val">12K+</div><div class="aside-stat-label">Inversores</div></div><div class="aside-stat"><div class="aside-stat-val">150+</div><div class="aside-stat-label">Mercados</div></div></div>
+      <div class="internal-links">
+        <a class="internal-link" href="/gestor-cartera-inversion.html"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><polyline points="12 5 19 12 12 19"/></svg>Gestor de cartera de inversi&oacute;n</a>
+        <a class="internal-link" href="/app-seguimiento-cartera.html"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><polyline points="12 5 19 12 12 19"/></svg>App de seguimiento de cartera</a>
+        <a class="internal-link" href="/herramienta-para-seguir-mi-cartera.html"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><polyline points="12 5 19 12 12 19"/></svg>Herramienta para seguir mi cartera</a>
       </div>
     </div>
+    <div class="prose-block" id="faq">
+      <h2>Preguntas frecuentes</h2>
+      <div class="faq-list">
+        <div class="faq-item open"><div class="faq-q" onclick="this.parentElement.classList.toggle('open')">&iquest;Con cu&aacute;ntos brokers funciona?<span class="faq-icon">+</span></div><div class="faq-a">Con tantos como quieras en el plan Premium. En el plan gratuito puedes a&ntilde;adir hasta 1 broker.</div></div>
+        <div class="faq-item"><div class="faq-q" onclick="this.parentElement.classList.toggle('open')">&iquest;Hay que conectar el broker?<span class="faq-icon">+</span></div><div class="faq-a">No. Introduces posiciones manualmente o importas CSV. Los precios se actualizan autom&aacute;ticamente. Sin acceso a tus credenciales.</div></div>
+        <div class="faq-item"><div class="faq-q" onclick="this.parentElement.classList.toggle('open')">&iquest;Qu&eacute; es exactamente el TWR?<span class="faq-icon">+</span></div><div class="faq-a">El Time-Weighted Return es la forma correcta de calcular la rentabilidad de una cartera con aportaciones peri&oacute;dicas. Elimina el efecto del timing y permite comparar contra &iacute;ndices.</div></div>
+        <div class="faq-item"><div class="faq-q" onclick="this.parentElement.classList.toggle('open')">&iquest;Funciona con ETFs y fondos?<span class="faq-icon">+</span></div><div class="faq-a">S&iacute;. Soporta acciones globales, ETFs cotizados y fondos indexados. Los dividendos y distribuciones tambi&eacute;n se registran.</div></div>
+      </div>
+    </div>
+  </article></main>
+  <aside class="content-aside">
+    <div class="aside-cta"><div class="aside-cta-inner">
+      <h3>Sigue tu cartera bien</h3>
+      <p>Multi-broker, TWR real y distribuci&oacute;n actualizada en tiempo real.</p>
+      <a class="aside-btn-g" href="https://app.finasset.app">Empezar gratis</a>
+      <a class="aside-btn-w" href="https://app.finasset.app/demo">Ver demo</a>
+      <div class="aside-mini-stats"><div class="aside-stat"><div class="aside-stat-val">12K+</div><div class="aside-stat-label">Inversores</div></div><div class="aside-stat"><div class="aside-stat-val">150+</div><div class="aside-stat-label">Mercados</div></div></div>
+    </div></div>
     <div class="aside-index">
-      <div class="aside-index-title">En esta página</div>
-      <ul class="aside-index-list">
-        <li><a href="#caracteristicas">Qué características importan</a></li>
-        <li><a href="#errores">Errores de muchas herramientas</a></li>
-        <li><a href="#tipo-cartera">Cómo elegir según tu cartera</a></li>
-        <li><a href="#vista-clara">Por qué una vista clara importa</a></li>
-        <li><a href="#faq">Preguntas frecuentes</a></li>
-      </ul>
+      <div class="aside-index-title">En esta p&aacute;gina</div>
+      <ul class="aside-index-list"><li><a href="#vision">Vista consolidada</a></li><li><a href="#twr">Rentabilidad TWR</a></li><li><a href="#distribucion">Distribuci&oacute;n</a></li><li><a href="#faq">FAQ</a></li></ul>
     </div>
   </aside>
 </div>
-
-<div class="cta-final">
-  <div class="cta-final-inner">
-    <h2>Sigue tus dividendos<br><em>con la herramienta correcta.</em></h2>
-    <p>Próximos pagos, neto real y proyección anual en un panel pensado para inversores particulares.</p>
-    <div class="cta-actions">
-      <a class="btn-cta-green" href="https://app.finasset.app"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>Empezar gratis</a>
-      <a class="btn-cta-white" href="https://app.finasset.app/demo"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>Ver demo</a>
-    </div>
-  </div>
-</div>
-
+<section class="cta-final"><div class="cta-final-inner">
+  <h2>Tu cartera, siempre <em>bajo control</em></h2>
+  <p>Multi-broker, TWR real y distribuci&oacute;n en tiempo real. Gratis para empezar.</p>
+  <div class="cta-actions"><a class="btn-cta-green" href="https://app.finasset.app">Probar gratis</a><a class="btn-cta-white" href="/precios.html">Ver precios</a></div>
+</div></section>
 <footer>
   <div class="footer-inner">
     <div class="footer-brand">
       <a class="footer-logo" href="/"><div class="logo-mark" style="width:26px;height:26px;border-radius:8px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width:13px;height:13px"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg></div>FinAsset</a>
       <p class="footer-tagline">Seguimiento de inversiones para particulares</p>
-      <p class="footer-copy">© 2024 FinAsset · <a href="/privacy.html">Privacidad</a></p>
+      <p class="footer-copy">&copy; 2024 FinAsset &middot; <a href="/privacy.html">Privacidad</a></p>
     </div>
     <div class="footer-clusters">
-      <div class="footer-cluster">
-        <h4>Dividendos</h4>
-        <ul>
-          <li><a href="/tracker-dividendos.html">Tracker de dividendos</a></li>
-          <li><a href="/app-dividendos.html">App de dividendos</a></li>
-          <li><a href="/como-controlar-dividendos.html">Controlar dividendos</a></li>
-          <li><a href="/calendario-dividendos-cartera.html">Calendario dividendos</a></li>
-          <li><a href="/seguimiento-ingresos-pasivos.html">Ingresos pasivos</a></li>
-          <li><a href="/control-dividendos-acciones.html">Control dividendos</a></li>
-          <li><a href="/como-llevar-mis-dividendos.html">Cómo llevar dividendos</a></li>
-          <li><a href="/mejor-app-para-dividendos.html">Mejor app dividendos</a></li>
-          <li><a href="/excel-dividendos-vs-app.html">Excel vs app</a></li>
-        </ul>
-      </div>
-      <div class="footer-cluster">
-        <h4>ETFs</h4>
-        <ul>
-          <li><a href="/gestor-cartera-etf.html">Gestor cartera ETF</a></li>
-          <li><a href="/como-controlar-una-cartera-de-etfs.html">Controlar cartera ETF</a></li>
-          <li><a href="/mejor-app-para-etfs.html">Mejor app ETFs</a></li>
-        </ul>
-      </div>
-      <div class="footer-cluster">
-        <h4>Seguimiento</h4>
-        <ul>
-          <li><a href="/gestor-cartera-inversion.html">Gestor de cartera</a></li>
-          <li><a href="/app-seguimiento-cartera.html">App seguimiento</a></li>
-          <li><a href="/seguimiento-portfolio.html">Seguimiento portfolio</a></li>
-          <li><a href="/software-seguimiento-inversiones.html">Software seguimiento</a></li>
-          <li><a href="/como-hacer-seguimiento-de-mi-cartera.html">Cómo hacer seguimiento</a></li>
-          <li><a href="/controlar-cartera-de-inversion.html">Controlar cartera</a></li>
-          <li><a href="/herramienta-para-seguir-mi-cartera.html">Herramienta seguimiento</a></li>
-          <li><a href="/seguimiento-de-inversiones-para-particulares.html">Para particulares</a></li>
-        </ul>
-      </div>
-      <div class="footer-cluster">
-        <h4>Cartera mixta</h4>
-        <ul>
-          <li><a href="/seguimiento-cartera-acciones-etfs.html">Acciones y ETFs</a></li>
-          <li><a href="/control-cartera-etf-y-acciones.html">Control ETF y acciones</a></li>
-          <li><a href="/gestor-cartera-etf.html">Gestor cartera ETF</a></li>
-          <li><a href="/gestor-cartera-inversion.html">Gestor de inversión</a></li>
-        </ul>
-      </div>
-      <div class="footer-cluster">
-        <h4>Comparativas</h4>
-        <ul>
-          <li><a href="/alternativa-portfolio-performance.html">Alternativa a PP</a></li>
-          <li><a href="/alternativas-a-portfolio-performance.html">Alternativas a PP</a></li>
-          <li><a href="/portfolio-performance-espanol.html">PP en español</a></li>
-          <li><a href="/software-seguimiento-inversiones.html">Software inversiones</a></li>
-          <li><a href="/mejor-app-para-dividendos.html">Mejor app dividendos</a></li>
-          <li><a href="/mejor-app-para-etfs.html">Mejor app ETFs</a></li>
-        </ul>
-      </div>
+      <div class="footer-cluster"><h4>Dividendos</h4><ul><li><a href="/tracker-dividendos.html">Tracker de dividendos</a></li><li><a href="/app-dividendos.html">App de dividendos</a></li><li><a href="/como-controlar-dividendos.html">Controlar dividendos</a></li><li><a href="/calendario-dividendos-cartera.html">Calendario dividendos</a></li><li><a href="/seguimiento-ingresos-pasivos.html">Ingresos pasivos</a></li><li><a href="/control-dividendos-acciones.html">Control dividendos</a></li><li><a href="/como-llevar-mis-dividendos.html">C&oacute;mo llevar dividendos</a></li><li><a href="/mejor-app-para-dividendos.html">Mejor app dividendos</a></li><li><a href="/excel-dividendos-vs-app.html">Excel vs app</a></li></ul></div>
+      <div class="footer-cluster"><h4>ETFs</h4><ul><li><a href="/gestor-cartera-etf.html">Gestor cartera ETF</a></li><li><a href="/como-controlar-una-cartera-de-etfs.html">Controlar cartera ETF</a></li><li><a href="/mejor-app-para-etfs.html">Mejor app ETFs</a></li></ul></div>
+      <div class="footer-cluster"><h4>Seguimiento</h4><ul><li><a href="/gestor-cartera-inversion.html">Gestor de cartera</a></li><li><a href="/app-seguimiento-cartera.html">App seguimiento</a></li><li><a href="/seguimiento-portfolio.html">Seguimiento portfolio</a></li><li><a href="/software-seguimiento-inversiones.html">Software seguimiento</a></li><li><a href="/como-hacer-seguimiento-de-mi-cartera.html">C&oacute;mo hacer seguimiento</a></li><li><a href="/controlar-cartera-de-inversion.html">Controlar cartera</a></li><li><a href="/herramienta-para-seguir-mi-cartera.html">Herramienta seguimiento</a></li><li><a href="/seguimiento-de-inversiones-para-particulares.html">Para particulares</a></li></ul></div>
+      <div class="footer-cluster"><h4>Cartera mixta</h4><ul><li><a href="/seguimiento-cartera-acciones-etfs.html">Acciones y ETFs</a></li><li><a href="/control-cartera-etf-y-acciones.html">Control ETF y acciones</a></li><li><a href="/gestor-cartera-etf.html">Gestor cartera ETF</a></li><li><a href="/gestor-cartera-inversion.html">Gestor de inversi&oacute;n</a></li></ul></div>
+      <div class="footer-cluster"><h4>Comparativas</h4><ul><li><a href="/alternativa-portfolio-performance.html">Alternativa a PP</a></li><li><a href="/alternativas-a-portfolio-performance.html">Alternativas a PP</a></li><li><a href="/portfolio-performance-espanol.html">PP en espa&ntilde;ol</a></li><li><a href="/software-seguimiento-inversiones.html">Software inversiones</a></li><li><a href="/mejor-app-para-dividendos.html">Mejor app dividendos</a></li><li><a href="/mejor-app-para-etfs.html">Mejor app ETFs</a></li></ul></div>
     </div>
   </div>
 </footer>
-<script>document.querySelectorAll('.faq-q').forEach(q=>{q.addEventListener('click',()=>{const i=q.parentElement,w=i.classList.contains('open');document.querySelectorAll('.faq-item').forEach(x=>x.classList.remove('open'));if(!w)i.classList.add('open')})});</script>
 </body>
 </html>
