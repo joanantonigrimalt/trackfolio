@@ -471,16 +471,21 @@ nav {
 .btn-cta-white:hover { transform: translateY(-3px); background: rgba(255,255,255,0.12); }
 
 /* ── FOOTER ── */
-footer {
-  padding: 28px 40px; background: var(--surface);
-  border-top: 1px solid var(--border);
-  display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px;
-}
-.footer-logo { display: flex; align-items: center; gap: 8px; font-size: 0.88rem; font-weight: 800; color: var(--text); text-decoration: none; letter-spacing: -0.02em; }
-footer p { font-size: 0.75rem; color: var(--muted); }
-footer a { color: var(--muted); text-decoration: none; }
-footer a:hover { color: var(--green2); }
-@media (max-width: 600px) { footer { padding: 24px 20px; justify-content: center; text-align: center; } }
+footer{background:var(--surface);border-top:1px solid var(--border);padding:56px 40px 32px}
+.footer-inner{max-width:1100px;margin:0 auto;display:grid;grid-template-columns:200px 1fr;gap:48px}
+.footer-brand{display:flex;flex-direction:column;gap:12px}
+.footer-logo{display:flex;align-items:center;gap:8px;font-size:.88rem;font-weight:800;color:var(--text);text-decoration:none;letter-spacing:-.02em}
+.footer-tagline{font-size:.74rem;color:var(--muted);line-height:1.5;max-width:160px}
+.footer-copy{font-size:.7rem;color:var(--muted);margin-top:auto}
+.footer-copy a{color:var(--muted);text-decoration:none}.footer-copy a:hover{color:var(--green2)}
+.footer-clusters{display:grid;grid-template-columns:repeat(5,1fr);gap:28px}
+.footer-cluster h4{font-size:.63rem;font-weight:800;color:var(--text);text-transform:uppercase;letter-spacing:.1em;margin-bottom:10px;padding-bottom:8px;border-bottom:1px solid var(--border)}
+.footer-cluster ul{list-style:none;display:flex;flex-direction:column;gap:5px}
+.footer-cluster ul li a{font-size:.73rem;color:var(--muted);text-decoration:none;transition:color .15s;line-height:1.4}
+.footer-cluster ul li a:hover{color:var(--green2)}
+@media(max-width:1024px){.footer-clusters{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:768px){.footer-inner{grid-template-columns:1fr;gap:32px}.footer-clusters{grid-template-columns:repeat(2,1fr);gap:20px}}
+@media(max-width:480px){footer{padding:40px 20px 28px}.footer-clusters{grid-template-columns:1fr 1fr}}
 
 .section-divider {
   height: 1px; background: var(--border); margin: 0;
@@ -906,16 +911,70 @@ footer a:hover { color: var(--green2); }
 
 <!-- ── FOOTER ── -->
 <footer>
-  <a class="footer-logo" href="/">
-    <div class="logo-mark" style="width:26px;height:26px;border-radius:8px">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-        <polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/>
-        <polyline points="16 7 22 7 22 13"/>
-      </svg>
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <a class="footer-logo" href="/"><div class="logo-mark" style="width:26px;height:26px;border-radius:8px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width:13px;height:13px"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg></div>FinAsset</a>
+      <p class="footer-tagline">Seguimiento de inversiones para particulares</p>
+      <p class="footer-copy">© 2024 FinAsset · <a href="/privacy.html">Privacidad</a></p>
     </div>
-    FinAsset
-  </a>
-  <p>© 2025 FinAsset &nbsp;·&nbsp; <a href="https://finasset.app">finasset.app</a> &nbsp;·&nbsp; <a href="/controlar-cartera-de-inversion.html">Controlar cartera de inversión</a></p>
+    <div class="footer-clusters">
+      <div class="footer-cluster">
+        <h4>Dividendos</h4>
+        <ul>
+          <li><a href="/tracker-dividendos.html">Tracker de dividendos</a></li>
+          <li><a href="/app-dividendos.html">App de dividendos</a></li>
+          <li><a href="/como-controlar-dividendos.html">Controlar dividendos</a></li>
+          <li><a href="/calendario-dividendos-cartera.html">Calendario dividendos</a></li>
+          <li><a href="/seguimiento-ingresos-pasivos.html">Ingresos pasivos</a></li>
+          <li><a href="/control-dividendos-acciones.html">Control dividendos</a></li>
+          <li><a href="/como-llevar-mis-dividendos.html">Cómo llevar dividendos</a></li>
+          <li><a href="/mejor-app-para-dividendos.html">Mejor app dividendos</a></li>
+          <li><a href="/excel-dividendos-vs-app.html">Excel vs app</a></li>
+        </ul>
+      </div>
+      <div class="footer-cluster">
+        <h4>ETFs</h4>
+        <ul>
+          <li><a href="/gestor-cartera-etf.html">Gestor cartera ETF</a></li>
+          <li><a href="/como-controlar-una-cartera-de-etfs.html">Controlar cartera ETF</a></li>
+          <li><a href="/mejor-app-para-etfs.html">Mejor app ETFs</a></li>
+        </ul>
+      </div>
+      <div class="footer-cluster">
+        <h4>Seguimiento</h4>
+        <ul>
+          <li><a href="/gestor-cartera-inversion.html">Gestor de cartera</a></li>
+          <li><a href="/app-seguimiento-cartera.html">App seguimiento</a></li>
+          <li><a href="/seguimiento-portfolio.html">Seguimiento portfolio</a></li>
+          <li><a href="/software-seguimiento-inversiones.html">Software seguimiento</a></li>
+          <li><a href="/como-hacer-seguimiento-de-mi-cartera.html">Cómo hacer seguimiento</a></li>
+          <li><a href="/controlar-cartera-de-inversion.html">Controlar cartera</a></li>
+          <li><a href="/herramienta-para-seguir-mi-cartera.html">Herramienta seguimiento</a></li>
+          <li><a href="/seguimiento-de-inversiones-para-particulares.html">Para particulares</a></li>
+        </ul>
+      </div>
+      <div class="footer-cluster">
+        <h4>Cartera mixta</h4>
+        <ul>
+          <li><a href="/seguimiento-cartera-acciones-etfs.html">Acciones y ETFs</a></li>
+          <li><a href="/control-cartera-etf-y-acciones.html">Control ETF y acciones</a></li>
+          <li><a href="/gestor-cartera-etf.html">Gestor cartera ETF</a></li>
+          <li><a href="/gestor-cartera-inversion.html">Gestor de inversión</a></li>
+        </ul>
+      </div>
+      <div class="footer-cluster">
+        <h4>Comparativas</h4>
+        <ul>
+          <li><a href="/alternativa-portfolio-performance.html">Alternativa a PP</a></li>
+          <li><a href="/alternativas-a-portfolio-performance.html">Alternativas a PP</a></li>
+          <li><a href="/portfolio-performance-espanol.html">PP en español</a></li>
+          <li><a href="/software-seguimiento-inversiones.html">Software inversiones</a></li>
+          <li><a href="/mejor-app-para-dividendos.html">Mejor app dividendos</a></li>
+          <li><a href="/mejor-app-para-etfs.html">Mejor app ETFs</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
 </footer>
 
 <script>
