@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Alternativa a Portfolio Performance | Una opción más simple</title>
+<meta name="description" content="Busca una alternativa a Portfolio Performance para seguir tu cartera de forma más simple, visual y rápida.">
+<meta name="keywords" content="alternativa a Portfolio Performance, portfolio performance alternativa, app como portfolio performance, software seguimiento cartera">
+<meta property="og:title" content="Alternativa a Portfolio Performance | Una opción más simple">
+<meta property="og:description" content="Busca una alternativa a Portfolio Performance para seguir tu cartera de forma más simple, visual y rápida.">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://finasset.app/alternativa-portfolio-performance.html">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet">
+
+<style>
+/* ── TOKENS ── */
+:root {
+  --green:   #22c47a;
+  --green2:  #17a864;
+  --green3:  #0f7347;
+  --teal:    #0bbfa0;
+  --dark:    #0e1f15;
+  --bg:      #f7faf8;
+  --surface: #ffffff;
+  --text:    #111c16;
+  --text2:   #2d4a39;
+  --muted:   #7a9585;
+  --border:  #e4ede8;
+  --border2: #d0e2d8;
+  --shadow-sm: 0 1px 4px rgba(14,31,21,0.06), 0 4px 16px rgba(14,31,21,0.05);
+  --shadow-md: 0 4px 20px rgba(14,31,21,0.08), 0 12px 40px rgba(14,31,21,0.06);
+  --shadow-lg: 0 8px 40px rgba(14,31,21,0.12), 0 24px 64px rgba(14,31,21,0.08);
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--bg); color: var(--text); overflow-x: hidden; }
+
+/* ── NAV ── */
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+  height: 62px; display: flex; align-items: center; justify-content: space-between;
+  padding: 0 40px;
+  background: rgba(247,250,248,0.9); backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border);
+}
+.nav-logo { display: flex; align-items: center; gap: 10px; text-decoration: none; font-weight: 800; font-size: 1.05rem; color: var(--text); letter-spacing: -0.03em; }
+.logo-mark { width: 32px; height: 32px; border-radius: 10px; background: linear-gradient(135deg, var(--green) 0%, var(--teal) 100%); display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 12px rgba(34,196,122,0.35); flex-shrink: 0; }
+.logo-mark svg { width: 17px; height: 17px; color: #fff; }
+.nav-right { display: flex; align-items: center; gap: 8px; }
+.nav-btn-ghost { font-size: 0.82rem; font-weight: 700; color: var(--text2); text-decoration: none; padding: 8px 18px; border-radius: 10px; border: 1.5px solid var(--border2); background: var(--surface); box-shadow: var(--shadow-sm); transition: all 0.18s; display: flex; align-items: center; gap: 7px; }
+.nav-btn-ghost:hover { border-color: var(--green); color: var(--green3); }
+.nav-btn-green { font-size: 0.82rem; font-weight: 700; text-decoration: none; padding: 8px 18px; border-radius: 10px; background: linear-gradient(135deg, var(--green) 0%, var(--green2) 100%); color: #fff; box-shadow: 0 2px 12px rgba(34,196,122,0.4); transition: all 0.2s; display: flex; align-items: center; gap: 7px; }
+.nav-btn-green:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(34,196,122,0.45); }
+@media (max-width: 640px) { nav { padding: 0 20px; } .nav-btn-ghost { display: none; } }
+
+/* ── HERO ── */
+.hero { padding: 110px 24px 72px; text-align: center; position: relative; overflow: hidden; background: var(--surface); border-bottom: 1px solid var(--border); }
+.hero::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse 60% 50% at 50% -10%, rgba(34,196,122,0.11) 0%, transparent 65%), radial-gradient(ellipse 40% 30% at 90% 100%, rgba(11,191,160,0.06) 0%, transparent 60%); }
+.hero::after { content: ''; position: absolute; inset: 0; background-image: radial-gradient(circle, rgba(34,196,122,0.1) 1px, transparent 1px); background-size: 32px 32px; mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black 20%, transparent 100%); }
+.hero-inner { position: relative; z-index: 1; max-width: 760px; margin: 0 auto; }
+
+.breadcrumb { display: inline-flex; align-items: center; gap: 6px; font-size: 0.72rem; color: var(--muted); font-weight: 500; margin-bottom: 20px; }
+.breadcrumb a { color: var(--muted); text-decoration: none; }
+.breadcrumb a:hover { color: var(--green2); }
+.breadcrumb-sep { color: var(--border2); }
+
+.hero-badge { display: inline-flex; align-items: center; gap: 8px; background: rgba(34,196,122,0.08); border: 1.5px solid rgba(34,196,122,0.2); border-radius: 100px; padding: 5px 14px 5px 8px; margin-bottom: 24px; font-size: 0.7rem; font-weight: 700; color: var(--green3); letter-spacing: 0.05em; text-transform: uppercase; }
+.badge-dot { width: 18px; height: 18px; border-radius: 50%; background: rgba(34,196,122,0.12); display: flex; align-items: center; justify-content: center; }
+.badge-dot::after { content: ''; width: 7px; height: 7px; border-radius: 50%; background: var(--green); box-shadow: 0 0 7px rgba(34,196,122,0.7); animation: blink 2.2s ease-in-out infinite; }
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.35} }
+
+.hero h1 { font-size: clamp(2rem, 5vw, 3.4rem); font-weight: 800; letter-spacing: -0.04em; line-height: 1.1; color: var(--text); margin-bottom: 20px; }
+.hero h1 em { font-style: normal; background: linear-gradient(135deg, var(--green) 0%, var(--teal) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+.hero-sub { font-size: clamp(0.95rem, 2vw, 1.08rem); line-height: 1.75; color: var(--muted); max-width: 560px; margin: 0 auto 36px; }
+.cta-group { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; margin-bottom: 36px; }
+
+.btn { display: inline-flex; align-items: center; gap: 9px; padding: 14px 24px; border-radius: 13px; font-family: inherit; font-size: 0.9rem; font-weight: 700; text-decoration: none; border: none; cursor: pointer; transition: all 0.22s cubic-bezier(0.34,1.56,0.64,1); }
+.btn:active { transform: scale(0.97) !important; }
+.btn-primary { background: linear-gradient(135deg, var(--green) 0%, var(--green2) 100%); color: #fff; box-shadow: 0 4px 18px rgba(34,196,122,0.4); animation: btnPulse 3s ease-in-out infinite; }
+@keyframes btnPulse { 0%,100% { box-shadow: 0 4px 18px rgba(34,196,122,0.4), 0 0 0 0 rgba(34,196,122,0.25); } 50% { box-shadow: 0 4px 18px rgba(34,196,122,0.4), 0 0 0 7px rgba(34,196,122,0); } }
+.btn-primary:hover { transform: translateY(-3px); box-shadow: 0 10px 30px rgba(34,196,122,0.5); }
+.btn-ghost { background: var(--surface); color: var(--text2); border: 1.5px solid var(--border2); box-shadow: var(--shadow-sm); }
+.btn-ghost:hover { transform: translateY(-2px); border-color: var(--green); color: var(--green3); box-shadow: 0 6px 20px rgba(14,31,21,0.09); }
+
+.hero-trust { display: flex; align-items: center; gap: 8px; justify-content: center; font-size: 0.75rem; color: var(--muted); font-weight: 500; flex-wrap: wrap; }
+.trust-sep { width: 3px; height: 3px; background: var(--border2); border-radius: 50%; }
+.trust-check { color: var(--green); font-weight: 700; }
+
+/* ── DEMO COMPARISON CARD ── */
+.demo-wrap { margin: 48px auto 0; max-width: 680px; position: relative; z-index: 1; }
+.demo-card { background: var(--surface); border: 1px solid var(--border); border-radius: 20px; box-shadow: var(--shadow-lg); overflow: hidden; }
+.demo-topbar { background: var(--bg); border-bottom: 1px solid var(--border); padding: 12px 18px; display: flex; align-items: center; gap: 10px; }
+.demo-dots { display: flex; gap: 5px; }
+.demo-dot { width: 10px; height: 10px; border-radius: 50%; }
+.demo-title-bar { flex: 1; background: var(--surface); border: 1px solid var(--border); border-radius: 6px; height: 24px; display: flex; align-items: center; padding: 0 10px; font-size: 0.65rem; color: var(--muted); }
+.demo-body { padding: 20px; }
+
+.comp-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 8px; }
+.comp-col { border: 1px solid var(--border); border-radius: 14px; overflow: hidden; }
+.comp-col-header { padding: 12px 14px; display: flex; align-items: center; gap: 8px; border-bottom: 1px solid var(--border); }
+.comp-col-header.pp { background: #f8f9fa; }
+.comp-col-header.fa { background: linear-gradient(135deg, rgba(34,196,122,0.08) 0%, rgba(11,191,160,0.04) 100%); }
+.comp-col-title { font-size: 0.75rem; font-weight: 800; color: var(--text); }
+.comp-col-icon { font-size: 1rem; }
+.comp-rows { }
+.comp-row { display: grid; grid-template-columns: 1fr 1fr; }
+.comp-row-label { font-size: 0.62rem; font-weight: 700; color: var(--muted); padding: 8px 14px; border-bottom: 1px solid var(--border); text-transform: uppercase; letter-spacing: 0.05em; background: var(--bg); grid-column: 1 / -1; }
+.comp-val { font-size: 0.72rem; font-weight: 600; padding: 8px 14px; border-bottom: 1px solid var(--border); color: var(--text2); }
+.comp-val.neg { color: #9ca3af; }
+.comp-val.pos { color: var(--green2); font-weight: 700; }
+
+.full-comp { border: 1px solid var(--border); border-radius: 14px; overflow: hidden; margin-top: 0; }
+.full-comp-header { display: grid; grid-template-columns: 2fr 1fr 1fr; background: var(--bg); border-bottom: 1px solid var(--border); }
+.full-comp-header span { font-size: 0.62rem; font-weight: 800; color: var(--muted); padding: 8px 12px; text-transform: uppercase; letter-spacing: 0.06em; }
+.full-comp-header span:last-child { color: var(--green3); background: linear-gradient(135deg, rgba(34,196,122,0.07), rgba(11,191,160,0.04)); }
+.full-comp-row { display: grid; grid-template-columns: 2fr 1fr 1fr; border-bottom: 1px solid var(--border); }
+.full-comp-row:last-child { border: none; }
+.full-comp-row span { font-size: 0.7rem; padding: 9px 12px; color: var(--text2); }
+.full-comp-row span:first-child { font-weight: 600; }
+.full-comp-row span:last-child { background: rgba(34,196,122,0.03); color: var(--green2); font-weight: 700; }
+.full-comp-row span.neutral { color: var(--muted); }
+
+/* ── CONTENT LAYOUT ── */
+.content-wrap { max-width: 1100px; margin: 0 auto; padding: 80px 40px; display: grid; grid-template-columns: 1fr 340px; gap: 56px; align-items: start; }
+.content-main { min-width: 0; }
+.content-aside { position: sticky; top: 82px; }
+@media (max-width: 960px) { .content-wrap { grid-template-columns: 1fr; gap: 40px; padding: 60px 24px; } .content-aside { position: static; } }
+@media (max-width: 600px) { .content-wrap { padding: 48px 20px; } }
+
+.prose { display: flex; flex-direction: column; gap: 48px; }
+.prose-block h2 { font-size: clamp(1.3rem, 3vw, 1.7rem); font-weight: 800; letter-spacing: -0.03em; color: var(--text); margin-bottom: 14px; line-height: 1.2; }
+.prose-block h3 { font-size: 1rem; font-weight: 800; color: var(--text2); margin: 20px 0 8px; letter-spacing: -0.01em; display: flex; align-items: center; gap: 8px; }
+.prose-block h3::before { content: ''; width: 4px; height: 16px; border-radius: 2px; background: var(--green); display: block; flex-shrink: 0; }
+.prose-block p { font-size: 0.925rem; color: #3d5c48; line-height: 1.8; margin-bottom: 12px; }
+.prose-block p:last-child { margin-bottom: 0; }
+.prose-block strong { color: var(--text); font-weight: 700; }
+
+.highlight-box { background: #f0fdf7; border: 1px solid rgba(34,196,122,0.25); border-left: 4px solid var(--green); border-radius: 12px; padding: 16px 20px; font-size: 0.88rem; color: var(--text2); line-height: 1.7; margin: 16px 0; }
+.highlight-box strong { color: var(--green3); }
+
+.compare-table { width: 100%; border-collapse: collapse; border-radius: 16px; overflow: hidden; border: 1px solid var(--border); margin: 16px 0; font-size: 0.83rem; }
+.compare-table thead tr { background: var(--bg); }
+.compare-table th { padding: 12px 16px; text-align: left; font-size: 0.72rem; font-weight: 800; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; border-bottom: 1px solid var(--border); }
+.compare-table th:not(:first-child) { text-align: center; }
+.compare-table td { padding: 12px 16px; border-bottom: 1px solid var(--border); color: var(--text); vertical-align: middle; }
+.compare-table td:not(:first-child) { text-align: center; }
+.compare-table tr:last-child td { border: none; }
+.compare-table tbody tr:hover { background: #f7faf8; }
+.compare-table .col-label { font-weight: 600; color: var(--text2); }
+.icon-yes { color: var(--green2); font-size: 1rem; font-weight: 800; }
+.icon-no { color: #d1d5db; font-size: 1rem; }
+.col-finasset { background: rgba(34,196,122,0.04); }
+.col-head-finasset { background: linear-gradient(135deg, rgba(34,196,122,0.08) 0%, rgba(11,191,160,0.05) 100%); color: var(--green3) !important; }
+
+.feat-list { display: flex; flex-direction: column; gap: 12px; margin: 16px 0; }
+.feat-item { display: flex; align-items: flex-start; gap: 12px; background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 14px 16px; box-shadow: var(--shadow-sm); transition: all 0.2s; }
+.feat-item:hover { border-color: var(--border2); box-shadow: var(--shadow-md); transform: translateX(4px); }
+.feat-item-ico { width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; flex-shrink: 0; }
+.feat-item-text { flex: 1; }
+.feat-item-text strong { font-size: 0.85rem; font-weight: 800; color: var(--text); display: block; margin-bottom: 3px; }
+.feat-item-text span { font-size: 0.78rem; color: var(--muted); line-height: 1.5; }
+
+.internal-links { display: flex; flex-direction: column; gap: 8px; margin: 16px 0; }
+.internal-link { display: flex; align-items: center; gap: 8px; font-size: 0.82rem; font-weight: 600; color: var(--green3); text-decoration: none; padding: 10px 14px; background: var(--surface); border: 1px solid rgba(34,196,122,0.2); border-radius: 10px; transition: all 0.18s; }
+.internal-link:hover { background: #f0fdf7; border-color: rgba(34,196,122,0.4); }
+.internal-link svg { flex-shrink: 0; color: var(--green); }
+
+.faq-list { display: flex; flex-direction: column; gap: 8px; margin: 16px 0; }
+.faq-item { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; overflow: hidden; }
+.faq-q { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 16px 20px; cursor: pointer; font-size: 0.88rem; font-weight: 700; color: var(--text); user-select: none; transition: background 0.15s; }
+.faq-q:hover { background: var(--bg); }
+.faq-icon { width: 22px; height: 22px; border-radius: 50%; background: var(--bg); border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: all 0.25s; font-size: 0.7rem; color: var(--muted); }
+.faq-item.open .faq-icon { background: var(--green); border-color: var(--green); color: #fff; transform: rotate(45deg); }
+.faq-a { display: none; padding: 0 20px 16px; font-size: 0.84rem; color: #3d5c48; line-height: 1.75; border-top: 1px solid var(--border); }
+.faq-item.open .faq-a { display: block; }
+
+/* ── ASIDE ── */
+.aside-cta { background: linear-gradient(150deg, var(--dark) 0%, #1b3828 100%); border-radius: 20px; padding: 28px 24px; text-align: center; position: relative; overflow: hidden; }
+.aside-cta::before { content: ''; position: absolute; width: 260px; height: 200px; top: -60px; left: 50%; transform: translateX(-50%); background: radial-gradient(ellipse, rgba(34,196,122,0.2) 0%, transparent 70%); pointer-events: none; }
+.aside-cta-inner { position: relative; z-index: 1; }
+.aside-cta h3 { font-size: 1.05rem; font-weight: 800; color: #fff; letter-spacing: -0.03em; margin-bottom: 8px; }
+.aside-cta p { font-size: 0.78rem; color: rgba(255,255,255,0.45); line-height: 1.6; margin-bottom: 20px; }
+.aside-btn-g { display: flex; align-items: center; justify-content: center; gap: 8px; padding: 12px 20px; border-radius: 11px; font-family: inherit; font-size: 0.84rem; font-weight: 700; text-decoration: none; cursor: pointer; border: none; background: linear-gradient(135deg, var(--green) 0%, var(--green2) 100%); color: #fff; box-shadow: 0 3px 14px rgba(34,196,122,0.45); transition: all 0.2s; margin-bottom: 8px; width: 100%; }
+.aside-btn-g:hover { transform: translateY(-2px); box-shadow: 0 8px 22px rgba(34,196,122,0.55); }
+.aside-btn-w { display: flex; align-items: center; justify-content: center; gap: 8px; padding: 11px 20px; border-radius: 11px; font-family: inherit; font-size: 0.84rem; font-weight: 700; text-decoration: none; cursor: pointer; background: rgba(255,255,255,0.07); color: rgba(255,255,255,0.8); border: 1px solid rgba(255,255,255,0.12); transition: all 0.2s; width: 100%; }
+.aside-btn-w:hover { background: rgba(255,255,255,0.12); }
+.aside-mini-stats { margin-top: 16px; padding-top: 16px; border-top: 1px solid rgba(255,255,255,0.08); display: flex; gap: 0; }
+.aside-stat { flex: 1; text-align: center; }
+.aside-stat:first-child { border-right: 1px solid rgba(255,255,255,0.08); }
+.aside-stat-val { font-size: 1.1rem; font-weight: 800; color: var(--green); letter-spacing: -0.03em; }
+.aside-stat-label { font-size: 0.6rem; color: rgba(255,255,255,0.3); font-weight: 600; margin-top: 2px; }
+.aside-index { background: var(--surface); border: 1px solid var(--border); border-radius: 20px; padding: 22px; margin-top: 16px; }
+.aside-index-title { font-size: 0.68rem; font-weight: 800; color: var(--muted); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 14px; }
+.aside-index-list { list-style: none; display: flex; flex-direction: column; gap: 4px; }
+.aside-index-list li a { display: block; font-size: 0.8rem; font-weight: 600; color: var(--text2); text-decoration: none; padding: 7px 10px; border-radius: 8px; transition: all 0.15s; }
+.aside-index-list li a:hover { background: var(--bg); color: var(--green3); }
+.aside-index-list li a::before { content: '→ '; color: var(--border2); }
+
+/* ── CTA BOTTOM ── */
+.cta-final { background: linear-gradient(150deg, var(--dark) 0%, #1b3828 100%); margin: 0; padding: 80px 40px; text-align: center; position: relative; overflow: hidden; }
+.cta-final::before { content: ''; position: absolute; width: 600px; height: 300px; top: -80px; left: 50%; transform: translateX(-50%); background: radial-gradient(ellipse, rgba(34,196,122,0.18) 0%, transparent 70%); pointer-events: none; }
+.cta-final::after { content: ''; position: absolute; inset: 0; background-image: radial-gradient(circle, rgba(255,255,255,0.035) 1px, transparent 1px); background-size: 28px 28px; mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black 30%, transparent 100%); }
+.cta-final-inner { position: relative; z-index: 1; max-width: 560px; margin: 0 auto; }
+.cta-final h2 { font-size: clamp(1.8rem, 4vw, 2.8rem); font-weight: 800; letter-spacing: -0.04em; line-height: 1.1; color: #fff; margin-bottom: 14px; }
+.cta-final h2 em { font-style: normal; background: linear-gradient(135deg, var(--green) 0%, var(--teal) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+.cta-final p { font-size: 0.95rem; color: rgba(255,255,255,0.42); max-width: 380px; margin: 0 auto 32px; line-height: 1.7; }
+.cta-actions { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+.btn-cta-green { display: inline-flex; align-items: center; gap: 9px; padding: 14px 24px; border-radius: 13px; font-family: inherit; font-size: 0.9rem; font-weight: 700; text-decoration: none; border: none; cursor: pointer; background: linear-gradient(135deg, var(--green) 0%, var(--green2) 100%); color: #fff; box-shadow: 0 4px 18px rgba(34,196,122,0.45); transition: all 0.22s cubic-bezier(0.34,1.56,0.64,1); }
+.btn-cta-green:hover { transform: translateY(-3px); box-shadow: 0 10px 28px rgba(34,196,122,0.55); }
+.btn-cta-white { display: inline-flex; align-items: center; gap: 9px; padding: 14px 24px; border-radius: 13px; font-family: inherit; font-size: 0.9rem; font-weight: 700; text-decoration: none; cursor: pointer; background: rgba(255,255,255,0.07); color: rgba(255,255,255,0.8); border: 1px solid rgba(255,255,255,0.12); transition: all 0.22s cubic-bezier(0.34,1.56,0.64,1); }
+.btn-cta-white:hover { transform: translateY(-3px); background: rgba(255,255,255,0.12); }
+
+footer { padding: 28px 40px; background: var(--surface); border-top: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; }
+.footer-logo { display: flex; align-items: center; gap: 8px; font-size: 0.88rem; font-weight: 800; color: var(--text); text-decoration: none; letter-spacing: -0.02em; }
+footer p { font-size: 0.75rem; color: var(--muted); }
+footer a { color: var(--muted); text-decoration: none; }
+footer a:hover { color: var(--green2); }
+@media (max-width: 600px) { footer { padding: 24px 20px; justify-content: center; text-align: center; } }
+.section-divider { height: 1px; background: var(--border); margin: 0; }
+</style>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "¿Es Finasset gratis como Portfolio Performance?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Finasset tiene un plan básico gratuito que incluye seguimiento de cartera, rentabilidad y dividendos. Portfolio Performance es completamente gratuito y de código abierto. Si buscas una alternativa sin coste de entrada, Finasset te permite empezar sin tarjeta de crédito."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "¿Puedo importar datos desde Portfolio Performance a Finasset?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Puedes exportar tu historial de transacciones desde Portfolio Performance en formato CSV e importarlo en Finasset. El proceso requiere algunos ajustes de formato, pero es viable para transferir el historial completo de compras, ventas y dividendos."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "¿Finasset funciona en móvil?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Sí. Finasset está disponible como aplicación web y como app móvil, lo que significa que puedes revisar tu cartera desde el teléfono en cualquier momento. Portfolio Performance es una aplicación de escritorio basada en Java y no tiene versión móvil oficial."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "¿Qué pasa con mis datos si dejo de usar la app?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Puedes exportar todos tus datos en cualquier momento desde Finasset. Nunca quedas atrapado: tu historial de transacciones, posiciones y dividendos es siempre exportable en formatos estándar."
+      }
+    }
+  ]
+}
+</script>
+</head>
+<body>
+
+<!-- ── NAV ── -->
+<nav>
+  <a class="nav-logo" href="/">
+    <div class="logo-mark">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/>
+        <polyline points="16 7 22 7 22 13"/>
+      </svg>
+    </div>
+    FinAsset
+  </a>
+  <div class="nav-right">
+    <a class="nav-btn-ghost" href="/mobile">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18" stroke-width="3"/></svg>
+      Abrir APP
+    </a>
+    <a class="nav-btn-green" href="/mobile">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+      Probar gratis
+    </a>
+  </div>
+</nav>
+
+<!-- ── HERO ── -->
+<section class="hero">
+  <div class="hero-inner">
+    <div class="breadcrumb">
+      <a href="/">FinAsset</a>
+      <span class="breadcrumb-sep">›</span>
+      <span>Alternativa Portfolio Performance</span>
+    </div>
+
+    <div class="hero-badge">
+      <span class="badge-dot"></span>
+      Comparativa de herramientas
+    </div>
+
+    <h1>Alternativa a Portfolio Performance: una forma más <em>simple</em> de seguir tu cartera</h1>
+
+    <p class="hero-sub">
+      Portfolio Performance es una herramienta sólida. Pero no es la única opción. Si buscas algo más inmediato, más visual y sin curva de aprendizaje, aquí tienes una alternativa honesta.
+    </p>
+
+    <div class="cta-group">
+      <a class="btn btn-primary" href="/mobile">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>
+        Prueba una alternativa más simple
+      </a>
+      <a class="btn btn-ghost" href="/mobile">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+        Ver demo
+      </a>
+    </div>
+
+    <div class="hero-trust">
+      <span class="trust-check">✓ Sin instalación</span>
+      <span class="trust-sep"></span>
+      <span>Web + Móvil</span>
+      <span class="trust-sep"></span>
+      <span>Precios en tiempo real</span>
+      <span class="trust-sep"></span>
+      <span>Multi-broker</span>
+    </div>
+  </div>
+
+  <!-- Demo visual: comparison card -->
+  <div class="demo-wrap">
+    <div class="demo-card">
+      <div class="demo-topbar">
+        <div class="demo-dots">
+          <div class="demo-dot" style="background:#f87171"></div>
+          <div class="demo-dot" style="background:#fbbf24"></div>
+          <div class="demo-dot" style="background:#22c47a"></div>
+        </div>
+        <div class="demo-title-bar">finasset.app — Comparativa de herramientas</div>
+      </div>
+      <div class="demo-body">
+        <div style="font-size:0.7rem;font-weight:800;color:var(--text);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:14px;">Portfolio Performance vs Finasset</div>
+        <div class="full-comp">
+          <div class="full-comp-header">
+            <span>Característica</span>
+            <span>Portfolio Performance</span>
+            <span>Finasset</span>
+          </div>
+          <div class="full-comp-row">
+            <span>Curva de aprendizaje</span>
+            <span class="neutral">Alta</span>
+            <span>Baja</span>
+          </div>
+          <div class="full-comp-row">
+            <span>Configuración inicial</span>
+            <span class="neutral">Manual / compleja</span>
+            <span>En minutos</span>
+          </div>
+          <div class="full-comp-row">
+            <span>Interfaz</span>
+            <span class="neutral">Desktop (Java)</span>
+            <span>Web + Móvil</span>
+          </div>
+          <div class="full-comp-row">
+            <span>Precios en tiempo real</span>
+            <span class="neutral">Import / plugins</span>
+            <span>Automático</span>
+          </div>
+          <div class="full-comp-row">
+            <span>Multi-broker</span>
+            <span class="neutral">Manual</span>
+            <span>Unificado</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- ── CONTENT + ASIDE ── -->
+<div class="content-wrap">
+
+  <main class="content-main">
+    <article class="prose">
+
+      <!-- Bloque 1 -->
+      <div class="prose-block" id="que-ofrece">
+        <h2>Qué ofrece Portfolio Performance</h2>
+        <p>Portfolio Performance es una aplicación de escritorio de código abierto, gratuita y muy completa para el seguimiento de carteras de inversión. Ha sido desarrollada por una comunidad activa durante años y ofrece un nivel de detalle difícil de igualar: gestión de múltiples cuentas y depósitos, seguimiento de transacciones, cálculo de rentabilidades ponderadas por tiempo y dinero, análisis de dividendos y una potente herramienta de informes.</p>
+        <p>Es especialmente popular en la comunidad inversora de habla alemana, aunque tiene usuarios en toda Europa. Su capacidad para manejar <strong>carteras complejas con mucho historial</strong>, muchas posiciones y múltiples divisas la convierte en una referencia para inversores exigentes que quieren control total sobre sus datos.</p>
+        <p>Al ser de código abierto, los datos se almacenan localmente, lo que para muchos usuarios es una ventaja importante en términos de privacidad. No depende de ningún servidor externo ni de una suscripción de pago para seguir funcionando.</p>
+      </div>
+
+      <!-- Bloque 2 -->
+      <div class="prose-block" id="cuando-corto">
+        <h2>Cuándo se te puede quedar corto o resultar complejo</h2>
+
+        <h3>Curva de aprendizaje</h3>
+        <p>Portfolio Performance tiene una interfaz funcional pero densa. Configurar correctamente las cuentas, los depósitos, los tipos de cambio y las conexiones con fuentes de datos de precios requiere tiempo. No es una herramienta que puedas tener funcionando en diez minutos: muchos usuarios reportan que necesitaron horas o días para tenerla configurada a su gusto y entender bien todas sus opciones.</p>
+        <p>Para alguien que está empezando a invertir o que tiene una cartera relativamente sencilla, esta curva de aprendizaje puede ser un freno. El resultado final es potente, pero el camino hasta llegar ahí exige dedicación.</p>
+
+        <h3>Configuración manual</h3>
+        <p>Portfolio Performance no se conecta automáticamente a tu broker. Los precios de mercado se obtienen a través de plugins y fuentes configurables manualmente, lo que puede requerir mantenimiento cuando cambian las APIs o las fuentes. Las transacciones también se introducen a mano o se importan desde archivos CSV, lo que añade un paso más en el flujo de trabajo habitual.</p>
+        <p>Para usuarios que prefieren que su herramienta de seguimiento se actualice sola y requiera la mínima intervención diaria, este aspecto puede resultar tedioso con el tiempo.</p>
+      </div>
+
+      <!-- Bloque 3 -->
+      <div class="prose-block" id="que-buscar">
+        <h2>Qué buscar en una alternativa moderna</h2>
+
+        <h3>Simplicidad</h3>
+        <p>Una buena alternativa debería estar operativa en minutos, no en días. El proceso de añadir posiciones, configurar el seguimiento y obtener una primera vista de la cartera tiene que ser intuitivo, sin necesidad de leer documentación extensa ni configurar fuentes de datos externas. La simplicidad no significa falta de funciones: significa que las funciones importantes están accesibles sin fricciones.</p>
+
+        <h3>Claridad visual</h3>
+        <p>El seguimiento de cartera tiene un propósito práctico: ayudarte a tomar mejores decisiones. Para eso, la información tiene que presentarse de forma clara. Gráficos que muestran la evolución del portafolio, distribución por activo en un vistazo, rentabilidad total vs aportada de forma inmediata. No páginas de opciones y configuraciones, sino los datos relevantes en el primer plano.</p>
+
+        <h3>Seguimiento diario</h3>
+        <p>Un seguimiento real requiere datos actualizados. Una herramienta moderna debería obtener los precios de mercado de forma automática, sin que tengas que importar archivos ni actualizar manualmente. Esto permite revisar la cartera en cualquier momento desde cualquier dispositivo y obtener siempre una imagen fiel de la situación actual.</p>
+      </div>
+
+      <!-- Bloque 4 -->
+      <div class="prose-block" id="finasset-alternativa">
+        <h2>Por qué Finasset puede ser una buena alternativa</h2>
+        <p>Finasset no pretende reemplazar a Portfolio Performance para usuarios avanzados que llevan años con la herramienta y tienen workflows muy establecidos. Pero para inversores que buscan empezar rápido, tener los datos en el móvil y no quieren invertir horas en configuración, es una opción honesta a considerar.</p>
+
+        <div class="feat-list">
+          <div class="feat-item">
+            <div class="feat-item-ico" style="background:#ecfdf5">⚡</div>
+            <div class="feat-item-text">
+              <strong>Listo en minutos</strong>
+              <span>Sin instalación, sin configuración de fuentes de datos. Creas la cuenta, añades tus posiciones y tienes una vista de cartera de inmediato.</span>
+            </div>
+          </div>
+          <div class="feat-item">
+            <div class="feat-item-ico" style="background:#eff6ff">📱</div>
+            <div class="feat-item-text">
+              <strong>Web y móvil</strong>
+              <span>Accede desde el ordenador o el teléfono. La cartera se sincroniza automáticamente y siempre tienes los datos actualizados contigo.</span>
+            </div>
+          </div>
+          <div class="feat-item">
+            <div class="feat-item-ico" style="background:#fef9c3">📡</div>
+            <div class="feat-item-text">
+              <strong>Precios en tiempo real</strong>
+              <span>Sin importar archivos ni configurar plugins. Los precios se actualizan automáticamente para que la cartera refleje siempre el valor de mercado actual.</span>
+            </div>
+          </div>
+          <div class="feat-item">
+            <div class="feat-item-ico" style="background:#fdf4ff">🏦</div>
+            <div class="feat-item-text">
+              <strong>Multi-broker sin fricción</strong>
+              <span>Añade posiciones de distintos brokers en un mismo panel. Sin copiar y pegar entre hojas, sin consolidad manualmente.</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Bloque 5 -->
+      <div class="prose-block" id="comparativa">
+        <h2>Portfolio Performance vs Finasset</h2>
+        <p>Una comparativa honesta entre ambas herramientas para que puedas decidir cuál se adapta mejor a tu situación:</p>
+
+        <table class="compare-table">
+          <thead>
+            <tr>
+              <th>Característica</th>
+              <th>Portfolio Performance</th>
+              <th class="col-head-finasset">Finasset</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="col-label">Precio</td>
+              <td>Gratuito (open source)</td>
+              <td class="col-finasset">Gratuito (plan básico)</td>
+            </tr>
+            <tr>
+              <td class="col-label">Plataforma</td>
+              <td>Desktop (Java)</td>
+              <td class="col-finasset"><span class="icon-yes">Web + Móvil</span></td>
+            </tr>
+            <tr>
+              <td class="col-label">Curva de aprendizaje</td>
+              <td>Alta</td>
+              <td class="col-finasset"><span class="icon-yes">Baja</span></td>
+            </tr>
+            <tr>
+              <td class="col-label">Datos de precios</td>
+              <td>Import manual / plugins</td>
+              <td class="col-finasset"><span class="icon-yes">Tiempo real automático</span></td>
+            </tr>
+            <tr>
+              <td class="col-label">Multi-broker</td>
+              <td>Manual</td>
+              <td class="col-finasset"><span class="icon-yes">Unificado</span></td>
+            </tr>
+            <tr>
+              <td class="col-label">Dividendos</td>
+              <td>Sí (manual)</td>
+              <td class="col-finasset"><span class="icon-yes">Sí (automático)</span></td>
+            </tr>
+            <tr>
+              <td class="col-label">Soporte en español</td>
+              <td>Parcial</td>
+              <td class="col-finasset"><span class="icon-yes">Completo</span></td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="internal-links">
+          <a class="internal-link" href="/alternativas-a-portfolio-performance.html">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><polyline points="12 5 19 12 12 19"/></svg>
+            Otras alternativas a Portfolio Performance
+          </a>
+          <a class="internal-link" href="/portfolio-performance-espanol.html">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><polyline points="12 5 19 12 12 19"/></svg>
+            Portfolio Performance en español
+          </a>
+          <a class="internal-link" href="/software-seguimiento-inversiones.html">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><polyline points="12 5 19 12 12 19"/></svg>
+            Software de seguimiento de inversiones
+          </a>
+        </div>
+      </div>
+
+      <!-- FAQ -->
+      <div class="prose-block" id="faq">
+        <h2>Preguntas frecuentes</h2>
+
+        <div class="faq-list">
+          <div class="faq-item open">
+            <div class="faq-q" onclick="this.parentElement.classList.toggle('open')">
+              ¿Es Finasset gratis como Portfolio Performance?
+              <span class="faq-icon">+</span>
+            </div>
+            <div class="faq-a">
+              Finasset tiene un plan básico gratuito que incluye seguimiento de cartera, rentabilidad y dividendos. Portfolio Performance es completamente gratuito y de código abierto. Si buscas una alternativa sin coste de entrada, Finasset te permite empezar sin tarjeta de crédito.
+            </div>
+          </div>
+          <div class="faq-item">
+            <div class="faq-q" onclick="this.parentElement.classList.toggle('open')">
+              ¿Puedo importar datos desde Portfolio Performance a Finasset?
+              <span class="faq-icon">+</span>
+            </div>
+            <div class="faq-a">
+              Puedes exportar tu historial de transacciones desde Portfolio Performance en formato CSV e importarlo en Finasset. El proceso requiere algunos ajustes de formato, pero es viable para transferir el historial completo de compras, ventas y dividendos.
+            </div>
+          </div>
+          <div class="faq-item">
+            <div class="faq-q" onclick="this.parentElement.classList.toggle('open')">
+              ¿Finasset funciona en móvil?
+              <span class="faq-icon">+</span>
+            </div>
+            <div class="faq-a">
+              Sí. Finasset está disponible como aplicación web y como app móvil, lo que significa que puedes revisar tu cartera desde el teléfono en cualquier momento. Portfolio Performance es una aplicación de escritorio basada en Java y no tiene versión móvil oficial.
+            </div>
+          </div>
+          <div class="faq-item">
+            <div class="faq-q" onclick="this.parentElement.classList.toggle('open')">
+              ¿Qué pasa con mis datos si dejo de usar la app?
+              <span class="faq-icon">+</span>
+            </div>
+            <div class="faq-a">
+              Puedes exportar todos tus datos en cualquier momento desde Finasset. Nunca quedas atrapado: tu historial de transacciones, posiciones y dividendos es siempre exportable en formatos estándar.
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </article>
+  </main>
+
+  <!-- ASIDE -->
+  <aside class="content-aside">
+    <div class="aside-cta">
+      <div class="aside-cta-inner">
+        <h3>Prueba una alternativa más simple</h3>
+        <p>Sin instalación. Sin configuración manual. Cartera visible en minutos.</p>
+        <a class="aside-btn-g" href="/mobile">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>
+          Prueba una alternativa más simple
+        </a>
+        <a class="aside-btn-w" href="/mobile">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+          Ver demo
+        </a>
+        <div class="aside-mini-stats">
+          <div class="aside-stat">
+            <div class="aside-stat-val">12K+</div>
+            <div class="aside-stat-label">Inversores</div>
+          </div>
+          <div class="aside-stat">
+            <div class="aside-stat-val">150+</div>
+            <div class="aside-stat-label">Mercados</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="aside-index">
+      <div class="aside-index-title">En esta página</div>
+      <ul class="aside-index-list">
+        <li><a href="#que-ofrece">Qué ofrece Portfolio Performance</a></li>
+        <li><a href="#cuando-corto">Cuándo se queda corto</a></li>
+        <li><a href="#que-buscar">Qué buscar en una alternativa</a></li>
+        <li><a href="#finasset-alternativa">Por qué Finasset</a></li>
+        <li><a href="#comparativa">Comparativa completa</a></li>
+        <li><a href="#faq">Preguntas frecuentes</a></li>
+      </ul>
+    </div>
+  </aside>
+
+</div>
+
+<!-- ── CTA FINAL ── -->
+<div class="cta-final">
+  <div class="cta-final-inner">
+    <h2>Una alternativa más simple.<br><em>Pruébala gratis.</em></h2>
+    <p>Sin instalación, sin curva de aprendizaje. Tu cartera visible desde el primer día.</p>
+    <div class="cta-actions">
+      <a class="btn-cta-green" href="/mobile">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>
+        Prueba una alternativa más simple
+      </a>
+      <a class="btn-cta-white" href="/mobile">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+        Ver demo
+      </a>
+    </div>
+  </div>
+</div>
+
+<!-- ── FOOTER ── -->
+<footer>
+  <a class="footer-logo" href="/">
+    <div class="logo-mark" style="width:26px;height:26px;border-radius:8px">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/>
+        <polyline points="16 7 22 7 22 13"/>
+      </svg>
+    </div>
+    FinAsset
+  </a>
+  <p>© 2025 FinAsset &nbsp;·&nbsp; <a href="https://finasset.app">finasset.app</a> &nbsp;·&nbsp; <a href="/alternativa-portfolio-performance.html">Alternativa a Portfolio Performance</a></p>
+</footer>
+
+<script>
+document.querySelectorAll('.faq-q').forEach(q => {
+  q.addEventListener('click', () => {
+    const item = q.parentElement;
+    const wasOpen = item.classList.contains('open');
+    document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('open'));
+    if (!wasOpen) item.classList.add('open');
+  });
+});
+</script>
+
+</body>
+</html>
