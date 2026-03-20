@@ -244,6 +244,27 @@ footer{background:var(--surface);border-top:1px solid var(--border);padding:56px
   ]
 }
 </script>
+
+<style>
+.seo-banner-section{padding:48px 20px 20px;display:flex;flex-direction:column;align-items:center;gap:10px;background:var(--bg,#f7faf8)}
+.seo-banner-eyebrow{font-size:.7rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:#17a864;margin-bottom:4px;text-align:center}
+.seo-banner-title{font-size:1.25rem;font-weight:800;color:#111c16;letter-spacing:-.03em;text-align:center;margin-bottom:16px}
+.seo-phones{display:flex;align-items:flex-end;justify-content:center;gap:16px;width:100%;max-width:760px}
+.seo-phone-wrap{display:flex;flex-direction:column;align-items:center;gap:10px;position:relative;z-index:1;transition:z-index 0s}
+.seo-phone-wrap:hover{z-index:5}
+.seo-phone-label{font-size:.72rem;font-weight:700;color:#1a3d2b;text-align:center;line-height:1.3;letter-spacing:-.01em}
+.seo-card-phone{background:#fff;border-radius:20px;overflow:hidden;box-shadow:0 8px 32px rgba(0,0,0,.13);flex-shrink:0;transition:transform .35s ease,box-shadow .35s ease}
+.seo-card-phone img{width:100%;height:100%;object-fit:cover;object-position:top center;display:block}
+.seo-phone-wrap.seo-left .seo-card-phone{width:148px;height:278px;transform:rotate(-3deg) translateY(8px)}
+.seo-phone-wrap.seo-left:hover .seo-card-phone{transform:rotate(-1deg) translateY(0) scale(1.03);box-shadow:0 20px 50px rgba(0,0,0,.2)}
+.seo-phone-wrap.seo-center .seo-card-phone{width:172px;height:314px;box-shadow:0 16px 50px rgba(0,0,0,.18)}
+.seo-phone-wrap.seo-center:hover .seo-card-phone{transform:translateY(-6px) scale(1.02);box-shadow:0 24px 60px rgba(0,0,0,.22)}
+.seo-phone-wrap.seo-right .seo-card-phone{width:148px;height:278px;transform:rotate(3deg) translateY(8px)}
+.seo-phone-wrap.seo-right:hover .seo-card-phone{transform:rotate(1deg) translateY(0) scale(1.03);box-shadow:0 20px 50px rgba(0,0,0,.2)}
+.seo-banner-cta{display:inline-flex;align-items:center;gap:8px;margin-top:20px;padding:13px 24px;background:#22c47a;color:#fff;border-radius:12px;font-size:.88rem;font-weight:700;text-decoration:none;transition:all .2s}
+.seo-banner-cta:hover{background:#17a864;transform:translateY(-2px)}
+@media(max-width:520px){.seo-phone-wrap.seo-left .seo-card-phone{width:110px;height:208px}.seo-phone-wrap.seo-center .seo-card-phone{width:130px;height:238px}.seo-phone-wrap.seo-right .seo-card-phone{width:110px;height:208px}.seo-phones{gap:10px}}
+</style>
 </head>
 <body>
 
@@ -492,7 +513,30 @@ footer{background:var(--surface);border-top:1px solid var(--border);padding:56px
         <p>Finasset integra todos estos datos en una sola vista por posición. Cuando abres el detalle de una acción, ves de un vistazo: el historial de pagos de los últimos años, el yield on cost calculado sobre tu precio de compra real, las retenciones aplicadas, la racha de años de crecimiento y la proyección de cobros futuros.</p>
         <p>Todo esto actualizado automáticamente. Cuando una empresa anuncia su próximo dividendo, Finasset lo incorpora a tu proyección en tiempo real. Cuando hay un recorte, te avisa. Cuando tu yield on cost supera un umbral que definas, también.</p>
 
-        <div class="internal-links">
+        
+<section class="seo-banner-section">
+  <div class="seo-banner-eyebrow">Así funciona la app</div>
+  <div class="seo-banner-title">Todo tu portfolio, siempre contigo</div>
+  <div class="seo-phones">
+    <div class="seo-phone-wrap seo-left">
+      <div class="seo-phone-label">IA a tu<br>Cartera</div>
+      <div class="seo-card-phone"><img src="/screenshots/app-screen-1.png" alt="Análisis IA Finasset" loading="lazy" width="148" height="278"></div>
+    </div>
+    <div class="seo-phone-wrap seo-center">
+      <div class="seo-phone-label">Análisis<br>detallado</div>
+      <div class="seo-card-phone"><img src="/screenshots/app-screen-2.png" alt="Análisis cartera Finasset" loading="lazy" width="172" height="314"></div>
+    </div>
+    <div class="seo-phone-wrap seo-right">
+      <div class="seo-phone-label">Análisis<br>Impuestos</div>
+      <div class="seo-card-phone"><img src="/screenshots/app-screen-3.png" alt="Impuestos Finasset" loading="lazy" width="148" height="278"></div>
+    </div>
+  </div>
+  <a class="seo-banner-cta" href="/desktop">
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+    Probar gratis — Abrir Web
+  </a>
+</section>
+<div class="internal-links">
           <a class="internal-link" href="/tracker-dividendos.html"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><polyline points="12 5 19 12 12 19"/></svg>seguimiento de dividendos</a>
           <a class="internal-link" href="/mejor-app-para-dividendos.html"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><polyline points="12 5 19 12 12 19"/></svg>herramienta para dividendos</a>
           <a class="internal-link" href="/como-controlar-dividendos.html"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><polyline points="12 5 19 12 12 19"/></svg>controlar dividendos paso a paso</a>

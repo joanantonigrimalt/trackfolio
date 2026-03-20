@@ -161,6 +161,27 @@ footer{background:var(--surface);border-top:1px solid var(--border);padding:56px
 <script type="application/ld+json">
 {"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"¿Qué métricas debe mostrar una app para ETFs?","acceptedAnswer":{"@type":"Answer","text":"Las métricas más útiles para una cartera de ETFs son: rentabilidad ponderada por el tiempo (TWR), distribución por geografía y sector, solapamientos entre ETFs, tracking difference respecto al índice y, si los ETFs son de distribución, calendario de pagos y proyección de dividendos anuales."}},{"@type":"Question","name":"¿Cómo detecta una app los solapamientos entre ETFs?","acceptedAnswer":{"@type":"Answer","text":"Una app avanzada para ETFs cruza las participaciones de cada fondo con las de los otros ETFs de tu cartera. Por ejemplo, si tienes VUSA (S&P 500) y también IWDA (MSCI World), hay una exposición duplicada a las empresas americanas. Finasset muestra este solapamiento de forma visual para que puedas valorar si es intencional o no."}},{"@type":"Question","name":"¿Una app para ETFs sirve también para ETFs de distribución?","acceptedAnswer":{"@type":"Answer","text":"Sí. Los ETFs de distribución pagan dividendos periódicos igual que las acciones individuales. Una buena app debe incluir el calendario de distribuciones, el importe por unidad y la proyección anual de ingresos, exactamente igual que haría para acciones de dividendo."}},{"@type":"Question","name":"¿Necesito una app diferente si mezclo ETFs y acciones?","acceptedAnswer":{"@type":"Answer","text":"No. Lo ideal es usar una sola herramienta que gestione ambos tipos de activo en el mismo panel. Finasset trata ETFs y acciones como posiciones equivalentes y unifica los dividendos de distribución de ETFs con los dividendos de acciones individuales en un único calendario."}}]}
 </script>
+
+<style>
+.seo-banner-section{padding:48px 20px 20px;display:flex;flex-direction:column;align-items:center;gap:10px;background:var(--bg,#f7faf8)}
+.seo-banner-eyebrow{font-size:.7rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:#17a864;margin-bottom:4px;text-align:center}
+.seo-banner-title{font-size:1.25rem;font-weight:800;color:#111c16;letter-spacing:-.03em;text-align:center;margin-bottom:16px}
+.seo-phones{display:flex;align-items:flex-end;justify-content:center;gap:16px;width:100%;max-width:760px}
+.seo-phone-wrap{display:flex;flex-direction:column;align-items:center;gap:10px;position:relative;z-index:1;transition:z-index 0s}
+.seo-phone-wrap:hover{z-index:5}
+.seo-phone-label{font-size:.72rem;font-weight:700;color:#1a3d2b;text-align:center;line-height:1.3;letter-spacing:-.01em}
+.seo-card-phone{background:#fff;border-radius:20px;overflow:hidden;box-shadow:0 8px 32px rgba(0,0,0,.13);flex-shrink:0;transition:transform .35s ease,box-shadow .35s ease}
+.seo-card-phone img{width:100%;height:100%;object-fit:cover;object-position:top center;display:block}
+.seo-phone-wrap.seo-left .seo-card-phone{width:148px;height:278px;transform:rotate(-3deg) translateY(8px)}
+.seo-phone-wrap.seo-left:hover .seo-card-phone{transform:rotate(-1deg) translateY(0) scale(1.03);box-shadow:0 20px 50px rgba(0,0,0,.2)}
+.seo-phone-wrap.seo-center .seo-card-phone{width:172px;height:314px;box-shadow:0 16px 50px rgba(0,0,0,.18)}
+.seo-phone-wrap.seo-center:hover .seo-card-phone{transform:translateY(-6px) scale(1.02);box-shadow:0 24px 60px rgba(0,0,0,.22)}
+.seo-phone-wrap.seo-right .seo-card-phone{width:148px;height:278px;transform:rotate(3deg) translateY(8px)}
+.seo-phone-wrap.seo-right:hover .seo-card-phone{transform:rotate(1deg) translateY(0) scale(1.03);box-shadow:0 20px 50px rgba(0,0,0,.2)}
+.seo-banner-cta{display:inline-flex;align-items:center;gap:8px;margin-top:20px;padding:13px 24px;background:#22c47a;color:#fff;border-radius:12px;font-size:.88rem;font-weight:700;text-decoration:none;transition:all .2s}
+.seo-banner-cta:hover{background:#17a864;transform:translateY(-2px)}
+@media(max-width:520px){.seo-phone-wrap.seo-left .seo-card-phone{width:110px;height:208px}.seo-phone-wrap.seo-center .seo-card-phone{width:130px;height:238px}.seo-phone-wrap.seo-right .seo-card-phone{width:110px;height:208px}.seo-phones{gap:10px}}
+</style>
 </head>
 <body>
 <nav>
@@ -252,7 +273,30 @@ footer{background:var(--surface);border-top:1px solid var(--border);padding:56px
         <p>No todos los inversores en ETFs necesitan un análisis de solapamientos a nivel de empresa individual. Si tu cartera es un fondo all-world y poco más, la herramienta correcta es la más simple que te muestre el valor total, la rentabilidad y las aportaciones históricas.</p>
         <p>La clave está en que la app crezca contigo: que empiece siendo simple para una cartera de 1-2 ETFs pero que pueda manejar 8-10 fondos con solapamientos, ETFs mixtos distribución/acumulación y varios brokers cuando llegues a ese punto.</p>
 
-        <div class="internal-links">
+        
+<section class="seo-banner-section">
+  <div class="seo-banner-eyebrow">Así funciona la app</div>
+  <div class="seo-banner-title">Todo tu portfolio, siempre contigo</div>
+  <div class="seo-phones">
+    <div class="seo-phone-wrap seo-left">
+      <div class="seo-phone-label">IA a tu<br>Cartera</div>
+      <div class="seo-card-phone"><img src="/screenshots/app-screen-1.png" alt="Análisis IA Finasset" loading="lazy" width="148" height="278"></div>
+    </div>
+    <div class="seo-phone-wrap seo-center">
+      <div class="seo-phone-label">Análisis<br>detallado</div>
+      <div class="seo-card-phone"><img src="/screenshots/app-screen-2.png" alt="Análisis cartera Finasset" loading="lazy" width="172" height="314"></div>
+    </div>
+    <div class="seo-phone-wrap seo-right">
+      <div class="seo-phone-label">Análisis<br>Impuestos</div>
+      <div class="seo-card-phone"><img src="/screenshots/app-screen-3.png" alt="Impuestos Finasset" loading="lazy" width="148" height="278"></div>
+    </div>
+  </div>
+  <a class="seo-banner-cta" href="/desktop">
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+    Probar gratis — Abrir Web
+  </a>
+</section>
+<div class="internal-links">
           <a class="internal-link" href="/gestor-cartera-etf.html"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><polyline points="12 5 19 12 12 19"/></svg>gestor de cartera ETF</a>
           <a class="internal-link" href="/como-controlar-una-cartera-de-etfs.html"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><polyline points="12 5 19 12 12 19"/></svg>cómo controlar una cartera de ETFs</a>
           <a class="internal-link" href="/app-seguimiento-cartera.html"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><polyline points="12 5 19 12 12 19"/></svg>app de seguimiento de cartera</a>
