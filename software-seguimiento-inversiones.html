@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Software de seguimiento de inversiones | Qué debe ofrecer</title>
+<meta name="description" content="Descubre qué debe ofrecer un software de seguimiento de inversiones y cómo elegir una herramienta útil para tu cartera.">
+<meta property="og:title" content="Software de seguimiento de inversiones | Qué debe ofrecer">
+<meta property="og:description" content="Descubre qué debe ofrecer un software de seguimiento de inversiones y cómo elegir una herramienta útil para tu cartera.">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://finasset.app/software-seguimiento-inversiones.html">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet">
+<style>
+:root{--green:#22c47a;--green2:#17a864;--green3:#0f7347;--teal:#0bbfa0;--dark:#0e1f15;--bg:#f7faf8;--surface:#ffffff;--text:#111c16;--text2:#2d4a39;--muted:#7a9585;--border:#e4ede8;--border2:#d0e2d8;--red:#ef4444;--yellow:#f59e0b;--blue:#3b82f6;--purple:#8b5cf6;--shadow-sm:0 1px 4px rgba(14,31,21,0.06),0 4px 16px rgba(14,31,21,0.05);--shadow-md:0 4px 20px rgba(14,31,21,0.08),0 12px 40px rgba(14,31,21,0.06);--shadow-lg:0 8px 40px rgba(14,31,21,0.12),0 24px 64px rgba(14,31,21,0.08)}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}html{scroll-behavior:smooth}body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(--text);overflow-x:hidden}
+nav{position:fixed;top:0;left:0;right:0;z-index:200;height:62px;display:flex;align-items:center;justify-content:space-between;padding:0 40px;background:rgba(247,250,248,0.9);backdrop-filter:blur(20px);border-bottom:1px solid var(--border)}
+.nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none;font-weight:800;font-size:1.05rem;color:var(--text);letter-spacing:-0.03em}
+.logo-mark{width:32px;height:32px;border-radius:10px;background:linear-gradient(135deg,var(--green) 0%,var(--teal) 100%);display:flex;align-items:center;justify-content:center;box-shadow:0 2px 12px rgba(34,196,122,0.35);flex-shrink:0}
+.logo-mark svg{width:17px;height:17px;color:#fff}
+.nav-right{display:flex;align-items:center;gap:8px}
+.nav-btn-ghost{font-size:0.82rem;font-weight:700;color:var(--text2);text-decoration:none;padding:8px 18px;border-radius:10px;border:1.5px solid var(--border2);background:var(--surface);box-shadow:var(--shadow-sm);transition:all 0.18s;display:flex;align-items:center;gap:7px}
+.nav-btn-ghost:hover{border-color:var(--green);color:var(--green3)}
+.nav-btn-green{font-size:0.82rem;font-weight:700;text-decoration:none;padding:8px 18px;border-radius:10px;background:linear-gradient(135deg,var(--green) 0%,var(--green2) 100%);color:#fff;box-shadow:0 2px 12px rgba(34,196,122,0.4);transition:all 0.2s;display:flex;align-items:center;gap:7px}
+.nav-btn-green:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(34,196,122,0.45)}
+@media(max-width:640px){nav{padding:0 20px}.nav-btn-ghost{display:none}}
+.hero{padding:110px 24px 72px;text-align:center;position:relative;overflow:hidden;background:var(--surface);border-bottom:1px solid var(--border)}
+.hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 60% 50% at 50% -10%,rgba(34,196,122,0.11) 0%,transparent 65%),radial-gradient(ellipse 40% 30% at 90% 100%,rgba(11,191,160,0.06) 0%,transparent 60%)}
+.hero::after{content:'';position:absolute;inset:0;background-image:radial-gradient(circle,rgba(34,196,122,0.1) 1px,transparent 1px);background-size:32px 32px;mask-image:radial-gradient(ellipse 80% 80% at 50% 50%,black 20%,transparent 100%)}
+.hero-inner{position:relative;z-index:1;max-width:760px;margin:0 auto}
+.breadcrumb{display:inline-flex;align-items:center;gap:6px;font-size:0.72rem;color:var(--muted);font-weight:500;margin-bottom:20px}
+.breadcrumb a{color:var(--muted);text-decoration:none}.breadcrumb a:hover{color:var(--green2)}.breadcrumb-sep{color:var(--border2)}
+.hero-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(34,196,122,0.08);border:1.5px solid rgba(34,196,122,0.2);border-radius:100px;padding:5px 14px 5px 8px;margin-bottom:24px;font-size:0.7rem;font-weight:700;color:var(--green3);letter-spacing:0.05em;text-transform:uppercase}
+.badge-dot{width:18px;height:18px;border-radius:50%;background:rgba(34,196,122,0.12);display:flex;align-items:center;justify-content:center}
+.badge-dot::after{content:'';width:7px;height:7px;border-radius:50%;background:var(--green);box-shadow:0 0 7px rgba(34,196,122,0.7);animation:blink 2.2s ease-in-out infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0.35}}
+.hero h1{font-size:clamp(2rem,5vw,3.4rem);font-weight:800;letter-spacing:-0.04em;line-height:1.1;color:var(--text);margin-bottom:20px}
+.hero h1 em{font-style:normal;background:linear-gradient(135deg,var(--green) 0%,var(--teal) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hero-sub{font-size:clamp(0.95rem,2vw,1.08rem);line-height:1.75;color:var(--muted);max-width:560px;margin:0 auto 36px}
+.cta-group{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-bottom:36px}
+.btn{display:inline-flex;align-items:center;gap:9px;padding:14px 24px;border-radius:13px;font-family:inherit;font-size:0.9rem;font-weight:700;text-decoration:none;border:none;cursor:pointer;transition:all 0.22s cubic-bezier(0.34,1.56,0.64,1)}
+.btn:active{transform:scale(0.97)!important}
+.btn-primary{background:linear-gradient(135deg,var(--green) 0%,var(--green2) 100%);color:#fff;box-shadow:0 4px 18px rgba(34,196,122,0.4);animation:btnPulse 3s ease-in-out infinite}
+@keyframes btnPulse{0%,100%{box-shadow:0 4px 18px rgba(34,196,122,0.4),0 0 0 0 rgba(34,196,122,0.25)}50%{box-shadow:0 4px 18px rgba(34,196,122,0.4),0 0 0 7px rgba(34,196,122,0)}}
+.btn-primary:hover{transform:translateY(-3px);box-shadow:0 10px 30px rgba(34,196,122,0.5)}
+.btn-ghost{background:var(--surface);color:var(--text2);border:1.5px solid var(--border2);box-shadow:var(--shadow-sm)}
+.btn-ghost:hover{transform:translateY(-2px);border-color:var(--green);color:var(--green3);box-shadow:0 6px 20px rgba(14,31,21,0.09)}
+.hero-trust{display:flex;align-items:center;gap:8px;justify-content:center;font-size:0.75rem;color:var(--muted);font-weight:500;flex-wrap:wrap}
+.trust-sep{width:3px;height:3px;background:var(--border2);border-radius:50%}
+.trust-check{color:var(--green);font-weight:700}
+.demo-wrap{margin:48px auto 0;max-width:680px;position:relative;z-index:1}
+.demo-card{background:var(--surface);border:1px solid var(--border);border-radius:20px;box-shadow:var(--shadow-lg);overflow:hidden}
+.demo-topbar{background:var(--bg);border-bottom:1px solid var(--border);padding:12px 18px;display:flex;align-items:center;gap:10px}
+.demo-dots{display:flex;gap:5px}.demo-dot{width:10px;height:10px;border-radius:50%}
+.demo-title-bar{flex:1;background:var(--surface);border:1px solid var(--border);border-radius:6px;height:24px;display:flex;align-items:center;padding:0 10px;font-size:0.65rem;color:var(--muted)}
+.demo-body{padding:20px}
+.content-wrap{max-width:1100px;margin:0 auto;padding:80px 40px;display:grid;grid-template-columns:1fr 340px;gap:56px;align-items:start}
+.content-main{min-width:0}.content-aside{position:sticky;top:82px}
+@media(max-width:960px){.content-wrap{grid-template-columns:1fr;gap:40px;padding:60px 24px}.content-aside{position:static}}
+@media(max-width:600px){.content-wrap{padding:48px 20px}}
+.prose{display:flex;flex-direction:column;gap:48px}
+.prose-block h2{font-size:clamp(1.3rem,3vw,1.7rem);font-weight:800;letter-spacing:-0.03em;color:var(--text);margin-bottom:14px;line-height:1.2}
+.prose-block h3{font-size:1rem;font-weight:800;color:var(--text2);margin:20px 0 8px;letter-spacing:-0.01em;display:flex;align-items:center;gap:8px}
+.prose-block h3::before{content:'';width:4px;height:16px;border-radius:2px;background:var(--green);display:block;flex-shrink:0}
+.prose-block p{font-size:0.925rem;color:#3d5c48;line-height:1.8;margin-bottom:12px}
+.prose-block p:last-child{margin-bottom:0}
+.prose-block strong{color:var(--text);font-weight:700}
+.highlight-box{background:#f0fdf7;border:1px solid rgba(34,196,122,0.25);border-left:4px solid var(--green);border-radius:12px;padding:16px 20px;font-size:0.88rem;color:var(--text2);line-height:1.7;margin:16px 0}
+.highlight-box strong{color:var(--green3)}
+.compare-table{width:100%;border-collapse:collapse;border-radius:16px;overflow:hidden;border:1px solid var(--border);margin:16px 0;font-size:0.83rem}
+.compare-table thead tr{background:var(--bg)}
+.compare-table th{padding:12px 16px;text-align:left;font-size:0.72rem;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:0.08em;border-bottom:1px solid var(--border)}
+.compare-table th:not(:first-child){text-align:center}
+.compare-table td{padding:12px 16px;border-bottom:1px solid var(--border);color:var(--text);vertical-align:middle}
+.compare-table td:not(:first-child){text-align:center}
+.compare-table tr:last-child td{border:none}
+.compare-table tbody tr:hover{background:#f7faf8}
+.compare-table .col-label{font-weight:600;color:var(--text2)}
+.icon-yes{color:var(--green2);font-size:1rem;font-weight:800}
+.icon-no{color:#d1d5db;font-size:1rem}
+.col-finasset{background:rgba(34,196,122,0.04)}
+.col-head-finasset{background:linear-gradient(135deg,rgba(34,196,122,0.08) 0%,rgba(11,191,160,0.05) 100%);color:var(--green3)!important}
+.feat-list{display:flex;flex-direction:column;gap:12px;margin:16px 0}
+.feat-item{display:flex;align-items:flex-start;gap:12px;background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:14px 16px;box-shadow:var(--shadow-sm);transition:all 0.2s}
+.feat-item:hover{border-color:var(--border2);box-shadow:var(--shadow-md);transform:translateX(4px)}
+.feat-item-ico{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0}
+.feat-item-text{flex:1}
+.feat-item-text strong{font-size:0.85rem;font-weight:800;color:var(--text);display:block;margin-bottom:3px}
+.feat-item-text span{font-size:0.78rem;color:var(--muted);line-height:1.5}
+.internal-links{display:flex;flex-direction:column;gap:8px;margin:16px 0}
+.internal-link{display:flex;align-items:center;gap:8px;font-size:0.82rem;font-weight:600;color:var(--green3);text-decoration:none;padding:10px 14px;background:var(--surface);border:1px solid rgba(34,196,122,0.2);border-radius:10px;transition:all 0.18s}
+.internal-link:hover{background:#f0fdf7;border-color:rgba(34,196,122,0.4)}
+.internal-link svg{flex-shrink:0;color:var(--green)}
+.faq-list{display:flex;flex-direction:column;gap:8px;margin:16px 0}
+.faq-item{background:var(--surface);border:1px solid var(--border);border-radius:14px;overflow:hidden}
+.faq-q{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:16px 20px;cursor:pointer;font-size:0.88rem;font-weight:700;color:var(--text);user-select:none;transition:background 0.15s}
+.faq-q:hover{background:var(--bg)}
+.faq-icon{width:22px;height:22px;border-radius:50%;background:var(--bg);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all 0.25s;font-size:0.7rem;color:var(--muted)}
+.faq-item.open .faq-icon{background:var(--green);border-color:var(--green);color:#fff;transform:rotate(45deg)}
+.faq-a{display:none;padding:0 20px 16px;font-size:0.84rem;color:#3d5c48;line-height:1.75;border-top:1px solid var(--border)}
+.faq-item.open .faq-a{display:block}
+.aside-cta{background:linear-gradient(150deg,var(--dark) 0%,#1b3828 100%);border-radius:20px;padding:28px 24px;text-align:center;position:relative;overflow:hidden}
+.aside-cta::before{content:'';position:absolute;width:260px;height:200px;top:-60px;left:50%;transform:translateX(-50%);background:radial-gradient(ellipse,rgba(34,196,122,0.2) 0%,transparent 70%);pointer-events:none}
+.aside-cta-inner{position:relative;z-index:1}
+.aside-cta h3{font-size:1.05rem;font-weight:800;color:#fff;letter-spacing:-0.03em;margin-bottom:8px}
+.aside-cta p{font-size:0.78rem;color:rgba(255,255,255,0.45);line-height:1.6;margin-bottom:20px}
+.aside-btn-g{display:flex;align-items:center;justify-content:center;gap:8px;padding:12px 20px;border-radius:11px;font-family:inherit;font-size:0.84rem;font-weight:700;text-decoration:none;cursor:pointer;border:none;background:linear-gradient(135deg,var(--green) 0%,var(--green2) 100%);color:#fff;box-shadow:0 3px 14px rgba(34,196,122,0.45);transition:all 0.2s;margin-bottom:8px;width:100%}
+.aside-btn-g:hover{transform:translateY(-2px);box-shadow:0 8px 22px rgba(34,196,122,0.55)}
+.aside-btn-w{display:flex;align-items:center;justify-content:center;gap:8px;padding:11px 20px;border-radius:11px;font-family:inherit;font-size:0.84rem;font-weight:700;text-decoration:none;cursor:pointer;background:rgba(255,255,255,0.07);color:rgba(255,255,255,0.8);border:1px solid rgba(255,255,255,0.12);transition:all 0.2s;width:100%}
+.aside-btn-w:hover{background:rgba(255,255,255,0.12)}
+.aside-mini-stats{margin-top:16px;padding-top:16px;border-top:1px solid rgba(255,255,255,0.08);display:flex;gap:0}
+.aside-stat{flex:1;text-align:center}.aside-stat:first-child{border-right:1px solid rgba(255,255,255,0.08)}
+.aside-stat-val{font-size:1.1rem;font-weight:800;color:var(--green);letter-spacing:-0.03em}
+.aside-stat-label{font-size:0.6rem;color:rgba(255,255,255,0.3);font-weight:600;margin-top:2px}
+.aside-index{background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:22px;margin-top:16px}
+.aside-index-title{font-size:0.68rem;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:14px}
+.aside-index-list{list-style:none;display:flex;flex-direction:column;gap:4px}
+.aside-index-list li a{display:block;font-size:0.8rem;font-weight:600;color:var(--text2);text-decoration:none;padding:7px 10px;border-radius:8px;transition:all 0.15s}
+.aside-index-list li a:hover{background:var(--bg);color:var(--green3)}
+.aside-index-list li a::before{content:'→ ';color:var(--border2)}
+.cta-final{background:linear-gradient(150deg,var(--dark) 0%,#1b3828 100%);margin:0;padding:80px 40px;text-align:center;position:relative;overflow:hidden}
+.cta-final::before{content:'';position:absolute;width:600px;height:300px;top:-80px;left:50%;transform:translateX(-50%);background:radial-gradient(ellipse,rgba(34,196,122,0.18) 0%,transparent 70%);pointer-events:none}
+.cta-final::after{content:'';position:absolute;inset:0;background-image:radial-gradient(circle,rgba(255,255,255,0.035) 1px,transparent 1px);background-size:28px 28px;mask-image:radial-gradient(ellipse 80% 80% at 50% 50%,black 30%,transparent 100%)}
+.cta-final-inner{position:relative;z-index:1;max-width:560px;margin:0 auto}
+.cta-final h2{font-size:clamp(1.8rem,4vw,2.8rem);font-weight:800;letter-spacing:-0.04em;line-height:1.1;color:#fff;margin-bottom:14px}
+.cta-final h2 em{font-style:normal;background:linear-gradient(135deg,var(--green) 0%,var(--teal) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.cta-final p{font-size:0.95rem;color:rgba(255,255,255,0.42);max-width:380px;margin:0 auto 32px;line-height:1.7}
+.cta-actions{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+.btn-cta-green{display:inline-flex;align-items:center;gap:9px;padding:14px 24px;border-radius:13px;font-family:inherit;font-size:0.9rem;font-weight:700;text-decoration:none;border:none;cursor:pointer;background:linear-gradient(135deg,var(--green) 0%,var(--green2) 100%);color:#fff;box-shadow:0 4px 18px rgba(34,196,122,0.45);transition:all 0.22s cubic-bezier(0.34,1.56,0.64,1)}
+.btn-cta-green:hover{transform:translateY(-3px);box-shadow:0 10px 28px rgba(34,196,122,0.55)}
+.btn-cta-white{display:inline-flex;align-items:center;gap:9px;padding:14px 24px;border-radius:13px;font-family:inherit;font-size:0.9rem;font-weight:700;text-decoration:none;cursor:pointer;background:rgba(255,255,255,0.07);color:rgba(255,255,255,0.8);border:1px solid rgba(255,255,255,0.12);transition:all 0.22s cubic-bezier(0.34,1.56,0.64,1)}
+.btn-cta-white:hover{transform:translateY(-3px);background:rgba(255,255,255,0.12)}
+footer{padding:28px 40px;background:var(--surface);border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px}
+.footer-logo{display:flex;align-items:center;gap:8px;font-size:0.88rem;font-weight:800;color:var(--text);text-decoration:none;letter-spacing:-0.02em}
+footer p{font-size:0.75rem;color:var(--muted)}footer a{color:var(--muted);text-decoration:none}footer a:hover{color:var(--green2)}
+@media(max-width:600px){footer{padding:24px 20px;justify-content:center;text-align:center}}
+.section-divider{height:1px;background:var(--border);margin:0}
+/* Checklist card demo */
+.check-card{background:var(--surface);border-radius:16px;padding:20px;max-width:380px;margin:0 auto;border:1px solid var(--border)}
+.check-card-title{font-size:0.7rem;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:14px}
+.check-row{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--border)}
+.check-row:last-child{border:none}
+.check-icon{width:22px;height:22px;border-radius:6px;background:linear-gradient(135deg,var(--green),var(--green2));display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:0.7rem;color:#fff;font-weight:800}
+.check-label{font-size:0.82rem;font-weight:700;color:var(--text)}
+.check-sub{font-size:0.65rem;color:var(--muted);margin-top:1px}
+</style>
+<script type="application/ld+json">
+{
+  "@context":"https://schema.org","@type":"FAQPage","mainEntity":[
+    {"@type":"Question","name":"¿Qué diferencia un software de seguimiento de inversiones de un broker?","acceptedAnswer":{"@type":"Answer","text":"Un broker está optimizado para ejecutar operaciones: comprar, vender, transferir. Un software de seguimiento de inversiones está optimizado para analizar: calcular rentabilidad real, mostrar distribución, consolidar múltiples cuentas y hacer seguimiento de dividendos. Son herramientas complementarias, no sustitutivas."}},
+    {"@type":"Question","name":"¿Es seguro introducir datos de mi cartera en un software externo?","acceptedAnswer":{"@type":"Answer","text":"Finasset no requiere credenciales bancarias ni acceso a tu broker. Solo introduces los tickers y cantidades de tus posiciones, información que no permite operar en tu nombre. No hay riesgo de acceso a tus cuentas reales."}},
+    {"@type":"Question","name":"¿Qué es mejor: software instalado o web?","acceptedAnswer":{"@type":"Answer","text":"El software web (como Finasset) tiene ventajas claras para el inversor particular: accesible desde cualquier dispositivo, sin instalación, actualizaciones automáticas y sin riesgo de perder datos si cambias de ordenador. El software instalado (como Portfolio Performance) ofrece más potencia pero requiere más configuración y solo funciona en el equipo donde está instalado."}},
+    {"@type":"Question","name":"¿Cuánto cuesta un software de seguimiento de inversiones?","acceptedAnswer":{"@type":"Answer","text":"Las opciones varían. Finasset tiene un plan gratuito que cubre las funciones esenciales de seguimiento de cartera y dividendos. Herramientas más avanzadas como Sharesight tienen planes de pago mensual. Portfolio Performance es gratuito pero requiere instalación y configuración manual considerable."}}
+  ]
+}
+</script>
+</head>
+<body>
+<nav>
+  <a class="nav-logo" href="/"><div class="logo-mark"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg></div>FinAsset</a>
+  <div class="nav-right">
+    <a class="nav-btn-ghost" href="https://app.finasset.app/mobile"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18" stroke-width="3"/></svg>Abrir APP</a>
+    <a class="nav-btn-green" href="https://app.finasset.app"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>Probar gratis</a>
+  </div>
+</nav>
+<section class="hero">
+  <div class="hero-inner">
+    <div class="breadcrumb"><a href="/">FinAsset</a><span class="breadcrumb-sep">›</span><span>Software seguimiento inversiones</span></div>
+    <div class="hero-badge"><span class="badge-dot"></span>Software de inversión</div>
+    <h1>Software de seguimiento de inversiones: <em>qué debe ofrecer</em> una buena herramienta</h1>
+    <p class="hero-sub">No todo el software de seguimiento es igual. Descubre qué funciones son imprescindibles y cuáles son ruido, para elegir la herramienta que realmente encaja con tu forma de invertir.</p>
+    <div class="cta-group">
+      <a class="btn btn-primary" href="https://app.finasset.app"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>Elige mejor tu software de seguimiento</a>
+      <a class="btn btn-ghost" href="https://app.finasset.app"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>Probar Finasset</a>
+    </div>
+    <div class="hero-trust">
+      <span class="trust-check">✓ Panel de control</span><span class="trust-sep"></span><span>Dividendos</span><span class="trust-sep"></span><span>Multi-broker</span><span class="trust-sep"></span><span>Sin instalación</span>
+    </div>
+  </div>
+  <div class="demo-wrap">
+    <div class="demo-card">
+      <div class="demo-topbar">
+        <div class="demo-dots"><div class="demo-dot" style="background:#f87171"></div><div class="demo-dot" style="background:#fbbf24"></div><div class="demo-dot" style="background:#22c47a"></div></div>
+        <div class="demo-title-bar">finasset.app — Funciones</div>
+      </div>
+      <div class="demo-body">
+        <div class="check-card">
+          <div class="check-card-title">Funciones esenciales</div>
+          <div class="check-row"><div class="check-icon">✓</div><div><div class="check-label">Panel de control</div><div class="check-sub">Valor total, rentabilidad, distribución</div></div></div>
+          <div class="check-row"><div class="check-icon">✓</div><div><div class="check-label">Calendario de dividendos</div><div class="check-sub">Próximos cobros, histórico, estimaciones</div></div></div>
+          <div class="check-row"><div class="check-icon">✓</div><div><div class="check-label">Multi-broker</div><div class="check-sub">DEGIRO, IB, Revolut, MyInvestor…</div></div></div>
+          <div class="check-row"><div class="check-icon">✓</div><div><div class="check-label">Sin instalación</div><div class="check-sub">Web + móvil, acceso inmediato</div></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<div class="section-divider"></div>
+<div class="content-wrap">
+  <main class="content-main">
+    <article class="prose">
+
+      <div class="prose-block" id="que-hace">
+        <h2>Qué hace un software de seguimiento de inversiones</h2>
+        <p>Un <strong>software de seguimiento de inversiones</strong> es una capa de análisis independiente de tus brokers. No opera en tu nombre ni tiene acceso a tus cuentas: trabaja con los datos de posiciones que tú introduces (ticker, número de acciones, precio de compra) y los enriquece automáticamente con precios de mercado, dividendos, tipos de cambio y métricas de rentabilidad.</p>
+        <p>Sus funciones principales son cuatro: <strong>centralizar posiciones</strong> de distintos brokers en un único panel, <strong>calcular rentabilidades</strong> correctamente (TWR, total return incluyendo dividendos), <strong>mostrar la distribución</strong> real de la cartera por activo/sector/geografía y <strong>hacer seguimiento de dividendos</strong> con calendario, importes bruto/neto y proyección anual.</p>
+        <div class="highlight-box">
+          <strong>Un software de seguimiento no reemplaza a tu broker.</strong> Los complementa: el broker ejecuta tus operaciones, el software de seguimiento te ayuda a entender cómo va tu cartera en su conjunto y a tomar mejores decisiones de asignación.
+        </div>
+      </div>
+
+      <div class="prose-block" id="funciones-clave">
+        <h2>Funciones clave que deberías exigir</h2>
+        <p>No toda herramienta de seguimiento es igual. Estas son las funciones que no deberían faltar:</p>
+        <h3>Panel de control</h3>
+        <p>La pantalla principal debe darte una visión global inmediata: valor total de la cartera, variación del día, rentabilidad acumulada (TWR), y distribución visual por tipo de activo. Si tardas más de 5 segundos en entender cómo va tu cartera al abrir la app, la herramienta no está bien diseñada.</p>
+        <h3>Informes de rendimiento</h3>
+        <p>Más allá del dato del día, necesitas poder ver la evolución mensual y anual de tu cartera. Un buen software te permite generar informes de rendimiento por periodo, comparar con benchmarks y ver qué posiciones han contribuido más (o menos) a la rentabilidad total. Fundamental para la revisión anual de tu estrategia.</p>
+        <h3>Módulo de dividendos</h3>
+        <p>Si tu cartera tiene activos que pagan dividendos, el software debe incluir un <strong>calendario de dividendos</strong> integrado, separación entre cobrado y estimado, importes bruto y neto, y proyección de ingresos anuales. Sin este módulo, tienes que llevar los dividendos por separado en una hoja de cálculo.</p>
+      </div>
+
+      <div class="prose-block" id="diferencias">
+        <h2>Diferencias entre broker, Excel y software especializado</h2>
+        <p>Antes de elegir una herramienta, vale la pena entender qué cubre cada opción:</p>
+        <table class="compare-table">
+          <thead>
+            <tr><th>Función</th><th>Broker</th><th>Excel</th><th class="col-head-finasset">Software (Finasset)</th></tr>
+          </thead>
+          <tbody>
+            <tr><td class="col-label">Multi-cuenta/broker</td><td><span class="icon-no">✕</span></td><td><span class="icon-no">✕ Manual</span></td><td class="col-finasset"><span class="icon-yes">✓</span></td></tr>
+            <tr><td class="col-label">Actualización automática de precios</td><td><span class="icon-yes">✓ Solo su cuenta</span></td><td><span class="icon-no">✕</span></td><td class="col-finasset"><span class="icon-yes">✓</span></td></tr>
+            <tr><td class="col-label">Calendario de dividendos</td><td><span class="icon-no">✕ Básico</span></td><td><span class="icon-no">✕ Manual</span></td><td class="col-finasset"><span class="icon-yes">✓ Completo</span></td></tr>
+            <tr><td class="col-label">Acceso móvil</td><td><span class="icon-yes">✓ App broker</span></td><td><span class="icon-no">✕ Limitado</span></td><td class="col-finasset"><span class="icon-yes">✓ PWA</span></td></tr>
+            <tr><td class="col-label">Rentabilidad TWR</td><td><span class="icon-no">✕ Raramente</span></td><td><span class="icon-no">✕ Requiere fórmulas</span></td><td class="col-finasset"><span class="icon-yes">✓</span></td></tr>
+            <tr><td class="col-label">Informes periódicos</td><td><span class="icon-no">✕ Fiscales solo</span></td><td><span class="icon-no">✕ Manual</span></td><td class="col-finasset"><span class="icon-yes">✓</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="prose-block" id="como-elegir">
+        <h2>Cómo elegir la herramienta adecuada</h2>
+        <p>La herramienta perfecta depende de tu perfil como inversor. Estos son los criterios que más importan:</p>
+        <div class="feat-list">
+          <div class="feat-item"><div class="feat-item-ico" style="background:#ecfdf5">✨</div><div class="feat-item-text"><strong>Simplicidad de uso</strong><span>Si la configuración inicial te lleva horas, es una señal de que la herramienta no está pensada para el inversor particular. Busca algo que funcione en minutos.</span></div></div>
+          <div class="feat-item"><div class="feat-item-ico" style="background:#eff6ff">🤖</div><div class="feat-item-text"><strong>Nivel de automatización</strong><span>¿Actualiza precios sola? ¿Calcula dividendos automáticamente? ¿Detecta cambios de empresa? Cuanto más automático, menos tiempo de mantenimiento.</span></div></div>
+          <div class="feat-item"><div class="feat-item-ico" style="background:#fef9c3">💰</div><div class="feat-item-text"><strong>Coste vs valor real</strong><span>Compara si el plan gratuito cubre tus necesidades básicas. Para la mayoría de inversores particulares, no necesitas las funciones premium de herramientas institucionales.</span></div></div>
+          <div class="feat-item"><div class="feat-item-ico" style="background:#f5f3ff">🔒</div><div class="feat-item-text"><strong>Privacidad de datos</strong><span>Una herramienta que no pide credenciales de broker (solo tickers y cantidades) es significativamente más segura que una que requiere acceso real a tus cuentas.</span></div></div>
+        </div>
+        <div class="internal-links">
+          <a class="internal-link" href="/gestor-cartera-inversion.html"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><polyline points="12 5 19 12 12 19"/></svg>Gestor de cartera de inversión completo</a>
+          <a class="internal-link" href="/alternativa-portfolio-performance.html"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><polyline points="12 5 19 12 12 19"/></svg>Alternativa a Portfolio Performance</a>
+          <a class="internal-link" href="/herramienta-para-seguir-mi-cartera.html"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><polyline points="12 5 19 12 12 19"/></svg>Herramienta para seguir mi cartera</a>
+        </div>
+      </div>
+
+      <div class="prose-block" id="faq">
+        <h2>Preguntas frecuentes sobre software de seguimiento de inversiones</h2>
+        <div class="faq-list">
+          <div class="faq-item open">
+            <div class="faq-q">¿Qué diferencia un software de seguimiento de inversiones de un broker?<span class="faq-icon">+</span></div>
+            <div class="faq-a">Un broker está optimizado para ejecutar operaciones: comprar, vender, transferir. Un software de seguimiento de inversiones está optimizado para analizar: calcular rentabilidad real, mostrar distribución, consolidar múltiples cuentas y hacer seguimiento de dividendos. Son herramientas complementarias, no sustitutivas.</div>
+          </div>
+          <div class="faq-item">
+            <div class="faq-q">¿Es seguro introducir datos de mi cartera en un software externo?<span class="faq-icon">+</span></div>
+            <div class="faq-a">Finasset no requiere credenciales bancarias ni acceso a tu broker. Solo introduces los tickers y cantidades de tus posiciones, información que no permite operar en tu nombre. No hay riesgo de acceso a tus cuentas reales.</div>
+          </div>
+          <div class="faq-item">
+            <div class="faq-q">¿Qué es mejor: software instalado o web?<span class="faq-icon">+</span></div>
+            <div class="faq-a">El software web (como Finasset) tiene ventajas claras para el inversor particular: accesible desde cualquier dispositivo, sin instalación, actualizaciones automáticas y sin riesgo de perder datos si cambias de ordenador. El software instalado (como Portfolio Performance) ofrece más potencia pero requiere más configuración y solo funciona en el equipo donde está instalado.</div>
+          </div>
+          <div class="faq-item">
+            <div class="faq-q">¿Cuánto cuesta un software de seguimiento de inversiones?<span class="faq-icon">+</span></div>
+            <div class="faq-a">Las opciones varían. Finasset tiene un plan gratuito que cubre las funciones esenciales de seguimiento de cartera y dividendos. Herramientas más avanzadas como Sharesight tienen planes de pago mensual. Portfolio Performance es gratuito pero requiere instalación y configuración manual considerable.</div>
+          </div>
+        </div>
+      </div>
+
+    </article>
+  </main>
+  <aside class="content-aside">
+    <div class="aside-cta">
+      <div class="aside-cta-inner">
+        <h3>El software que tu cartera necesita</h3>
+        <p>Panel de control, dividendos, multi-broker. Sin instalación y sin coste para empezar.</p>
+        <a class="aside-btn-g" href="https://app.finasset.app"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>Probar Finasset gratis</a>
+        <a class="aside-btn-w" href="https://app.finasset.app/demo"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>Ver demo</a>
+        <div class="aside-mini-stats">
+          <div class="aside-stat"><div class="aside-stat-val">12K+</div><div class="aside-stat-label">Inversores</div></div>
+          <div class="aside-stat"><div class="aside-stat-val">150+</div><div class="aside-stat-label">Mercados</div></div>
+        </div>
+      </div>
+    </div>
+    <div class="aside-index">
+      <div class="aside-index-title">En esta página</div>
+      <ul class="aside-index-list">
+        <li><a href="#que-hace">Qué hace el software</a></li>
+        <li><a href="#funciones-clave">Funciones clave</a></li>
+        <li><a href="#diferencias">Broker vs Excel vs Software</a></li>
+        <li><a href="#como-elegir">Cómo elegirlo</a></li>
+        <li><a href="#faq">Preguntas frecuentes</a></li>
+      </ul>
+    </div>
+  </aside>
+</div>
+<div class="cta-final">
+  <div class="cta-final-inner">
+    <h2>La herramienta de seguimiento<br><em>que tu cartera necesita.</em></h2>
+    <p>Panel de control claro, dividendos integrados y multi-broker. Empieza en minutos sin instalar nada.</p>
+    <div class="cta-actions">
+      <a class="btn-cta-green" href="https://app.finasset.app"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>Elige mejor tu software</a>
+      <a class="btn-cta-white" href="https://app.finasset.app/demo"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>Ver demo</a>
+    </div>
+  </div>
+</div>
+<footer>
+  <a class="footer-logo" href="/"><div class="logo-mark" style="width:26px;height:26px;border-radius:8px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg></div>FinAsset</a>
+  <p>© 2026 FinAsset &nbsp;·&nbsp; <a href="https://finasset.app">finasset.app</a> &nbsp;·&nbsp; <a href="/software-seguimiento-inversiones.html">Software seguimiento inversiones</a></p>
+</footer>
+<script>document.querySelectorAll('.faq-q').forEach(q=>{q.addEventListener('click',()=>{const item=q.parentElement;const wasOpen=item.classList.contains('open');document.querySelectorAll('.faq-item').forEach(i=>i.classList.remove('open'));if(!wasOpen)item.classList.add('open')})});</script>
+</body>
+</html>
