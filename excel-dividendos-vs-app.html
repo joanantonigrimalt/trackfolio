@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Excel vs app de dividendos: cuál elegir en 2025</title>
+<meta name="description" content="Comparativa honesta entre llevar tus dividendos en Excel y usar una app especializada. Pros, contras y cuándo merece la pena dar el salto.">
+<meta name="keywords" content="excel dividendos, hoja calculo dividendos, excel vs app dividendos, mejor que excel para dividendos, app dividendos excel">
+<meta property="og:title" content="Excel vs app de dividendos: cuál elegir en 2025">
+<meta property="og:description" content="Comparativa honesta entre llevar tus dividendos en Excel y usar una app especializada. Pros, contras y cuándo merece la pena dar el salto.">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://finasset.app/excel-dividendos-vs-app.html">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet">
+
+<style>
+:root {
+  --green:   #22c47a; --green2:  #17a864; --green3:  #0f7347;
+  --teal:    #0bbfa0; --dark:    #0e1f15; --bg:      #f7faf8;
+  --surface: #ffffff; --text:    #111c16; --text2:   #2d4a39;
+  --muted:   #7a9585; --border:  #e4ede8; --border2: #d0e2d8;
+  --shadow-sm: 0 1px 4px rgba(14,31,21,0.06), 0 4px 16px rgba(14,31,21,0.05);
+  --shadow-md: 0 4px 20px rgba(14,31,21,0.08), 0 12px 40px rgba(14,31,21,0.06);
+  --shadow-lg: 0 8px 40px rgba(14,31,21,0.12), 0 24px 64px rgba(14,31,21,0.08);
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--bg); color: var(--text); overflow-x: hidden; }
+
+nav { position: fixed; top: 0; left: 0; right: 0; z-index: 200; height: 62px; display: flex; align-items: center; justify-content: space-between; padding: 0 40px; background: rgba(247,250,248,0.9); backdrop-filter: blur(20px); border-bottom: 1px solid var(--border); }
+.nav-logo { display: flex; align-items: center; gap: 10px; text-decoration: none; font-weight: 800; font-size: 1.05rem; color: var(--text); letter-spacing: -0.03em; }
+.logo-mark { width: 32px; height: 32px; border-radius: 10px; background: linear-gradient(135deg, var(--green) 0%, var(--teal) 100%); display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 12px rgba(34,196,122,0.35); flex-shrink: 0; }
+.logo-mark svg { width: 17px; height: 17px; color: #fff; }
+.nav-right { display: flex; align-items: center; gap: 8px; }
+.nav-btn-ghost { font-size: 0.82rem; font-weight: 700; color: var(--text2); text-decoration: none; padding: 8px 18px; border-radius: 10px; border: 1.5px solid var(--border2); background: var(--surface); box-shadow: var(--shadow-sm); transition: all 0.18s; display: flex; align-items: center; gap: 7px; }
+.nav-btn-ghost:hover { border-color: var(--green); color: var(--green3); }
+.nav-btn-green { font-size: 0.82rem; font-weight: 700; text-decoration: none; padding: 8px 18px; border-radius: 10px; background: linear-gradient(135deg, var(--green) 0%, var(--green2) 100%); color: #fff; box-shadow: 0 2px 12px rgba(34,196,122,0.4); transition: all 0.2s; display: flex; align-items: center; gap: 7px; }
+.nav-btn-green:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(34,196,122,0.45); }
+@media (max-width: 640px) { nav { padding: 0 20px; } .nav-btn-ghost { display: none; } }
+
+.hero { padding: 110px 24px 72px; text-align: center; position: relative; overflow: hidden; background: var(--surface); border-bottom: 1px solid var(--border); }
+.hero::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse 60% 50% at 50% -10%, rgba(34,196,122,0.11) 0%, transparent 65%), radial-gradient(ellipse 40% 30% at 90% 100%, rgba(11,191,160,0.06) 0%, transparent 60%); }
+.hero::after { content: ''; position: absolute; inset: 0; background-image: radial-gradient(circle, rgba(34,196,122,0.1) 1px, transparent 1px); background-size: 32px 32px; mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black 20%, transparent 100%); }
+.hero-inner { position: relative; z-index: 1; max-width: 760px; margin: 0 auto; }
+.breadcrumb { display: inline-flex; align-items: center; gap: 6px; font-size: 0.72rem; color: var(--muted); font-weight: 500; margin-bottom: 20px; }
+.breadcrumb a { color: var(--muted); text-decoration: none; }
+.breadcrumb a:hover { color: var(--green2); }
+.breadcrumb-sep { color: var(--border2); }
+.hero-badge { display: inline-flex; align-items: center; gap: 8px; background: rgba(34,196,122,0.08); border: 1.5px solid rgba(34,196,122,0.2); border-radius: 100px; padding: 5px 14px 5px 8px; margin-bottom: 24px; font-size: 0.7rem; font-weight: 700; color: var(--green3); letter-spacing: 0.05em; text-transform: uppercase; }
+.badge-dot { width: 18px; height: 18px; border-radius: 50%; background: rgba(34,196,122,0.12); display: flex; align-items: center; justify-content: center; }
+.badge-dot::after { content: ''; width: 7px; height: 7px; border-radius: 50%; background: var(--green); box-shadow: 0 0 7px rgba(34,196,122,0.7); animation: blink 2.2s ease-in-out infinite; }
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.35} }
+.hero h1 { font-size: clamp(2rem, 5vw, 3.4rem); font-weight: 800; letter-spacing: -0.04em; line-height: 1.1; color: var(--text); margin-bottom: 20px; }
+.hero h1 em { font-style: normal; background: linear-gradient(135deg, var(--green) 0%, var(--teal) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+.hero-sub { font-size: clamp(0.95rem, 2vw, 1.08rem); line-height: 1.75; color: var(--muted); max-width: 560px; margin: 0 auto 36px; }
+.cta-group { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; margin-bottom: 36px; }
+.btn { display: inline-flex; align-items: center; gap: 9px; padding: 14px 24px; border-radius: 13px; font-family: inherit; font-size: 0.9rem; font-weight: 700; text-decoration: none; border: none; cursor: pointer; transition: all 0.22s cubic-bezier(0.34,1.56,0.64,1); }
+.btn-primary { background: linear-gradient(135deg, var(--green) 0%, var(--green2) 100%); color: #fff; box-shadow: 0 4px 18px rgba(34,196,122,0.4); animation: btnPulse 3s ease-in-out infinite; }
+@keyframes btnPulse { 0%,100% { box-shadow: 0 4px 18px rgba(34,196,122,0.4), 0 0 0 0 rgba(34,196,122,0.25); } 50% { box-shadow: 0 4px 18px rgba(34,196,122,0.4), 0 0 0 7px rgba(34,196,122,0); } }
+.btn-primary:hover { transform: translateY(-3px); box-shadow: 0 10px 30px rgba(34,196,122,0.5); }
+.btn-ghost { background: var(--surface); color: var(--text2); border: 1.5px solid var(--border2); box-shadow: var(--shadow-sm); }
+.btn-ghost:hover { transform: translateY(-2px); border-color: var(--green); color: var(--green3); }
+.hero-trust { display: flex; align-items: center; gap: 8px; justify-content: center; font-size: 0.75rem; color: var(--muted); font-weight: 500; flex-wrap: wrap; }
+.trust-sep { width: 3px; height: 3px; background: var(--border2); border-radius: 50%; }
+.trust-check { color: var(--green); font-weight: 700; }
+
+/* Versus card visual */
+.demo-wrap { margin: 48px auto 0; max-width: 640px; position: relative; z-index: 1; }
+.vs-grid { display: grid; grid-template-columns: 1fr auto 1fr; gap: 12px; align-items: start; }
+.vs-card { background: var(--surface); border: 1px solid var(--border); border-radius: 18px; padding: 20px; box-shadow: var(--shadow-sm); }
+.vs-card.winner { border-color: rgba(34,196,122,0.35); box-shadow: 0 4px 20px rgba(34,196,122,0.12); }
+.vs-card-title { font-size: 0.72rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 14px; }
+.vs-card-title.excel { color: var(--muted); }
+.vs-card-title.finasset { color: var(--green3); }
+.vs-item { display: flex; align-items: flex-start; gap: 8px; margin-bottom: 10px; font-size: 0.72rem; line-height: 1.5; }
+.vs-item:last-child { margin-bottom: 0; }
+.vs-check { color: var(--green2); font-weight: 800; flex-shrink: 0; margin-top: 1px; }
+.vs-cross { color: #ef4444; font-weight: 800; flex-shrink: 0; margin-top: 1px; }
+.vs-sep { display: flex; align-items: center; justify-content: center; font-size: 1.2rem; font-weight: 800; color: var(--muted); padding-top: 60px; }
+@media (max-width: 600px) { .vs-grid { grid-template-columns: 1fr; } .vs-sep { padding: 0; } }
+
+.content-wrap { max-width: 1100px; margin: 0 auto; padding: 80px 40px; display: grid; grid-template-columns: 1fr 340px; gap: 56px; align-items: start; }
+.content-main { min-width: 0; }
+.content-aside { position: sticky; top: 82px; }
+@media (max-width: 960px) { .content-wrap { grid-template-columns: 1fr; gap: 40px; padding: 60px 24px; } .content-aside { position: static; } }
+@media (max-width: 600px) { .content-wrap { padding: 48px 20px; } }
+
+.prose { display: flex; flex-direction: column; gap: 48px; }
+.prose-block h2 { font-size: clamp(1.3rem, 3vw, 1.7rem); font-weight: 800; letter-spacing: -0.03em; color: var(--text); margin-bottom: 14px; line-height: 1.2; }
+.prose-block h3 { font-size: 1rem; font-weight: 800; color: var(--text2); margin: 20px 0 8px; letter-spacing: -0.01em; display: flex; align-items: center; gap: 8px; }
+.prose-block h3::before { content: ''; width: 4px; height: 16px; border-radius: 2px; background: var(--green); display: block; flex-shrink: 0; }
+.prose-block p { font-size: 0.925rem; color: #3d5c48; line-height: 1.8; margin-bottom: 12px; }
+.prose-block p:last-child { margin-bottom: 0; }
+.prose-block strong { color: var(--text); font-weight: 700; }
+.highlight-box { background: #f0fdf7; border: 1px solid rgba(34,196,122,0.25); border-left: 4px solid var(--green); border-radius: 12px; padding: 16px 20px; font-size: 0.88rem; color: var(--text2); line-height: 1.7; margin: 16px 0; }
+.highlight-box strong { color: var(--green3); }
+.warning-box { background: #fffbeb; border: 1px solid rgba(245,158,11,0.3); border-left: 4px solid #f59e0b; border-radius: 12px; padding: 16px 20px; font-size: 0.88rem; color: #78350f; line-height: 1.7; margin: 16px 0; }
+
+.compare-table { width: 100%; border-collapse: collapse; border-radius: 16px; overflow: hidden; border: 1px solid var(--border); margin: 16px 0; font-size: 0.83rem; }
+.compare-table thead tr { background: var(--bg); }
+.compare-table th { padding: 12px 16px; text-align: left; font-size: 0.72rem; font-weight: 800; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; border-bottom: 1px solid var(--border); }
+.compare-table th:not(:first-child) { text-align: center; }
+.compare-table td { padding: 12px 16px; border-bottom: 1px solid var(--border); color: var(--text); vertical-align: middle; }
+.compare-table td:not(:first-child) { text-align: center; }
+.compare-table tr:last-child td { border: none; }
+.compare-table tbody tr:hover { background: #f7faf8; }
+.compare-table .col-label { font-weight: 600; color: var(--text2); font-size: 0.8rem; }
+.icon-yes { color: var(--green2); font-size: 1rem; font-weight: 800; }
+.icon-no  { color: #ef4444; font-size: 1rem; }
+.icon-partial { color: #f59e0b; font-size: 0.75rem; font-weight: 700; }
+.col-finasset { background: rgba(34,196,122,0.04); }
+.col-head-finasset { background: linear-gradient(135deg, rgba(34,196,122,0.08) 0%, rgba(11,191,160,0.05) 100%); color: var(--green3) !important; }
+.col-head-excel { color: var(--muted) !important; }
+
+.internal-links { display: flex; flex-direction: column; gap: 8px; margin: 16px 0; }
+.internal-link { display: flex; align-items: center; gap: 8px; font-size: 0.82rem; font-weight: 600; color: var(--green3); text-decoration: none; padding: 10px 14px; background: var(--surface); border: 1px solid rgba(34,196,122,0.2); border-radius: 10px; transition: all 0.18s; }
+.internal-link:hover { background: #f0fdf7; border-color: rgba(34,196,122,0.4); }
+.internal-link svg { flex-shrink: 0; color: var(--green); }
+
+.faq-list { display: flex; flex-direction: column; gap: 8px; margin: 16px 0; }
+.faq-item { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; overflow: hidden; }
+.faq-q { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 16px 20px; cursor: pointer; font-size: 0.88rem; font-weight: 700; color: var(--text); user-select: none; transition: background 0.15s; }
+.faq-q:hover { background: var(--bg); }
+.faq-icon { width: 22px; height: 22px; border-radius: 50%; background: var(--bg); border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: all 0.25s; font-size: 0.7rem; color: var(--muted); }
+.faq-item.open .faq-icon { background: var(--green); border-color: var(--green); color: #fff; transform: rotate(45deg); }
+.faq-a { display: none; padding: 0 20px 16px; font-size: 0.84rem; color: #3d5c48; line-height: 1.75; border-top: 1px solid var(--border); }
+.faq-item.open .faq-a { display: block; }
+
+.aside-cta { background: linear-gradient(150deg, var(--dark) 0%, #1b3828 100%); border-radius: 20px; padding: 28px 24px; text-align: center; position: relative; overflow: hidden; }
+.aside-cta::before { content: ''; position: absolute; width: 260px; height: 200px; top: -60px; left: 50%; transform: translateX(-50%); background: radial-gradient(ellipse, rgba(34,196,122,0.2) 0%, transparent 70%); pointer-events: none; }
+.aside-cta-inner { position: relative; z-index: 1; }
+.aside-cta h3 { font-size: 1.05rem; font-weight: 800; color: #fff; letter-spacing: -0.03em; margin-bottom: 8px; }
+.aside-cta p { font-size: 0.78rem; color: rgba(255,255,255,0.45); line-height: 1.6; margin-bottom: 20px; }
+.aside-btn-g { display: flex; align-items: center; justify-content: center; gap: 8px; padding: 12px 20px; border-radius: 11px; font-family: inherit; font-size: 0.84rem; font-weight: 700; text-decoration: none; cursor: pointer; border: none; background: linear-gradient(135deg, var(--green) 0%, var(--green2) 100%); color: #fff; box-shadow: 0 3px 14px rgba(34,196,122,0.45); transition: all 0.2s; margin-bottom: 8px; width: 100%; }
+.aside-btn-g:hover { transform: translateY(-2px); box-shadow: 0 8px 22px rgba(34,196,122,0.55); }
+.aside-btn-w { display: flex; align-items: center; justify-content: center; gap: 8px; padding: 11px 20px; border-radius: 11px; font-family: inherit; font-size: 0.84rem; font-weight: 700; text-decoration: none; cursor: pointer; background: rgba(255,255,255,0.07); color: rgba(255,255,255,0.8); border: 1px solid rgba(255,255,255,0.12); transition: all 0.2s; width: 100%; }
+.aside-btn-w:hover { background: rgba(255,255,255,0.12); }
+.aside-mini-stats { margin-top: 16px; padding-top: 16px; border-top: 1px solid rgba(255,255,255,0.08); display: flex; }
+.aside-stat { flex: 1; text-align: center; }
+.aside-stat:first-child { border-right: 1px solid rgba(255,255,255,0.08); }
+.aside-stat-val { font-size: 1.1rem; font-weight: 800; color: var(--green); letter-spacing: -0.03em; }
+.aside-stat-label { font-size: 0.6rem; color: rgba(255,255,255,0.3); font-weight: 600; margin-top: 2px; }
+.aside-index { background: var(--surface); border: 1px solid var(--border); border-radius: 20px; padding: 22px; margin-top: 16px; }
+.aside-index-title { font-size: 0.68rem; font-weight: 800; color: var(--muted); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 14px; }
+.aside-index-list { list-style: none; display: flex; flex-direction: column; gap: 4px; }
+.aside-index-list li a { display: block; font-size: 0.8rem; font-weight: 600; color: var(--text2); text-decoration: none; padding: 7px 10px; border-radius: 8px; transition: all 0.15s; }
+.aside-index-list li a:hover { background: var(--bg); color: var(--green3); }
+.aside-index-list li a::before { content: '→ '; color: var(--border2); }
+
+.cta-final { background: linear-gradient(150deg, var(--dark) 0%, #1b3828 100%); margin: 0; padding: 80px 40px; text-align: center; position: relative; overflow: hidden; }
+.cta-final::before { content: ''; position: absolute; width: 600px; height: 300px; top: -80px; left: 50%; transform: translateX(-50%); background: radial-gradient(ellipse, rgba(34,196,122,0.18) 0%, transparent 70%); pointer-events: none; }
+.cta-final::after { content: ''; position: absolute; inset: 0; background-image: radial-gradient(circle, rgba(255,255,255,0.035) 1px, transparent 1px); background-size: 28px 28px; mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black 30%, transparent 100%); }
+.cta-final-inner { position: relative; z-index: 1; max-width: 560px; margin: 0 auto; }
+.cta-final h2 { font-size: clamp(1.8rem, 4vw, 2.8rem); font-weight: 800; letter-spacing: -0.04em; line-height: 1.1; color: #fff; margin-bottom: 14px; }
+.cta-final h2 em { font-style: normal; background: linear-gradient(135deg, var(--green) 0%, var(--teal) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+.cta-final p { font-size: 0.95rem; color: rgba(255,255,255,0.42); max-width: 380px; margin: 0 auto 32px; line-height: 1.7; }
+.cta-actions { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+.btn-cta-green { display: inline-flex; align-items: center; gap: 9px; padding: 14px 24px; border-radius: 13px; font-family: inherit; font-size: 0.9rem; font-weight: 700; text-decoration: none; border: none; cursor: pointer; background: linear-gradient(135deg, var(--green) 0%, var(--green2) 100%); color: #fff; box-shadow: 0 4px 18px rgba(34,196,122,0.45); transition: all 0.22s cubic-bezier(0.34,1.56,0.64,1); }
+.btn-cta-green:hover { transform: translateY(-3px); box-shadow: 0 10px 28px rgba(34,196,122,0.55); }
+.btn-cta-white { display: inline-flex; align-items: center; gap: 9px; padding: 14px 24px; border-radius: 13px; font-family: inherit; font-size: 0.9rem; font-weight: 700; text-decoration: none; cursor: pointer; background: rgba(255,255,255,0.07); color: rgba(255,255,255,0.8); border: 1px solid rgba(255,255,255,0.12); transition: all 0.22s; }
+.btn-cta-white:hover { transform: translateY(-3px); background: rgba(255,255,255,0.12); }
+
+footer { padding: 28px 40px; background: var(--surface); border-top: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; }
+.footer-logo { display: flex; align-items: center; gap: 8px; font-size: 0.88rem; font-weight: 800; color: var(--text); text-decoration: none; letter-spacing: -0.02em; }
+footer p { font-size: 0.75rem; color: var(--muted); }
+footer a { color: var(--muted); text-decoration: none; }
+footer a:hover { color: var(--green2); }
+@media (max-width: 600px) { footer { padding: 24px 20px; justify-content: center; text-align: center; } }
+.section-divider { height: 1px; background: var(--border); margin: 0; }
+</style>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "¿Sigue siendo útil llevar dividendos en Excel en 2025?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Para carteras muy pequeñas (menos de 5-6 posiciones) o inversores que acaban de empezar, un Excel básico puede ser suficiente. El problema aparece cuando la cartera crece: actualizar fechas de dividendo, tipos de cambio, retenciones y proyecciones manualmente consume mucho tiempo y genera errores. Una app especializada automatiza todo esto desde el primer día."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "¿Qué ventajas tiene una app de dividendos frente a Excel?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Las principales ventajas son la automatización (fechas, retenciones y tipos de cambio actualizados sin intervención), las alertas de próximos pagos y recortes, la proyección anual en tiempo real, la vista móvil y la posibilidad de centralizar varias cuentas o brokers sin copiar y pegar datos."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "¿Puedo importar mi Excel de dividendos a Finasset?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Sí. Finasset permite importar tus posiciones actuales mediante un archivo CSV o introducirlas manualmente. Si ya tienes tu cartera documentada en Excel, el traspaso inicial es rápido y a partir de ahí Finasset gestiona las actualizaciones automáticamente."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "¿Cuándo tiene sentido seguir con Excel?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Excel sigue siendo una buena opción si tienes menos de 5 posiciones, no operas con varios brokers, no necesitas alertas automáticas y disfrutas de construir y mantener tus propias hojas. Para carteras más complejas o inversores que prefieren no dedicar tiempo al mantenimiento, una app dedicada aporta más valor."
+      }
+    }
+  ]
+}
+</script>
+</head>
+<body>
+
+<nav>
+  <a class="nav-logo" href="/">
+    <div class="logo-mark">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>
+    </div>
+    FinAsset
+  </a>
+  <div class="nav-right">
+    <a class="nav-btn-ghost" href="https://app.finasset.app/mobile">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18" stroke-width="3"/></svg>
+      Abrir APP
+    </a>
+    <a class="nav-btn-green" href="https://app.finasset.app">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+      Probar gratis
+    </a>
+  </div>
+</nav>
+
+<section class="hero">
+  <div class="hero-inner">
+    <div class="breadcrumb">
+      <a href="/">FinAsset</a>
+      <span class="breadcrumb-sep">›</span>
+      <span>Excel vs App de dividendos</span>
+    </div>
+
+    <div class="hero-badge">
+      <span class="badge-dot"></span>
+      Comparativa
+    </div>
+
+    <h1>Excel vs app de dividendos: <em>cuál es mejor</em> para tu cartera</h1>
+
+    <p class="hero-sub">
+      Muchos inversores empiezan con Excel y está bien. Pero llega un momento en que el mantenimiento consume más tiempo que la inversión en sí. Esta es la comparativa honesta.
+    </p>
+
+    <div class="cta-group">
+      <a class="btn btn-primary" href="https://app.finasset.app">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>
+        Probar Finasset gratis
+      </a>
+      <a class="btn btn-ghost" href="https://app.finasset.app/demo">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+        Ver demo
+      </a>
+    </div>
+
+    <div class="hero-trust">
+      <span class="trust-check">✓ Sin tarjeta de crédito</span>
+      <span class="trust-sep"></span>
+      <span>Importa desde Excel</span>
+      <span class="trust-sep"></span>
+      <span>Comparativa sin sesgos</span>
+    </div>
+  </div>
+
+  <!-- VS visual -->
+  <div class="demo-wrap">
+    <div class="vs-grid">
+      <div class="vs-card">
+        <div class="vs-card-title excel">📊 Excel</div>
+        <div class="vs-item"><span class="vs-check">✓</span><span>Control total de la estructura</span></div>
+        <div class="vs-item"><span class="vs-check">✓</span><span>Sin coste si ya lo tienes</span></div>
+        <div class="vs-item"><span class="vs-check">✓</span><span>Exportable e imprimible</span></div>
+        <div class="vs-item"><span class="vs-cross">✗</span><span>Fechas manuales</span></div>
+        <div class="vs-item"><span class="vs-cross">✗</span><span>Sin alertas automáticas</span></div>
+        <div class="vs-item"><span class="vs-cross">✗</span><span>Retenciones a mano</span></div>
+        <div class="vs-item"><span class="vs-cross">✗</span><span>Sin versión móvil</span></div>
+        <div class="vs-item"><span class="vs-cross">✗</span><span>Multi-broker complicado</span></div>
+      </div>
+      <div class="vs-sep">VS</div>
+      <div class="vs-card winner">
+        <div class="vs-card-title finasset">✦ Finasset</div>
+        <div class="vs-item"><span class="vs-check">✓</span><span>Fechas automáticas</span></div>
+        <div class="vs-item"><span class="vs-check">✓</span><span>Alertas push de pagos</span></div>
+        <div class="vs-item"><span class="vs-check">✓</span><span>Retenciones calculadas</span></div>
+        <div class="vs-item"><span class="vs-check">✓</span><span>App móvil incluida</span></div>
+        <div class="vs-item"><span class="vs-check">✓</span><span>Multi-broker nativo</span></div>
+        <div class="vs-item"><span class="vs-check">✓</span><span>Proyección anual en vivo</span></div>
+        <div class="vs-item"><span class="vs-check">✓</span><span>Yield on cost automático</span></div>
+        <div class="vs-item"><span class="vs-check">✓</span><span>Gratis para empezar</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="section-divider"></div>
+
+<div class="content-wrap">
+  <main class="content-main">
+    <article class="prose">
+
+      <div class="prose-block" id="excel-pros">
+        <h2>Por qué Excel funciona (hasta cierto punto)</h2>
+        <p>Ser honesto sobre Excel es importante: no es una mala herramienta, es la herramienta incorrecta para este trabajo a partir de cierta escala. Para empezar, Excel tiene ventajas reales.</p>
+
+        <h3>Flexibilidad total</h3>
+        <p>En Excel puedes estructurar los datos exactamente como quieres. Si necesitas una columna personalizada para un dato específico de tu cartera, la añades sin pedir permiso a nadie. Esa flexibilidad es genuinamente valiosa.</p>
+
+        <h3>Sin dependencia de terceros</h3>
+        <p>Tu Excel vive en tu ordenador. No depende de que una startup siga en pie, de que cambien los precios o de que una API externa deje de funcionar. Para inversores que priorizan el control absoluto de sus datos, este argumento tiene peso.</p>
+
+        <h3>Aprendizaje sobre tu cartera</h3>
+        <p>Construir y mantener tu propio Excel de dividendos te obliga a entender cada cifra. Ese proceso de aprendizaje tiene valor en sí mismo, especialmente cuando estás empezando.</p>
+
+        <div class="warning-box">
+          <strong>El problema aparece cuando la cartera crece.</strong> Con 3 posiciones, mantener un Excel de dividendos lleva 10 minutos al mes. Con 15 posiciones en 3 brokers, con acciones en dólares y euros, con retenciones diferentes para cada país, el Excel se convierte en un segundo trabajo a tiempo parcial.
+        </div>
+      </div>
+
+      <div class="prose-block" id="donde-falla">
+        <h2>Dónde falla el Excel para seguimiento de dividendos</h2>
+
+        <table class="compare-table">
+          <thead>
+            <tr>
+              <th>Tarea</th>
+              <th class="col-head-excel">Excel manual</th>
+              <th class="col-head-finasset">Finasset</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="col-label">Actualizar fechas ex-dividendo</td>
+              <td><span class="icon-no">Manual cada vez</span></td>
+              <td class="col-finasset"><span class="icon-yes">✓ Automático</span></td>
+            </tr>
+            <tr>
+              <td class="col-label">Calcular retención en origen por país</td>
+              <td><span class="icon-partial">Fórmulas complejas</span></td>
+              <td class="col-finasset"><span class="icon-yes">✓ Integrado</span></td>
+            </tr>
+            <tr>
+              <td class="col-label">Tipo de cambio actualizado</td>
+              <td><span class="icon-no">Manual o API propia</span></td>
+              <td class="col-finasset"><span class="icon-yes">✓ En tiempo real</span></td>
+            </tr>
+            <tr>
+              <td class="col-label">Alerta de próximo pago</td>
+              <td><span class="icon-no">No disponible</span></td>
+              <td class="col-finasset"><span class="icon-yes">✓ Push notification</span></td>
+            </tr>
+            <tr>
+              <td class="col-label">Ver cartera desde el móvil</td>
+              <td><span class="icon-partial">Incómodo en pantalla pequeña</span></td>
+              <td class="col-finasset"><span class="icon-yes">✓ Optimizado para móvil</span></td>
+            </tr>
+            <tr>
+              <td class="col-label">Proyección anual dinámica</td>
+              <td><span class="icon-partial">Cálculo manual periódico</span></td>
+              <td class="col-finasset"><span class="icon-yes">✓ Actualización en tiempo real</span></td>
+            </tr>
+            <tr>
+              <td class="col-label">Historial de dividendos por empresa</td>
+              <td><span class="icon-no">Construir desde cero</span></td>
+              <td class="col-finasset"><span class="icon-yes">✓ Incluido con datos históricos</span></td>
+            </tr>
+            <tr>
+              <td class="col-label">Yield on cost automático</td>
+              <td><span class="icon-partial">Fórmula manual por posición</span></td>
+              <td class="col-finasset"><span class="icon-yes">✓ Por posición y total</span></td>
+            </tr>
+          </tbody>
+        </table>
+
+        <p>El tiempo que ahorras en mantenimiento es el mayor argumento a favor de una app especializada. Ese tiempo tiene un coste de oportunidad: podría dedicarse a analizar nuevas oportunidades de inversión, no a actualizar fechas en una hoja de cálculo.</p>
+      </div>
+
+      <div class="prose-block" id="cuando-excel">
+        <h2>Cuándo tiene sentido quedarse con Excel</h2>
+        <p>Siendo honestos: Excel sigue siendo la herramienta correcta en algunos escenarios específicos.</p>
+        <p><strong>Cartera muy pequeña (menos de 5 posiciones):</strong> si tienes 3 acciones de dividendo en un solo broker, el mantenimiento de un Excel es trivial y no justifica aprender una nueva herramienta.</p>
+        <p><strong>Inversores que construyen hojas como hobby:</strong> hay inversores que disfrutan del proceso de construir y mantener sus propias herramientas. Si ese eres tú, el Excel tiene un valor que va más allá de la funcionalidad.</p>
+        <p><strong>Datos muy personalizados:</strong> si necesitas seguir métricas muy específicas que ninguna app ofrece, el Excel sigue siendo insuperable en flexibilidad.</p>
+
+        <div class="highlight-box">
+          <strong>El punto de inflexión suele ocurrir alrededor de 8-10 posiciones en 2+ brokers.</strong> A partir de ahí, el tiempo de mantenimiento del Excel supera claramente el tiempo que ahorrarías con una herramienta especializada.
+        </div>
+      </div>
+
+      <div class="prose-block" id="migrar">
+        <h2>Cómo migrar de Excel a Finasset sin perder datos</h2>
+        <p>Muchos inversores retrasan el cambio porque temen perder el historial que llevan años acumulando en su Excel. La buena noticia es que la migración es más sencilla de lo que parece.</p>
+        <p>Finasset permite introducir posiciones manualmente (ticker, número de acciones, precio de compra promedio) en pocos minutos. El historial de dividendos de cada empresa está ya integrado en la plataforma, así que no tienes que traspasar datos históricos de pagos: Finasset los tiene desde el primer día.</p>
+        <p>Lo único que introduces son tus posiciones actuales y tu precio de compra. A partir de ahí, la plataforma calcula automáticamente tu yield on cost, proyecta los próximos cobros y muestra el historial de cada empresa. El traspaso inicial lleva menos de 15 minutos para la mayoría de carteras.</p>
+
+        <div class="internal-links">
+          <a class="internal-link" href="/tracker-dividendos.html">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><polyline points="12 5 19 12 12 19"/></svg>
+            Tracker de dividendos completo
+          </a>
+          <a class="internal-link" href="/app-dividendos.html">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><polyline points="12 5 19 12 12 19"/></svg>
+            App de dividendos para móvil
+          </a>
+          <a class="internal-link" href="/control-dividendos-acciones.html">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><polyline points="12 5 19 12 12 19"/></svg>
+            Control de dividendos de acciones
+          </a>
+        </div>
+      </div>
+
+      <div class="prose-block" id="faq">
+        <h2>Preguntas frecuentes: Excel vs app de dividendos</h2>
+
+        <div class="faq-list">
+          <div class="faq-item open">
+            <div class="faq-q" onclick="this.parentElement.classList.toggle('open')">
+              ¿Sigue siendo útil llevar dividendos en Excel en 2025?
+              <span class="faq-icon">+</span>
+            </div>
+            <div class="faq-a">
+              Para carteras muy pequeñas (menos de 5-6 posiciones) o inversores que acaban de empezar, un Excel básico puede ser suficiente. El problema aparece cuando la cartera crece: actualizar fechas de dividendo, tipos de cambio, retenciones y proyecciones manualmente consume mucho tiempo y genera errores. Una app especializada automatiza todo esto desde el primer día.
+            </div>
+          </div>
+          <div class="faq-item">
+            <div class="faq-q" onclick="this.parentElement.classList.toggle('open')">
+              ¿Qué ventajas tiene una app de dividendos frente a Excel?
+              <span class="faq-icon">+</span>
+            </div>
+            <div class="faq-a">
+              Las principales ventajas son la automatización (fechas, retenciones y tipos de cambio actualizados sin intervención), las alertas de próximos pagos y recortes, la proyección anual en tiempo real, la vista móvil y la posibilidad de centralizar varias cuentas o brokers sin copiar y pegar datos.
+            </div>
+          </div>
+          <div class="faq-item">
+            <div class="faq-q" onclick="this.parentElement.classList.toggle('open')">
+              ¿Puedo importar mi Excel de dividendos a Finasset?
+              <span class="faq-icon">+</span>
+            </div>
+            <div class="faq-a">
+              Sí. Finasset permite importar tus posiciones actuales mediante un archivo CSV o introducirlas manualmente. Si ya tienes tu cartera documentada en Excel, el traspaso inicial es rápido y a partir de ahí Finasset gestiona las actualizaciones automáticamente.
+            </div>
+          </div>
+          <div class="faq-item">
+            <div class="faq-q" onclick="this.parentElement.classList.toggle('open')">
+              ¿Cuándo tiene sentido seguir con Excel?
+              <span class="faq-icon">+</span>
+            </div>
+            <div class="faq-a">
+              Excel sigue siendo una buena opción si tienes menos de 5 posiciones, no operas con varios brokers, no necesitas alertas automáticas y disfrutas de construir y mantener tus propias hojas. Para carteras más complejas o inversores que prefieren no dedicar tiempo al mantenimiento, una app dedicada aporta más valor.
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </article>
+  </main>
+
+  <aside class="content-aside">
+    <div class="aside-cta">
+      <div class="aside-cta-inner">
+        <h3>Prueba la alternativa al Excel</h3>
+        <p>Migra en 15 minutos. Sin perder datos. Sin tarjeta de crédito.</p>
+        <a class="aside-btn-g" href="https://app.finasset.app">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>
+          Empezar gratis
+        </a>
+        <a class="aside-btn-w" href="https://app.finasset.app/demo">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+          Ver demo sin registro
+        </a>
+        <div class="aside-mini-stats">
+          <div class="aside-stat">
+            <div class="aside-stat-val">12K+</div>
+            <div class="aside-stat-label">Inversores</div>
+          </div>
+          <div class="aside-stat">
+            <div class="aside-stat-val">150+</div>
+            <div class="aside-stat-label">Mercados</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="aside-index">
+      <div class="aside-index-title">En esta página</div>
+      <ul class="aside-index-list">
+        <li><a href="#excel-pros">Por qué Excel funciona</a></li>
+        <li><a href="#donde-falla">Dónde falla el Excel</a></li>
+        <li><a href="#cuando-excel">Cuándo quedarse con Excel</a></li>
+        <li><a href="#migrar">Cómo migrar a Finasset</a></li>
+        <li><a href="#faq">Preguntas frecuentes</a></li>
+      </ul>
+    </div>
+  </aside>
+</div>
+
+<div class="cta-final">
+  <div class="cta-final-inner">
+    <h2>Deja el Excel para<br><em>lo que merece tu tiempo.</em></h2>
+    <p>Automatiza el seguimiento de dividendos y dedica ese tiempo a analizar tu próxima inversión.</p>
+    <div class="cta-actions">
+      <a class="btn-cta-green" href="https://app.finasset.app">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>
+        Probar Finasset gratis
+      </a>
+      <a class="btn-cta-white" href="https://app.finasset.app/demo">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+        Ver demo
+      </a>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <a class="footer-logo" href="/">
+    <div class="logo-mark" style="width:26px;height:26px;border-radius:8px">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>
+    </div>
+    FinAsset
+  </a>
+  <p>© 2025 FinAsset &nbsp;·&nbsp; <a href="https://finasset.app">finasset.app</a> &nbsp;·&nbsp; <a href="/tracker-dividendos.html">Tracker de dividendos</a></p>
+</footer>
+
+<script>
+document.querySelectorAll('.faq-q').forEach(q => {
+  q.addEventListener('click', () => {
+    const item = q.parentElement;
+    const wasOpen = item.classList.contains('open');
+    document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('open'));
+    if (!wasOpen) item.classList.add('open');
+  });
+});
+</script>
+</body>
+</html>
