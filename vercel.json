@@ -2,7 +2,9 @@
   "version": 2,
   "rewrites": [
     { "source": "/mobile", "destination": "/mobile.html" },
-    { "source": "/mobile/", "destination": "/mobile.html" }
+    { "source": "/mobile/", "destination": "/mobile.html" },
+    { "source": "/desktop", "destination": "/desktop.html" },
+    { "source": "/desktop/", "destination": "/desktop.html" }
   ],
   "headers": [
     {
@@ -60,6 +62,12 @@
     },
     {
       "source": "/mobile.html",
+      "headers": [
+        { "key": "Cache-Control", "value": "no-store, no-cache, must-revalidate" }
+      ]
+    },
+    {
+      "source": "/desktop.html",
       "headers": [
         { "key": "Cache-Control", "value": "no-store, no-cache, must-revalidate" }
       ]
