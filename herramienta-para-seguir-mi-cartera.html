@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Herramienta para seguir mi cartera | Qué buscar y cómo elegir</title>
+<meta name="description" content="Descubre qué problemas debe resolver una herramienta para seguir tu cartera, qué funciones son imprescindibles y cómo comparar opciones antes de decidir.">
+<meta name="keywords" content="herramienta para seguir mi cartera, seguimiento de cartera, app seguimiento inversiones, software cartera inversión">
+<meta property="og:title" content="Herramienta para seguir mi cartera | Qué buscar y cómo elegir">
+<meta property="og:description" content="Descubre qué problemas debe resolver una herramienta para seguir tu cartera, qué funciones son imprescindibles y cómo comparar opciones antes de decidir.">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://finasset.app/herramienta-para-seguir-mi-cartera.html">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--green:#22c47a;--green2:#17a864;--green3:#0f7347;--teal:#0bbfa0;--dark:#0e1f15;--bg:#f7faf8;--surface:#ffffff;--text:#111c16;--text2:#2d4a39;--muted:#7a9585;--border:#e4ede8;--border2:#d0e2d8;--shadow-sm:0 1px 4px rgba(14,31,21,.06),0 4px 16px rgba(14,31,21,.05);--shadow-md:0 4px 20px rgba(14,31,21,.08),0 12px 40px rgba(14,31,21,.06);--shadow-lg:0 8px 40px rgba(14,31,21,.12),0 24px 64px rgba(14,31,21,.08)}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}html{scroll-behavior:smooth}body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(--text);overflow-x:hidden}
+nav{position:fixed;top:0;left:0;right:0;z-index:200;height:62px;display:flex;align-items:center;justify-content:space-between;padding:0 40px;background:rgba(247,250,248,.9);backdrop-filter:blur(20px);border-bottom:1px solid var(--border)}
+.nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none;font-weight:800;font-size:1.05rem;color:var(--text);letter-spacing:-.03em}
+.logo-mark{width:32px;height:32px;border-radius:10px;background:linear-gradient(135deg,var(--green) 0%,var(--teal) 100%);display:flex;align-items:center;justify-content:center;box-shadow:0 2px 12px rgba(34,196,122,.35);flex-shrink:0}
+.logo-mark svg{width:17px;height:17px;color:#fff}
+.nav-right{display:flex;align-items:center;gap:8px}
+.nav-btn-ghost{font-size:.82rem;font-weight:700;color:var(--text2);text-decoration:none;padding:8px 18px;border-radius:10px;border:1.5px solid var(--border2);background:var(--surface);box-shadow:var(--shadow-sm);transition:all .18s;display:flex;align-items:center;gap:7px}
+.nav-btn-ghost:hover{border-color:var(--green);color:var(--green3)}
+.nav-btn-green{font-size:.82rem;font-weight:700;text-decoration:none;padding:8px 18px;border-radius:10px;background:linear-gradient(135deg,var(--green) 0%,var(--green2) 100%);color:#fff;box-shadow:0 2px 12px rgba(34,196,122,.4);transition:all .2s;display:flex;align-items:center;gap:7px}
+.nav-btn-green:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(34,196,122,.45)}
+@media(max-width:640px){nav{padding:0 20px}.nav-btn-ghost{display:none}}
+.hero{padding:110px 24px 72px;text-align:center;position:relative;overflow:hidden;background:var(--surface);border-bottom:1px solid var(--border)}
+.hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 60% 50% at 50% -10%,rgba(34,196,122,.11) 0%,transparent 65%),radial-gradient(ellipse 40% 30% at 90% 100%,rgba(11,191,160,.06) 0%,transparent 60%)}
+.hero::after{content:'';position:absolute;inset:0;background-image:radial-gradient(circle,rgba(34,196,122,.1) 1px,transparent 1px);background-size:32px 32px;mask-image:radial-gradient(ellipse 80% 80% at 50% 50%,black 20%,transparent 100%)}
+.hero-inner{position:relative;z-index:1;max-width:760px;margin:0 auto}
+.breadcrumb{display:inline-flex;align-items:center;gap:6px;font-size:.72rem;color:var(--muted);font-weight:500;margin-bottom:20px}
+.breadcrumb a{color:var(--muted);text-decoration:none}.breadcrumb a:hover{color:var(--green2)}.breadcrumb-sep{color:var(--border2)}
+.hero-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(34,196,122,.08);border:1.5px solid rgba(34,196,122,.2);border-radius:100px;padding:5px 14px 5px 8px;margin-bottom:24px;font-size:.7rem;font-weight:700;color:var(--green3);letter-spacing:.05em;text-transform:uppercase}
+.badge-dot{width:18px;height:18px;border-radius:50%;background:rgba(34,196,122,.12);display:flex;align-items:center;justify-content:center}
+.badge-dot::after{content:'';width:7px;height:7px;border-radius:50%;background:var(--green);box-shadow:0 0 7px rgba(34,196,122,.7);animation:blink 2.2s ease-in-out infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.35}}
+.hero h1{font-size:clamp(2rem,5vw,3.4rem);font-weight:800;letter-spacing:-.04em;line-height:1.1;color:var(--text);margin-bottom:20px}
+.hero h1 em{font-style:normal;background:linear-gradient(135deg,var(--green) 0%,var(--teal) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hero-sub{font-size:clamp(.95rem,2vw,1.08rem);line-height:1.75;color:var(--muted);max-width:560px;margin:0 auto 36px}
+.cta-group{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-bottom:36px}
+.btn{display:inline-flex;align-items:center;gap:9px;padding:14px 24px;border-radius:13px;font-family:inherit;font-size:.9rem;font-weight:700;text-decoration:none;border:none;cursor:pointer;transition:all .22s cubic-bezier(.34,1.56,.64,1)}
+.btn-primary{background:linear-gradient(135deg,var(--green) 0%,var(--green2) 100%);color:#fff;box-shadow:0 4px 18px rgba(34,196,122,.4);animation:btnPulse 3s ease-in-out infinite}
+@keyframes btnPulse{0%,100%{box-shadow:0 4px 18px rgba(34,196,122,.4),0 0 0 0 rgba(34,196,122,.25)}50%{box-shadow:0 4px 18px rgba(34,196,122,.4),0 0 0 7px rgba(34,196,122,0)}}
+.btn-primary:hover{transform:translateY(-3px);box-shadow:0 10px 30px rgba(34,196,122,.5)}
+.btn-ghost{background:var(--surface);color:var(--text2);border:1.5px solid var(--border2);box-shadow:var(--shadow-sm)}
+.btn-ghost:hover{transform:translateY(-2px);border-color:var(--green);color:var(--green3)}
+.hero-trust{display:flex;align-items:center;gap:8px;justify-content:center;font-size:.75rem;color:var(--muted);font-weight:500;flex-wrap:wrap}
+.trust-sep{width:3px;height:3px;background:var(--border2);border-radius:50%}
+.trust-check{color:var(--green);font-weight:700}
+/* Dashboard demo visual */
+.demo-wrap{margin:48px auto 0;max-width:520px;position:relative;z-index:1}
+.dash-card{background:var(--surface);border:1px solid var(--border);border-radius:20px;box-shadow:var(--shadow-lg);overflow:hidden}
+.dash-header{background:var(--dark);padding:14px 20px;display:flex;align-items:center;justify-content:space-between}
+.dash-title{font-size:.72rem;font-weight:800;color:rgba(255,255,255,.9)}
+.dash-dot{width:8px;height:8px;border-radius:50%;background:var(--green);box-shadow:0 0 8px rgba(34,196,122,.6)}
+.dash-body{padding:18px 20px;display:flex;flex-direction:column;gap:10px}
+.dash-row{display:flex;align-items:center;gap:12px;padding:10px 14px;border-radius:12px;background:var(--bg);border:1px solid var(--border)}
+.dash-ico{width:32px;height:32px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:.9rem;flex-shrink:0}
+.dash-label{font-size:.75rem;font-weight:700;color:var(--text);flex:1}
+.dash-val{font-size:.82rem;font-weight:800;color:var(--green3)}
+.dash-bar-wrap{padding:14px 20px 18px;border-top:1px solid var(--border)}
+.dash-bar-label{font-size:.68rem;font-weight:700;color:var(--muted);margin-bottom:10px;text-transform:uppercase;letter-spacing:.08em}
+.dash-bars{display:flex;align-items:flex-end;gap:6px;height:48px}
+.dash-bar-col{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px}
+.dash-bar-fill{width:100%;border-radius:4px 4px 0 0;background:linear-gradient(180deg,var(--green) 0%,var(--green2) 100%);opacity:.8}
+.dash-bar-fill.active{opacity:1;box-shadow:0 -2px 8px rgba(34,196,122,.4)}
+.dash-bar-mon{font-size:.55rem;color:var(--muted);font-weight:600}
+/* Content */
+.content-wrap{max-width:1100px;margin:0 auto;padding:80px 40px;display:grid;grid-template-columns:1fr 340px;gap:56px;align-items:start}
+.content-main{min-width:0}.content-aside{position:sticky;top:82px}
+@media(max-width:960px){.content-wrap{grid-template-columns:1fr;gap:40px;padding:60px 24px}.content-aside{position:static}}
+@media(max-width:600px){.content-wrap{padding:48px 20px}}
+.prose{display:flex;flex-direction:column;gap:48px}
+.prose-block h2{font-size:clamp(1.3rem,3vw,1.7rem);font-weight:800;letter-spacing:-.03em;color:var(--text);margin-bottom:14px;line-height:1.2}
+.prose-block h3{font-size:1rem;font-weight:800;color:var(--text2);margin:20px 0 8px;letter-spacing:-.01em;display:flex;align-items:center;gap:8px}
+.prose-block h3::before{content:'';width:4px;height:16px;border-radius:2px;background:var(--green);display:block;flex-shrink:0}
+.prose-block p{font-size:.925rem;color:#3d5c48;line-height:1.8;margin-bottom:12px}
+.prose-block p:last-child{margin-bottom:0}
+.prose-block strong{color:var(--text);font-weight:700}
+.highlight-box{background:#f0fdf7;border:1px solid rgba(34,196,122,.25);border-left:4px solid var(--green);border-radius:12px;padding:16px 20px;font-size:.88rem;color:var(--text2);line-height:1.7;margin:16px 0}
+.highlight-box strong{color:var(--green3)}
+.feat-list{display:flex;flex-direction:column;gap:12px;margin:16px 0}
+.feat-item{display:flex;align-items:flex-start;gap:12px;background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:14px 16px;box-shadow:var(--shadow-sm);transition:all .2s}
+.feat-item:hover{border-color:var(--border2);box-shadow:var(--shadow-md);transform:translateX(4px)}
+.feat-item-ico{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0}
+.feat-item-text{flex:1}
+.feat-item-text strong{font-size:.85rem;font-weight:800;color:var(--text);display:block;margin-bottom:3px}
+.feat-item-text span{font-size:.78rem;color:var(--muted);line-height:1.5}
+.internal-links{display:flex;flex-direction:column;gap:8px;margin:16px 0}
+.internal-link{display:flex;align-items:center;gap:8px;font-size:.82rem;font-weight:600;color:var(--green3);text-decoration:none;padding:10px 14px;background:var(--surface);border:1px solid rgba(34,196,122,.2);border-radius:10px;transition:all .18s}
+.internal-link:hover{background:#f0fdf7;border-color:rgba(34,196,122,.4)}
+.internal-link svg{flex-shrink:0;color:var(--green)}
+.faq-list{display:flex;flex-direction:column;gap:8px;margin:16px 0}
+.faq-item{background:var(--surface);border:1px solid var(--border);border-radius:14px;overflow:hidden}
+.faq-q{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:16px 20px;cursor:pointer;font-size:.88rem;font-weight:700;color:var(--text);user-select:none;transition:background .15s}
+.faq-q:hover{background:var(--bg)}
+.faq-icon{width:22px;height:22px;border-radius:50%;background:var(--bg);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .25s;font-size:.7rem;color:var(--muted)}
+.faq-item.open .faq-icon{background:var(--green);border-color:var(--green);color:#fff;transform:rotate(45deg)}
+.faq-a{display:none;padding:0 20px 16px;font-size:.84rem;color:#3d5c48;line-height:1.75;border-top:1px solid var(--border)}
+.faq-item.open .faq-a{display:block}
+.aside-cta{background:linear-gradient(150deg,var(--dark) 0%,#1b3828 100%);border-radius:20px;padding:28px 24px;text-align:center;position:relative;overflow:hidden}
+.aside-cta::before{content:'';position:absolute;width:260px;height:200px;top:-60px;left:50%;transform:translateX(-50%);background:radial-gradient(ellipse,rgba(34,196,122,.2) 0%,transparent 70%);pointer-events:none}
+.aside-cta-inner{position:relative;z-index:1}
+.aside-cta h3{font-size:1.05rem;font-weight:800;color:#fff;letter-spacing:-.03em;margin-bottom:8px}
+.aside-cta p{font-size:.78rem;color:rgba(255,255,255,.45);line-height:1.6;margin-bottom:20px}
+.aside-btn-g{display:flex;align-items:center;justify-content:center;gap:8px;padding:12px 20px;border-radius:11px;font-family:inherit;font-size:.84rem;font-weight:700;text-decoration:none;cursor:pointer;border:none;background:linear-gradient(135deg,var(--green) 0%,var(--green2) 100%);color:#fff;box-shadow:0 3px 14px rgba(34,196,122,.45);transition:all .2s;margin-bottom:8px;width:100%}
+.aside-btn-g:hover{transform:translateY(-2px);box-shadow:0 8px 22px rgba(34,196,122,.55)}
+.aside-btn-w{display:flex;align-items:center;justify-content:center;gap:8px;padding:11px 20px;border-radius:11px;font-family:inherit;font-size:.84rem;font-weight:700;text-decoration:none;cursor:pointer;background:rgba(255,255,255,.07);color:rgba(255,255,255,.8);border:1px solid rgba(255,255,255,.12);transition:all .2s;width:100%}
+.aside-btn-w:hover{background:rgba(255,255,255,.12)}
+.aside-mini-stats{margin-top:16px;padding-top:16px;border-top:1px solid rgba(255,255,255,.08);display:flex}
+.aside-stat{flex:1;text-align:center}
+.aside-stat:first-child{border-right:1px solid rgba(255,255,255,.08)}
+.aside-stat-val{font-size:1.1rem;font-weight:800;color:var(--green);letter-spacing:-.03em}
+.aside-stat-label{font-size:.6rem;color:rgba(255,255,255,.3);font-weight:600;margin-top:2px}
+.aside-index{background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:22px;margin-top:16px}
+.aside-index-title{font-size:.68rem;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;margin-bottom:14px}
+.aside-index-list{list-style:none;display:flex;flex-direction:column;gap:4px}
+.aside-index-list li a{display:block;font-size:.8rem;font-weight:600;color:var(--text2);text-decoration:none;padding:7px 10px;border-radius:8px;transition:all .15s}
+.aside-index-list li a:hover{background:var(--bg);color:var(--green3)}
+.aside-index-list li a::before{content:'→ ';color:var(--border2)}
+.cta-final{background:linear-gradient(150deg,var(--dark) 0%,#1b3828 100%);margin:0;padding:80px 40px;text-align:center;position:relative;overflow:hidden}
+.cta-final::before{content:'';position:absolute;width:600px;height:300px;top:-80px;left:50%;transform:translateX(-50%);background:radial-gradient(ellipse,rgba(34,196,122,.18) 0%,transparent 70%);pointer-events:none}
+.cta-final::after{content:'';position:absolute;inset:0;background-image:radial-gradient(circle,rgba(255,255,255,.035) 1px,transparent 1px);background-size:28px 28px;mask-image:radial-gradient(ellipse 80% 80% at 50% 50%,black 30%,transparent 100%)}
+.cta-final-inner{position:relative;z-index:1;max-width:560px;margin:0 auto}
+.cta-final h2{font-size:clamp(1.8rem,4vw,2.8rem);font-weight:800;letter-spacing:-.04em;line-height:1.1;color:#fff;margin-bottom:14px}
+.cta-final h2 em{font-style:normal;background:linear-gradient(135deg,var(--green) 0%,var(--teal) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.cta-final p{font-size:.95rem;color:rgba(255,255,255,.42);max-width:380px;margin:0 auto 32px;line-height:1.7}
+.cta-actions{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+.btn-cta-green{display:inline-flex;align-items:center;gap:9px;padding:14px 24px;border-radius:13px;font-family:inherit;font-size:.9rem;font-weight:700;text-decoration:none;border:none;cursor:pointer;background:linear-gradient(135deg,var(--green) 0%,var(--green2) 100%);color:#fff;box-shadow:0 4px 18px rgba(34,196,122,.45);transition:all .22s cubic-bezier(.34,1.56,.64,1)}
+.btn-cta-green:hover{transform:translateY(-3px);box-shadow:0 10px 28px rgba(34,196,122,.55)}
+.btn-cta-white{display:inline-flex;align-items:center;gap:9px;padding:14px 24px;border-radius:13px;font-family:inherit;font-size:.9rem;font-weight:700;text-decoration:none;cursor:pointer;background:rgba(255,255,255,.07);color:rgba(255,255,255,.8);border:1px solid rgba(255,255,255,.12);transition:all .22s}
+.btn-cta-white:hover{transform:translateY(-3px);background:rgba(255,255,255,.12)}
+footer{padding:28px 40px;background:var(--surface);border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px}
+.footer-logo{display:flex;align-items:center;gap:8px;font-size:.88rem;font-weight:800;color:var(--text);text-decoration:none;letter-spacing:-.02em}
+footer p{font-size:.75rem;color:var(--muted)}footer a{color:var(--muted);text-decoration:none}footer a:hover{color:var(--green2)}
+@media(max-width:600px){footer{padding:24px 20px;justify-content:center;text-align:center}}
+.section-divider{height:1px;background:var(--border);margin:0}
+</style>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"¿Qué herramienta es mejor para seguir mi cartera?","acceptedAnswer":{"@type":"Answer","text":"La mejor herramienta para tu cartera es la que unifica todos tus brokers en una sola vista, calcula tu rentabilidad real (TWR), muestra el valor actual de cada posición y te hace el seguimiento de dividendos si tienes renta variable. Finasset cubre todo esto sin necesidad de conectar tus cuentas del broker."}},{"@type":"Question","name":"¿Tengo que dar acceso a mi broker para usar una herramienta de seguimiento?","acceptedAnswer":{"@type":"Answer","text":"No. Las mejores herramientas de seguimiento permiten introducir tus posiciones manualmente o mediante importación de ficheros CSV, sin necesidad de conectar tu cuenta del broker. Esto es más seguro y funciona igual de bien para el seguimiento diario."}},{"@type":"Question","name":"¿Puedo seguir mi cartera si tengo varios brokers?","acceptedAnswer":{"@type":"Answer","text":"Sí. Una buena herramienta de seguimiento es multi-broker por diseño: introduces tus posiciones de cada cuenta y la app las consolida en una vista unificada. Puedes ver el total de tu patrimonio, la distribución por activo y la rentabilidad global calculada correctamente."}},{"@type":"Question","name":"¿Para qué sirve realmente seguir mi cartera con una herramienta?","acceptedAnswer":{"@type":"Answer","text":"Seguir tu cartera con una herramienta dedicada te permite saber en todo momento cuánto vale lo que tienes, cuánto has ganado o perdido de verdad (no solo por precio actual), cuándo cobras dividendos y si tu distribución por activos y regiones sigue siendo la que querías. Sin seguimiento, tomas decisiones con información parcial."}}]}
+</script>
+</head>
+<body>
+<nav>
+  <a class="nav-logo" href="/"><div class="logo-mark"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg></div>FinAsset</a>
+  <div class="nav-right">
+    <a class="nav-btn-ghost" href="https://app.finasset.app/mobile"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18" stroke-width="3"/></svg>Abrir APP</a>
+    <a class="nav-btn-green" href="https://app.finasset.app"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>Probar gratis</a>
+  </div>
+</nav>
+
+<section class="hero">
+  <div class="hero-inner">
+    <div class="breadcrumb"><a href="/">FinAsset</a><span class="breadcrumb-sep">›</span><span>Herramienta para seguir mi cartera</span></div>
+    <div class="hero-badge"><span class="badge-dot"></span>Guía práctica</div>
+    <h1>Qué <em>herramienta necesitas</em> para seguir tu cartera</h1>
+    <p class="hero-sub">Antes de elegir una herramienta de seguimiento, conviene saber qué problemas debe resolver. No todas las opciones cubren lo mismo, y la diferencia entre una y otra puede ser la calidad de las decisiones que tomes.</p>
+    <div class="cta-group">
+      <a class="btn btn-primary" href="https://app.finasset.app"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>Probar Finasset gratis</a>
+      <a class="btn btn-ghost" href="https://app.finasset.app/demo"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>Ver demo</a>
+    </div>
+    <div class="hero-trust"><span class="trust-check">✓ Multi-broker</span><span class="trust-sep"></span><span>Sin acceso al broker</span><span class="trust-sep"></span><span>Rentabilidad real (TWR)</span><span class="trust-sep"></span><span>Dividendos incluidos</span></div>
+  </div>
+  <div class="demo-wrap">
+    <div class="dash-card">
+      <div class="dash-header"><span class="dash-title">Mi cartera · Vista consolidada</span><span class="dash-dot"></span></div>
+      <div class="dash-body">
+        <div class="dash-row"><div class="dash-ico" style="background:#ecfdf5">📊</div><span class="dash-label">Valor total cartera</span><span class="dash-val">€38.420</span></div>
+        <div class="dash-row"><div class="dash-ico" style="background:#ecfdf5">📈</div><span class="dash-label">Rentabilidad TWR</span><span class="dash-val">+14,3%</span></div>
+        <div class="dash-row"><div class="dash-ico" style="background:#f0f9ff">🏦</div><span class="dash-label">Brokers conectados</span><span class="dash-val">3 cuentas</span></div>
+        <div class="dash-row"><div class="dash-ico" style="background:#fefce8">💰</div><span class="dash-label">Dividendos este año</span><span class="dash-val">€1.240</span></div>
+      </div>
+      <div class="dash-bar-wrap">
+        <div class="dash-bar-label">Rentabilidad mensual 2024</div>
+        <div class="dash-bars">
+          <div class="dash-bar-col"><div class="dash-bar-fill" style="height:28px"></div><span class="dash-bar-mon">E</span></div>
+          <div class="dash-bar-col"><div class="dash-bar-fill" style="height:36px"></div><span class="dash-bar-mon">F</span></div>
+          <div class="dash-bar-col"><div class="dash-bar-fill" style="height:22px"></div><span class="dash-bar-mon">M</span></div>
+          <div class="dash-bar-col"><div class="dash-bar-fill" style="height:44px"></div><span class="dash-bar-mon">A</span></div>
+          <div class="dash-bar-col"><div class="dash-bar-fill" style="height:32px"></div><span class="dash-bar-mon">M</span></div>
+          <div class="dash-bar-col"><div class="dash-bar-fill" style="height:38px"></div><span class="dash-bar-mon">J</span></div>
+          <div class="dash-bar-col"><div class="dash-bar-fill active" style="height:48px"></div><span class="dash-bar-mon">J</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="section-divider"></div>
+
+<div class="content-wrap">
+  <main class="content-main">
+    <article class="prose">
+
+      <div class="prose-block" id="problemas">
+        <h2>Qué problemas debe resolver una herramienta de seguimiento</h2>
+        <p>El primer error al buscar una herramienta para seguir la cartera es empezar por las funciones en lugar de por los problemas. La pregunta correcta no es "¿qué hace esta app?" sino "¿qué problema tengo ahora que no puedo resolver bien?"</p>
+        <p>Los problemas más frecuentes de los inversores particulares que gestionan su cartera sin herramienta son tres:</p>
+
+        <h3>No saber cuánto vale exactamente lo que tienes</h3>
+        <p>Si tienes posiciones en varios brokers, saber tu patrimonio total requiere sumar manualmente el valor de cada cuenta. Ese dato cambia cada día y la suma manual siempre va con retraso. Una herramienta de seguimiento lo actualiza automáticamente y te da un único número: cuánto tienes en total ahora mismo.</p>
+
+        <h3>No saber cuánto has ganado o perdido de verdad</h3>
+        <p>El precio actual de un activo no te dice cuánto has ganado si has ido comprando en varias tandas. La rentabilidad real requiere calcular el <strong>TWR (Time-Weighted Return)</strong>, que ajusta por el momento en que hiciste cada aportación. Sin este cálculo, puedes creer que tu cartera va bien cuando en realidad está por debajo del índice de referencia.</p>
+
+        <h3>No tener una visión global de distribución y riesgo</h3>
+        <p>Saber que tienes acciones y ETFs no es suficiente. La herramienta debe mostrarte qué porcentaje de tu cartera está en cada región, sector y activo, y alertarte si alguna posición ha crecido demasiado en peso. Sin esa vista de distribución, es fácil acumular concentración sin darte cuenta.</p>
+
+        <div class="highlight-box"><strong>Una buena herramienta no te obliga a buscar la información.</strong> Debe presentarte los datos relevantes de forma que puedas tomar decisiones en menos de cinco minutos, sin tener que hacer cálculos manuales ni abrir varias pestañas.</div>
+      </div>
+
+      <div class="prose-block" id="funciones">
+        <h2>Qué funciones necesitas realmente</h2>
+        <p>Hay herramientas con decenas de métricas. La mayoría de inversores particulares no necesitan todas. Estas son las funciones que sí marcan una diferencia práctica en el día a día:</p>
+        <div class="feat-list">
+          <div class="feat-item"><div class="feat-item-ico" style="background:#ecfdf5">📊</div><div class="feat-item-text"><strong>Visión global consolidada</strong><span>Valor total de la cartera, rentabilidad TWR global y distribución por activo en una sola pantalla. Sin tener que navegar entre secciones para ver el conjunto.</span></div></div>
+          <div class="feat-item"><div class="feat-item-ico" style="background:#f0f9ff">📍</div><div class="feat-item-text"><strong>Seguimiento por posiciones</strong><span>Precio medio de compra, valor actual, ganancia o pérdida latente y porcentaje de rentabilidad por cada activo. Con histórico de compras si has acumulado en varias compras.</span></div></div>
+          <div class="feat-item"><div class="feat-item-ico" style="background:#fefce8">💰</div><div class="feat-item-text"><strong>Seguimiento de dividendos</strong><span>Si tienes acciones o ETFs de distribución, la herramienta debe calcular automáticamente cuándo cobras, cuánto recibes neto y qué proyección anual tienes. Sin esto, pierdes visibilidad sobre la renta que genera tu cartera.</span></div></div>
+          <div class="feat-item"><div class="feat-item-ico" style="background:#f5f3ff">🌍</div><div class="feat-item-text"><strong>Distribución geográfica y por sector</strong><span>Un mapa o gráfico que muestre en qué mercados y sectores estás expuesto. Fundamental para detectar concentraciones o solapamientos si tienes varios ETFs.</span></div></div>
+        </div>
+      </div>
+
+      <div class="prose-block" id="comparar">
+        <h2>Cómo comparar opciones antes de decidir</h2>
+        <p>Hay cuatro criterios que conviene verificar antes de comprometerte con una herramienta de seguimiento de cartera:</p>
+
+        <h3>Multi-broker nativo</h3>
+        <p>La herramienta debe permitir añadir posiciones de distintas cuentas y mostrarlas de forma consolidada. Si solo puedes ver una cuenta a la vez, estás viendo solo parte de tu cartera, lo que puede llevar a decisiones incorrectas sobre diversificación o riesgo.</p>
+
+        <h3>Cálculo correcto de rentabilidad</h3>
+        <p>Pregunta específicamente cómo calcula la rentabilidad. La mayoría de hojas de cálculo y algunas apps usan rentabilidad simple, que no tiene en cuenta cuándo hiciste cada aportación. Busca explícitamente que use <strong>TWR</strong> (Time-Weighted Return) para comparar correctamente con índices.</p>
+
+        <h3>Sin necesidad de acceso al broker</h3>
+        <p>Dar acceso API o credenciales a tu broker tiene riesgos reales. Las mejores herramientas de seguimiento permiten introducir posiciones manualmente o mediante importación de CSV, sin necesidad de conectar tu cuenta. Los datos que ves son los mismos; la diferencia es que no expones tus credenciales.</p>
+
+        <h3>Facilidad de uso real</h3>
+        <p>Una herramienta que tardas 20 minutos en actualizar cada semana no la usarás. Busca que la entrada de datos sea rápida, que los precios se actualicen solos y que la información relevante esté accesible sin clics innecesarios.</p>
+
+        <div class="internal-links">
+          <a class="internal-link" href="/software-seguimiento-inversiones.html"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><polyline points="12 5 19 12 12 19"/></svg>Software de seguimiento de inversiones: comparativa</a>
+          <a class="internal-link" href="/app-seguimiento-cartera.html"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><polyline points="12 5 19 12 12 19"/></svg>App de seguimiento de cartera: funciones clave</a>
+          <a class="internal-link" href="/gestor-cartera-inversion.html"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><polyline points="12 5 19 12 12 19"/></svg>Gestor de cartera de inversión</a>
+        </div>
+      </div>
+
+      <div class="prose-block" id="finasset">
+        <h2>Finasset como herramienta de seguimiento</h2>
+        <p>Finasset está diseñado específicamente para inversores particulares que quieren seguir su cartera sin complejidad innecesaria. Cubre las funciones que realmente importan:</p>
+        <p><strong>Vista consolidada multi-broker:</strong> añades tus posiciones de cada broker y Finasset las consolida automáticamente. Ves el valor total de tu patrimonio, la distribución real y la rentabilidad calculada con TWR, no con la fórmula simple que engaña en carteras con aportaciones periódicas.</p>
+        <p><strong>Seguimiento de dividendos integrado:</strong> si tienes acciones o ETFs de distribución, Finasset calcula automáticamente cuándo cobras, cuánto recibes neto tras retenciones y qué proyección anual tienes. No necesitas un tracker de dividendos separado.</p>
+        <p><strong>Sin acceso al broker:</strong> introduces tus posiciones manualmente o importas un CSV. Los precios se actualizan automáticamente con datos de mercado. Tus credenciales de broker no salen de tu cuenta del broker en ningún momento.</p>
+        <p><strong>Acceso desde móvil y web:</strong> la app está disponible como PWA instalable en cualquier dispositivo. Puedes revisar tu cartera en cualquier momento sin abrir el ordenador.</p>
+      </div>
+
+      <div class="prose-block" id="faq">
+        <h2>Preguntas frecuentes sobre herramientas de seguimiento</h2>
+        <div class="faq-list">
+          <div class="faq-item open"><div class="faq-q" onclick="this.parentElement.classList.toggle('open')">¿Qué herramienta es mejor para seguir mi cartera?<span class="faq-icon">+</span></div><div class="faq-a">La mejor herramienta para tu cartera es la que unifica todos tus brokers en una sola vista, calcula tu rentabilidad real (TWR), muestra el valor actual de cada posición y te hace el seguimiento de dividendos si tienes renta variable. Finasset cubre todo esto sin necesidad de conectar tus cuentas del broker.</div></div>
+          <div class="faq-item"><div class="faq-q" onclick="this.parentElement.classList.toggle('open')">¿Tengo que dar acceso a mi broker para usar una herramienta de seguimiento?<span class="faq-icon">+</span></div><div class="faq-a">No. Las mejores herramientas de seguimiento permiten introducir tus posiciones manualmente o mediante importación de ficheros CSV, sin necesidad de conectar tu cuenta del broker. Esto es más seguro y funciona igual de bien para el seguimiento diario.</div></div>
+          <div class="faq-item"><div class="faq-q" onclick="this.parentElement.classList.toggle('open')">¿Puedo seguir mi cartera si tengo varios brokers?<span class="faq-icon">+</span></div><div class="faq-a">Sí. Una buena herramienta de seguimiento es multi-broker por diseño: introduces tus posiciones de cada cuenta y la app las consolida en una vista unificada. Puedes ver el total de tu patrimonio, la distribución por activo y la rentabilidad global calculada correctamente.</div></div>
+          <div class="faq-item"><div class="faq-q" onclick="this.parentElement.classList.toggle('open')">¿Para qué sirve realmente seguir mi cartera con una herramienta?<span class="faq-icon">+</span></div><div class="faq-a">Seguir tu cartera con una herramienta dedicada te permite saber en todo momento cuánto vale lo que tienes, cuánto has ganado o perdido de verdad (no solo por precio actual), cuándo cobras dividendos y si tu distribución por activos y regiones sigue siendo la que querías. Sin seguimiento, tomas decisiones con información parcial.</div></div>
+        </div>
+      </div>
+
+    </article>
+  </main>
+  <aside class="content-aside">
+    <div class="aside-cta">
+      <div class="aside-cta-inner">
+        <h3>Sigue tu cartera bien</h3>
+        <p>Vista consolidada, rentabilidad TWR y dividendos. Sin complejidad innecesaria.</p>
+        <a class="aside-btn-g" href="https://app.finasset.app"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>Empezar gratis</a>
+        <a class="aside-btn-w" href="https://app.finasset.app/demo"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>Ver demo</a>
+        <div class="aside-mini-stats"><div class="aside-stat"><div class="aside-stat-val">12K+</div><div class="aside-stat-label">Inversores</div></div><div class="aside-stat"><div class="aside-stat-val">150+</div><div class="aside-stat-label">Mercados</div></div></div>
+      </div>
+    </div>
+    <div class="aside-index">
+      <div class="aside-index-title">En esta página</div>
+      <ul class="aside-index-list">
+        <li><a href="#problemas">Qué problemas resolver</a></li>
+        <li><a href="#funciones">Funciones imprescindibles</a></li>
+        <li><a href="#comparar">Cómo comparar opciones</a></li>
+        <li><a href="#finasset">Finasset como herramienta</a></li>
+        <li><a href="#faq">Preguntas frecuentes</a></li>
+      </ul>
+    </div>
+  </aside>
+</div>
+
+<section class="cta-final">
+  <div class="cta-final-inner">
+    <h2>Empieza a seguir tu cartera <em>de verdad</em></h2>
+    <p>Multi-broker, rentabilidad TWR y dividendos en una sola herramienta. Sin configuración compleja.</p>
+    <div class="cta-actions">
+      <a class="btn-cta-green" href="https://app.finasset.app"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>Probar Finasset gratis</a>
+      <a class="btn-cta-white" href="https://app.finasset.app/demo"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>Ver demo primero</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <a class="footer-logo" href="/"><div class="logo-mark" style="width:26px;height:26px;border-radius:8px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width:13px;height:13px"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg></div>FinAsset</a>
+  <p>© 2024 FinAsset · <a href="/tracker-dividendos.html">Tracker dividendos</a> · <a href="/app-seguimiento-cartera.html">App seguimiento cartera</a> · <a href="/gestor-cartera-inversion.html">Gestor cartera</a></p>
+</footer>
+</body>
+</html>
