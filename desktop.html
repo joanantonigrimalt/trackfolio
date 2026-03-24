@@ -5217,7 +5217,15 @@ async function initSupabase(){
     _sb.auth.onAuthStateChange(async(event,session)=>{
       _sbUser=session?.user||null;
       renderAccountSection();
-      if(event==='SIGNED_IN'){await syncFromCloud();}
+      if(event==='SIGNED_IN'){
+        // Enter main app if still on a cover screen (handles all login paths)
+        if(document.querySelector('.cover-screen.cs-active')){
+          localStorage.setItem('fa_ob_done','1');
+          _isDemo=false;window._isDemo=false;
+          enterMainApp();
+        }
+        await syncFromCloud();
+      }
     });
     // Run getSession without a hard timeout — if Supabase is paused (free tier),
     // this call wakes it up in the background. By the time the user fills in
