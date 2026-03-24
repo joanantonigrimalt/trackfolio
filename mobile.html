@@ -5869,13 +5869,30 @@ function renderLiqHeroTotal() {
 // ── App startup ───────────────────────────────────────────────────────────
 const _timeout = (ms) => new Promise(r => setTimeout(r, ms));
 
+function _hasLocalSession() {
+  // Fast localStorage check — no network needed for valid non-expired token
+  try {
+    const raw = localStorage.getItem('sb-bsnairbpsqzljnvngoai-auth-token');
+    if (!raw) return false;
+    const d = JSON.parse(raw);
+    return !!(d.access_token && d.expires_at > Math.floor(Date.now()/1000)+10);
+  } catch(_){ return false; }
+}
+
 async function startApp() {
-  // 1. Init Supabase (synchronous createClient, background getSession ping to wake free-tier project)
+  // 0. Fast path: if session exists in localStorage, enter immediately
+  if (_hasLocalSession()) {
+    try { await Promise.race([initSupabase(), _timeout(3000)]); } catch(_) {}
+    enterMainApp();
+    return;
+  }
+
+  // 1. Init Supabase
   try {
     await Promise.race([initSupabase(), _timeout(5000)]);
   } catch(_) {}
 
-  // 2. Check for existing session — wait up to 5s so returning users auto-login
+  // 2. Check for existing session via Supabase client (handles token refresh)
   let hasSession = false;
   try {
     if (_sb) {
@@ -5887,7 +5904,6 @@ async function startApp() {
     }
   } catch(_) {}
 
-  // 3. Minimum splash display (already consumed by the above, pad to 1.2s total)
   await _timeout(400);
 
   if (hasSession) {
