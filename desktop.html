@@ -776,6 +776,38 @@ body{display:flex;height:100vh;padding:0;overflow:hidden;background:#f2f5f3;just
 .d-new-pos-btn{display:flex;align-items:center;gap:6px;padding:8px 16px;border-radius:10px;background:#15803d;color:#fff;font:inherit;font-size:13px;font-weight:700;cursor:pointer;border:none;transition:background .15s;white-space:nowrap}
 .d-new-pos-btn:hover{background:#127034}
 .d-content{flex:1;overflow:hidden;display:flex;flex-direction:column}
+
+/* ── DESKTOP: Onboarding screen ── */
+#cs-ob{background:#f0f4f2;align-items:center;justify-content:center}
+#cs-ob .ob-lang-row{position:absolute;top:0;right:0;padding:16px 20px;z-index:3}
+#cs-ob .ob-body{flex:none;max-width:460px;width:100%;padding:48px 56px 20px;text-align:center}
+.ob-icon{width:68px;height:68px;border-radius:20px;display:flex;align-items:center;justify-content:center;font-size:32px;margin:0 auto 20px}
+.ob-title{font-size:26px;font-weight:800;color:#142018;letter-spacing:-.03em;line-height:1.2;margin-bottom:10px}
+.ob-desc{font-size:15px;color:#5a6e5e;line-height:1.6}
+#cs-ob .ob-dots{display:flex;justify-content:center;gap:6px;padding:20px 0 8px}
+.ob-dot{height:6px;border-radius:99px;background:rgba(20,32,24,.15);transition:all .25s}
+.ob-dot.on{background:#15803d}
+#cs-ob .ob-footer{max-width:460px;width:100%;padding:0 56px 56px;display:flex;flex-direction:column;gap:10px}
+.ob-btn-main{padding:15px 24px;background:#142018;color:#f5fbf6;border:none;border-radius:14px;font:inherit;font-size:15px;font-weight:700;cursor:pointer;transition:opacity .15s}
+.ob-btn-main:hover{opacity:.85}
+.ob-btn-sec{padding:13px 24px;background:transparent;border:1.5px solid rgba(20,32,24,.12);border-radius:14px;font:inherit;font-size:14px;font-weight:600;color:#4a5f4e;cursor:pointer;transition:border-color .15s}
+.ob-btn-sec:hover{border-color:#15803d;color:#15803d}
+
+/* ── DESKTOP: Auth cover screen — two-column layout ── */
+#cs-auth{flex-direction:row!important;align-items:stretch!important;background:none!important}
+#cs-auth::before{content:'';display:block;flex:1;background:linear-gradient(160deg,#0d2017 0%,#142018 50%,#1a3a28 100%)}
+#cs-auth>div:not(.auth-lang-row):not([style*="position:absolute"]){max-width:520px;width:100%;background:linear-gradient(170deg,#f2f5f3 0%,#e8f0ea 100%);overflow-y:auto;padding:56px 56px 48px!important;flex:none!important}
+#cs-auth .auth-lang-row{position:absolute;top:0;right:0;z-index:5}
+
+/* ── DESKTOP: authSheet → centered modal ── */
+.authSheet{bottom:auto!important;top:50%!important;left:50%!important;right:auto!important;transform:translate(-50%,-50%)!important;border-radius:20px!important;max-width:460px;width:calc(100% - 48px)}
+.authSheet.open{transform:translate(-50%,-50%)!important}
+
+/* ── DESKTOP: splash centering ── */
+#cs-splash{background:#f2f5f3}
+.splash-logo{margin:0 auto 20px}
+.splash-title{text-align:center}
+.splash-sub{text-align:center}
 </style>
 </head>
 <body>
@@ -954,6 +986,13 @@ body{display:flex;height:100vh;padding:0;overflow:hidden;background:#f2f5f3;just
       <div class="delta" id="summaryAssetCount"></div>
     </div>
   </div>
+  <a href="https://t.me/finassetes" target="_blank" rel="noopener" style="display:flex;align-items:center;gap:10px;background:#EFF9FE;border:1.5px solid #229ED9;border-radius:14px;padding:12px 16px;text-decoration:none;margin-bottom:12px">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="#229ED9"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12L7.17 13.36l-2.965-.924c-.643-.204-.657-.643.136-.953l11.57-4.461c.537-.194 1.006.131.983.199z"/></svg>
+    <div style="flex:1;min-width:0">
+      <div style="font-size:13px;font-weight:700;color:#229ED9">Comunidad FinAsset</div>
+      <div style="font-size:11px;color:#5aA8C9">Únete al grupo de Telegram →</div>
+    </div>
+  </a>
   <div id="btnAddAll" style="display:flex;gap:1px;margin-bottom:12px;border-radius:16px;overflow:hidden;box-shadow:0 4px 16px rgba(21,128,61,.28)">
     <button onclick="openSearch()" style="flex:1;display:flex;align-items:center;justify-content:center;gap:7px;padding:13px 12px;background:#15803d;border:none;font-family:inherit;font-size:13px;font-weight:700;color:#fff;cursor:pointer;transition:background .15s" onmouseover="this.style.background='#166534'" onmouseout="this.style.background='#15803d'">
       <svg viewBox="0 0 16 16" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" width="14" height="14"><circle cx="6.5" cy="6.5" r="4.5"/><line x1="10" y1="10" x2="14" y2="14"/></svg>
@@ -5310,7 +5349,7 @@ async function _submitAuth(){
       if(error)throw error;
       closeAuthModal();
     }else{
-      const{error}=await _sb.auth.signUp({email,password:pass,options:{data:{full_name:name},emailRedirectTo:'https://finasset.app'}});
+      const{error}=await _sb.auth.signUp({email,password:pass,options:{data:{full_name:name},emailRedirectTo:'https://app.finasset.app/desktop'}});
       if(error)throw error;
       document.getElementById('authFormWrap').style.display='none';
       document.getElementById('authTabs').style.display='none';
@@ -5523,9 +5562,15 @@ async function authSubmit() {
 
   try {
     if (_authMode === 'register') {
-      const { error } = await runAuth(() => _sb.auth.signUp({ email, password: pass, options: { data: { full_name: name }, emailRedirectTo: 'https://finasset.app' } }));
+      const { data: signUpData, error } = await runAuth(() => _sb.auth.signUp({ email, password: pass, options: { data: { full_name: name }, emailRedirectTo: 'https://app.finasset.app/desktop' } }));
       if (error) throw error;
-      showAuthErr(isEs ? '¡Revisa tu email para confirmar el registro!' : 'Check your email to confirm registration!', true);
+      // mailer_autoconfirm=true: session is returned immediately, enter app directly
+      if (signUpData?.session) {
+        localStorage.setItem('fa_ob_done', '1');
+        enterMainApp();
+      } else {
+        showAuthErr(isEs ? '¡Revisa tu email para confirmar el registro!' : 'Check your email to confirm registration!', true);
+      }
     } else {
       const { error } = await runAuth(() => _sb.auth.signInWithPassword({ email, password: pass }));
       if (error) throw error;
@@ -5550,8 +5595,8 @@ async function authSubmit() {
       showAuthErr(isEs ? 'Email ya registrado. Prueba a iniciar sesión.' : 'Email already registered. Try signing in.');
     } else if (isRateLimit) {
       showAuthErr(isEs
-        ? 'Límite de emails del servidor alcanzado. Usa "Continuar con Google" o intenta de nuevo en unos minutos.'
-        : 'Server email limit reached. Use "Continue with Google" or try again in a few minutes.');
+        ? 'Límite de emails alcanzado. Intenta de nuevo en unos minutos.'
+        : 'Email rate limit reached. Please try again in a few minutes.');
     } else if (isNet && _authMode === 'register') {
       showAuthErr(isEs ? '¡Cuenta creada! Revisa tu email para confirmar.' : 'Account created! Check your email to confirm.', true);
     } else if (isTimeout) {
