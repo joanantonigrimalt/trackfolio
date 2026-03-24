@@ -5218,12 +5218,8 @@ async function initSupabase(){
       _sbUser=session?.user||null;
       renderAccountSection();
       if(event==='SIGNED_IN'){
-        // Enter main app and close any open auth modal (handles all login paths)
         localStorage.setItem('fa_ob_done','1');
-        _isDemo=false;window._isDemo=false;
-        try{closeAuthModal();}catch(_){}
-        enterMainApp();
-        await syncFromCloud();
+        window.location.reload();
       }
     });
     // Run getSession without a hard timeout — if Supabase is paused (free tier),
