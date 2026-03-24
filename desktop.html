@@ -5218,12 +5218,11 @@ async function initSupabase(){
       _sbUser=session?.user||null;
       renderAccountSection();
       if(event==='SIGNED_IN'){
-        // Enter main app if still on a cover screen (handles all login paths)
-        if(document.querySelector('.cover-screen.cs-active')){
-          localStorage.setItem('fa_ob_done','1');
-          _isDemo=false;window._isDemo=false;
-          enterMainApp();
-        }
+        // Enter main app and close any open auth modal (handles all login paths)
+        localStorage.setItem('fa_ob_done','1');
+        _isDemo=false;window._isDemo=false;
+        try{closeAuthModal();}catch(_){}
+        enterMainApp();
         await syncFromCloud();
       }
     });
@@ -5362,8 +5361,10 @@ async function _submitAuth(){
     }else{
       const{data:sd,error}=await runAuth(()=>_sb.auth.signUp({email,password:pass,options:{data:{full_name:name},emailRedirectTo:'https://app.finasset.app/desktop'}}));
       if(error)throw error;
-      if(sd?.session){closeAuthModal();localStorage.setItem('fa_ob_done','1');enterMainApp();}
-      else{document.getElementById('authFormWrap').style.display='none';document.getElementById('authTabs').style.display='none';document.getElementById('authVerifyState').style.display='';document.getElementById('authVerifyMsg').textContent=`Enlace enviado a ${email}. Confirma tu cuenta y vuelve a entrar.`;}
+      document.getElementById('authFormWrap').style.display='none';
+      document.getElementById('authTabs').style.display='none';
+      document.getElementById('authVerifyState').style.display='';
+      document.getElementById('authVerifyMsg').textContent=_isEs9?`¡Cuenta creada! Revisa ${email} y haz click en el enlace de confirmación.`:`Account created! Check ${email} and click the confirmation link.`;
     }
   }catch(e){
     const _isEs9=currentLang==='es';
