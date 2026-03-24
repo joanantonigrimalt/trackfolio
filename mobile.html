@@ -5217,22 +5217,24 @@ async function _submitAuth(){
   if(pass.length<8){_showAuthMsg(currentLang==='es'?'Contraseña mínimo 8 caracteres.':'Password must be at least 8 characters.','err');return;}
   const btn=document.getElementById('authSubmitBtn');
   btn.textContent='…';btn.disabled=true;
+  const runAuth=fn=>Promise.race([fn(),new Promise((_,r)=>setTimeout(()=>r(new Error('timeout')),45000))]);
   try{
     if(_authMode==='login'){
-      const{error}=await _sb.auth.signInWithPassword({email,password:pass});
+      const{error}=await runAuth(()=>_sb.auth.signInWithPassword({email,password:pass}));
       if(error)throw error;
       closeAuthModal();
+      localStorage.setItem('fa_ob_done','1');
+      enterMainApp();
     }else{
-      const{error}=await _sb.auth.signUp({email,password:pass,options:{data:{full_name:name},emailRedirectTo:'https://finasset.app'}});
+      const{data:sd,error}=await runAuth(()=>_sb.auth.signUp({email,password:pass,options:{data:{full_name:name},emailRedirectTo:'https://app.finasset.app/desktop'}}));
       if(error)throw error;
-      document.getElementById('authFormWrap').style.display='none';
-      document.getElementById('authTabs').style.display='none';
-      document.getElementById('authVerifyState').style.display='';
-      document.getElementById('authVerifyMsg').textContent=`Enlace enviado a ${email}. Confirma tu cuenta y vuelve a entrar.`;
+      if(sd?.session){closeAuthModal();localStorage.setItem('fa_ob_done','1');enterMainApp();}
+      else{document.getElementById('authFormWrap').style.display='none';document.getElementById('authTabs').style.display='none';document.getElementById('authVerifyState').style.display='';document.getElementById('authVerifyMsg').textContent=`Enlace enviado a ${email}. Confirma tu cuenta y vuelve a entrar.`;}
     }
   }catch(e){
     const _isEs9=currentLang==='es';
-    const m=e.message?.includes('Invalid login credentials')?(_isEs9?'Email o contraseña incorrectos.':'Invalid email or password.'):
+    const m=e.message==='timeout'?(_isEs9?'El servidor tardó demasiado. Inténtalo de nuevo.':'Server took too long. Please try again.'):
+             e.message?.includes('Invalid login')||e.message?.includes('invalid_credentials')?(_isEs9?'Email o contraseña incorrectos.':'Invalid email or password.'):
              e.message?.includes('not confirmed')?(_isEs9?'Confirma tu email antes de entrar.':'Please confirm your email first.'):
              e.message?.includes('already registered')?(_isEs9?'Email ya registrado.':'Email already registered.'):
              e.message||(_isEs9?'Error desconocido.':'Unknown error.');
