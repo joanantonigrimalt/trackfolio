@@ -2102,34 +2102,46 @@ a.d-nav-item{text-decoration:none;color:inherit;}.d-nav-item.active{background:#
 <div class="liqSheet" id="liqSheet">
   <div class="sheetHandle" style="margin:14px auto 0;width:36px;height:4px;background:#dce5dc;border-radius:2px"></div>
   <div style="display:flex;justify-content:space-between;align-items:center">
-    <div class="liqSheetTitle" id="liqSheetTitle">Add Liquidity</div>
+    <div class="liqSheetTitle" id="liqSheetTitle">Añadir Liquidez</div>
     <button onclick="closeLiqModal()" style="background:rgba(20,32,24,.07);border:none;width:32px;height:32px;border-radius:10px;font-size:14px;cursor:pointer;color:#4a5f4e;margin-top:14px">✕</button>
   </div>
   <div class="liqField">
-    <div class="liqLabel" data-i18n="liqNameLbl">Name</div>
-    <input class="liqInp" id="liqName" placeholder="e.g. ING Savings Account" type="text">
+    <div class="liqLabel">Nombre</div>
+    <input class="liqInp" id="liqName" placeholder="ej. Cuenta Ahorro ING" type="text">
   </div>
   <div class="liqField">
-    <div class="liqLabel" data-i18n="liqBrokerLbl">Broker / Entidad</div>
-    <input class="liqInp" id="liqBroker" placeholder="e.g. MyInvestor, ING, Indexa..." type="text">
+    <div class="liqLabel">Broker / Entidad</div>
+    <input class="liqInp" id="liqBroker" placeholder="ej. MyInvestor, ING, Indexa..." type="text">
   </div>
   <div class="liqField">
-    <div class="liqLabel" data-i18n="liqTypeLbl">Type</div>
+    <div class="liqLabel">Tipo</div>
     <div class="liqTypeRow" id="liqTypeRow">
-      <button class="liqTypeBtn active" data-ltype="savings" onclick="setLiqType('savings')">🏦 Savings</button>
-      <button class="liqTypeBtn" data-ltype="deposit" onclick="setLiqType('deposit')">🔒 Deposit</button>
-      <button class="liqTypeBtn" data-ltype="moneymarket" onclick="setLiqType('moneymarket')">📈 Money Mkt</button>
-      <button class="liqTypeBtn" data-ltype="pension" onclick="setLiqType('pension')">🏛️ Pension</button>
-      <button class="liqTypeBtn" data-ltype="cash" onclick="setLiqType('cash')">💳 Current Acc.</button>
+      <button class="liqTypeBtn active" data-ltype="savings" onclick="setLiqType('savings')">🏦 Ahorro</button>
+      <button class="liqTypeBtn" data-ltype="deposit" onclick="setLiqType('deposit')">🔒 Depósito</button>
+      <button class="liqTypeBtn" data-ltype="moneymarket" onclick="setLiqType('moneymarket')">📈 F. Monetario</button>
+      <button class="liqTypeBtn" data-ltype="pension" onclick="setLiqType('pension')">🏛️ Pensión</button>
+      <button class="liqTypeBtn" data-ltype="cash" onclick="setLiqType('cash')">💳 Cta. Cte.</button>
+      <button class="liqTypeBtn" data-ltype="fondoprivado" onclick="setLiqType('fondoprivado')">🏢 Fondo Privado</button>
+    </div>
+  </div>
+  <!-- Fondo Privado extra fields -->
+  <div id="liqFPFields" style="display:none">
+    <div class="liqField">
+      <div class="liqLabel">Nombre del plan</div>
+      <input class="liqInp" id="liqPlanName" placeholder="ej. Fondo Privado Empresa X" type="text">
+    </div>
+    <div class="liqField">
+      <div class="liqLabel">Capital invertido</div>
+      <input class="liqInp" id="liqCapInv" placeholder="0.00" type="number" min="0" step="0.01">
     </div>
   </div>
   <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
     <div class="liqField">
-      <div class="liqLabel" data-i18n="liqAmountLbl">Amount</div>
+      <div class="liqLabel" id="liqAmountLbl">Importe</div>
       <input class="liqInp" id="liqAmount" placeholder="0.00" type="number" min="0" step="0.01">
     </div>
     <div class="liqField">
-      <div class="liqLabel" data-i18n="liqCurrencyLbl">Currency</div>
+      <div class="liqLabel">Divisa</div>
       <select class="liqInp" id="liqCurrency" style="appearance:none">
         <option value="EUR">€ EUR</option>
         <option value="USD">$ USD</option>
@@ -2139,15 +2151,15 @@ a.d-nav-item{text-decoration:none;color:inherit;}.d-nav-item.active{background:#
     </div>
   </div>
   <div class="liqField">
-    <div class="liqLabel" data-i18n="liqRateLbl">Annual Interest Rate (%)</div>
-    <input class="liqInp" id="liqRate" placeholder="e.g. 3.00" type="number" min="0" step="0.01" max="100">
+    <div class="liqLabel" id="liqRateLbl">Tipo de interés anual (%)</div>
+    <input class="liqInp" id="liqRate" placeholder="ej. 3.00" type="number" min="0" step="0.01" max="100">
   </div>
   <div class="liqField">
-    <div class="liqLabel" data-i18n="liqSinceLbl">Since (optional)</div>
+    <div class="liqLabel">Desde (opcional)</div>
     <input class="liqInp" id="liqSince" type="date">
   </div>
-  <button class="liqSaveBtn" data-i18n="liqSaveBtn" onclick="saveLiqItem()">Save</button>
-  <button class="liqDelBtn" data-i18n="liqRemoveBtn" id="liqDelBtn" style="display:none" onclick="deleteLiqItem()">Remove position</button>
+  <button class="liqSaveBtn" onclick="saveLiqItem()">Guardar</button>
+  <button class="liqDelBtn" id="liqDelBtn" style="display:none" onclick="deleteLiqItem()">Eliminar posición</button>
 </div>
 
 <!-- ============ ALERT SHEET ============ -->
@@ -4008,7 +4020,10 @@ async function renderDividends(){
     }).filter(Boolean);
   _divItems=divItems;
 
-  const totalAnnual=divItems.reduce((s,d)=>s+d.annualIncome,0);
+  const liqWithRate=getLiquidity().filter(x=>x.rate>0);
+  const liqInterestTotal=liqWithRate.reduce((s,x)=>s+toDisplay(x.amount*(x.rate/100),x.currency||'EUR'),0);
+
+  const totalAnnual=divItems.reduce((s,d)=>s+d.annualIncome,0)+liqInterestTotal;
   const totalPortfolio=assets.reduce((s,a)=>s+toDisplay(a.value,assetCcy(a)),0);
   const totalInvested=assets.reduce((s,a)=>s+toDisplay(a.invested,costCcy(a)),0);
   const yieldPortfolio=totalPortfolio>0?(totalAnnual/totalPortfolio)*100:0;
@@ -4040,9 +4055,9 @@ async function renderDividends(){
   }
 
   // ── Holdings table v2 ──────────────────────────────────────────────────────
-  if(divItems.length){
+  if(divItems.length||liqWithRate.length){
     document.getElementById('divHoldingsCard').style.display='';
-    _renderDivHoldings(divItems);
+    _renderDivHoldings(divItems, liqWithRate);
   }
 
   // Upcoming payments — with estimated ex-date and payment date
@@ -4183,7 +4198,7 @@ async function renderDividends(){
 }
 
 // ── Rendimiento por activo — compact table with sparkline ────────────────────
-function _renderDivHoldings(divItems){
+function _renderDivHoldings(divItems, liqWithRate){
   const palette=['#3b82f6','#f97316','#22c55e','#ef4444','#a855f7','#eab308','#06b6d4','#ec4899'];
   const sorted=[...divItems].sort((a,b)=>(b.annualIncome||0)-(a.annualIncome||0));
   const wrap=document.getElementById('divHoldingsList');
@@ -4262,6 +4277,37 @@ function _renderDivHoldings(divItems){
       });
     });
   });
+  // Append liquidity interest rows
+  if(liqWithRate&&liqWithRate.length){
+    const tbody=document.getElementById('divHoldingsTbody');
+    if(tbody){
+      const liqHtml=liqWithRate.map(x=>{
+        const annual=toDisplay(x.amount*(x.rate/100),x.currency||'EUR');
+        const icon=LIQ_ICONS[x.type]||'💰';
+        return`<tr>
+          <td>
+            <div style="display:flex;align-items:center;gap:8px">
+              <div style="width:28px;height:28px;border-radius:8px;background:linear-gradient(135deg,#0369a1,#38bdf8);display:grid;place-items:center;font-size:14px;flex-shrink:0">${icon}</div>
+              <div>
+                <div class="div-tbl-name">${escapeHtml(x.name)}</div>
+                <div class="div-tbl-meta">${LIQ_LABELS[x.type]||x.type}${x.broker?' · '+x.broker:''}</div>
+              </div>
+            </div>
+          </td>
+          <td><div style="font-size:11px;color:#6b7280">${x.rate.toFixed(2)}%/año</div></td>
+          <td>
+            <div class="div-tbl-yield">${x.rate.toFixed(2)}%</div>
+            <div class="div-tbl-yoc">interés</div>
+          </td>
+          <td>
+            <div class="div-tbl-amt">${fe(annual)}</div>
+            <div class="div-tbl-yoc">${fe(annual/12)}/mes</div>
+          </td>
+        </tr>`;
+      }).join('');
+      tbody.innerHTML+=liqHtml;
+    }
+  }
 }
 
 // ── Interactive annual calendar ───────────────────────────────────────────────
@@ -6115,21 +6161,23 @@ function saveLiquidity(arr){ localStorage.setItem('fa_liquidity',JSON.stringify(
 let _liqEditId = null;
 let _liqType = 'savings';
 
-const LIQ_ICONS = {savings:'🏦', deposit:'🔒', moneymarket:'📈', pension:'🏛️', cash:'💳'};
-const LIQ_LABELS = {savings:'Savings', deposit:'Deposit', moneymarket:'Money Market', pension:'Pension Plan', cash:'Current Acc.'};
+const LIQ_ICONS = {savings:'🏦', deposit:'🔒', moneymarket:'📈', pension:'🏛️', cash:'💳', fondoprivado:'🏢'};
+const LIQ_LABELS = {savings:'Ahorro', deposit:'Depósito', moneymarket:'F. Monetario', pension:'Plan Pensión', cash:'Cta. Cte.', fondoprivado:'Fondo Privado'};
 
 function openLiqModal(id) {
   _liqEditId = id || null;
   const liq = getLiquidity();
   const item = id ? liq.find(x=>x.id===id) : null;
   _liqType = item?.type || 'savings';
-  document.getElementById('liqSheetTitle').textContent = item ? 'Edit Liquidity' : 'Add Liquidity';
+  document.getElementById('liqSheetTitle').textContent = item ? 'Editar Liquidez' : 'Añadir Liquidez';
   document.getElementById('liqName').value = item?.name || '';
   document.getElementById('liqBroker').value = item?.broker || '';
   document.getElementById('liqAmount').value = item?.amount || '';
   document.getElementById('liqRate').value = item?.rate ?? '';
   document.getElementById('liqSince').value = item?.since || '';
   document.getElementById('liqCurrency').value = item?.currency || _displayCcy || 'EUR';
+  document.getElementById('liqPlanName').value = item?.planName || '';
+  document.getElementById('liqCapInv').value = item?.capitalInvertido || '';
   document.getElementById('liqDelBtn').style.display = item ? '' : 'none';
   setLiqType(_liqType);
   document.getElementById('liqOverlay').classList.add('open');
@@ -6165,6 +6213,13 @@ function closeLiqModal() {
 function setLiqType(type) {
   _liqType = type;
   document.querySelectorAll('.liqTypeBtn').forEach(b=>b.classList.toggle('active',b.dataset.ltype===type));
+  const isFP = type === 'fondoprivado';
+  const fpFields = document.getElementById('liqFPFields');
+  if(fpFields) fpFields.style.display = isFP ? '' : 'none';
+  const amtLbl = document.getElementById('liqAmountLbl');
+  if(amtLbl) amtLbl.textContent = isFP ? 'Capital actual' : 'Importe';
+  const rateLbl = document.getElementById('liqRateLbl');
+  if(rateLbl) rateLbl.textContent = isFP ? 'Rendimiento anual esperado (%)' : 'Tipo de interés anual (%)';
 }
 function saveLiqItem() {
   const name = document.getElementById('liqName').value.trim();
@@ -6173,11 +6228,15 @@ function saveLiqItem() {
   const rate = Math.max(0, Math.min(100, parseFloat(document.getElementById('liqRate').value)||0));
   const currency = document.getElementById('liqCurrency').value;
   const since = document.getElementById('liqSince').value;
+  const planName = document.getElementById('liqPlanName').value.trim();
+  const capitalInvertido = parseFloat(document.getElementById('liqCapInv').value)||0;
   if(!name){document.getElementById('liqName').style.borderColor='#b91c1c';document.getElementById('liqName').focus();return;}
   if(amount<=0){document.getElementById('liqAmount').style.borderColor='#b91c1c';document.getElementById('liqAmount').focus();return;}
   document.getElementById('liqName').style.borderColor='';document.getElementById('liqAmount').style.borderColor='';
   const liq = getLiquidity();
-  const item = {id: _liqEditId||('liq_'+Date.now()), name, ...(broker&&{broker}), type:_liqType, amount, currency, rate, since};
+  const item = {id: _liqEditId||('liq_'+Date.now()), name, ...(broker&&{broker}), type:_liqType, amount, currency, rate, since,
+    ...(_liqType==='fondoprivado'&&planName&&{planName}),
+    ...(_liqType==='fondoprivado'&&capitalInvertido>0&&{capitalInvertido})};
   if(_liqEditId) {
     const idx=liq.findIndex(x=>x.id===_liqEditId);
     if(idx>=0)liq[idx]=item; else liq.push(item);
@@ -6216,14 +6275,17 @@ function renderLiquidity() {
   const rows = liq.map(x=>{
     const annualInterest = x.amount*(x.rate/100);
     const dispAmt = fd(x.amount, x.currency||'EUR');
-    const _yrLbl=currentLang==='es'?'año':'yr';
-    const dispInt = x.rate>0 ? `+${fd(annualInterest,x.currency||'EUR')}/${_yrLbl}` : '';
+    const dispInt = x.rate>0 ? `+${fd(annualInterest,x.currency||'EUR')}/año` : '';
     const icon = LIQ_ICONS[x.type]||'💰';
+    const isFP = x.type==='fondoprivado';
+    const gainPct = isFP&&x.capitalInvertido>0 ? ((x.amount-x.capitalInvertido)/x.capitalInvertido*100) : null;
+    const metaExtra = isFP ? (x.planName?` · ${x.planName}`:'')+(gainPct!=null?` · <span style="color:${gainPct>=0?'#059669':'#b91c1c'}">${gainPct>=0?'+':''}${gainPct.toFixed(1)}%</span>`:'') : '';
     return `<div class="liqRow" onclick="openLiqModal('${escapeHtml(String(x.id||''))}')">
       <div class="liqIcon">${icon}</div>
       <div style="min-width:0;flex:1">
         <div class="liqName">${x.name}</div>
-        <div class="liqMeta">${LIQ_LABELS[x.type]||x.type}${x.broker?' · '+x.broker:''}${x.rate>0?' · '+x.rate.toFixed(2)+'%/'+_yrLbl:''}</div>
+        <div class="liqMeta">${LIQ_LABELS[x.type]||x.type}${x.broker?' · '+x.broker:''}${x.rate>0?' · '+x.rate.toFixed(2)+'%/año':''}${metaExtra}</div>
+        ${isFP&&x.capitalInvertido>0?`<div class="liqMeta">Invertido: ${fd(x.capitalInvertido,x.currency||'EUR')}</div>`:''}
       </div>
       <div class="liqRight">
         <div class="liqAmt">${dispAmt}</div>
