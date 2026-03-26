@@ -207,10 +207,130 @@
       "name": "Robeco Smart Energy D EUR",
       "type": "fund",
       "status": "mapped",
-      "recommendedProvider": "eodhd",
+      "recommendedProvider": "yahoo",
       "providerSymbol": "LU2145461757.SG",
+      "yahooSymbol": "0P0001KWJF.F",
+      "notes": "Yahoo Finance: 0P0001KWJF.F (MUTUALFUND, Frankfurt). Full NAV history available."
+    },
+    {
+      "isin": "N5396",
+      "name": "Indexa Más Rentabilidad Acciones PP",
+      "type": "pension",
+      "status": "mapped",
+      "recommendedProvider": "yahoo",
+      "providerSymbol": null,
+      "yahooSymbol": "0P0001RHQ7.F",
+      "notes": "Plan de Pensiones DGS N5396. Yahoo: 0P0001RHQ7.F"
+    },
+    {
+      "isin": "N5227",
+      "name": "Indexa Más Rentabilidad Bonos PP",
+      "type": "pension",
+      "status": "mapped",
+      "recommendedProvider": "yahoo",
+      "providerSymbol": null,
+      "yahooSymbol": "0P0001RHQ5.F",
+      "notes": "Plan de Pensiones DGS N5227. Yahoo: 0P0001RHQ5.F"
+    },
+    {
+      "isin": "N4659",
+      "name": "MyInvestor Indexado S&P 500 PP",
+      "type": "pension",
+      "status": "mapped",
+      "recommendedProvider": "manual",
+      "providerSymbol": null,
       "yahooSymbol": null,
-      "notes": "Robeco SAM Smart Energy fund. Try EODHD with ISIN direct. Luxembourg-domiciled fund."
+      "notes": "Plan de Pensiones DGS N4659. NAV manual."
+    },
+    {
+      "isin": "N5122",
+      "name": "Cobas Pensiones PP",
+      "type": "pension",
+      "status": "mapped",
+      "recommendedProvider": "manual",
+      "providerSymbol": null,
+      "yahooSymbol": null,
+      "notes": "Plan de Pensiones DGS N5122. NAV manual."
+    },
+    {
+      "isin": "N1894",
+      "name": "BBVA Plan Multiactivo Moderado PP",
+      "type": "pension",
+      "status": "mapped",
+      "recommendedProvider": "yahoo",
+      "providerSymbol": null,
+      "yahooSymbol": "0P00019MX6.F",
+      "notes": "Plan de Pensiones DGS N1894. Yahoo: 0P00019MX6.F"
+    },
+    {
+      "isin": "N1893",
+      "name": "BBVA Plan Multiactivo Decidido PP",
+      "type": "pension",
+      "status": "mapped",
+      "recommendedProvider": "yahoo",
+      "providerSymbol": null,
+      "yahooSymbol": "0P00019MX5.F",
+      "notes": "Plan de Pensiones DGS N1893. Yahoo: 0P00019MX5.F"
+    },
+    {
+      "isin": "N2477",
+      "name": "CaixaBank Destino 2025 PP",
+      "type": "pension",
+      "status": "mapped",
+      "recommendedProvider": "manual",
+      "providerSymbol": null,
+      "yahooSymbol": null,
+      "notes": "Plan de Pensiones DGS N2477. NAV manual."
+    },
+    {
+      "isin": "N4636",
+      "name": "Finizens Plan Pensiones 5 PP",
+      "type": "pension",
+      "status": "mapped",
+      "recommendedProvider": "manual",
+      "providerSymbol": null,
+      "yahooSymbol": null,
+      "notes": "Plan de Pensiones DGS N4636. NAV manual."
+    },
+    {
+      "isin": "N4633",
+      "name": "Finizens Plan Pensiones 3 PP",
+      "type": "pension",
+      "status": "mapped",
+      "recommendedProvider": "manual",
+      "providerSymbol": null,
+      "yahooSymbol": null,
+      "notes": "Plan de Pensiones DGS N4633. NAV manual."
+    },
+    {
+      "isin": "N5148",
+      "name": "Naranja Estándar PP ING",
+      "type": "pension",
+      "status": "mapped",
+      "recommendedProvider": "manual",
+      "providerSymbol": null,
+      "yahooSymbol": null,
+      "notes": "Plan de Pensiones DGS N5148. NAV manual."
+    },
+    {
+      "isin": "N4673",
+      "name": "Mapfre Compromiso Pensión PP",
+      "type": "pension",
+      "status": "mapped",
+      "recommendedProvider": "manual",
+      "providerSymbol": null,
+      "yahooSymbol": null,
+      "notes": "Plan de Pensiones DGS N4673. NAV manual."
+    },
+    {
+      "isin": "N1298",
+      "name": "Mutua Pensión Bolsa FP",
+      "type": "pension",
+      "status": "mapped",
+      "recommendedProvider": "manual",
+      "providerSymbol": null,
+      "yahooSymbol": null,
+      "notes": "Plan de Pensiones DGS N1298. NAV manual."
     }
   ]
 }

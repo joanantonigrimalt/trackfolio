@@ -1,6 +1,14 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-QM1KR7PMFW"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-QM1KR7PMFW');
+</script><meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"><meta http-equiv="Pragma" content="no-cache"><meta http-equiv="Expires" content="0">
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, viewport-fit=cover">
 <title>Finasset – Gestión de Cartera</title>
@@ -53,7 +61,7 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"
   integrity="sha384-9nhczxUqK87bcKHh20fSQcTGD4qq5GhayNYSYWqwBkINBhOfQLg/P5HG5lF1urn4"
   crossorigin="anonymous"></script>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js" crossorigin="anonymous"></script>
+<script src="/lib/finasset-auth.js?v=3"></script>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}html,body{height:100%}body{font-family:'DM Sans',sans-serif;background:linear-gradient(180deg,#e8f2eb 0%,#f2f5f3 40%,#eaecef 100%);display:flex;justify-content:center;align-items:flex-start;padding:12px;color:#142018}.shell{width:min(100vw - 16px,430px);display:flex;justify-content:center}.phone{width:min(100%,390px);height:min(calc(100dvh - 24px),844px);background:linear-gradient(180deg,#f7faf8 0%,#f2f5f3 100%);border-radius:38px;border:1px solid rgba(20,32,24,.08);overflow:hidden;position:relative;box-shadow:0 28px 80px rgba(20,32,24,.16)}.notch{position:absolute;top:10px;left:50%;transform:translateX(-50%);width:120px;height:24px;background:#111;border-radius:0 0 16px 16px;z-index:3;opacity:.92}.status{display:flex;justify-content:space-between;align-items:center;padding:18px 20px 6px;font-size:12px;color:#688071;font-weight:500}.screen{display:none;padding:12px 16px 114px;height:100%;overflow-y:auto;-webkit-overflow-scrolling:touch}.screen.active{display:block}.screen::-webkit-scrollbar{width:0}#screen-asset{padding-bottom:134px}
 .top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:14px;gap:10px}.title{font-size:28px;font-weight:800;letter-spacing:-.03em;line-height:1.1}.sub{font-size:12px;color:#7d9080;margin-top:5px;line-height:1.4}.badge{padding:7px 12px;border-radius:999px;background:rgba(21,128,61,.09);color:#15803d;font-size:11px;font-weight:700;border:1px solid rgba(21,128,61,.13);white-space:nowrap}
@@ -68,12 +76,12 @@
 .name{font-size:14px;font-weight:700;color:#142018;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.meta{font-size:11px;color:#8fa090;margin-top:2px;font-weight:500}.right{margin-left:auto;text-align:right;flex-shrink:0;max-width:145px}.right .money{font-weight:700;font-size:14px;color:#142018}.right .pct{font-size:12px;margin-top:3px;font-weight:600;white-space:normal;word-break:break-word}
 .empty{font-size:13px;color:#6d7e72;line-height:1.55}.kv{display:flex;justify-content:space-between;gap:10px;padding:11px 0;border-bottom:1px solid rgba(20,32,24,.06)}.kv:last-child{border-bottom:none}
 /* Tab bar */
-.tab{position:absolute;left:12px;right:12px;bottom:12px;background:rgba(255,255,255,.94);backdrop-filter:blur(20px);border:1px solid rgba(20,32,24,.07);border-radius:22px;padding:10px 4px 0;box-shadow:0 12px 32px rgba(20,32,24,.09);display:flex;flex-direction:column;overflow:hidden}
-.tab-row{display:flex;justify-content:space-around;padding-bottom:16px}
+.tab{position:absolute;left:12px;right:12px;bottom:12px;background:rgba(255,255,255,.94);backdrop-filter:blur(20px);border:1px solid rgba(20,32,24,.07);border-radius:22px;padding:6px 4px 0;box-shadow:0 12px 32px rgba(20,32,24,.09);display:flex;flex-direction:column;overflow:hidden}
+.tab-row{display:flex;justify-content:space-around;padding-bottom:8px}
 .tab-row-extra{border-top:1px solid rgba(20,32,24,.06);padding-top:6px;overflow:hidden;max-height:0;padding-bottom:0;transition:max-height .25s cubic-bezier(.32,.72,0,1),padding .25s}
 .tab-row-extra.open{max-height:80px;padding-bottom:12px}
-.tab button{background:none;border:none;text-align:center;font-size:10px;color:#8fa090;font-family:inherit;cursor:pointer;font-weight:500;transition:color .15s;flex:1;min-width:0}.tab b{display:block;font-size:18px;color:#b0c0b5;margin-bottom:2px;transition:color .15s}.tab button.active b,.tab button.active{color:#15803d}
-.tab-more-btn b{transition:transform .2s;display:block;font-size:20px;color:#b0c0b5;margin-bottom:2px}
+.tab button{background:none;border:none;text-align:center;font-size:10px;color:#8fa090;font-family:inherit;cursor:pointer;font-weight:500;transition:color .15s;flex:1;min-width:0}.tab b{display:block;font-size:16px;color:#b0c0b5;margin-bottom:1px;transition:color .15s}.tab button.active b,.tab button.active{color:#15803d}
+.tab-more-btn b{transition:transform .2s;display:block;font-size:16px;color:#b0c0b5;margin-bottom:1px}
 .tab-more-btn.open b,.tab-more-btn.open{color:#15803d}
 .tab-more-btn.open b{transform:rotate(45deg)}
 /* Settings button */
@@ -562,8 +570,8 @@ table.an-corr-mtx{border-collapse:separate;border-spacing:4px}
 .liqOverlay{position:absolute;inset:0;background:rgba(20,32,24,.35);z-index:60;opacity:0;pointer-events:none;transition:opacity .25s}.liqOverlay.open{opacity:1;pointer-events:auto}
 .liqSheet{position:absolute;bottom:0;left:0;right:0;background:#f7faf8;border-radius:24px 24px 0 0;padding:0 20px 40px;z-index:61;transform:translateY(100%);transition:transform .3s cubic-bezier(.32,.72,0,1)}.liqSheet.open{transform:translateY(0)}
 /* Alert sheet */
-.alertOverlay{position:absolute;inset:0;background:rgba(20,32,24,.35);z-index:60;opacity:0;pointer-events:none;transition:opacity .25s}.alertOverlay.open{opacity:1;pointer-events:auto}
-.alertSheet{position:absolute;bottom:0;left:0;right:0;background:#f7faf8;border-radius:24px 24px 0 0;padding:0 20px 40px;z-index:61;transform:translateY(100%);transition:transform .3s cubic-bezier(.32,.72,0,1)}.alertSheet.open{transform:translateY(0)}
+.alertOverlay{position:absolute;inset:0;background:rgba(20,32,24,.35);z-index:60;opacity:0;pointer-events:none;display:none;transition:opacity .25s}.alertOverlay.open{opacity:1;pointer-events:auto;display:block}
+.alertSheet{position:absolute;bottom:0;left:0;right:0;background:#f7faf8;border-radius:24px 24px 0 0;padding:0 20px 40px;z-index:61;transform:translateY(100%);display:none;transition:transform .3s cubic-bezier(.32,.72,0,1)}.alertSheet.open{transform:translateY(0);display:block}
 .alertAssetRow{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:10px;cursor:pointer;transition:background .12s;font-size:13px;font-weight:600;color:#142018}.alertAssetRow:hover,.alertAssetRow.sel{background:#e6faf3}.alertAssetRow.sel{font-weight:800}
 .alertCondBtn{display:flex;align-items:center;gap:6px;justify-content:center;padding:10px;border-radius:12px;border:1.5px solid rgba(20,32,24,.12);background:#fff;font:inherit;font-size:13px;font-weight:600;color:#4a5f4e;cursor:pointer;transition:all .15s}.alertCondBtn.active{border-color:#b45309;background:#fefce8;color:#b45309}
 .alertToggle{position:relative;display:inline-block;width:44px;height:26px;flex-shrink:0}.alertToggle input{opacity:0;width:0;height:0}.alertToggleSlider{position:absolute;cursor:pointer;inset:0;background:#dce5dc;border-radius:13px;transition:.3s}.alertToggleSlider:before{content:'';position:absolute;width:20px;height:20px;left:3px;top:3px;background:#fff;border-radius:50%;transition:.3s}.alertToggle input:checked + .alertToggleSlider{background:#15803d}.alertToggle input:checked + .alertToggleSlider:before{transform:translateX(18px)}
@@ -739,11 +747,11 @@ table.an-corr-mtx{border-collapse:separate;border-spacing:4px}
 <div class="notch"></div>
 <div class="status">
   <span style="font-size:15px;font-weight:800;letter-spacing:-.02em;color:#142018">Finasset</span>
-  <button class="settingsBtn" id="btnSettings" title="Configuración">⚙</button>
+  <button class="settingsBtn" id="btnSettings" title="Configuración" onclick="openSettings()">⚙</button>
 </div>
 
 <!-- ============ SPLASH ============ -->
-<div id="cs-splash" class="cover-screen cs-active">
+<div id="cs-splash" class="cover-screen">
   <div class="splash-logo" style="background:none;box-shadow:none">
     <img src="/icons/icon-192.png" width="88" height="88" style="border-radius:22px;box-shadow:0 16px 48px rgba(20,32,24,.18)" alt="Finasset">
   </div>
@@ -767,7 +775,7 @@ table.an-corr-mtx{border-collapse:separate;border-spacing:4px}
 </div>
 
 <!-- ============ AUTH ============ -->
-<div id="cs-auth" class="cover-screen" style="background:linear-gradient(170deg,#f2f5f3 0%,#e8f0ea 100%)">
+<div id="cs-auth" class="cover-screen cs-active" style="background:linear-gradient(170deg,#f2f5f3 0%,#e8f0ea 100%)">
 
   <!-- Language switcher -->
   <div class="auth-lang-row" style="position:absolute;top:0;right:0;padding:16px 20px;z-index:2">
@@ -806,6 +814,14 @@ table.an-corr-mtx{border-collapse:separate;border-spacing:4px}
       <button onclick="_openAuthAs('register')" style="flex:1;padding:13px;background:#fff;border:1.5px solid rgba(20,32,24,.15);border-radius:14px;font:inherit;font-size:14px;font-weight:700;color:#15803d;cursor:pointer"><span id="auth-register-label">Create account</span></button>
     </div>
 
+
+    <!-- Telegram community button -->
+    <div style="margin-bottom:12px">
+      <a href="https://t.me/finassetes" target="_blank" rel="noopener noreferrer" style="display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:11px;background:rgba(0,136,204,.08);border:1.5px solid rgba(0,136,204,.2);border-radius:14px;font-family:inherit;font-size:13px;font-weight:700;color:#0088cc;cursor:pointer;text-decoration:none;transition:background .15s">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="#0088cc"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12L8.32 14.617l-2.96-.924c-.643-.204-.657-.643.136-.953l11.57-4.461c.537-.194 1.006.131.828.942z"/></svg>
+        <span id="auth-tg-label">Únete a la comunidad en Telegram</span>
+      </a>
+    </div>
     <!-- Trust note -->
     <div id="auth-privacy-note" style="text-align:center;font-size:10.5px;color:#a0b0a5;line-height:1.6;margin-top:auto;padding-top:8px">
       By using Finasset you accept our <a href="/privacy.html" target="_blank" rel="noopener" style="color:#15803d;font-weight:600;text-decoration:none">Privacy Policy</a> and <a href="/privacy.html#terms" target="_blank" rel="noopener" style="color:#15803d;font-weight:600;text-decoration:none">Terms of Use</a>. Not financial advice.
@@ -889,6 +905,13 @@ table.an-corr-mtx{border-collapse:separate;border-spacing:4px}
       <span id="homeLiqTotalAmt" style="font-size:16px;font-weight:800;color:#142018"></span>
     </div>
 
+
+<div style="margin:0 0 16px">
+  <a href="https://t.me/finassetes" target="_blank" rel="noopener noreferrer" style="display:flex;align-items:center;justify-content:center;gap:9px;width:100%;padding:13px 16px;background:rgba(0,136,204,.07);border:1.5px solid rgba(0,136,204,.18);border-radius:16px;font-family:inherit;font-size:14px;font-weight:700;color:#0088cc;text-decoration:none;box-sizing:border-box">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="#0088cc"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12L8.32 14.617l-2.96-.924c-.643-.204-.657-.643.136-.953l11.57-4.461c.537-.194 1.006.131.828.942z"/></svg>
+    <span id="home-tg-label">Únete a la comunidad en Telegram</span>
+  </a>
+</div>
 <div class="legal-disclaimer">
   <b>Aviso legal:</b> Finasset es una herramienta de seguimiento personal de carteras.<br>
   NO constituye asesoramiento financiero personalizado ni recomendaci&oacute;n de inversi&oacute;n.<br>
@@ -1460,6 +1483,7 @@ table.an-corr-mtx{border-collapse:separate;border-spacing:4px}
         <div class="ia-chip" onclick="askChip(this)">¿Cuál es mi riesgo?</div>
       </div>
 
+      <div id="iaCreditsBar" style="display:flex;align-items:center;gap:8px;padding:6px 14px 2px"></div>
       <div class="ia-disclaimer">Respuestas orientativas &mdash; no asesoramiento financiero personalizado.</div>
       <div class="chat-input-row">
         <input class="cinput" id="iaChatInput" placeholder="Pregunta a Vera sobre tu portfolio…" onkeydown="if(event.key==='Enter')doSend()">
@@ -2084,13 +2108,31 @@ table.an-corr-mtx{border-collapse:separate;border-spacing:4px}
       <div class="authFieldLabel">Name</div>
       <div class="authFieldRow"><input type="text" id="authName" placeholder="Your name" autocomplete="name"></div>
     </div>
-    <div class="authField">
+    <div class="authField" id="authEmailField">
       <div class="authFieldLabel">Email</div>
       <div class="authFieldRow"><input type="email" id="authEmail" placeholder="you@email.com" autocomplete="email"></div>
     </div>
-    <div class="authField">
+    <div class="authField" id="authPasswordField">
       <div class="authFieldLabel">Password</div>
-      <div class="authFieldRow"><input type="password" id="authPassword" placeholder="Min. 8 characters" autocomplete="current-password"></div>
+      <div class="authFieldRow" style="position:relative">
+        <input type="password" id="authPassword" placeholder="Min. 6 characters" autocomplete="current-password" style="padding-right:44px">
+        <button type="button" onclick="_togglePwd('authPassword',this)" tabindex="-1" style="position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;padding:4px;color:#888;font-size:18px;line-height:1">👁</button>
+      </div>
+    </div>
+    <div id="authForgotLink" style="text-align:right;padding:2px 0 4px"><button onclick="_setAuthMode('forgotpass')" style="background:none;border:none;color:#5a8f6a;font-size:12.5px;cursor:pointer;padding:0">¿Olvidaste tu contraseña?</button></div>
+    <div class="authField" id="authNewPassField" style="display:none">
+      <div class="authFieldLabel">Nueva contraseña</div>
+      <div class="authFieldRow" style="position:relative">
+        <input type="password" id="authNewPass" placeholder="Mín. 6 caracteres" autocomplete="new-password" style="padding-right:44px">
+        <button type="button" onclick="_togglePwd('authNewPass',this)" tabindex="-1" style="position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;padding:4px;color:#888;font-size:18px;line-height:1">👁</button>
+      </div>
+    </div>
+    <div class="authField" id="authConfirmPassField" style="display:none">
+      <div class="authFieldLabel">Confirmar contraseña</div>
+      <div class="authFieldRow" style="position:relative">
+        <input type="password" id="authConfirmPass" placeholder="Repite la contraseña" autocomplete="new-password" style="padding-right:44px">
+        <button type="button" onclick="_togglePwd('authConfirmPass',this)" tabindex="-1" style="position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;padding:4px;color:#888;font-size:18px;line-height:1">👁</button>
+      </div>
     </div>
     <button class="authSubmitBtn" id="authSubmitBtn">Sign in</button>
     <div class="authMsg" id="authMsg" style="display:none"></div>
@@ -2520,7 +2562,7 @@ function saveOverrides(o){localStorage.setItem('tf_positions',JSON.stringify(o))
 function applyOverridesToAssets(rawAssets){
   const ov=getOverrides();
   const mapped=rawAssets.map(a=>{
-    const o=ov[a.isin];
+    const o=ov[a.isin]||ov[a.symbol];
     if(!o){
       // Logged-in or demo users: only show explicitly added assets
       if(_sbUser) return null;
@@ -2545,6 +2587,9 @@ function iconInitials(a){return(a.name||a.isin).replace(/^i([A-Z])/,'I$1').slice
 function assetCategory(a){if(['IE00B4ND3602','IE00B579F325'].includes(a.isin))return'Oro';if(a.mapping?.type==='etf')return'ETFs';if(a.mapping?.type==='etc')return'Oro';if(a.mapping?.type==='stock')return currentLang==='es'?'Acciones':'Stocks';return'Fondos';}
 
 function showScreen(name,keepTab=false){
+  // Plan gating
+  const _LOCKED = { free: ['analysis','impuestos','topinvestors'] };
+  if ((_LOCKED[_userPlan]||[]).includes(name)) { _showUpgradeModal(name); return; }
   if(name==='privacy'||name==='terms'){
     document.querySelectorAll('.screen').forEach(el=>el.classList.remove('active'));
     const s=document.getElementById('screen-'+name);
@@ -4745,6 +4790,13 @@ function render(){
 // ========== Boot ==========
 let _rawSeedAssets = [];
 async function boot(){
+  // Auth guard: if no authenticated user, redirect to login
+  if(!_sbUser && !localStorage.getItem('fa_token')){
+    document.querySelectorAll('.cover-screen').forEach(el=>el.classList.remove('cs-active'));
+    document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+    showCover('cs-auth');
+    return;
+  }
   fetchGlobalFxRates();
   const _ovMig=getOverrides();let _ovChanged=false;
   Object.keys(_ovMig).forEach(k=>{if(_ovMig[k]&&!_ovMig[k].costCurrency){_ovMig[k].costCurrency='EUR';_ovChanged=true;}});
@@ -4754,6 +4806,17 @@ async function boot(){
   let seed;
   try{ seed=await getJson('/api/portfolio/seed',10000); }
   catch(e){ document.getElementById('chartNote').textContent=(currentLang==='es'?'Error cargando portfolio: ':'Error loading portfolio: ')+e.message; return; }
+
+  // Empty portfolio — show friendly onboarding prompt
+  if (!seed.positions || !seed.positions.length) {
+    const cn = document.getElementById('chartNote');
+    if (cn) cn.innerHTML = currentLang==='es'
+      ? '&#128202; Tu cartera está vacía. Pulsa <strong>+ Nueva posición</strong> para añadir tu primer activo.'
+      : '&#128202; Your portfolio is empty. Click <strong>+ New position</strong> to add your first asset.';
+    if(_sbUser) await syncFromCloud().catch(()=>{});
+    loadCustomIntoAssets(); dataReady=true; render();
+    return;
+  }
 
   // ── Fast first render: show positions immediately with prices (no history yet)
   const isinList=seed.positions.map(p=>p.isin).join(',');
@@ -4772,7 +4835,9 @@ async function boot(){
   if(_sbUser) await syncFromCloud().catch(()=>{});
   assets=applyOverridesToAssets(_rawSeedAssets);
   loadCustomIntoAssets();
-  dataReady=true; render(); // ← Home visible immediately
+  dataReady=true;
+  if(!assets.length){const _cn=document.getElementById('chartNote');if(_cn)_cn.innerHTML=currentLang==='es'?'&#128202; Tu cartera está vacía. Pulsa <strong>+ Nueva posición</strong> para añadir tu primer activo.':'&#128202; Your portfolio is empty. Click <strong>+ New position</strong> to add your first asset.';}
+  render(); // ← Home visible immediately
 
   // Step 2: coverage (history) — runs AFTER first render, best-effort
   let coverage={results:[]};
@@ -4824,12 +4889,14 @@ document.getElementById('modalOverlay').addEventListener('click',e=>{if(e.target
 
 // Settings / language
 function openSettings(){
-  closeSearch();
-  document.getElementById('settingsSheet').classList.add('open');
-  document.getElementById('settingsOverlay').classList.add('open');
-  // sync currency buttons
-  document.querySelectorAll('.ccy-btn').forEach(b=>b.classList.toggle('active',b.dataset.ccy===_displayCcy));
-  updateSettingsProfile();
+  try{closeSearch();}catch(e){}
+  var sh=document.getElementById('settingsSheet');
+  var ov=document.getElementById('settingsOverlay');
+  if(sh)sh.classList.add('open');
+  if(ov)ov.classList.add('open');
+  try{document.querySelectorAll('.ccy-btn').forEach(b=>b.classList.toggle('active',b.dataset.ccy===_displayCcy));}catch(e){}
+  try{updateSettingsProfile();}catch(e){}
+  try{renderAccountSection();}catch(e){}
 }
 function closeSettings(){document.getElementById('settingsSheet').classList.remove('open');document.getElementById('settingsOverlay').classList.remove('open');}
 function showTgFab(){}
@@ -4850,7 +4917,7 @@ function saveCustomAssets(o){localStorage.setItem('tf_custom_assets',JSON.string
 
 // Type → icon style
 const TYPE_COLORS={stock:'linear-gradient(135deg,#1d6fa8,#38bdf8)',etf:'linear-gradient(135deg,#1d6fa8,#38bdf8)',fund:'linear-gradient(135deg,#7c3aed,#a78bfa)',crypto:'linear-gradient(135deg,#d97706,#fbbf24)',index:'linear-gradient(135deg,#475569,#94a3b8)',fx:'linear-gradient(135deg,#059669,#34d399)',unknown:'linear-gradient(135deg,#475569,#64748b)'};
-const TYPE_LABELS={stock:'Acción',etf:'ETF',fund:'Fondo',crypto:'Cripto',index:'Índice',fx:'Divisa',unknown:'Activo'};
+const TYPE_LABELS={stock:'Acción',etf:'ETF',fund:'Fondo',pension:'Plan Pensiones',crypto:'Cripto',index:'Índice',fx:'Divisa',unknown:'Activo'};
 
 function buildCustomAssetObj(ca,pos){
   const qty=pos.quantity||0,bp=pos.avgCost||0,cp=ca.currentPrice||0;
@@ -5050,6 +5117,11 @@ function renderSearchResults(results){
 
 async function saveNewAsset(){
   if(!_searchResult)return;
+  // Free plan: max 5 assets
+  if (_userPlan === 'free') {
+    const _assetCount = Object.keys(getOverrides()).length;
+    if (_assetCount >= 5) { _showUpgradeModal('assets'); return; }
+  }
   const qty=parseNum('addQty');
   const avgCost=parseNum('addAvgCost');
   if(qty<=0){document.getElementById('addQty').focus();return;}
@@ -5057,10 +5129,10 @@ async function saveNewAsset(){
   const avgCostCurrency=_addInputCcy||'EUR';
   const broker=(document.getElementById('addBroker')?.value||'').trim();
 
-  const sym=_searchResult.symbol;
+  const sym=_searchResult.isin||_searchResult.symbol;
   // Save custom asset metadata
   const ca=getCustomAssets();
-  ca[sym]={symbol:sym,isin:_searchResult.isin||sym,name:_searchResult.name,shortName:_searchResult.shortName||_searchResult.name,type:_searchResult.type,exchange:_searchResult.exchange,currency:_searchResult.currency,currentPrice:_searchResult.currentPrice,history:(_searchResult.history||[]),priceTs:new Date().toISOString()};
+  ca[sym]={symbol:_searchResult.symbol,isin:_searchResult.isin||sym,name:_searchResult.name,shortName:_searchResult.shortName||_searchResult.name,type:_searchResult.type,exchange:_searchResult.exchange,currency:_searchResult.currency,currentPrice:_searchResult.currentPrice,history:(_searchResult.history||[]),priceTs:new Date().toISOString()};
   saveCustomAssets(ca);
 
   // Save position
@@ -5068,15 +5140,130 @@ async function saveNewAsset(){
   ov[sym]={quantity:qty,avgCost,costCurrency:avgCostCurrency,isCustom:true,...(broker&&{broker})};
   saveOverrides(ov);
 
-  // Inject into assets immediately
+  // Inject into assets immediately and rebuild
   loadCustomIntoAssets();
-  render();
   _divDataCache=null; // force div refresh
+  render();
+  renderLiquidity();
   _debouncedSync(true); // sync immediately — asset add is critical
 
   closeSearch();
   showScreen('portfolio');
 }
+
+
+// ═══════════════════════════════════════════════════════════
+// PLAN SYSTEM
+// ═══════════════════════════════════════════════════════════
+let _userPlan = 'free'; // 'free' | 'starter' | 'pro'
+let _userCredits = { used: 0, limit: 0, remaining: 0, month: '' };
+
+async function loadUserPlan() {
+  try {
+    const tok = localStorage.getItem('fa_token');
+    if (!tok) { _userPlan = 'free'; _updatePlanUI(); return; }
+    const r = await fetch('/auth/v1/plan', {
+      headers: { 'Authorization': 'Bearer ' + tok }
+    });
+    if (!r.ok) return;
+    const data = await r.json();
+    _userPlan = data.plan || 'free';
+    _userCredits = data.credits || { used: 0, limit: 0, remaining: 0, month: '' };
+    _updatePlanUI();
+  } catch(e) { /* ignore — default free */ }
+}
+
+function _updatePlanUI() {
+  const labels = { free: 'Free', starter: 'Starter', pro: 'Pro' };
+  const colors = { free: '#8fa090', starter: '#60a5fa', pro: '#4ade80' };
+  const lbl = 'Plan ' + (labels[_userPlan] || 'Free');
+  const col = colors[_userPlan] || '#8fa090';
+  // Update all plan-badge elements
+  document.querySelectorAll('.js-plan-badge').forEach(el => {
+    el.textContent = lbl;
+    el.style.color = col;
+  });
+  // Desktop specific
+  const dp = document.getElementById('deskUserPlan');
+  if (dp) { dp.textContent = lbl; dp.style.color = col; }
+  const dm = document.getElementById('deskMenuPlanLabel');
+  if (dm) { dm.textContent = lbl; dm.style.color = col; }
+  // Update IA credits bar
+  _updateIACreditsBar();
+}
+
+function _updateIACreditsBar() {
+  const bar = document.getElementById('iaCreditsBar');
+  if (!bar) return;
+  if (_userPlan === 'free') {
+    bar.innerHTML = `<span style="color:#8fa090;font-size:.7rem">Plan Free · 3 msgs/día</span><button onclick="_showUpgradeModal('ia')" style="font-size:.68rem;background:#142018;color:#4ade80;border:none;border-radius:6px;padding:3px 8px;cursor:pointer;font-weight:700;font-family:inherit">Mejorar plan</button>`;
+    bar.style.display = 'flex';
+  } else if (_userCredits && _userCredits.limit > 0) {
+    const pct = Math.max(0, Math.min(100, (_userCredits.remaining / _userCredits.limit) * 100));
+    const color = pct > 30 ? '#4ade80' : pct > 10 ? '#f5b731' : '#f87171';
+    bar.innerHTML = `<span style="color:#8fa090;font-size:.7rem">${_userCredits.remaining} msgs restantes</span><div style="flex:1;height:4px;background:#e8ebe9;border-radius:4px;overflow:hidden"><div style="height:100%;width:${pct}%;background:${color};border-radius:4px;transition:width .4s"></div></div>`;
+    bar.style.display = 'flex';
+  } else {
+    bar.style.display = 'none';
+  }
+}
+
+// UPGRADE MODAL
+function _showUpgradeModal(reason) {
+  let existing = document.getElementById('upgradeModalOverlay');
+  if (existing) existing.remove();
+
+  const titles = {
+    assets:       { es: 'Límite de activos alcanzado', en: 'Asset limit reached' },
+    analysis:     { es: 'Análisis completo', en: 'Full analysis' },
+    impuestos:    { es: 'Informe fiscal', en: 'Tax report' },
+    topinvestors: { es: 'Top Inversores', en: 'Top Investors' },
+    dividends:    { es: 'Detalle de dividendos', en: 'Dividend detail' },
+    ia:           { es: 'Más conversaciones con Vera', en: 'More Vera AI conversations' },
+  };
+  const descs = {
+    assets:       { es: 'El plan Free está limitado a <b>5 activos</b>. Con Starter o Pro tienes posiciones ilimitadas.', en: 'Free plan is limited to <b>5 assets</b>. Starter and Pro have unlimited positions.' },
+    analysis:     { es: 'El análisis de portfolio completo está disponible a partir del plan <b>Starter</b>.', en: 'Full portfolio analysis is available from the <b>Starter</b> plan.' },
+    impuestos:    { es: 'El informe de impuestos (IRPF) está disponible en los planes <b>Starter</b> y <b>Pro</b>.', en: 'The tax report is available in <b>Starter</b> and <b>Pro</b> plans.' },
+    topinvestors: { es: 'Accede a las carteras de los mejores inversores con el plan <b>Starter</b>.', en: 'Access top investor portfolios with the <b>Starter</b> plan.' },
+    dividends:    { es: 'El detalle completo de dividendos está disponible con el plan <b>Starter</b>.', en: 'Full dividend detail is available with the <b>Starter</b> plan.' },
+    ia:           { es: 'Con el plan <b>Pro</b> tienes €5/mes de créditos de IA Vera (~4.000 msgs). Con <b>Starter</b>, €0,50/mes (~400 msgs).', en: 'With <b>Pro</b> you get €5/month in Vera AI credits (~4,000 msgs). With <b>Starter</b>, €0.50/month (~400 msgs).' },
+  };
+  const isEs = typeof currentLang !== 'undefined' ? currentLang === 'es' : true;
+  const lang = isEs ? 'es' : 'en';
+  const title = (titles[reason] || titles.assets)[lang];
+  const desc  = (descs[reason] || descs.assets)[lang];
+
+  const overlay = document.createElement('div');
+  overlay.id = 'upgradeModalOverlay';
+  overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:10000;display:flex;align-items:flex-end;animation:fadeIn .2s';
+  overlay.innerHTML = `
+    <div style="background:#fff;border-radius:24px 24px 0 0;padding:28px 20px 40px;width:100%;max-width:520px;margin:0 auto;position:relative">
+      <button onclick="document.getElementById('upgradeModalOverlay').remove()" style="position:absolute;top:14px;right:16px;background:rgba(20,32,24,.07);border:none;width:30px;height:30px;border-radius:50%;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center">×</button>
+      <div style="font-size:1.2rem;font-weight:800;color:#142018;margin-bottom:8px;padding-right:24px">${title}</div>
+      <div style="font-size:.85rem;color:#4a5f4e;line-height:1.6;margin-bottom:22px">${desc}</div>
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <button onclick="_goPricing('starter')" style="width:100%;padding:14px;background:#142018;color:#f5fbf6;border:none;border-radius:12px;font-size:.95rem;font-weight:700;cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:space-between">
+          <span>${isEs ? 'Starter — 4,99€/mes' : 'Starter — €4.99/month'}</span>
+          <span style="color:#4ade80;font-size:.8rem">${isEs ? 'Activos ilimitados + IA' : 'Unlimited assets + AI'}</span>
+        </button>
+        <button onclick="_goPricing('pro')" style="width:100%;padding:14px;background:linear-gradient(135deg,#142018,#1e3a2a);color:#4ade80;border:2px solid rgba(74,222,128,.3);border-radius:12px;font-size:.95rem;font-weight:700;cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:space-between">
+          <span>⭐ Pro — 9,99€/mes</span>
+          <span style="font-size:.8rem;color:#a8d5b5">${isEs ? 'IA sin límites' : 'Full AI access'}</span>
+        </button>
+        <button onclick="document.getElementById('upgradeModalOverlay').remove()" style="width:100%;padding:10px;background:none;border:none;font-size:.8rem;color:#8fa090;cursor:pointer;font-family:inherit">${isEs ? 'Continuar con plan Free' : 'Continue with Free plan'}</button>
+      </div>
+    </div>`;
+  overlay.addEventListener('click', e => { if (e.target === overlay) overlay.remove(); });
+  document.body.appendChild(overlay);
+}
+
+function _goPricing(plan) {
+  document.getElementById('upgradeModalOverlay')?.remove();
+  if (typeof showScreen === 'function') showScreen('pricing');
+  else if (typeof _deskShowScreen === 'function') _deskShowScreen('pricing');
+}
+
 
 // ========== Supabase Auth ==========
 let _sb=null,_sbUser=null,_syncTimer=null;
@@ -5084,16 +5271,23 @@ let _sb=null,_sbUser=null,_syncTimer=null;
 let _sbInitErr='';
 async function initSupabase(){
   try{
-    if(typeof supabase==='undefined'){throw new Error('supabase library not loaded');}
-    const _SU='https://bsnairbpsqzljnvngoai.supabase.co';
-    const _SK='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJzbmFpcmJwc3F6bGpudm5nb2FpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM1MTc5OTcsImV4cCI6MjA4OTA5Mzk5N30.eMXdaWl9DNM3493s6bdA6hJrWbmkDACFCN8w8yHN3uc';
+    if(typeof supabase==='undefined'){throw new Error('finasset-auth shim not loaded');}
+    const _SU='';
+    const _SK='';
     _sb=supabase.createClient(_SU,_SK);
     _sb.auth.onAuthStateChange(async(event,session)=>{
       _sbUser=session?.user||null;
       renderAccountSection();
-      if(event==='SIGNED_IN'){
-        localStorage.setItem('fa_ob_done','1');
-        window.location.reload();
+      if(event==='SIGNED_IN'){await syncFromCloud(); loadUserPlan().catch(()=>{});}
+      if(event==='SIGNED_OUT'){
+        // If we're in the main app, redirect to login
+        const home=document.getElementById('screen-home');
+        const inApp=home&&home.classList.contains('active');
+        if(inApp){
+          document.querySelectorAll('.cover-screen').forEach(el=>el.classList.remove('cs-active'));
+          document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+          showCover('cs-auth');
+        }
       }
     });
     // Run getSession without a hard timeout — if Supabase is paused (free tier),
@@ -5112,20 +5306,38 @@ async function initSupabase(){
 function renderAccountSection(){
   const sec=document.getElementById('accountSection');if(!sec)return;
   if(_sbUser){
-    const ts=localStorage.getItem('tf_last_sync');
-    const ago=ts?'Sync '+new Date(ts).toLocaleDateString('es-ES',{day:'2-digit',month:'2-digit'}):'Sin sync';
-    sec.innerHTML=`<div class="accountRow">
-      <div style="min-width:0"><div class="accountEmail">${_sbUser.email}</div><div class="accountSub">${ago}</div></div>
-      <div style="display:flex;gap:6px;flex-shrink:0">
-        <button class="accountBtn green" id="btnSyncCloud">↑↓</button>
-        <button class="accountBtn" id="btnLogout">Salir</button>
+    const av=(_sbUser.email||'?').slice(0,2).toUpperCase();
+    sec.innerHTML=`
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px">
+        <div style="width:40px;height:40px;border-radius:50%;background:#142018;color:#f5fbf6;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;flex-shrink:0">${av}</div>
+        <div style="min-width:0;flex:1">
+          <div style="font-size:13px;font-weight:600;color:#142018;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${_sbUser.email}</div>
+          <div class="js-plan-badge" style="font-size:11px;margin-top:1px">Plan Free</div>
+        </div>
       </div>
-    </div>`;
-    document.getElementById('btnSyncCloud').onclick=async()=>{
-      const b=document.getElementById('btnSyncCloud');b.textContent='…';
-      await syncToCloud();await syncFromCloud();b.textContent='↑↓';
+      <div style="background:linear-gradient(135deg,#142018 0%,#1e3a2a 100%);border-radius:14px;padding:16px;margin-bottom:10px">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+          <div>
+            <div style="font-size:11px;color:#7aab8a;font-weight:600;letter-spacing:.04em;margin-bottom:3px">${currentLang==='es'?'OFERTA ESPECIAL':'SPECIAL OFFER'}</div>
+            <div style="font-size:16px;font-weight:800;color:#fff">${currentLang==='es'?'Hazte Premium':'Go Premium'}</div>
+          </div>
+          <div style="text-align:right">
+            <div style="font-size:22px;font-weight:800;color:#4ade80">3,99€</div>
+            <div style="font-size:10px;color:#7aab8a">/mes</div>
+          </div>
+        </div>
+        <div style="font-size:11.5px;color:#a8d5b5;margin-bottom:12px;line-height:1.4">${currentLang==='es'?'🎯 Precio especial para los 10 primeros clientes':'🎯 Special price for the first 10 clients'}</div>
+        <button id="btnUpgradePlan" style="width:100%;padding:10px;background:#4ade80;color:#0e1f15;border:none;border-radius:9px;font-size:13px;font-weight:800;cursor:pointer;font-family:inherit">${currentLang==='es'?'Mejorar plan →':'Upgrade plan →'}</button>
+      </div>
+      <button id="btnLogout" style="width:100%;padding:9px;background:none;border:1.5px solid rgba(20,32,24,.12);border-radius:9px;font-size:13px;color:#5a8f6a;font-weight:600;cursor:pointer;font-family:inherit">${currentLang==='es'?'Cerrar sesión':'Sign out'}</button>`;
+    document.getElementById('btnUpgradePlan').onclick=()=>{ closeSettings(); _showUpgradeModal('assets'); };
+    document.getElementById('btnLogout').onclick=async()=>{
+      ['tf_positions','tf_custom_assets','tf_last_sync','fa_liquidity','_rawCustomAssets','fa_active_user_id'].forEach(k=>localStorage.removeItem(k));
+      await _sb.auth.signOut();
+      closeSettings();
+      renderAccountSection();
+      showAuthScreen();
     };
-    document.getElementById('btnLogout').onclick=async()=>{await _sb.auth.signOut();renderAccountSection();};
   }else{
     sec.innerHTML=`<button class="accountLoginBtn" id="btnOpenAuth">${currentLang==='es'?'Entrar o registrarse':'Sign in or create account'}</button>`;
     document.getElementById('btnOpenAuth').onclick=()=>{closeSettings();openAuthModal();};
@@ -5154,21 +5366,31 @@ async function syncToCloud(){
 
 async function syncFromCloud(){
   if(!_sb||!_sbUser)return;
+  // ── USER ISOLATION: if a different user logged in, wipe all portfolio data ──
+  const _prevUid = localStorage.getItem('fa_active_user_id');
+  if(_prevUid && _prevUid !== _sbUser.id){
+    ['tf_positions','tf_custom_assets','tf_last_sync','fa_liquidity','_rawCustomAssets'].forEach(k=>localStorage.removeItem(k));
+  }
+  localStorage.setItem('fa_active_user_id', _sbUser.id);
   try{
     const{data,error}=await _sb.from('user_positions').select('overrides,custom_assets,liquidity,updated_at').eq('user_id',_sbUser.id).single();
     if(error&&error.code!=='PGRST116')throw error; // PGRST116 = no rows found
     if(!data){await syncToCloud();return;}
     const cloudTs=new Date(data.updated_at).getTime();
     const localTs=new Date(localStorage.getItem('tf_last_sync')||0).getTime();
-    if(cloudTs>localTs){
+    const localEmpty=!Object.keys(getOverrides()).length&&!Object.keys(getCustomAssets()).length;
+    if(cloudTs>localTs||localEmpty){
       // Write directly to localStorage without triggering _debouncedSync
-      localStorage.setItem('tf_positions',JSON.stringify(data.overrides||{}));
-      localStorage.setItem('tf_custom_assets',JSON.stringify(data.custom_assets||{}));
+      // Defensive: handle both object (server-parsed) and string (raw TEXT) forms
+      const _ov = typeof data.overrides === 'string' ? JSON.parse(data.overrides || '{}') : (data.overrides || {});
+      const _ca = typeof data.custom_assets === 'string' ? JSON.parse(data.custom_assets || '{}') : (data.custom_assets || {});
+      localStorage.setItem('tf_positions', JSON.stringify(_ov));
+      localStorage.setItem('tf_custom_assets', JSON.stringify(_ca));
       if(data.liquidity)localStorage.setItem('fa_liquidity',JSON.stringify(data.liquidity));
       // Auto-migrate: ensure costCurrency is set for all existing overrides
-      const _ov=getOverrides();let _migrated=false;
-      Object.keys(_ov).forEach(k=>{if(_ov[k]&&!_ov[k].costCurrency){_ov[k].costCurrency='EUR';_migrated=true;}});
-      if(_migrated)localStorage.setItem('tf_positions',JSON.stringify(_ov));
+      const _ovMig=getOverrides();let _migrated=false;
+      Object.keys(_ovMig).forEach(k=>{if(_ovMig[k]&&!_ovMig[k].costCurrency){_ovMig[k].costCurrency='EUR';_migrated=true;}});
+      if(_migrated)localStorage.setItem('tf_positions',JSON.stringify(_ovMig));
       assets=applyOverridesToAssets(_rawSeedAssets);
       loadCustomIntoAssets();render();renderLiquidity();
     }
@@ -5188,12 +5410,64 @@ function _debouncedSync(immediate=false){
   _syncTimer=setTimeout(()=>syncToCloud().catch(()=>{}),1000);
 }
 
+function _togglePwd(inputId, btn) {
+  const inp = document.getElementById(inputId);
+  if (!inp) return;
+  const show = inp.type === 'password';
+  inp.type = show ? 'text' : 'password';
+  btn.innerHTML = show
+    ? '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/><line x1="1" y1="1" x2="23" y2="23"/></svg>'
+    : '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>';
+}
+
+function openAlertSheet(isin) {
+  const sh = document.getElementById('alertSheet');
+  const ov = document.getElementById('alertOverlay');
+  if (!sh || !ov) return;
+  sh.style.display = '';
+  ov.style.display = '';
+  requestAnimationFrame(() => {
+    sh.classList.add('open');
+    ov.classList.add('open');
+  });
+  if (isin) {
+    // Pre-select asset if provided
+    _alertsAssetISIN = isin;
+    const asset = assets.find(a => (a.isin || a.symbol) === isin);
+    if (asset) {
+      const lbl = document.getElementById('alertSheetAssetLabel');
+      if (lbl) lbl.textContent = asset.shortName || asset.name;
+    }
+  }
+}
+function closeAlertSheet() {
+  const sh = document.getElementById('alertSheet');
+  const ov = document.getElementById('alertOverlay');
+  if (!sh || !ov) return;
+  sh.classList.remove('open');
+  ov.classList.remove('open');
+  setTimeout(() => {
+    sh.style.display = 'none';
+    ov.style.display = 'none';
+  }, 320);
+}
+
 // Auth modal
 let _authMode='login';
 function openAuthModal(){
   document.getElementById('authSheet').classList.add('open');
   document.getElementById('authOverlay').classList.add('open');
-  _setAuthMode('login');
+  const _rt = localStorage.getItem('fa_reset_token');
+  const _pe = localStorage.getItem('fa_pending_error');
+  if (_rt) {
+    _setAuthMode('resetpass');
+  } else {
+    _setAuthMode('login');
+    if (_pe) {
+      localStorage.removeItem('fa_pending_error');
+      setTimeout(() => _showAuthMsg(_pe, 'err'), 100);
+    }
+  }
 }
 function closeAuthModal(){
   document.getElementById('authSheet').classList.remove('open');
@@ -5205,43 +5479,81 @@ function closeAuthModal(){
 }
 function _setAuthMode(mode){
   _authMode=mode;
-  document.getElementById('authTabLogin').classList.toggle('active',mode==='login');
-  document.getElementById('authTabRegister').classList.toggle('active',mode==='register');
-  document.getElementById('authNameField').style.display=mode==='register'?'':'none';
-  document.getElementById('authSubmitBtn').textContent=mode==='login'?(currentLang==='es'?'Entrar':'Sign in'):(currentLang==='es'?'Crear cuenta':'Create account');
+  const isLogin=mode==='login', isReg=mode==='register', isForgot=mode==='forgotpass', isReset=mode==='resetpass';
+  const isNormal=isLogin||isReg;
+  document.getElementById('authTabLogin').classList.toggle('active',isLogin);
+  document.getElementById('authTabRegister').classList.toggle('active',isReg);
+  document.getElementById('authTabs').style.display=isNormal?'':'none';
+  document.getElementById('authNameField').style.display=isReg?'':'none';
+  document.getElementById('authEmailField').style.display=isReset?'none':'';
+  document.getElementById('authPasswordField').style.display=(isReset||isForgot)?'none':'';
+  document.getElementById('authForgotLink').style.display=isLogin?'':'none';
+  document.getElementById('authNewPassField').style.display=isReset?'':'none';
+  document.getElementById('authConfirmPassField').style.display=isReset?'':'none';
+  const labels={login:currentLang==='es'?'Entrar':'Sign in',register:currentLang==='es'?'Crear cuenta':'Create account',forgotpass:currentLang==='es'?'Enviar enlace':'Send reset link',resetpass:currentLang==='es'?'Guardar contraseña':'Save password'};
+  document.getElementById('authSubmitBtn').textContent=labels[mode]||'OK';
   document.getElementById('authMsg').style.display='none';
 }
 async function _submitAuth(){
   if(!_sb){_showAuthMsg(currentLang==='es'?'Servicio no disponible.':'Service unavailable.','err');return;}
+  const btn=document.getElementById('authSubmitBtn');
+  // Handle forgot password
+  if(_authMode==='forgotpass'){
+    const email=document.getElementById('authEmail').value.trim();
+    if(!email){_showAuthMsg(currentLang==='es'?'Introduce tu email.':'Enter your email.','err');return;}
+    btn.textContent='…';btn.disabled=true;
+    try{
+      await fetch('/auth/v1/recover',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email})});
+      _showAuthMsg(currentLang==='es'?'Si existe esa cuenta, recibirás un email en breve.':'If that account exists, check your email.','ok');
+    }catch(e){_showAuthMsg('Error de red.','err');}
+    btn.textContent=currentLang==='es'?'Enviar enlace':'Send reset link';btn.disabled=false;
+    return;
+  }
+  // Handle reset password
+  if(_authMode==='resetpass'){
+    const newPass=document.getElementById('authNewPass').value;
+    const confirmPass=document.getElementById('authConfirmPass').value;
+    if(!newPass||newPass.length<6){_showAuthMsg(currentLang==='es'?'Mínimo 6 caracteres.':'Minimum 6 characters.','err');return;}
+    if(newPass!==confirmPass){_showAuthMsg(currentLang==='es'?'Las contraseñas no coinciden.':'Passwords do not match.','err');return;}
+    const token=localStorage.getItem('fa_reset_token');
+    if(!token){_showAuthMsg(currentLang==='es'?'Enlace inválido.':'Invalid link.','err');return;}
+    btn.textContent='…';btn.disabled=true;
+    try{
+      const r=await fetch('/auth/v1/reset-password',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({token,password:newPass})});
+      const d=await r.json();
+      if(!r.ok){_showAuthMsg(d.message||'Error','err');btn.textContent=currentLang==='es'?'Guardar contraseña':'Save password';btn.disabled=false;return;}
+      localStorage.removeItem('fa_reset_token');
+      if(d.access_token){localStorage.setItem('fa_token',d.access_token);}
+      _showAuthMsg(currentLang==='es'?'¡Contraseña actualizada! Entrando…':'Password updated! Signing in…','ok');
+      setTimeout(()=>location.reload(),1500);
+    }catch(e){_showAuthMsg('Error de red.','err');btn.textContent=currentLang==='es'?'Guardar contraseña':'Save password';btn.disabled=false;}
+    return;
+  }
   const email=document.getElementById('authEmail').value.trim();
   const pass=document.getElementById('authPassword').value;
   const name=document.getElementById('authName').value.trim();
   if(!email||!pass){_showAuthMsg(currentLang==='es'?'Email y contraseña obligatorios.':'Email and password are required.','err');return;}
-  if(pass.length<8){_showAuthMsg(currentLang==='es'?'Contraseña mínimo 8 caracteres.':'Password must be at least 8 characters.','err');return;}
-  const btn=document.getElementById('authSubmitBtn');
+  if(pass.length<6){_showAuthMsg(currentLang==='es'?'Contraseña mínimo 6 caracteres.':'Password must be at least 6 characters.','err');return;}
   btn.textContent='…';btn.disabled=true;
-  const runAuth=fn=>Promise.race([fn(),new Promise((_,r)=>setTimeout(()=>r(new Error('timeout')),45000))]);
   try{
     if(_authMode==='login'){
-      const{error}=await runAuth(()=>_sb.auth.signInWithPassword({email,password:pass}));
+      const{error}=await _sb.auth.signInWithPassword({email,password:pass});
       if(error)throw error;
       closeAuthModal();
-      localStorage.setItem('fa_ob_done','1');
       enterMainApp();
     }else{
-      const{data:sd,error}=await runAuth(()=>_sb.auth.signUp({email,password:pass,options:{data:{full_name:name},emailRedirectTo:'https://finasset.app/mobile'}}));
+      const{error}=await _sb.auth.signUp({email,password:pass,options:{data:{full_name:name},emailRedirectTo:'https://finasset.app'}});
       if(error)throw error;
       document.getElementById('authFormWrap').style.display='none';
       document.getElementById('authTabs').style.display='none';
       document.getElementById('authVerifyState').style.display='';
-      document.getElementById('authVerifyMsg').textContent=_isEs9?`¡Cuenta creada! Revisa ${email} y haz click en el enlace de confirmación.`:`Account created! Check ${email} and click the confirmation link.`;
+      document.getElementById('authVerifyMsg').textContent=`Enlace enviado a ${email}. Confirma tu cuenta y vuelve a entrar.`;
     }
   }catch(e){
     const _isEs9=currentLang==='es';
-    const m=e.message==='timeout'?(_isEs9?'El servidor tardó demasiado. Inténtalo de nuevo.':'Server took too long. Please try again.'):
-             e.message?.includes('Invalid login')||e.message?.includes('invalid_credentials')?(_isEs9?'Email o contraseña incorrectos.':'Invalid email or password.'):
+    const m=e.message?.includes('Invalid login credentials')?(_isEs9?'Email o contraseña incorrectos.':'Invalid email or password.'):
              e.message?.includes('not confirmed')?(_isEs9?'Confirma tu email antes de entrar.':'Please confirm your email first.'):
-             e.message?.includes('already registered')?(_isEs9?'Email ya registrado.':'Email already registered.'):
+             e.message?.includes('already registered')?(_isEs9?'Este correo ya está registrado.':'This email is already registered.'):
              e.message||(_isEs9?'Error desconocido.':'Unknown error.');
     _showAuthMsg(m,'err');
     if(e.message?.includes('already registered'))_setAuthMode('login');
@@ -5869,50 +6181,84 @@ function renderLiqHeroTotal() {
 // ── App startup ───────────────────────────────────────────────────────────
 const _timeout = (ms) => new Promise(r => setTimeout(r, ms));
 
-function _hasLocalSession() {
-  // Fast localStorage check — no network needed for valid non-expired token
-  try {
-    const raw = localStorage.getItem('sb-bsnairbpsqzljnvngoai-auth-token');
-    if (!raw) return false;
-    const d = JSON.parse(raw);
-    return !!(d.access_token && d.expires_at > Math.floor(Date.now()/1000)+10);
-  } catch(_){ return false; }
-}
-
 async function startApp() {
-  // 0. Fast path: if session exists in localStorage, enter immediately
-  if (_hasLocalSession()) {
-    try { await Promise.race([initSupabase(), _timeout(3000)]); } catch(_) {}
-    enterMainApp();
-    return;
-  }
 
-  // 1. Init Supabase
+  // 0. Handle ?auto_token=, ?reset_token=, ?error= query params
   try {
-    await Promise.race([initSupabase(), _timeout(5000)]);
+    const _ap = new URLSearchParams(window.location.search);
+    const _at = _ap.get('auto_token');
+    if (_at) {
+      localStorage.setItem('fa_token', _at);
+      history.replaceState(null, '', window.location.pathname);
+    }
+    const _rt = _ap.get('reset_token');
+    if (_rt) {
+      localStorage.setItem('fa_reset_token', _rt);
+      history.replaceState(null, '', window.location.pathname);
+    }
+    const _err = _ap.get('error');
+    const _errMsgs = { expired: 'El enlace ha expirado. Solicita uno nuevo.', invalid: 'Enlace inválido.', used: 'Este enlace ya fue usado.' };
+    if (_err) {
+      localStorage.setItem('fa_pending_error', _errMsgs[_err] || 'Error al procesar el enlace.');
+      history.replaceState(null, '', window.location.pathname);
+    }
+  } catch(_) {}
+  // FAST PATH: check localStorage token without any network call
+  // If we have a non-expired JWT, enter the app instantly
+  try {
+    const _ft = localStorage.getItem('fa_token');
+    if (_ft && _ft.split('.').length === 3) {
+      const _pl = JSON.parse(atob(_ft.split('.')[1]));
+      if (!_pl.exp || _pl.exp * 1000 > Date.now()) {
+        // Valid token — show app immediately, sync in background
+        // initSupabase() is synchronous — just wrap in try/catch
+        try { initSupabase(); } catch(_) {}
+        enterMainApp();
+        // Immediately update sidebar/user with cached user (no network needed)
+        setTimeout(() => {
+          try {
+            const _cu = JSON.parse(localStorage.getItem('fa_user') || 'null');
+            if (_cu && typeof syncDeskUser === 'function') {
+              syncDeskUser({ user: _cu });
+            }
+          } catch(_) {}
+        }, 0);
+        // Auto-open reset modal if reset_token is waiting
+        if (localStorage.getItem('fa_reset_token')) {
+          setTimeout(() => { if (typeof openAuthModal === 'function') openAuthModal(); }, 400);
+        }
+        return;
+      } else {
+        // Expired token — clear it so slow path shows login
+        localStorage.removeItem('fa_token');
+        localStorage.removeItem('fa_user');
+      }
+    }
   } catch(_) {}
 
-  // 2. Check for existing session via Supabase client (handles token refresh)
+  // Auto-open reset modal if reset_token is waiting (no session case)
+  if (localStorage.getItem('fa_reset_token')) {
+    setTimeout(() => { if (typeof openAuthModal === 'function') openAuthModal(); }, 400);
+  }
+
+  // SLOW PATH: no valid token — init and check session (3s timeout instead of 10s)
+  try {
+    await Promise.race([initSupabase(), _timeout(3000)]);
+  } catch(_) {}
+
   let hasSession = false;
   try {
     if (_sb) {
       const sessionRace = await Promise.race([
         _sb.auth.getSession(),
-        _timeout(5000).then(() => ({ data: null }))
+        _timeout(3000).then(() => ({ data: null }))
       ]);
       hasSession = !!sessionRace?.data?.session;
     }
   } catch(_) {}
 
-  await _timeout(400);
-
-  if (hasSession) {
-    enterMainApp();
-    return;
-  }
-
-  renderOb();
-  showCover('cs-ob');
+  if (hasSession) { enterMainApp(); return; }
+  showCover('cs-auth');
 }
 
 function switchLang(lang) {
@@ -5927,6 +6273,7 @@ function switchLang(lang) {
   // Re-apply i18n to main app
   applyTranslations();
   // // Update marketing auth screen
+  const isEs = lang === 'es';
   var _ht=document.getElementById('auth-hero-title');if(_ht)_ht.innerHTML=isEs?'Controla toda tu cartera<br>en un solo lugar':'Track your entire portfolio<br>in one place';
   var _hs=document.getElementById('auth-hero-sub');if(_hs)_hs.innerHTML=isEs?'Acciones, ETFs, fondos, liquidez y dividendos.<br>Detecta riesgos y mejora con IA.':'Stocks, ETFs, funds, cash &amp; dividends.<br>Spot risks and improve with AI.';
   var _ab=[['auth-b1',isEs?'Precios reales e historial de 5 a\u00f1os':'Real prices &amp; 5-year history, auto-updated'],['auth-b2',isEs?'Dividendos registrados y pr\u00f3ximos pagos':'Dividends tracked &amp; upcoming payments'],['auth-b3',isEs?'IA analiza concentraci\u00f3n, riesgo y comisiones':'AI analyses concentration, risk &amp; fees'],['auth-b4',isEs?'Alertas, benchmarks y resumen fiscal':'Alerts, benchmarks &amp; tax overview']];
@@ -5940,7 +6287,10 @@ function switchLang(lang) {
   var _rl=document.getElementById('auth-register-label');if(_rl)_rl.textContent=isEs?'Crear cuenta':'Create account';
   var _pn=document.getElementById('auth-privacy-note');if(_pn)_pn.innerHTML=isEs?'Al usar Finasset aceptas nuestra <a href="/privacy.html" target="_blank" rel="noopener" style="color:#15803d;font-weight:600;text-decoration:none">Pol\u00edtica de Privacidad</a> y <a href="/privacy.html#terms" target="_blank" rel="noopener" style="color:#15803d;font-weight:600;text-decoration:none">T\u00e9rminos de Uso</a>. No es asesoramiento financiero.':'By using Finasset you accept our <a href="/privacy.html" target="_blank" rel="noopener" style="color:#15803d;font-weight:600;text-decoration:none">Privacy Policy</a> and <a href="/privacy.html#terms" target="_blank" rel="noopener" style="color:#15803d;font-weight:600;text-decoration:none">Terms of Use</a>. Not financial advice.';
   // Update auth cover screen labels if visible
-  const isEs = lang === 'es';
+  const _tgLabel = document.getElementById('auth-tg-label');
+  if (_tgLabel) _tgLabel.textContent = lang === 'es' ? 'Únete a la comunidad en Telegram' : 'Join the community on Telegram';
+  const _homeTgLabel = document.getElementById('home-tg-label');
+  if (_homeTgLabel) _homeTgLabel.textContent = lang === 'es' ? 'Únete a la comunidad en Telegram' : 'Join the community on Telegram';
   const authTitle = document.getElementById('auth-title');
   if (authTitle) {
     const isReg = _authMode === 'register';
@@ -6161,13 +6511,69 @@ function iaShowTyping(question) {
   t.innerHTML=`<div class="ia-msg-av av-vera2"><svg viewBox="0 0 16 16" fill="none"><rect x="2" y="4" width="12" height="8" rx="2" fill="rgba(255,255,255,0.12)" stroke="rgba(255,255,255,0.5)" stroke-width="1"/><circle cx="6" cy="8" r="1.3" fill="#2dc98a"/><circle cx="10" cy="8" r="1.3" fill="#2dc98a"/></svg></div><div class="ia-bubble vera"><div class="ia-typing-wrap"><span></span><span></span><span></span></div></div>`;
   msgs.appendChild(t);
   msgs.scrollTop = msgs.scrollHeight;
-  setTimeout(() => {
-    t.remove();
-    const key = _iaGetKey(question);
-    const confidence = key ? [91,87,94,89,92,88][Math.floor(Math.random()*6)] : 72;
-    const reply = key ? _iaVeraReplies[key] : 'Analizando tu portfolio… Basándome en tus datos, te recomiendo revisar la composición y diversificación. ¿Puedes darme más contexto sobre lo que buscas?';
-    iaAddVeraMsg(reply, confidence);
-  }, 1300);
+  // Build portfolio context
+  const _pf = _buildVeraPortfolio();
+  // Get auth token
+  const _tok = (function(){ try { return localStorage.getItem('fa_token') || null; } catch(e){ return null; } })();
+  // Add to history
+  if (!window._veraChatHistory) window._veraChatHistory = [];
+  window._veraChatHistory.push({ role: 'user', content: question });
+  // Call real AI
+  fetch('/ai/chat', {
+    method: 'POST',
+    headers: Object.assign({'Content-Type':'application/json'}, _tok ? {'Authorization':'Bearer '+_tok} : {}),
+    body: JSON.stringify({ messages: window._veraChatHistory.slice(-14), portfolio: _pf })
+  })
+  .then(r => r.ok ? r.json() : r.json().then(d => { throw new Error(d.error || 'Error '+r.status); }))
+  .then(data => {
+    document.getElementById('iaTypingIndicator')?.remove();
+    const reply = data.content || 'Sin respuesta.';
+    window._veraChatHistory.push({ role: 'assistant', content: reply });
+    iaAddVeraMsg(_veraMarkdown(reply), 93);
+    if (data.credits) { _userCredits = data.credits; _updateIACreditsBar(); }
+  })
+  .catch(err => {
+    document.getElementById('iaTypingIndicator')?.remove();
+    iaAddVeraMsg('⚠️ ' + (err.message || 'Error conectando con Vera. Inténtalo de nuevo.'), 0);
+  });
+}
+function _buildVeraPortfolio() {
+  try {
+    if (typeof assets === 'undefined' || !assets) return {};
+    const total = assets.reduce((s,a) => s + (typeof toDisplay==='function' ? toDisplay(a.value, typeof assetCcy==='function'?assetCcy(a):'EUR') : (parseFloat(a.value)||0)), 0);
+    const inv   = assets.reduce((s,a) => s + (typeof toDisplay==='function' ? toDisplay(a.invested, typeof costCcy==='function'?costCcy(a):'EUR') : (parseFloat(a.invested)||0)), 0);
+    const gainPct = inv > 0 ? ((total - inv) / inv * 100) : 0;
+    const gainAmt = total - inv;
+    const sc = typeof computeHealthScore==='function' ? computeHealthScore() : {};
+    const liq = (function(){ try { const l=JSON.parse(localStorage.getItem('fa_liquidity')||'[]'); return Array.isArray(l)?l.reduce((s,x)=>s+(parseFloat(x.amount)||0),0):0; }catch{return 0;} })();
+    const fmt = typeof fe==='function' ? fe : (n=>n.toLocaleString('es-ES',{minimumFractionDigits:2,maximumFractionDigits:2})+' €');
+    return {
+      totalValue: fmt(total),
+      invested: fmt(inv),
+      gainPct: gainPct.toFixed(2),
+      gainAmt: fmt(gainAmt),
+      score: sc.score || 0,
+      assetCount: assets.length,
+      liquidity: fmt(liq),
+      lang: typeof currentLang!=='undefined' ? currentLang : 'es',
+      assets: assets.slice(0,40).map(a => {
+        const val = typeof toDisplay==='function' ? toDisplay(a.value, typeof assetCcy==='function'?assetCcy(a):'EUR') : (parseFloat(a.value)||0);
+        const cost= typeof toDisplay==='function' ? toDisplay(a.invested, typeof costCcy==='function'?costCcy(a):'EUR') : (parseFloat(a.invested)||0);
+        const gp  = cost>0 ? ((val-cost)/cost*100).toFixed(1) : '0';
+        return { ticker: a.ticker||a.name, name: a.name, shares: a.shares, value: fmt(val), invested: fmt(cost), gainPct: gp, sector: a.sector||a.type||'' };
+      })
+    };
+  } catch(e) { return {}; }
+}
+function _veraMarkdown(text) {
+  return String(text)
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+    .replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>')
+    .replace(/\*([^*\n]+?)\*/g,'<em>$1</em>')
+    .replace(/^#{1,3}\s+(.+)$/gm,'<strong>$1</strong>')
+    .replace(/^[-–•]\s+(.+)$/gm,'• $1')
+    .replace(/\n{2,}/g,'<br><br>')
+    .replace(/\n/g,'<br>');
 }
 
 function askChip(el) {

@@ -30,7 +30,7 @@ const YAHOO_TYPE = {
 const TYPE_LABEL = {
   stock: 'Stock', etf: 'ETF', fund: 'Fund',
   crypto: 'Crypto', index: 'Index', future: 'Future',
-  fx: 'Currency', etc: 'ETC', unknown: 'Asset',
+  fx: 'Currency', etc: 'ETC', pension: 'Plan Pensiones', unknown: 'Asset',
 };
 
 const EODHD_TYPE = {
@@ -85,10 +85,12 @@ function fixText(str) {
 const ISIN_RE = /^[A-Z]{2}[A-Z0-9]{10}$/i;
 // Ticker: up to 6 chars optionally followed by .XX exchange suffix
 const TICKER_RE = /^[A-Z0-9]{1,6}(\.[A-Z]{1,3})?$/i;
+const DGS_RE = /^N\d{4,6}$/i;  // Spanish pension plan DGS number: N5396
 
 function analyzeQuery(q) {
   // Strip exchange suffix (e.g. IE00BDVPNG13.SG → IE00BDVPNG13) before ISIN test
   const baseQ = q.trim().replace(/\.[A-Z]{1,3}$/i, '');
+  if (DGS_RE.test(q.trim())) return 'dgs';
   if (ISIN_RE.test(baseQ)) return 'isin';
   if (TICKER_RE.test(q.trim()) && q.length <= 10) return 'ticker';
   return 'name';
@@ -118,8 +120,10 @@ function score(item, qLower, qType) {
   // Known asset (from portfolio-providers.json)
   if (item._known) s += 500;
 
-  // ISIN exact
-  if (qType === 'isin' && isin === qLower) s += 1000;
+  // ISIN / DGS exact
+  if ((qType === 'isin' || qType === 'dgs') && isin === qLower) s += 1000;
+  // Pension plan boost
+  if (item.type === 'pension') s += 50;
 
   // Ticker exact / base match
   if (qType === 'ticker') {
@@ -178,6 +182,7 @@ function fromKnown(qLower, qType) {
   return KNOWN_ASSETS
     .filter(a => {
       if (qType === 'isin') return (a.isin || '').toLowerCase() === qLower;
+      if (qType === 'dgs')  return (a.isin || '').toLowerCase() === qLower;
       const name = (a.name || '').toLowerCase();
       const sym  = (a.yahooSymbol || a.providerSymbol || '').toLowerCase();
       return name.includes(qLower) ||
@@ -385,8 +390,8 @@ module.exports = async (req, res) => {
         if (out) break;
       }
 
-      // 2. ISIN fallback: use full provider chain (Morningstar etc.) when Yahoo fails
-      if (!out && isinParam) {
+      // 2. ISIN fallback: use full provider chain (Morningstar etc.) when Yahoo fails or returns empty history
+      if ((!out || out.history.length === 0) && isinParam) {
         const resolved = await resolveAssetData(isinParam).catch(() => null);
         if (resolved?.data) {
           const d = resolved.data;
@@ -423,17 +428,23 @@ module.exports = async (req, res) => {
   if (cached) { res.statusCode = 200; return res.end(JSON.stringify({ results: cached })); }
 
   const qType  = analyzeQuery(q);
-  // For ISIN queries, strip exchange suffix so scoring and known-asset lookup match correctly
-  const qLower = qType === 'isin' ? q.toLowerCase().replace(/\.[a-z]{1,3}$/, '') : q.toLowerCase();
+  // For ISIN/DGS queries, strip exchange suffix so scoring and known-asset lookup match correctly
+  const qLower = (qType === 'isin' || qType === 'dgs') ? q.toLowerCase().replace(/\.[a-z]{1,3}$/, '') : q.toLowerCase();
 
   // ── 1. Gather results from all sources in parallel ───────────────────────
   const known = fromKnown(qLower, qType);
 
+  // For DGS queries: if known pension plan found, also search Yahoo by its name for price data
+  let effectiveQ = q;
+  if (qType === 'dgs' && known.length > 0) {
+    effectiveQ = known[0].name || q;
+  }
+
   // TwelveData excluded: doesn't return ISINs (makes results hard to dedup / use)
   const [yahooRes, eodhdRes, fmpRes] = await Promise.allSettled([
-    fromYahoo(q),
-    fromEodhd(q),
-    fromFmp(q, qType),
+    fromYahoo(effectiveQ),
+    qType === 'dgs' ? Promise.resolve([]) : fromEodhd(q),
+    qType === 'dgs' ? Promise.resolve([]) : fromFmp(q, qType),
   ]);
 
   const all = [
