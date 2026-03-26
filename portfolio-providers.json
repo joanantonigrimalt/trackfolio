@@ -203,6 +203,16 @@
       "notes": "TDIV.AS on Euronext Amsterdam. Yahoo ISIN direct may also resolve."
     },
     {
+      "isin": "NL0011821202",
+      "name": "ING Groep N.V.",
+      "type": "stock",
+      "status": "mapped",
+      "recommendedProvider": "yahoo",
+      "providerSymbol": null,
+      "yahooSymbol": "INGA.AS",
+      "notes": "ING Groep - Euronext Amsterdam (EUR). Prefer INGA.AS over NYSE ING (USD)."
+    },
+    {
       "isin": "LU2145461757",
       "name": "Robeco Smart Energy D EUR",
       "type": "fund",

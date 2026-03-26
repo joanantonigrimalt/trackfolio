@@ -4943,7 +4943,8 @@ async function boot(){
       const currentPrice=Number(pos.currentPrice)||0,buyPrice=Number(pos.buyPrice)||0,quantity=Number(pos.quantity)||0;
       const history=normalizeHistory(entry.data?.history||[]);
       const gain=quantity*(currentPrice-buyPrice);
-      return{isin:pos.isin,name:pos.shortName||pos.name||mapping?.name||pos.isin,fullName:pos.name||mapping?.name||pos.isin,quantity,buyPrice,currentPrice,invested:quantity*buyPrice,value:quantity*currentPrice,gain,gainPct:buyPrice?((currentPrice-buyPrice)/buyPrice)*100:0,mapping,provider:entry.data?.provider||null,coverageStatus:entry.data?.coverage?.status||'MISSING',coverage:entry.data?.coverage||{status:'MISSING'},history,hasRealHistory:history.length>1,_rawQty:quantity,_rawBuyPrice:buyPrice};
+      const priceCurrency=entry.data?.quote?.currency||null;
+      return{isin:pos.isin,name:pos.shortName||pos.name||mapping?.name||pos.isin,fullName:pos.name||mapping?.name||pos.isin,quantity,buyPrice,currentPrice,invested:quantity*buyPrice,value:quantity*currentPrice,gain,gainPct:buyPrice?((currentPrice-buyPrice)/buyPrice)*100:0,mapping,provider:entry.data?.provider||null,coverageStatus:entry.data?.coverage?.status||'MISSING',coverage:entry.data?.coverage||{status:'MISSING'},history,hasRealHistory:history.length>1,_rawQty:quantity,_rawBuyPrice:buyPrice,customCurrency:priceCurrency};
     });
   }
   _rawSeedAssets=buildAssets({});
@@ -4961,9 +4962,10 @@ async function boot(){
   try{ coverage=await getJson('/api/portfolio/coverage?isin='+encodeURIComponent(isinList),9500); }
   catch(e){ console.warn('[boot] coverage failed:',e.message); }
 
-  _rawSeedAssets=buildAssets(Object.fromEntries((coverage.results||[]).map(e=>[e.isin,e])));
+  const cvMap=Object.fromEntries((coverage.results||[]).map(e=>[e.isin,e]));
+  _rawSeedAssets=buildAssets(cvMap);
   assets=applyOverridesToAssets(_rawSeedAssets);
-  loadCustomIntoAssets();
+  loadCustomIntoAssets(cvMap);
   render(); // ← Second render with charts/history
 
   // Step 3: pre-fetch dividends in background so Dividends tab is instant
@@ -5041,11 +5043,14 @@ function buildCustomAssetObj(ca,pos){
   return{isin:ca.isin||ca.symbol,name:ca.name||ca.shortName||ca.symbol,fullName:ca.name||ca.symbol,symbol:ca.symbol,quantity:qty,buyPrice:bp,currentPrice:cp,invested:qty*bp,value:qty*cp,gainPct:bp>0?((cp-bp)/bp)*100:0,mapping:{type:ca.type||'stock'},provider:'yahoo',coverageStatus:covSt,history:ca.history||[],hasRealHistory:pts>1,_rawQty:qty,_rawBuyPrice:bp,isCustom:true,customCurrency:ca.currency};
 }
 
-function loadCustomIntoAssets(){
+function loadCustomIntoAssets(cvMap){
   const ca=getCustomAssets(),ov=getOverrides();
   const customs=Object.entries(ca).map(([sym,info])=>{
     const pos=ov[sym]||{quantity:0,avgCost:0};
-    return buildCustomAssetObj(info,pos);
+    const isin=info.isin||sym;
+    const coverageCurrency=cvMap&&cvMap[isin]?.data?.quote?.currency;
+    const enrichedInfo=coverageCurrency?{...info,currency:coverageCurrency}:info;
+    return buildCustomAssetObj(enrichedInfo,pos);
   }).filter(a=>a.quantity>0);
   // Add to _rawSeedAssets and re-apply overrides (avoid duplicates with seed)
   const seedIsins=new Set(_rawSeedAssets.map(a=>a.isin));
