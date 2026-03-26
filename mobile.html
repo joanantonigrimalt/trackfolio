@@ -2599,9 +2599,6 @@ function iconInitials(a){return(a.name||a.isin).replace(/^i([A-Z])/,'I$1').slice
 function assetCategory(a){if(['IE00B4ND3602','IE00B579F325'].includes(a.isin))return'Oro';if(a.mapping?.type==='etf')return'ETFs';if(a.mapping?.type==='etc')return'Oro';if(a.mapping?.type==='stock')return currentLang==='es'?'Acciones':'Stocks';return'Fondos';}
 
 function showScreen(name,keepTab=false){
-  // Plan gating
-  const _LOCKED = { free: ['analysis','impuestos','topinvestors'] };
-  if ((_LOCKED[_userPlan]||[]).includes(name)) { _showUpgradeModal(name); return; }
   if(name==='privacy'||name==='terms'){
     document.querySelectorAll('.screen').forEach(el=>el.classList.remove('active'));
     const s=document.getElementById('screen-'+name);
@@ -4866,7 +4863,9 @@ async function boot(){
   }
 
   // ── Fast first render: show positions immediately with prices (no history yet)
-  const isinList=seed.positions.map(p=>p.isin).join(',');
+  // Include custom assets' ISINs so coverage can update their currency/price
+  const _customIsins=Object.values(getCustomAssets()).map(ca=>ca.isin||ca.symbol).filter(Boolean);
+  const isinList=[...new Set([...seed.positions.map(p=>p.isin),..._customIsins])].join(',');
   function buildAssets(cvMap){
     return seed.positions.map(pos=>{
       const entry=cvMap[pos.isin]||{},mapping=entry.mapping||null;
@@ -4982,7 +4981,12 @@ function loadCustomIntoAssets(cvMap){
     // If coverage data is available for this asset's ISIN, use its currency (overrides stored USD etc.)
     const isin=info.isin||sym;
     const coverageCurrency=cvMap&&cvMap[isin]?.data?.quote?.currency;
-    const enrichedInfo=coverageCurrency?{...info,currency:coverageCurrency}:info;
+    const coveragePrice=cvMap&&cvMap[isin]?.data?.quote?.price;
+    // If coverage returns a different currency (e.g. EUR from INGA.AS vs stored USD),
+    // update both currency AND currentPrice so the price shows in the correct currency
+    const enrichedInfo=(coverageCurrency&&coverageCurrency!==(info.currency||'USD'))
+      ? {...info, currency:coverageCurrency, ...(coveragePrice>0&&{currentPrice:coveragePrice})}
+      : info;
     return buildCustomAssetObj(enrichedInfo,pos);
   }).filter(a=>a.quantity>0);
   // Add to _rawSeedAssets and re-apply overrides (avoid duplicates with seed)
@@ -5170,11 +5174,6 @@ function renderSearchResults(results){
 
 async function saveNewAsset(){
   if(!_searchResult)return;
-  // Free plan: max 5 assets
-  if (_userPlan === 'free') {
-    const _assetCount = Object.keys(getOverrides()).length;
-    if (_assetCount >= 5) { _showUpgradeModal('assets'); return; }
-  }
   const qty=parseNum('addQty');
   const avgCost=parseNum('addAvgCost');
   if(qty<=0){document.getElementById('addQty').focus();return;}
