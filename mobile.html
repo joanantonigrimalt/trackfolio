@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
+<script>/* cache-bust v20260327-8 */(function(){var V='20260327-8',k='_fav';if(localStorage.getItem(k)!==V){localStorage.setItem(k,V);var u=location.pathname+'?_v='+V+(location.hash||'');window.location.replace(u);}}());</script>
 <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-QM1KR7PMFW"></script>
 <script>
@@ -10,7 +11,7 @@
   gtag('config', 'G-QM1KR7PMFW');
 </script><meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"><meta http-equiv="Pragma" content="no-cache"><meta http-equiv="Expires" content="0">
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>Finasset – Gestión de Cartera</title>
 <meta name="description" content="Gestiona y analiza tu cartera de inversiones: acciones, ETFs, fondos y dividendos en tiempo real.">
 <meta name="application-name" content="Finasset">
@@ -61,7 +62,7 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"
   integrity="sha384-9nhczxUqK87bcKHh20fSQcTGD4qq5GhayNYSYWqwBkINBhOfQLg/P5HG5lF1urn4"
   crossorigin="anonymous"></script>
-<script src="/lib/finasset-auth.js?v=3"></script>
+<script src="/lib/finasset-auth.js?v=7"></script>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}html,body{height:100%}body{font-family:'DM Sans',sans-serif;background:linear-gradient(180deg,#e8f2eb 0%,#f2f5f3 40%,#eaecef 100%);display:flex;justify-content:center;align-items:flex-start;padding:12px;color:#142018}.shell{width:min(100vw - 16px,430px);display:flex;justify-content:center}.phone{width:min(100%,390px);height:min(calc(100dvh - 24px),844px);background:linear-gradient(180deg,#f7faf8 0%,#f2f5f3 100%);border-radius:38px;border:1px solid rgba(20,32,24,.08);overflow:hidden;position:relative;box-shadow:0 28px 80px rgba(20,32,24,.16)}.notch{position:absolute;top:10px;left:50%;transform:translateX(-50%);width:120px;height:24px;background:#111;border-radius:0 0 16px 16px;z-index:3;opacity:.92}.status{display:flex;justify-content:space-between;align-items:center;padding:18px 20px 6px;font-size:12px;color:#688071;font-weight:500}.screen{display:none;padding:12px 16px 114px;height:100%;overflow-y:auto;-webkit-overflow-scrolling:touch}.screen.active{display:block}.screen::-webkit-scrollbar{width:0}#screen-asset{padding-bottom:134px}
 .top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:14px;gap:10px}.title{font-size:28px;font-weight:800;letter-spacing:-.03em;line-height:1.1}.sub{font-size:12px;color:#7d9080;margin-top:5px;line-height:1.4}.badge{padding:7px 12px;border-radius:999px;background:rgba(21,128,61,.09);color:#15803d;font-size:11px;font-weight:700;border:1px solid rgba(21,128,61,.13);white-space:nowrap}
@@ -73,7 +74,7 @@
 .sectionTitle{font-size:15px;font-weight:800;margin-bottom:12px;color:#142018;letter-spacing:-.01em}.asset{display:flex;gap:12px;align-items:center;padding:12px 0;border-bottom:1px solid rgba(20,32,24,.06);cursor:pointer;transition:opacity .12s}.asset:last-child{border-bottom:none}.asset:active{opacity:.65}
 /* icon.etc → neutral slate (was amber/yellow, hard to read) */
 .icon{width:42px;height:42px;border-radius:13px;background:linear-gradient(135deg,#1c7c45,#2ecc71);color:#fff;display:grid;place-items:center;font-weight:800;font-size:13px;flex-shrink:0;box-shadow:0 4px 14px rgba(0,0,0,.12)}.icon.etf{background:linear-gradient(135deg,#1d6fa8,#38bdf8)}.icon.fund{background:linear-gradient(135deg,#7c3aed,#a78bfa)}.icon.etc{background:linear-gradient(135deg,#475569,#64748b)}
-.name{font-size:14px;font-weight:700;color:#142018;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.meta{font-size:11px;color:#8fa090;margin-top:2px;font-weight:500}.right{margin-left:auto;text-align:right;flex-shrink:0;max-width:145px}.right .money{font-weight:700;font-size:14px;color:#142018}.right .pct{font-size:12px;margin-top:3px;font-weight:600;white-space:normal;word-break:break-word}
+.name{font-size:14px;font-weight:700;color:#142018;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.meta{font-size:11px;color:#8fa090;margin-top:2px;font-weight:500}.right{margin-left:auto;text-align:right;flex-shrink:0;max-width:clamp(130px,46vw,165px)}.right .money{font-weight:700;font-size:clamp(12px,3.8vw,14px);color:#142018;white-space:nowrap}.right .pct{font-size:clamp(10px,3vw,12px);margin-top:3px;font-weight:600;white-space:nowrap;word-break:normal;overflow:hidden}
 .empty{font-size:13px;color:#6d7e72;line-height:1.55}.kv{display:flex;justify-content:space-between;gap:10px;padding:11px 0;border-bottom:1px solid rgba(20,32,24,.06)}.kv:last-child{border-bottom:none}
 /* Tab bar */
 .tab{position:absolute;left:12px;right:12px;bottom:12px;background:rgba(255,255,255,.94);backdrop-filter:blur(20px);border:1px solid rgba(20,32,24,.07);border-radius:22px;padding:6px 4px 0;box-shadow:0 12px 32px rgba(20,32,24,.09);display:flex;flex-direction:column;overflow:hidden}
@@ -535,8 +536,8 @@ table.an-corr-mtx{border-collapse:separate;border-spacing:4px}
 /* === Auth modal === */
 .authOverlay{position:fixed;inset:0;background:rgba(20,32,24,.4);z-index:110;opacity:0;pointer-events:none;visibility:hidden;transition:opacity .25s,visibility 0s .25s}
 .authOverlay.open{opacity:1;pointer-events:auto;visibility:visible;transition:opacity .25s,visibility 0s}
-.authSheet{position:fixed;bottom:0;left:0;right:0;background:#fff;border-radius:24px 24px 0 0;padding:0 0 32px;z-index:111;transform:translateY(100%);visibility:hidden;transition:transform .28s cubic-bezier(.32,.72,0,1),visibility 0s .28s}
-.authSheet.open{transform:translateY(0);visibility:visible;transition:transform .28s cubic-bezier(.32,.72,0,1),visibility 0s}
+.authSheet{position:fixed;bottom:0;left:50%;right:auto;width:min(100vw,430px);background:#fff;border-radius:24px 24px 0 0;padding:0 0 32px;z-index:111;transform:translateX(-50%) translateY(100%);visibility:hidden;transition:transform .28s cubic-bezier(.32,.72,0,1),visibility 0s .28s}
+.authSheet.open{transform:translateX(-50%) translateY(0);visibility:visible;transition:transform .28s cubic-bezier(.32,.72,0,1),visibility 0s}
 .authTabs{display:flex;margin:12px 20px 0;background:#f1f5f2;border-radius:12px;padding:3px;gap:3px}
 .authTabBtn{flex:1;padding:9px;border:none;border-radius:9px;font:inherit;font-size:13px;font-weight:700;cursor:pointer;color:#6d7e72;background:transparent;transition:all .15s}
 .authTabBtn.active{background:#fff;color:#142018;box-shadow:0 2px 8px rgba(20,32,24,.1)}
@@ -740,6 +741,291 @@ table.an-corr-mtx{border-collapse:separate;border-spacing:4px}
 #screen-impuestos .tx-disclaimer-text{font-size:10.5px;color:#78350f;line-height:1.55}
 #screen-impuestos .tx-export-btn{background:#16924f;color:#fff;border:none;border-radius:14px;padding:14px;font-family:inherit;font-size:13px;font-weight:700;width:100%;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;box-shadow:0 4px 16px rgba(22,146,79,.3);margin-bottom:12px}
 #screen-impuestos .tx-empty{text-align:center;padding:24px 16px;color:#8da098;font-size:12px}
+/* ═══════════════ COMUNIDAD ═══════════════ */
+#screen-comunidad{padding:0;background:#fff;color:#1a1a1a;min-height:100%}
+.com-inner{max-width:1100px;margin:0 auto;padding:24px 24px 48px;display:grid;grid-template-columns:1fr 300px;gap:24px}
+@media(max-width:900px){.com-inner{grid-template-columns:1fr}.com-sidebar-col{display:none}}
+.com-feed-col{display:flex;flex-direction:column;gap:0}
+.com-sidebar-col{display:flex;flex-direction:column;gap:16px}
+.com-compose{background:#162118;border:1px solid #1f3225;border-radius:16px;padding:18px;margin-bottom:16px}
+.com-compose-row{display:flex;align-items:center;gap:10px;margin-bottom:14px}
+.com-av{width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;flex-shrink:0;background:linear-gradient(135deg,#1a7a43,#2ecc71);color:#fff}
+.com-compose-trigger{flex:1;background:#111f16;border:1px solid #2a4433;border-radius:24px;padding:10px 18px;font-size:14px;color:#4a6b55;cursor:pointer;text-align:left;font-family:inherit;transition:border-color .2s}
+.com-compose-trigger:hover{border-color:#2ecc71;color:#7a9e88}
+.com-compose-btns{display:flex;gap:8px;flex-wrap:wrap}
+.com-type-btn{display:flex;align-items:center;gap:6px;padding:7px 14px;background:#111f16;border:1px solid #2a4433;border-radius:20px;color:#7a9e88;font-size:12px;font-weight:600;cursor:pointer;transition:all .2s;font-family:inherit}
+.com-type-btn:hover{background:rgba(46,204,113,.1);border-color:#1a7a43;color:#2ecc71}
+.com-filters{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
+.com-pill{padding:6px 14px;border-radius:20px;font-size:12px;font-weight:600;cursor:pointer;border:1px solid #2a4433;color:#7a9e88;background:transparent;transition:all .2s;font-family:inherit}
+.com-pill:hover{border-color:#1a7a43;color:#2ecc71}
+.com-pill.active{background:rgba(46,204,113,.1);border-color:#2ecc71;color:#2ecc71}
+.com-post{background:#162118;border:1px solid #1f3225;border-radius:16px;padding:18px;margin-bottom:14px;transition:border-color .25s,background .25s}
+.com-post:hover{border-color:#2a4433;background:#1c2b1f}
+.com-post-hd{display:flex;align-items:flex-start;gap:12px;margin-bottom:12px}
+.com-post-av{width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;flex-shrink:0;border:2px solid #2a4433;cursor:pointer}
+.com-post-meta{flex:1;min-width:0}
+.com-post-name{font-weight:700;font-size:14px;color:#e8f5ee;cursor:pointer;display:inline-flex;align-items:center;gap:5px}
+.com-post-name:hover{color:#2ecc71}
+.com-post-handle{font-size:12px;color:#4a6b55;margin-top:1px}
+.com-post-time{font-size:11px;color:#4a6b55;white-space:nowrap;margin-left:auto}
+.com-post-badge{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:12px;font-size:10px;font-weight:700;margin-bottom:10px;text-transform:uppercase;letter-spacing:.5px}
+.com-badge-texto{background:rgba(46,204,113,.1);color:#2ecc71;border:1px solid rgba(46,204,113,.2)}
+.com-badge-portfolio{background:rgba(46,204,113,.1);color:#2ecc71;border:1px solid rgba(46,204,113,.2)}
+.com-badge-transaccion{background:rgba(212,175,55,.1);color:#d4af37;border:1px solid rgba(212,175,55,.2)}
+.com-post-text{font-size:14px;line-height:1.65;color:#e8f5ee;margin-bottom:12px}
+.com-post-text .com-tag{color:#2ecc71;cursor:pointer}
+.com-pf-widget{background:linear-gradient(135deg,#0f2418,#162118);border:1px solid #2a4433;border-radius:12px;padding:16px;margin:10px 0}
+.com-pf-hd{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px}
+.com-pf-total{font-size:22px;font-weight:800;color:#e8f5ee;letter-spacing:-.04em}
+.com-pf-gain{font-size:13px;font-weight:700}
+.com-pf-gain.pos{color:#2ecc71}
+.com-pf-gain.neg{color:#e74c3c}
+.com-pf-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px}
+.com-pf-stat{background:rgba(0,0,0,.2);border-radius:8px;padding:9px 10px}
+.com-pf-stat-lbl{font-size:9px;text-transform:uppercase;letter-spacing:.8px;color:#4a6b55;margin-bottom:3px}
+.com-pf-stat-val{font-size:14px;font-weight:700;color:#e8f5ee}
+.com-pf-chart{height:52px;margin-top:6px}
+.com-pf-chart svg{width:100%;height:100%}
+.com-tx-widget{background:#111f16;border:1px solid #2a4433;border-radius:12px;padding:13px 15px;margin:10px 0;display:flex;align-items:center;gap:12px}
+.com-tx-date-col{font-size:11px;color:#4a6b55;display:flex;flex-direction:column;align-items:center;min-width:32px}
+.com-tx-date-col strong{font-size:16px;font-weight:800;color:#e8f5ee;line-height:1}
+.com-tx-logo{width:34px;height:34px;border-radius:8px;background:rgba(255,255,255,.05);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
+.com-tx-info{flex:1;min-width:0}
+.com-tx-asset{font-weight:700;font-size:14px;color:#e8f5ee}
+.com-tx-detail{font-size:11px;color:#4a6b55;margin-top:2px}
+.com-tx-amount{font-weight:800;font-size:15px}
+.com-tx-amount.buy{color:#2ecc71}
+.com-tx-amount.sell{color:#e74c3c}
+.com-post-actions{display:flex;align-items:center;gap:4px;padding-top:12px;border-top:1px solid #1f3225;margin-top:12px}
+.com-action-btn{display:flex;align-items:center;gap:5px;padding:6px 12px;border-radius:20px;background:none;border:none;color:#7a9e88;font-size:12px;font-weight:600;cursor:pointer;transition:all .2s;font-family:inherit}
+.com-action-btn:hover{background:rgba(46,204,113,.1);color:#2ecc71}
+.com-action-btn.liked{color:#2ecc71}
+.com-action-btn svg{width:15px;height:15px}
+.com-action-sep{flex:1}
+.com-comments{display:none;margin-top:12px;border-top:1px solid #1f3225;padding-top:12px}
+.com-comments.open{display:block}
+.com-comment-item{display:flex;gap:9px;padding:8px 0;border-bottom:1px solid #1f3225}
+.com-comment-item:last-child{border-bottom:none}
+.com-comment-av{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0}
+.com-comment-body .com-comment-name{font-size:12px;font-weight:700;color:#e8f5ee;margin-bottom:2px}
+.com-comment-body .com-comment-text{font-size:13px;color:#7a9e88;line-height:1.5}
+.com-comment-input{display:flex;gap:8px;align-items:center;margin-top:10px}
+.com-comment-field{flex:1;background:#111f16;border:1px solid #2a4433;border-radius:20px;padding:8px 15px;font-family:inherit;font-size:13px;color:#e8f5ee;outline:none;transition:border-color .2s}
+.com-comment-field:focus{border-color:#1a7a43}
+.com-comment-field::placeholder{color:#4a6b55}
+.com-comment-send{padding:8px 16px;background:#2ecc71;color:#0a1a0e;border:none;border-radius:20px;font-family:inherit;font-size:12px;font-weight:700;cursor:pointer;transition:opacity .2s;white-space:nowrap}
+.com-comment-send:hover{opacity:.85}
+.com-sb-card{background:#162118;border:1px solid #1f3225;border-radius:16px;padding:18px}
+.com-sb-title{font-size:14px;font-weight:700;color:#e8f5ee;margin-bottom:14px;display:flex;align-items:center;gap:8px}
+.com-market-row{display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1f3225}
+.com-market-row:last-child{border-bottom:none}
+.com-market-name{font-size:13px;font-weight:500;color:#e8f5ee}
+.com-market-val{font-size:12px;color:#7a9e88}
+.com-market-chg{font-size:12px;font-weight:700}
+.com-chg-pos{color:#2ecc71}.com-chg-neg{color:#e74c3c}
+.com-top-user{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid #1f3225;cursor:pointer}
+.com-top-user:last-child{border-bottom:none}
+.com-top-user:hover{opacity:.8}
+.com-top-user-av{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0}
+.com-top-user-name{font-size:13px;font-weight:600;color:#e8f5ee}
+.com-top-user-handle{font-size:11px;color:#4a6b55}
+.com-top-user-gain{margin-left:auto;font-size:13px;font-weight:700}
+.com-trending-tag{display:inline-flex;align-items:center;gap:5px;padding:6px 11px;background:#111f16;border:1px solid #2a4433;border-radius:10px;font-size:12px;cursor:pointer;margin:3px;transition:all .2s;color:#7a9e88;font-family:inherit}
+.com-trending-tag:hover{border-color:#1a7a43;color:#2ecc71;background:rgba(46,204,113,.07)}
+.com-trending-tag .com-tc{font-size:10px;color:#4a6b55}
+.com-empty{text-align:center;padding:48px 20px;color:#4a6b55;font-size:13px}
+.com-loading{text-align:center;padding:32px;color:#4a6b55;font-size:13px}
+/* Compose modal */
+.com-modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.75);backdrop-filter:blur(8px);z-index:210;display:none;align-items:center;justify-content:center;padding:20px}
+.com-modal-overlay.open{display:flex}
+.com-modal{background:#162118;border:1px solid #2a4433;border-radius:20px;width:100%;max-width:560px;max-height:90vh;overflow-y:auto;animation:comModalIn .25s ease}
+@keyframes comModalIn{from{opacity:0;transform:translateY(20px) scale(.97)}to{opacity:1;transform:none}}
+.com-modal-hd{display:flex;align-items:center;justify-content:space-between;padding:18px 22px;border-bottom:1px solid #1f3225}
+.com-modal-title{font-size:17px;font-weight:800;color:#e8f5ee}
+.com-modal-close{width:30px;height:30px;border-radius:50%;background:#111f16;border:1px solid #2a4433;color:#7a9e88;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:16px;transition:all .2s}
+.com-modal-close:hover{color:#e8f5ee;border-color:#4a6b55}
+.com-modal-tabs{display:flex;gap:6px;padding:14px 22px 0;overflow-x:auto}
+.com-modal-tab{padding:8px 16px;border-radius:20px;background:none;border:1.5px solid #2a4433;color:#7a9e88;font-family:inherit;font-size:12px;font-weight:700;cursor:pointer;transition:all .2s;white-space:nowrap}
+.com-modal-tab.active{background:rgba(46,204,113,.1);border-color:#2ecc71;color:#2ecc71}
+.com-modal-body{padding:18px 22px}
+.com-form-group{margin-bottom:14px}
+.com-form-label{display:block;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:#4a6b55;margin-bottom:7px}
+.com-form-input,.com-form-textarea,.com-form-select{width:100%;background:#111f16;border:1px solid #2a4433;border-radius:10px;padding:10px 13px;font-family:inherit;font-size:13px;color:#e8f5ee;outline:none;transition:border-color .2s}
+.com-form-input:focus,.com-form-textarea:focus,.com-form-select:focus{border-color:#2ecc71}
+.com-form-input::placeholder,.com-form-textarea::placeholder{color:#4a6b55}
+.com-form-textarea{resize:vertical;min-height:90px}
+.com-form-select option{background:#162118}
+.com-form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.com-modal-ft{padding:14px 22px;border-top:1px solid #1f3225;display:flex;justify-content:flex-end;gap:10px}
+.com-btn-cancel{padding:9px 18px;background:#111f16;border:1px solid #2a4433;border-radius:10px;color:#7a9e88;font-family:inherit;font-size:13px;font-weight:600;cursor:pointer}
+.com-btn-publish{padding:9px 22px;background:#2ecc71;border:none;border-radius:10px;color:#0a1a0e;font-family:inherit;font-size:13px;font-weight:800;cursor:pointer;transition:opacity .2s}
+.com-btn-publish:hover{opacity:.88}
+.com-pf-autofill{background:rgba(46,204,113,.08);border:1px solid rgba(46,204,113,.2);border-radius:10px;padding:11px 13px;margin-bottom:12px;font-size:12px;color:#7a9e88;display:flex;align-items:center;justify-content:space-between;gap:10px}
+.com-pf-autofill-btn{padding:6px 12px;background:#2ecc71;color:#0a1a0e;border:none;border-radius:8px;font-size:11px;font-weight:700;cursor:pointer;font-family:inherit;white-space:nowrap}
+/* Profile modal */
+.com-profile-modal{background:#162118;border:1px solid #2a4433;border-radius:20px;width:100%;max-width:480px;max-height:85vh;overflow-y:auto;animation:comModalIn .25s ease}
+.com-profile-hd{background:linear-gradient(135deg,#0f2418,#162118);padding:24px 22px 20px;border-bottom:1px solid #1f3225}
+.com-profile-av{width:60px;height:60px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:800;border:3px solid #2a4433;margin-bottom:12px}
+.com-profile-name{font-size:20px;font-weight:800;color:#e8f5ee;letter-spacing:-.03em}
+.com-profile-handle{font-size:13px;color:#4a6b55;margin-top:2px}
+.com-profile-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;padding:16px 22px;border-bottom:1px solid #1f3225}
+.com-profile-stat{text-align:center}
+.com-profile-stat-val{font-size:18px;font-weight:800;color:#e8f5ee}
+.com-profile-stat-lbl{font-size:10px;color:#4a6b55;margin-top:2px}
+.com-profile-posts{padding:16px 22px}
+
+/* ═══════════════ FORO — LIGHT REDESIGN ═══════════════ */
+#screen-comunidad{background:#f2f5f3}
+
+/* Layout */
+.com-inner{padding:28px 24px 56px}
+
+/* Compose card */
+.com-compose{background:#fff;border:1px solid #e2e9e4;border-radius:18px;padding:20px;margin-bottom:20px;box-shadow:0 1px 8px rgba(20,60,30,.05)}
+.com-compose-trigger{background:#f5f8f6;border:1.5px solid #dde8e0;color:#8aad96;border-radius:26px;padding:11px 20px;font-size:14px;transition:all .2s}
+.com-compose-trigger:hover{border-color:#16a34a;color:#16a34a;background:#f0fdf4}
+.com-type-btn{background:#f5f8f6;border:1.5px solid #dde8e0;color:#4a7a5a;border-radius:22px;font-size:12.5px;padding:7px 14px;transition:all .2s}
+.com-type-btn:hover{background:#dcfce7;border-color:#16a34a;color:#15803d}
+
+/* Filter pills */
+.com-filters{margin-bottom:18px}
+.com-pill{background:#fff;border:1.5px solid #dde8e0;color:#4a7a5a;border-radius:22px;padding:6px 16px;font-size:12.5px;font-weight:600;transition:all .2s}
+.com-pill:hover{border-color:#16a34a;color:#15803d;background:#f0fdf4}
+.com-pill.active{background:#dcfce7;border-color:#16a34a;color:#15803d;box-shadow:0 0 0 3px rgba(22,163,74,.08)}
+
+/* Posts */
+.com-post{background:#fff;border:1px solid #e2e9e4;border-radius:18px;padding:20px;margin-bottom:14px;box-shadow:0 1px 4px rgba(20,60,30,.04);transition:transform .15s,box-shadow .15s,border-color .15s}
+.com-post:hover{border-color:#b8d4bf;box-shadow:0 4px 16px rgba(20,60,30,.09);transform:translateY(-1px)}
+.com-post-name{color:#1a2e1e;font-weight:700}
+.com-post-name:hover{color:#16a34a}
+.com-post-handle{color:#94a89c}
+.com-post-time{color:#94a89c}
+.com-post-text{color:#374151;line-height:1.7}
+.com-post-text .com-tag{color:#16a34a}
+.com-post-av{border:2px solid #e2e9e4}
+
+/* Action bar */
+.com-post-actions{border-top:1px solid #f0f4f2;padding-top:10px;margin-top:10px}
+
+/* Comments */
+.com-comments-area{background:#f8faf9;border-top:1px solid #f0f4f2;border-radius:0 0 16px 16px;padding:14px 18px}
+.com-comment-field{background:#fff;border:1.5px solid #dde8e0;color:#1a2e1e;border-radius:22px}
+.com-comment-field:focus{border-color:#16a34a;box-shadow:0 0 0 3px rgba(22,163,74,.07)}
+.com-comment-field::placeholder{color:#94a89c}
+.com-comment-send{background:#16a34a;color:#fff;border-radius:22px;font-weight:700}
+.com-comment-send:hover{background:#15803d}
+
+/* Portfolio widget */
+.com-pf-widget{background:linear-gradient(135deg,#f0fdf4,#e8f5ee);border:1px solid #bbf7d0;border-radius:14px}
+.com-pf-total{color:#1a2e1e}
+.com-pf-gain.pos{color:#16a34a}
+.com-pf-stat{background:rgba(255,255,255,.75);border-radius:9px}
+.com-pf-stat-lbl{color:#6b7280}
+.com-pf-stat-val{color:#1a2e1e}
+
+/* Transaction widget */
+.com-tx-widget{background:#f8faf9;border:1px solid #e2e9e4;border-radius:14px}
+.com-tx-asset{color:#1a2e1e}
+.com-tx-detail{color:#6b7280}
+.com-tx-date-col{color:#6b7280}
+.com-tx-date-col strong{color:#1a2e1e}
+
+/* Sidebar — keep dark for contrast */
+.com-sb-card{background:#182b1f;border:1px solid #243b2b;border-radius:18px;box-shadow:0 2px 16px rgba(0,0,0,.14)}
+.com-sb-title{color:#e8f5ee;font-size:14px;font-weight:700;margin-bottom:14px}
+.com-market-row{border-bottom:1px solid #243b2b}
+.com-market-row:last-child{border-bottom:none}
+.com-market-name{color:#e8f5ee}
+.com-market-val{color:#7a9e88}
+.com-chg-pos{color:#4ade80}.com-chg-neg{color:#f87171}
+.com-top-user{border-bottom:1px solid #243b2b}
+.com-top-user:last-child{border-bottom:none}
+.com-top-user-name{color:#e8f5ee}
+.com-top-user-handle{color:#4a6b55}
+.com-trending-tag{background:#111f16;border:1px solid #2a4433;color:#7a9e88;border-radius:10px}
+.com-trending-tag:hover{border-color:#16a34a;color:#4ade80;background:rgba(74,222,128,.06)}
+.com-trending-tag .com-tc{color:#4a6b55}
+
+/* Badges */
+.com-badge-texto{background:#dcfce7;color:#15803d;border:1px solid #bbf7d0}
+.com-badge-portfolio{background:#dbeafe;color:#1d4ed8;border:1px solid #bfdbfe}
+.com-badge-transaccion{background:#fef3c7;color:#92400e;border:1px solid #fde68a}
+
+/* Avatars */
+.com-av{background:linear-gradient(135deg,#16a34a,#4ade80);color:#fff}
+
+/* Empty / loading */
+.com-empty{color:#94a89c;background:#fff;border-radius:18px;border:1px dashed #dde8e0;margin:8px 0;box-shadow:none}
+.com-loading{color:#94a89c}
+
+/* Modal */
+.com-modal{background:#fff;border:1px solid #e2e9e4;box-shadow:0 20px 60px rgba(0,0,0,.15)}
+.com-modal-hd{border-bottom:1px solid #f0f4f2}
+.com-modal-title{color:#1a2e1e}
+.com-modal-close{background:#f5f8f6;border:1px solid #e2e9e4;color:#4a7a5a}
+.com-modal-close:hover{color:#1a2e1e;border-color:#b8d4bf}
+.com-modal-tab{border:1.5px solid #dde8e0;color:#4a7a5a}
+.com-modal-tab.active{background:#dcfce7;border-color:#16a34a;color:#15803d}
+.com-modal-ft{border-top:1px solid #f0f4f2}
+.com-btn-cancel{background:#f5f8f6;border:1px solid #e2e9e4;color:#4a7a5a}
+.com-form-label{color:#5a7a5a;font-weight:700}
+.com-form-input,.com-form-textarea,.com-form-select{background:#f8faf9;border:1.5px solid #dde8e0;color:#1a2e1e;border-radius:11px}
+.com-form-input:focus,.com-form-textarea:focus,.com-form-select:focus{border-color:#16a34a;box-shadow:0 0 0 3px rgba(22,163,74,.07)}
+.com-form-input::placeholder,.com-form-textarea::placeholder{color:#94a89c}
+.com-form-select option{background:#fff;color:#1a2e1e}
+.com-pf-autofill{background:#f0fdf4;border:1px solid #bbf7d0;color:#4a7a5a}
+.com-pf-autofill-btn{background:#16a34a;color:#fff}
+.com-btn-publish{background:linear-gradient(135deg,#16a34a,#15803d);color:#fff;border-radius:11px;box-shadow:0 2px 8px rgba(22,163,74,.3)}
+.com-btn-publish:hover{opacity:.92;transform:translateY(-1px)}
+
+/* Profile modal */
+.com-profile-modal{background:#fff;border:1px solid #e2e9e4}
+.com-profile-hd{background:linear-gradient(135deg,#f0fdf4,#fff);border-bottom:1px solid #f0f4f2}
+.com-profile-name{color:#1a2e1e}
+.com-profile-handle{color:#94a89c}
+.com-profile-stats{border-bottom:1px solid #f0f4f2}
+.com-profile-stat-val{color:#1a2e1e}
+.com-profile-stat-lbl{color:#94a89c}
+
+/* Header title */
+#screen-comunidad .d-content-header{background:#fff;border-bottom:1px solid #e2e9e4;box-shadow:0 1px 6px rgba(0,0,0,.04)}
+
+/* ═══════════════ END FORO LIGHT ═══════════════ */
+
+/* ── Responsive: real mobile fills screen, drops decorative phone frame ───── */
+@media screen and (max-width:500px){
+  html,body{height:100%;overflow:hidden}
+  body{padding:0 !important;background:#f2f5f3 !important}
+  .shell{width:100% !important;padding:0}
+  .phone{
+    width:100% !important;
+    max-width:100% !important;
+    height:100dvh !important;
+    border-radius:0 !important;
+    border:none !important;
+    box-shadow:none !important;
+  }
+  .notch{display:none !important}
+}
+/* Right column: adapts to screen width so name column always gets space */
+.right{max-width:clamp(100px,36vw,145px) !important}
+/* Name: never less than 12px, always has room */
+.name{
+  font-size:clamp(12px,3.8vw,14px) !important;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+  min-width:0;
+}
+/* Asset middle column: ensure it can shrink */
+.asset>div:nth-child(2){min-width:0;flex:1 1 0}
+/* Money: shrink on very small screens */
+@media screen and (max-width:360px){
+  .right .money{font-size:12px !important}
+  .right .pct{font-size:10px !important}
+  .meta{font-size:10px !important}
+}
+#brokerFilterBar{display:none;gap:6px;overflow-x:auto;padding:0 0 10px;-webkit-overflow-scrolling:touch;scrollbar-width:none}#brokerFilterBar::-webkit-scrollbar{display:none}.bfBtn{padding:6px 14px;border-radius:20px;border:1.5px solid rgba(20,32,24,.12);background:#fff;font-size:12px;font-weight:700;color:#8fa090;cursor:pointer;white-space:nowrap;transition:all .15s;flex-shrink:0}.bfBtn.active{background:#15803d;color:#fff;border-color:#15803d}
 </style>
 </head>
 <body>
@@ -763,8 +1049,8 @@ table.an-corr-mtx{border-collapse:separate;border-spacing:4px}
 <!-- ============ ONBOARDING ============ -->
 <div id="cs-ob" class="cover-screen">
   <div class="ob-lang-row">
-    <button class="auth-lang-btn" id="ob-lang-es" onclick="switchLang('es')">ES</button>
-    <button class="auth-lang-btn active" id="ob-lang-en" onclick="switchLang('en')">EN</button>
+    <button class="auth-lang-btn active" id="ob-lang-es" onclick="switchLang('es')">ES</button>
+    <button class="auth-lang-btn" id="ob-lang-en" onclick="switchLang('en')">EN</button>
   </div>
   <div class="ob-body" id="ob-body"></div>
   <div class="ob-dots" id="ob-dots"></div>
@@ -779,8 +1065,8 @@ table.an-corr-mtx{border-collapse:separate;border-spacing:4px}
 
   <!-- Language switcher -->
   <div class="auth-lang-row" style="position:absolute;top:0;right:0;padding:16px 20px;z-index:2">
-    <button class="auth-lang-btn" id="auth-lang-es" onclick="switchLang('es')">ES</button>
-    <button class="auth-lang-btn active" id="auth-lang-en" onclick="switchLang('en')">EN</button>
+    <button class="auth-lang-btn active" id="auth-lang-es" onclick="switchLang('es')">ES</button>
+    <button class="auth-lang-btn" id="auth-lang-en" onclick="switchLang('en')">EN</button>
   </div>
 
   <div style="flex:1;display:flex;flex-direction:column;padding:60px 24px 32px;overflow-y:auto">
@@ -893,6 +1179,7 @@ table.an-corr-mtx{border-collapse:separate;border-spacing:4px}
       Añadir Liquidez
     </button>
   </div>
+  <div id="brokerFilterBar"></div>
   <div class="card"><div class="sectionTitle" data-i18n="myPortfolio">Mi cartera</div><div id="list"></div></div>
   <div class="card" id="homeLiqCard" style="display:none">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
@@ -1019,6 +1306,16 @@ table.an-corr-mtx{border-collapse:separate;border-spacing:4px}
         <div style="font-size:11px;color:#8fa090;margin-top:1px">Aviso al alcanzar el precio</div>
       </div>
       <label class="alertToggle"><input type="checkbox" id="alertsNotifCk" checked onchange="handleAlertNotifToggle(this)"><span class="alertToggleSlider"></span></label>
+    </div>
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 12px;background:#f7faf8;border-radius:12px;margin-bottom:12px">
+      <div>
+        <div style="font-size:13px;font-weight:700;color:#142018">Notificación por email</div>
+        <div style="font-size:11px;color:#8fa090">Envío a tu correo al activarse</div>
+      </div>
+      <label class="alertToggle">
+        <input type="checkbox" id="alertsEmailCk">
+        <span class="alertToggleSlider"></span>
+      </label>
     </div>
     <div style="display:flex;gap:8px">
       <button onclick="hideAlertForm()" style="flex:1;padding:12px;border-radius:14px;border:1.5px solid rgba(20,32,24,.1);background:#fff;font:inherit;font-size:13px;font-weight:700;color:#4a5f4e;cursor:pointer">Cancelar</button>
@@ -1917,6 +2214,14 @@ table.an-corr-mtx{border-collapse:separate;border-spacing:4px}
           </div>
           <div class="addAssetPrice" id="addAssetPrice">—</div>
         </div>
+        <div class="modeSwitcher" style="margin:0 0 4px">
+          <button class="modeSwitchBtn active" id="addModeSimpleBtn" onclick="setAddFormMode('simple')">Simple</button>
+          <button class="modeSwitchBtn" id="addModeTxBtn" onclick="setAddFormMode('transactions')">Por transacciones</button>
+        </div>
+        <div class="mFieldGroup" id="addDateField" style="display:none">
+          <div class="mLabel" id="addDateLabel">Fecha de compra</div>
+          <div class="mFieldRow"><input type="date" id="addTxDateInput" style="flex:1;color:#142018;font-size:15px;background:transparent;border:none;outline:none;padding:4px 0"></div>
+        </div>
         <div class="mFieldGroup">
           <div class="mLabel">Participaciones / Unidades</div>
           <div class="mFieldRow"><input type="text" inputmode="decimal" id="addQty" placeholder="0"></div>
@@ -2359,18 +2664,199 @@ table.an-corr-mtx{border-collapse:separate;border-spacing:4px}
   </div>
 </div>
 
+<!-- ============ COMUNIDAD ============ -->
+<div id="screen-comunidad" class="screen">
+  <div class="com-inner" style="grid-template-columns:1fr">
+    <div class="com-feed-col">
+
+      <!-- Compose -->
+      <div class="com-compose">
+        <div class="com-compose-row">
+          <div class="com-av" id="comAvatar">?</div>
+          <button class="com-compose-trigger" onclick="_comOpenModal('texto')">¿Qué quieres compartir hoy?</button>
+        </div>
+        <div class="com-compose-btns">
+          <button class="com-type-btn" onclick="_comOpenModal('portfolio')">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+            Portafolio
+          </button>
+          <button class="com-type-btn" onclick="_comOpenModal('transaccion')">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 16V4m0 0L3 8m4-4 4 4M17 8v12m0 0 4-4m-4 4-4-4"/></svg>
+            Transacción
+          </button>
+          <button class="com-type-btn" onclick="_comOpenModal('texto')">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+            Análisis
+          </button>
+        </div>
+      </div>
+
+      <!-- Filters -->
+      <div class="com-filters">
+        <button class="com-pill active" onclick="_comFilter(this,'all')">Todo</button>
+        <button class="com-pill" onclick="_comFilter(this,'portfolio')">📊 Portafolios</button>
+        <button class="com-pill" onclick="_comFilter(this,'transaccion')">💸 Transacciones</button>
+        <button class="com-pill" onclick="_comFilter(this,'texto')">💬 Análisis</button>
+      </div>
+
+      <!-- Feed -->
+      <div id="comFeed"><div class="com-loading">Cargando comunidad…</div></div>
+    </div>
+
+    <div class="com-sidebar-col" style="display:none">
+      <!-- Market data (static, real data via coverage) -->
+      <div class="com-sb-card">
+        <div class="com-sb-title">📈 Mercados</div>
+        <div id="comMarkets"><div style="font-size:12px;color:#4a6b55">Cargando…</div></div>
+      </div>
+      <!-- Top members -->
+      <div class="com-sb-card">
+        <div class="com-sb-title">🏆 Top miembros</div>
+        <div id="comTopMembers"><div style="font-size:12px;color:#4a6b55">Cargando…</div></div>
+      </div>
+      <!-- Trending tags -->
+      <div class="com-sb-card">
+        <div class="com-sb-title">🔥 Tendencias</div>
+        <div id="comTrending">
+          <span class="com-trending-tag">#Dividendos <span class="com-tc">142</span></span>
+          <span class="com-trending-tag">#ETF <span class="com-tc">98</span></span>
+          <span class="com-trending-tag">#FIRE <span class="com-tc">76</span></span>
+          <span class="com-trending-tag">#SP500 <span class="com-tc">64</span></span>
+          <span class="com-trending-tag">#DCA <span class="com-tc">51</span></span>
+          <span class="com-trending-tag">#LargoPlazo <span class="com-tc">43</span></span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- COMPOSE MODAL -->
+<div class="com-modal-overlay" id="comModal" onclick="if(event.target===this)_comCloseModal()">
+  <div class="com-modal">
+    <div class="com-modal-hd">
+      <div class="com-modal-title">Nueva publicación</div>
+      <button class="com-modal-close" onclick="_comCloseModal()">✕</button>
+    </div>
+    <div class="com-modal-tabs">
+      <button class="com-modal-tab active" id="comTabTexto" onclick="_comSwitchTab('texto')">💬 Texto</button>
+      <button class="com-modal-tab" id="comTabPortfolio" onclick="_comSwitchTab('portfolio')">📊 Portafolio</button>
+      <button class="com-modal-tab" id="comTabTx" onclick="_comSwitchTab('transaccion')">💸 Transacción</button>
+    </div>
+    <div class="com-modal-body">
+      <!-- Texto -->
+      <div id="comFormTexto">
+        <div class="com-form-group">
+          <label class="com-form-label">Contenido</label>
+          <textarea class="com-form-textarea" id="comTextContent" placeholder="Comparte tu análisis, opinión o pregunta con la comunidad…"></textarea>
+        </div>
+        <div class="com-form-group">
+          <label class="com-form-label">Etiquetas (opcional)</label>
+          <input type="text" class="com-form-input" id="comTextTags" placeholder="#ETF #Dividendos #LargoPlazo">
+        </div>
+      </div>
+      <!-- Portfolio -->
+      <div id="comFormPortfolio" style="display:none">
+        <div class="com-pf-autofill" id="comPfAutofill">
+          <span>Autorellena con tu cartera actual</span>
+          <button class="com-pf-autofill-btn" onclick="_comAutofillPortfolio()">Autorellenar</button>
+        </div>
+        <div class="com-form-group">
+          <label class="com-form-label">Descripción</label>
+          <textarea class="com-form-textarea" id="comPfContent" placeholder="Comparte tu estrategia y composición…" style="min-height:70px"></textarea>
+        </div>
+        <div class="com-form-row">
+          <div class="com-form-group">
+            <label class="com-form-label">Valor total (€)</label>
+            <input type="number" class="com-form-input" id="comPfTotal" placeholder="0">
+          </div>
+          <div class="com-form-group">
+            <label class="com-form-label">Capital invertido (€)</label>
+            <input type="number" class="com-form-input" id="comPfInvested" placeholder="0">
+          </div>
+        </div>
+        <div class="com-form-row">
+          <div class="com-form-group">
+            <label class="com-form-label">Rentabilidad (%)</label>
+            <input type="text" class="com-form-input" id="comPfGain" placeholder="+6.06">
+          </div>
+          <div class="com-form-group">
+            <label class="com-form-label">Posiciones</label>
+            <input type="number" class="com-form-input" id="comPfPositions" placeholder="17">
+          </div>
+        </div>
+        <div class="com-form-group">
+          <label class="com-form-label">Etiquetas</label>
+          <input type="text" class="com-form-input" id="comPfTags" placeholder="#ETF #Dividendos">
+        </div>
+      </div>
+      <!-- Transaccion -->
+      <div id="comFormTx" style="display:none">
+        <div class="com-form-group">
+          <label class="com-form-label">Activo / Empresa</label>
+          <input type="text" class="com-form-input" id="comTxAsset" placeholder="Ej: MSCI World, Apple, Vanguard…">
+        </div>
+        <div class="com-form-row">
+          <div class="com-form-group">
+            <label class="com-form-label">Tipo</label>
+            <select class="com-form-select" id="comTxType">
+              <option>Compra</option>
+              <option>Venta</option>
+              <option>Dividendo</option>
+            </select>
+          </div>
+          <div class="com-form-group">
+            <label class="com-form-label">Fecha</label>
+            <input type="date" class="com-form-input" id="comTxDate">
+          </div>
+        </div>
+        <div class="com-form-row">
+          <div class="com-form-group">
+            <label class="com-form-label">Cantidad</label>
+            <input type="number" class="com-form-input" id="comTxQty" placeholder="6">
+          </div>
+          <div class="com-form-group">
+            <label class="com-form-label">Precio/acción (€)</label>
+            <input type="number" class="com-form-input" id="comTxPrice" placeholder="320.45">
+          </div>
+        </div>
+        <div class="com-form-group">
+          <label class="com-form-label">Comentario (opcional)</label>
+          <textarea class="com-form-textarea" id="comTxComment" placeholder="¿Por qué esta operación?" style="min-height:60px"></textarea>
+        </div>
+      </div>
+      <div id="comPostMsg" style="display:none;margin-top:8px;font-size:12px;color:#e74c3c"></div>
+    </div>
+    <div class="com-modal-ft">
+      <button class="com-btn-cancel" onclick="_comCloseModal()">Cancelar</button>
+      <button class="com-btn-publish" id="comPublishBtn" onclick="_comPublish()">✦ Publicar</button>
+    </div>
+  </div>
+</div>
+
+<!-- PROFILE MODAL -->
+<div class="com-modal-overlay" id="comProfileModal" onclick="if(event.target===this)document.getElementById('comProfileModal').classList.remove('open')">
+  <div class="com-profile-modal">
+    <div class="com-modal-hd">
+      <div class="com-modal-title">Perfil</div>
+      <button class="com-modal-close" onclick="document.getElementById('comProfileModal').classList.remove('open')">✕</button>
+    </div>
+    <div id="comProfileContent"><div class="com-loading">Cargando perfil…</div></div>
+  </div>
+</div>
+
+
 <!-- TAB BAR -->
 <div class="tab" id="mainTabBar">
   <div class="tab-row tab-row-extra" id="tabExtraRow">
     <div style="flex:1"></div>
     <div style="flex:1"></div>
     <button data-screen="alerts" onclick="closeExtraTabRow()"><b>◉</b><span>Alertas</span></button>
-    <button data-screen="topinvestors" onclick="closeExtraTabRow()"><b>◆</b><span>Insiders</span></button>
+    <button data-screen="ia" onclick="closeExtraTabRow()"><b>✦</b><span data-i18n="tabIA">IA</span></button>
     <button data-screen="impuestos" onclick="closeExtraTabRow()"><b>◫</b><span>Impuestos</span></button>
   </div>
   <div class="tab-row tab-row-main">
     <button class="active" data-screen="home"><b>⌂</b><span data-i18n="tabHome">Inicio</span></button>
-    <button data-screen="ia"><b>✦</b><span data-i18n="tabIA">IA</span></button>
+    <button data-screen="comunidad"><b>⊞</b><span>Foro</span></button>
     <button data-screen="analysis"><b>◈</b><span data-i18n="tabAnalysis">Análisis</span></button>
     <button data-screen="dividends"><b>◎</b><span data-i18n="tabDividends">Dividendos</span></button>
     <button class="tab-more-btn" id="tabMoreBtn" onclick="toggleExtraTabRow(event)"><b>+</b><span>Más</span></button>
@@ -2541,7 +3027,8 @@ function escapeHtml(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt
 // costCcy() — currency in which the user entered their avg cost (may differ from price currency)
 function costCcy(a){ return a.costCurrency||'EUR'; }
 // toEur() — convert any currency amount to EUR
-function toEur(amount,ccy){ if(!ccy||ccy==='EUR')return amount; const r=_fxRates[ccy]; return (r&&r>0)?amount/r:amount; }
+// GBp/GBX = pence (1/100 of GBP) — divide by 100 first, then apply GBP rate
+function toEur(amount,ccy){ if(!ccy||ccy==='EUR')return amount; if(ccy==='GBp'||ccy==='GBX'){const r=_fxRates['GBP'];return (r&&r>0)?(amount/100)/r:amount/100;} const r=_fxRates[ccy]; return (r&&r>0)?amount/r:amount; }
 // toDisplay() — convert to user's display currency (via EUR bridge)
 function toDisplay(amount,fromCcy){ return toEur(amount,fromCcy)*(_fxRates[_displayCcy]||1); }
 // fd() — convert fromCcy → _displayCcy and format
@@ -2599,6 +3086,7 @@ function iconInitials(a){return(a.name||a.isin).replace(/^i([A-Z])/,'I$1').slice
 function assetCategory(a){if(['IE00B4ND3602','IE00B579F325'].includes(a.isin))return'Oro';if(a.mapping?.type==='etf')return'ETFs';if(a.mapping?.type==='etc')return'Oro';if(a.mapping?.type==='stock')return currentLang==='es'?'Acciones':'Stocks';return'Fondos';}
 
 function showScreen(name,keepTab=false){
+  if(name==='comunidad')_comLoad();
   if(name==='privacy'||name==='terms'){
     document.querySelectorAll('.screen').forEach(el=>el.classList.remove('active'));
     const s=document.getElementById('screen-'+name);
@@ -2685,6 +3173,10 @@ async function renderChart(){
   const aPct=lp.totalCurrent>0?lp.approximateCurrent/lp.totalCurrent*100:0;
   const noteText=aPct>0.5?`${series.length} pts · ${aPct.toFixed(0)}% ${currentLang==='es'?'estimado':'estimated'}`:currentLang==='es'?`${series.length} puntos históricos`:`${series.length} historical points`;
   _drawChart(canvas,series.map(p=>dateLabel(p.date,selectedRange)),values,note,meta,rv,noteText);
+  // Override with actual invested return
+  const _tInv=assets.reduce((s,a)=>s+(a.invested||0),0);
+  const _tVal=assets.reduce((s,a)=>s+(a.value||0),0);
+  if(_tInv>0){const _d=_tVal-_tInv,_p=(_d/_tInv)*100,_u=_d>=0;meta.textContent=(_u?'+':'') +fe(_d)+'  '+(_u?'+':'') +_p.toFixed(2)+'%';}
 }
 
 // ========== Asset Detail ==========
@@ -3340,9 +3832,7 @@ const AN_TER_MAP = {
   // ── Portfolio assets ────────────────────────────────────────────────────
   'IE00BYX5NK04':0.12,'IE00BYX5P602':0.12,'IE00B4ND3602':0.15,'IE00B579F325':0.12,
   'DE000A0F5UH1':0.10,'IE00BZ4BMM98':0.29,'IE00B9CQXS71':0.45,'NL0011683594':0.38,
-  'IE000QAZP7L2':0.17,'LU0084617165':0.80,'LU2145461757':0.80,
-  'ES0146309002':1.35,'ES0112611001':1.50,'ES0146311008':1.35,'LU1598719752':1.40,
-  'ES0173311103':1.35,'ES0159259011':1.35,'ES0174115057':1.35,
+  'IE000QAZP7L2':0.17,
   // ── iShares / BlackRock ─────────────────────────────────────────────────
   'IE00B52MJD48':0.20,'IE00B4L5Y983':0.20,'IE00B02KXK85':0.40,'IE00B1XNHC34':0.40,
   'IE00B3YLTY66':0.12,'IE00B0M62Q58':0.20,'IE00B0M62X26':0.40,'IE00B27YCF74':0.20,
@@ -3374,18 +3864,19 @@ const AN_TER_MAP = {
   // ── HANetf ───────────────────────────────────────────────────────────────
   'IE00BLRPQH31':0.29,'IE00BN4Q0601':0.30,'IE00BHBX3Z21':0.49,
 };
-// Populate a.ter from ETF profile for assets not in AN_TER_MAP
+// Fetch TER for all assets not in the hardcoded map via /api/ter/fetch
+// (scrapes FT Markets, caches in DB for 1 year)
 async function _prefetchMissingTers() {
-  const missing = assets.filter(a => a.quantity > 0 && (a.ter ?? AN_TER_MAP[a.isin]) == null && a.isin);
+  const missing = assets.filter(a => a.isin && a.quantity > 0 && a.ter == null && AN_TER_MAP[a.isin] == null);
   if (!missing.length) return false;
+  const isins = missing.map(a => a.isin);
   try {
-    const isins = missing.map(a => a.isin).join(',');
-    const data = await getJson(`/api/etf/profile?isin=${encodeURIComponent(isins)}`, 8000);
+    const data = await getJson(`/api/ter/fetch?isin=${encodeURIComponent(isins.join(','))}`, 25000);
     let updated = false;
-    (data.results || []).forEach(r => {
-      if (r.overview?.ter != null) {
-        const a = assets.find(x => x.isin === r.isin);
-        if (a) { a.ter = r.overview.ter; updated = true; }
+    Object.entries(data.results || {}).forEach(([isin, ter]) => {
+      if (ter != null) {
+        const a = assets.find(x => x.isin === isin);
+        if (a && a.ter == null) { a.ter = ter; updated = true; }
       }
     });
     return updated;
@@ -4768,7 +5259,24 @@ function getDayPct(a){
   const last=a.history[a.history.length-1].close,prev=a.history[a.history.length-2].close;
   return prev>0?(last-prev)/prev*100:null;
 }
+let _activeBrokerFilter=null;
+function renderBrokerFilter(){
+  const bar=document.getElementById('brokerFilterBar');
+  if(!bar)return;
+  const brokers=[...new Set(assets.filter(a=>a.quantity>0&&a.broker).map(a=>a.broker))].sort();
+  if(!brokers.length){bar.style.display='none';return;}
+  bar.style.display='flex';
+  const isEs=currentLang==='es';
+  bar.innerHTML=[
+    `<button class="bfBtn${_activeBrokerFilter===null?' active':''}" data-bf="">${isEs?'Agregado':'All'}</button>`,
+    ...brokers.map(b=>`<button class="bfBtn${_activeBrokerFilter===b?' active':''}" data-bf="${b.replace(/"/g,'&quot;')}">${b.replace(/</g,'&lt;')}</button>`)
+  ].join('');
+  bar.querySelectorAll('.bfBtn').forEach(btn=>{
+    btn.onclick=()=>{_activeBrokerFilter=btn.dataset.bf||null;renderBrokerFilter();renderLists();};
+  });
+}
 function renderLists(){
+  renderBrokerFilter();
   if(_sbUser && assets.length===0){
     const isEs=currentLang==='es';
     const emptyHtml=`<div style="padding:32px 16px;text-align:center">
@@ -4780,7 +5288,7 @@ function renderLists(){
     document.getElementById('portfolioList').innerHTML=emptyHtml;
     return;
   }
-  const html=[...assets].filter(a=>a.quantity>0).sort((a,b)=>{const d=toDisplay(b.value,assetCcy(b))-toDisplay(a.value,assetCcy(a));return isNaN(d)?0:d;}).map(a=>{
+  const html=[...assets].filter(a=>a.quantity>0&&(_activeBrokerFilter===null||a.broker===_activeBrokerFilter)).sort((a,b)=>{const d=toDisplay(b.value,assetCcy(b))-toDisplay(a.value,assetCcy(a));return isNaN(d)?0:d;}).map(a=>{
     const _av=toDisplay(a.value,assetCcy(a)),_ai=toDisplay(a.invested,costCcy(a)),_ag=_av-_ai,_agp=_ai>0?(_ag/_ai)*100:a.gainPct;
     const dp=getDayPct(a);
     const dayHtml=dp!=null
@@ -4795,13 +5303,13 @@ function renderLists(){
       <div style="min-width:0;flex:1">
         <div class="name" title="${a.fullName||a.name}">${a.name}</div>
         <div class="meta">${fn(a.quantity)} ${t('shares').toLowerCase()}${a.broker?' · '+escapeHtml(a.broker):''}</div>
-        <div class="meta" style="margin-top:1px;font-size:9.5px;color:#8fa090;white-space:nowrap">${currentLang==='es'?'Compra':'Buy'} <span style="color:#374151;font-weight:600">${_bp}</span> · ${currentLang==='es'?'Actual':'Now'} <span style="color:#374151;font-weight:600">${_cp}</span></div>
+        <div class="meta" style="margin-top:1px;font-size:9.5px;color:#8fa090;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${currentLang==='es'?'Compra':'Buy'} <span style="color:#374151;font-weight:600">${_bp}</span> · ${currentLang==='es'?'Actual':'Now'} <span style="color:#374151;font-weight:600">${_cp}</span></div>
       </div>
       <div class="right">
         <div class="money">${fe(_av)}</div>
-        <div class="pct" style="display:flex;gap:7px;justify-content:flex-end;align-items:baseline;flex-wrap:wrap">
+        <div class="pct" style="display:flex;gap:clamp(2px,1.2vw,5px);justify-content:flex-end;align-items:baseline;flex-wrap:nowrap;overflow:hidden">
           ${dayHtml}
-          <span style="color:${totalColor}">${_ag>=0?'+':''}${fe(_ag)}<span style="font-size:10px;margin-left:3px">(${_agp>=0?'+':''}${_agp.toFixed(2)}%)</span></span>
+          <span style="color:${totalColor}">${_ag>=0?'+':''}${fe(_ag)}<span style="font-size:clamp(9px,2.5vw,10px);margin-left:2px;white-space:nowrap">(${_agp>=0?'+':''}${_agp.toFixed(2)}%)</span></span>
         </div>
       </div>
     </div>`;
@@ -4871,9 +5379,15 @@ async function boot(){
       const entry=cvMap[pos.isin]||{},mapping=entry.mapping||null;
       const currentPrice=Number(pos.currentPrice)||0,buyPrice=Number(pos.buyPrice)||0,quantity=Number(pos.quantity)||0;
       const history=normalizeHistory(entry.data?.history||[]);
-      const gain=quantity*(currentPrice-buyPrice);
       const priceCurrency=entry.data?.quote?.currency||null;
-      return{isin:pos.isin,name:pos.shortName||pos.name||mapping?.name||pos.isin,fullName:pos.name||mapping?.name||pos.isin,quantity,buyPrice,currentPrice,invested:quantity*buyPrice,value:quantity*currentPrice,gain,gainPct:buyPrice?((currentPrice-buyPrice)/buyPrice)*100:0,mapping,provider:entry.data?.provider||null,coverageStatus:entry.data?.coverage?.status||'MISSING',coverage:entry.data?.coverage||{status:'MISSING'},history,hasRealHistory:history.length>1,_rawQty:quantity,_rawBuyPrice:buyPrice,customCurrency:priceCurrency};
+      // GBp/GBX = pence: Yahoo returns LSE prices in pence (1/100 GBP). Normalize to GBP.
+      const _isGBp=priceCurrency==='GBp'||priceCurrency==='GBX';
+      const adjPrice=_isGBp?currentPrice/100:currentPrice;
+      const adjBuyPrice=_isGBp?buyPrice/100:buyPrice;
+      const adjCcy=_isGBp?'GBP':priceCurrency;
+      const adjHistory=_isGBp&&history.length?history.map(p=>({...p,close:p.close/100})):history;
+      const gain=quantity*(adjPrice-adjBuyPrice);
+      return{isin:pos.isin,name:pos.shortName||pos.name||mapping?.name||pos.isin,fullName:pos.name||mapping?.name||pos.isin,quantity,buyPrice:adjBuyPrice,currentPrice:adjPrice,invested:quantity*adjBuyPrice,value:quantity*adjPrice,gain,gainPct:adjBuyPrice?((adjPrice-adjBuyPrice)/adjBuyPrice)*100:0,mapping,provider:entry.data?.provider||null,coverageStatus:entry.data?.coverage?.status||'MISSING',coverage:entry.data?.coverage||{status:'MISSING'},history:adjHistory,hasRealHistory:adjHistory.length>1,_rawQty:quantity,_rawBuyPrice:adjBuyPrice,customCurrency:adjCcy,costCurrency:_isGBp?'GBP':null};
     });
   }
   _rawSeedAssets=buildAssets({});
@@ -5073,6 +5587,12 @@ function showSearchResults(){
 function showAddForm(result,price,currency,history){
   _searchResult={...result,currentPrice:price,currency,history};
   document.getElementById('addAssetForm').style.display='';
+  _addFormMode='simple';
+  var _afsB=document.getElementById('addModeSimpleBtn'),_aftB=document.getElementById('addModeTxBtn');
+  if(_afsB)_afsB.classList.add('active'); if(_aftB)_aftB.classList.remove('active');
+  var _afdf=document.getElementById('addDateField'); if(_afdf)_afdf.style.display='none';
+  var _afdi=document.getElementById('addTxDateInput'); if(_afdi)_afdi.value=new Date().toISOString().slice(0,10);
+  var _aflbl=document.getElementById('addAvgCostLabel'); if(_aflbl)_aflbl.textContent='Avg cost per share';
   document.getElementById('searchResultsList').style.display='none';
   document.getElementById('searchHint').style.display='none';
 
@@ -5172,7 +5692,22 @@ function renderSearchResults(results){
   });
 }
 
-async function saveNewAsset(){
+let _addFormMode='simple';
+function setAddFormMode(mode){
+  _addFormMode=mode;
+  const btnS=document.getElementById('addModeSimpleBtn');
+  const btnT=document.getElementById('addModeTxBtn');
+  if(btnS)btnS.classList.toggle('active',mode==='simple');
+  if(btnT)btnT.classList.toggle('active',mode==='transactions');
+  const df=document.getElementById('addDateField');
+  if(df)df.style.display=mode==='transactions'?'':'none';
+  const lbl=document.getElementById('addAvgCostLabel');
+  const isEs=currentLang==='es';
+  if(lbl)lbl.textContent=mode==='transactions'
+    ?(isEs?'Precio por accion (en esa fecha)':'Price per share (at that date)')
+    :'Avg cost per share';
+}
+function saveNewAsset(){
   if(!_searchResult)return;
   const qty=parseNum('addQty');
   const avgCost=parseNum('addAvgCost');
@@ -5189,7 +5724,9 @@ async function saveNewAsset(){
 
   // Save position
   const ov=getOverrides();
-  ov[sym]={quantity:qty,avgCost,costCurrency:avgCostCurrency,isCustom:true,...(broker&&{broker})};
+  const _txD=_addFormMode==='transactions'?document.getElementById('addTxDateInput')?.value:null;
+  const _txEntry=_txD?[{type:'buy',qty,price:avgCost,date:_txD}]:[];
+  ov[sym]={quantity:qty,avgCost,costCurrency:avgCostCurrency,isCustom:true,...(_txD&&{transactions:_txEntry}),...(broker&&{broker})};
   saveOverrides(ov);
 
   // Inject into assets immediately and rebuild
@@ -5642,7 +6179,7 @@ document.getElementById('btnBackToSearch').addEventListener('click',showSearchRe
 document.getElementById('btnSaveNewAsset').addEventListener('click',saveNewAsset);
 document.getElementById('btnCancelAddAsset').addEventListener('click',closeSearch);
 
-applyTranslations();
+applyTranslations();switchLang(currentLang);
 tick();setInterval(tick,30000);
 
 // ── Onboarding / Auth / Splash flow ──────────────────────────────────────
@@ -5889,6 +6426,10 @@ function handleAlertNotifToggle(el){
   if(el.checked&&'Notification'in window&&Notification.permission==='default') Notification.requestPermission();
 }
 function requestAlertNotifPerms(){
+  requestAlertPushPerms().then(perm=>{
+    if(perm==='granted'){const b=document.getElementById('alertsNotifBanner');if(b)b.style.display='none';}
+  });
+  return;
   if('Notification'in window) Notification.requestPermission().then(p=>{
     if(p==='granted'){document.getElementById('alertsNotifBanner').style.display='none';showToast('Notificaciones activadas ✓');}
   });
@@ -5896,6 +6437,7 @@ function requestAlertNotifPerms(){
 
 // ── Alerts screen ────────────────────────────────────────────────
 function renderAlertsScreen(){
+  if('Notification' in window && Notification.permission==='granted') registerPushSW();
   hideAlertForm();
   // Notif banner
   const banner=document.getElementById('alertsNotifBanner');
@@ -5904,6 +6446,11 @@ function renderAlertsScreen(){
 }
 
 function showAlertForm(){
+  if(_userPlan==='free'){
+    const isEs=currentLang==='es';
+    showUpgradeModal('alerts',isEs?'Las alertas de precio son una función Premium. Actualiza tu plan para activarlas.':'Price alerts are a Premium feature. Upgrade your plan to activate them.');
+    return;
+  }
   _alertsCond='above';_alertsAssetISIN=null;
   const fc=document.getElementById('alertFormCard');if(fc)fc.style.display='';
   document.getElementById('alertsPriceInput').value='';
@@ -5960,7 +6507,7 @@ function saveAlertFromScreen(){
   if(!priceVal||priceVal<=0){showToast('Introduce un precio válido');return;}
   const asset=assets.find(a=>a.isin===_alertsAssetISIN);if(!asset)return;
   const alerts=getAlerts();
-  alerts.push({id:Date.now().toString(),isin:_alertsAssetISIN,name:asset.shortName||asset.name,targetPrice:priceVal,cond:_alertsCond,notif:document.getElementById('alertsNotifCk').checked,triggered:false,createdAt:new Date().toISOString()});
+  alerts.push({id:Date.now().toString(),isin:_alertsAssetISIN,name:asset.shortName||asset.name,targetPrice:priceVal,cond:_alertsCond,notif:document.getElementById('alertsNotifCk'),emailNotif:document.getElementById('alertsEmailCk')?.checked??false.checked,triggered:false,createdAt:new Date().toISOString()});
   saveAlerts(alerts);
   hideAlertForm();
   _renderAlertsListScreen();
@@ -6014,6 +6561,49 @@ function _renderAlertsListScreen(){
   }).join('');
 }
 
+
+// ── Service Worker & Web Push ─────────────────────────────────────────────
+const _VAPID_PUBLIC = 'BBHN8WCt5YeIWwJ8iE3e8cUGalr4HRxtyrzyBMH55i1wNCh0t03-0Y_SqP527LbCWnohbVe-99jgnFR1D8fg5U8';
+let _pushSubscription = null;
+
+function _urlB64ToUint8Array(base64String) {
+  const padding = '='.repeat((4 - base64String.length % 4) % 4);
+  const base64 = (base64String + padding).replace(/-/g, '+').replace(/_/g, '/');
+  const raw = atob(base64);
+  return Uint8Array.from({length: raw.length}, (_, i) => raw.charCodeAt(i));
+}
+
+async function registerPushSW() {
+  if (!('serviceWorker' in navigator) || !('PushManager' in window)) return;
+  try {
+    const reg = await navigator.serviceWorker.register('/sw.js', {scope: '/'});
+    await navigator.serviceWorker.ready;
+    // Check existing subscription
+    _pushSubscription = await reg.pushManager.getSubscription();
+    if (_pushSubscription) return; // Already subscribed
+    // Subscribe
+    _pushSubscription = await reg.pushManager.subscribe({
+      userVisibleOnly: true,
+      applicationServerKey: _urlB64ToUint8Array(_VAPID_PUBLIC)
+    });
+    // Send subscription to server
+    const tok = localStorage.getItem('fa_token');
+    if (tok) {
+      fetch('/api/alerts/subscribe', {
+        method: 'POST',
+        headers: {'Content-Type':'application/json','Authorization':'Bearer '+tok},
+        body: JSON.stringify({subscription: _pushSubscription.toJSON()})
+      }).catch(()=>{});
+    }
+  } catch(e) { console.log('[sw]', e.message); }
+}
+
+async function requestAlertPushPerms() {
+  const perm = await Notification.requestPermission();
+  if (perm === 'granted') registerPushSW();
+  return perm;
+}
+
 function checkAlertsTrigger(){
   const alerts=getAlerts();if(!alerts.length)return;
   let changed=false;
@@ -6024,6 +6614,7 @@ function checkAlertsTrigger(){
     const hit=a.cond==='above'?price>=a.targetPrice:price<=a.targetPrice;
     if(hit){
       a.triggered=true;changed=true;
+      (()=>{const tok=localStorage.getItem('fa_token');if(tok)fetch('/api/alerts/notify',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+tok},body:JSON.stringify({alertName:a.name,condition:a.cond,targetPrice:a.targetPrice,currentPrice:price,sendEmail:!!a.emailNotif,currency:'EUR'})}).catch(()=>{});})();
       if(a.notif){
         const msg=`${a.name} ha ${a.cond==='above'?'superado':'bajado de'} ${fe(a.targetPrice)}`;
         if('Notification'in window&&Notification.permission==='granted'){
@@ -6061,11 +6652,17 @@ async function enterDemo(){
     function _buildDemo(cvMap){
       return seed.positions.filter(p=>Number(p.quantity)>0).map(pos=>{
         const entry=cvMap[pos.isin]||{},mapping=entry.mapping||null;
-        const currentPrice=Number(entry.data?.quote?.price||entry.data?.quote?.close||pos.currentPrice)||0;
+        const _rawPrice=Number(entry.data?.quote?.price||entry.data?.quote?.close||pos.currentPrice)||0;
         const buyPrice=Number(pos.buyPrice)||0,quantity=Number(pos.quantity)||0;
         const history=normalizeHistory(entry.data?.history||[]);
-        const gain=quantity*(currentPrice-buyPrice);
-        return{isin:pos.isin,name:pos.shortName||pos.name||pos.isin,fullName:pos.name||pos.isin,quantity,buyPrice,currentPrice,invested:quantity*buyPrice,value:quantity*currentPrice,gain,gainPct:buyPrice?((currentPrice-buyPrice)/buyPrice)*100:0,mapping,provider:entry.data?.provider||null,coverageStatus:entry.data?.coverage?.status||'MISSING',coverage:entry.data?.coverage||{status:'MISSING'},history,hasRealHistory:history.length>1,_rawQty:quantity,_rawBuyPrice:buyPrice};
+        const _demoCcy=entry.data?.quote?.currency||null;
+        const _demoGBp=_demoCcy==='GBp'||_demoCcy==='GBX';
+        const currentPrice=_demoGBp?_rawPrice/100:_rawPrice;
+        const adjBuyPrice=_demoGBp?buyPrice/100:buyPrice;
+        const adjCcy=_demoGBp?'GBP':_demoCcy;
+        const adjHistory=_demoGBp&&history.length?history.map(p=>({...p,close:p.close/100})):history;
+        const gain=quantity*(currentPrice-adjBuyPrice);
+        return{isin:pos.isin,name:pos.shortName||pos.name||pos.isin,fullName:pos.name||pos.isin,quantity,buyPrice:adjBuyPrice,currentPrice,invested:quantity*adjBuyPrice,value:quantity*currentPrice,gain,gainPct:adjBuyPrice?((currentPrice-adjBuyPrice)/adjBuyPrice)*100:0,mapping,provider:entry.data?.provider||null,coverageStatus:entry.data?.coverage?.status||'MISSING',coverage:entry.data?.coverage||{status:'MISSING'},history:adjHistory,hasRealHistory:adjHistory.length>1,_rawQty:quantity,_rawBuyPrice:adjBuyPrice,customCurrency:adjCcy,costCurrency:_demoGBp?'GBP':null};
       });
     }
     _rawSeedAssets=_buildDemo({});
@@ -7282,6 +7879,414 @@ function _insClearSearch() {
   if(clr) clr.style.display = 'none';
   _insData = null;
   _insLoad('');
+}
+
+
+
+function _comLoad() {
+  // Update avatar
+  const av = document.getElementById('comAvatar');
+  if (av && _sbUser) {
+    const initials = (_sbUser.email || '?').slice(0, 2).toUpperCase();
+    av.textContent = initials;
+  }
+  _comLoadFeed();
+  _comLoadMarkets();
+  _comLoadTopMembers();
+}
+
+async // ── Community state variables ─────────────────────────────────────────────
+var _comFilter_active = 'all';
+var _comPosts = [];
+var _comMyLikes = new Set();
+
+async function _comLoadFeed() {
+  const el = document.getElementById('comFeed');
+  if (!el) return;
+  el.innerHTML = '<div style="padding:16px;color:#999">Cargando…</div>';
+
+  try {
+    const apiUrl = '/rest/v1/community_posts?order=created_at.desc&limit=50&_v=' + Date.now();
+    const token = localStorage.getItem('fa_token');
+    const headers = token ? { 'Authorization': 'Bearer ' + token } : {};
+
+    const r = await fetch(apiUrl, { headers });
+    const statusOk = r.ok;
+    const d = await r.json();
+    const posts = Array.isArray(d) ? d : [];
+
+    // DEBUG: always show what we got
+    if (posts.length === 0) {
+      el.innerHTML = '<div style="padding:16px;font-size:12px;color:#666">'
+        + 'Feed vacío.<br>'
+        + 'URL: ' + apiUrl.slice(0,60) + '<br>'
+        + 'HTTP: ' + r.status + ' ok=' + statusOk + '<br>'
+        + 'Response: ' + JSON.stringify(d).slice(0,120)
+        + '</div>';
+      return;
+    }
+
+    _comPosts = posts;
+    if (_sbUser && _sb) {
+      const { data: likes } = await _sb.from('community_likes').select('post_id').eq('user_id', _sbUser.id);
+      _comMyLikes = new Set((likes || []).map(l => l.post_id));
+    }
+    el.innerHTML = _comPosts.map(p => _comRenderPost(p)).join('');
+  } catch(e) {
+    el.innerHTML = '<div style="padding:16px;color:red">Error: ' + e.message + '</div>';
+  }
+}
+
+function _comRenderPost(p) {
+  const liked = _comMyLikes.has(p.id);
+  const initials = (p.display_name || '?').slice(0, 2).toUpperCase();
+  const colors = ['#1a7a43,#2ecc71','#1a4a6a,#3498db','#6a1a4a,#c39bd3','#4a3a1a,#d4af37','#3a1a1a,#e74c3c'];
+  const colorIdx = p.display_name ? p.display_name.charCodeAt(0) % colors.length : 0;
+  const timeAgo = _comTimeAgo(p.created_at);
+  const badgeClass = p.post_type === 'transaccion' ? 'com-badge-transaccion' : 'com-badge-portfolio';
+  const badgeLabel = p.post_type === 'portfolio' ? '📊 Portafolio' : p.post_type === 'transaccion' ? '💸 Transacción' : '💬 Análisis';
+
+  let widget = '';
+  if (p.post_type === 'portfolio' && p.pf_total) {
+    const gain = Number(p.pf_gain_pct || 0);
+    const gainStr = (gain >= 0 ? '▲ +' : '▼ ') + Math.abs(gain).toFixed(2) + '%';
+    const gainClass = gain >= 0 ? 'pos' : 'neg';
+    widget = `
+      <div class="com-pf-widget">
+        <div class="com-pf-hd">
+          <div>
+            <div style="font-size:9px;text-transform:uppercase;letter-spacing:.8px;color:#4a6b55;margin-bottom:4px">Valor total</div>
+            <div class="com-pf-total">${Number(p.pf_total).toLocaleString('es-ES', {minimumFractionDigits:2,maximumFractionDigits:2})} €</div>
+          </div>
+          <div style="text-align:right">
+            <div class="com-pf-gain ${gainClass}">${gainStr}</div>
+            <div style="font-size:11px;color:#4a6b55;margin-top:2px">${p.pf_positions || 0} posiciones</div>
+          </div>
+        </div>
+        <div class="com-pf-stats">
+          <div class="com-pf-stat"><div class="com-pf-stat-lbl">Invertido</div><div class="com-pf-stat-val">${Number(p.pf_invested||0).toLocaleString('es-ES',{maximumFractionDigits:0})} €</div></div>
+          <div class="com-pf-stat"><div class="com-pf-stat-lbl">Posiciones</div><div class="com-pf-stat-val">${p.pf_positions||0}</div></div>
+          <div class="com-pf-stat"><div class="com-pf-stat-lbl">Rentab.</div><div class="com-pf-stat-val" style="color:#2ecc71">${gain>=0?'+':''}${gain.toFixed(2)}%</div></div>
+        </div>
+      </div>`;
+  } else if (p.post_type === 'transaccion' && p.tx_asset) {
+    const isBuy = (p.tx_type || 'Compra') === 'Compra';
+    const total = (Number(p.tx_qty||0) * Number(p.tx_price||0)).toLocaleString('es-ES',{minimumFractionDigits:2,maximumFractionDigits:2});
+    const txDate = p.tx_date ? new Date(p.tx_date) : null;
+    const day = txDate ? txDate.getDate() : '—';
+    const mon = txDate ? txDate.toLocaleString('es-ES',{month:'short'}) : '';
+    widget = `
+      <div class="com-tx-widget">
+        <div class="com-tx-date-col"><strong>${day}</strong><span>${mon}</span><span style="font-size:10px;color:#4a6b55">${isBuy?'▼':'▲'}</span></div>
+        <div class="com-tx-logo">📈</div>
+        <div class="com-tx-info">
+          <div class="com-tx-asset">${_comEsc(p.tx_asset)}</div>
+          <div class="com-tx-detail">${p.tx_type} × ${p.tx_qty} acc · ${Number(p.tx_price||0).toFixed(2)} €/acc</div>
+        </div>
+        <div class="com-tx-amount ${isBuy?'buy':'sell'}">${isBuy?'+':'-'}€${total}</div>
+      </div>`;
+  }
+
+  const tags = (p.tags||'').split(/\s+/).filter(Boolean).map(t => `<span class="com-tag">${_comEsc(t)}</span>`).join(' ');
+
+  return `<div class="com-post" data-id="${p.id}">
+    <div class="com-post-hd">
+      <div class="com-post-av" style="background:linear-gradient(135deg,${colors[colorIdx]})" onclick="_comShowProfile('${p.user_id}','${_comEsc(p.display_name)}')">${initials}</div>
+      <div class="com-post-meta">
+        <div class="com-post-name" onclick="_comShowProfile('${p.user_id}','${_comEsc(p.display_name)}')">${_comEsc(p.display_name)}</div>
+        <div class="com-post-handle">@${(p.display_name||'').toLowerCase().replace(/\s+/,'')}</div>
+      </div>
+      <div class="com-post-time">${timeAgo}</div>
+    </div>
+    <span class="com-post-badge ${badgeClass}">${badgeLabel}</span>
+    ${p.content ? `<p class="com-post-text">${_comEsc(p.content)} ${tags}</p>` : `<p class="com-post-text">${tags}</p>`}
+    ${widget}
+    <div class="com-post-actions">
+      <button class="com-action-btn${liked?' liked':''}" onclick="_comToggleLike('${p.id}',this)">
+        <svg viewBox="0 0 24 24" fill="${liked?'currentColor':'none'}" stroke="currentColor" stroke-width="2"><path d="M14 9V5a3 3 0 00-3-3l-4 9v11h11.28a2 2 0 002-1.7l1.38-9a2 2 0 00-2-2.3H14z"/></svg>
+        <span>${p.likes_count||0}</span>
+      </button>
+      <button class="com-action-btn" onclick="_comToggleComments('${p.id}',this)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+        <span id="comCnt-${p.id}">${p.comments_count||0}</span>
+      </button>
+      <div class="com-action-sep"></div>
+      ${_sbUser && p.user_id === _sbUser.id ? `<button class="com-action-btn" onclick="_comDeletePost('${p.id}',this)" title="Eliminar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/></svg></button>` : ''}
+    </div>
+    <div class="com-comments" id="comComments-${p.id}">
+      <div id="comCommentsList-${p.id}"><div class="com-loading" style="padding:12px 0">Cargando comentarios…</div></div>
+      <div class="com-comment-input">
+        <div class="com-av" style="width:28px;height:28px;font-size:11px">${_sbUser?(_sbUser.email||'?').slice(0,2).toUpperCase():'?'}</div>
+        <input type="text" class="com-comment-field" placeholder="Escribe un comentario…" id="comCF-${p.id}" onkeydown="if(event.key==='Enter')_comAddComment('${p.id}')">
+        <button class="com-comment-send" onclick="_comAddComment('${p.id}')">Enviar</button>
+      </div>
+    </div>
+  </div>`;
+}
+
+async function _comToggleComments(postId, btn) {
+  const section = document.getElementById(`comComments-${postId}`);
+  if (!section) return;
+  const isOpen = section.classList.toggle('open');
+  if (btn) btn.style.color = isOpen ? '#2ecc71' : '';
+  if (isOpen) await _comLoadComments(postId);
+}
+
+async function _comLoadComments(postId) {
+  const el = document.getElementById(`comCommentsList-${postId}`);
+  if (!el || !_sb) return;
+  try {
+    const { data: comments } = await _sb.from('community_comments').select('*').eq('post_id', postId).order('created_at', { ascending: true });
+    const list = comments || [];
+    el.innerHTML = list.length ? list.map(c => {
+      const ini = (c.display_name||'?').slice(0,2).toUpperCase();
+      const colors = ['#1a7a43,#2ecc71','#1a4a6a,#3498db','#6a1a4a,#c39bd3'];
+      const ci = (c.display_name||'?').charCodeAt(0) % colors.length;
+      return `<div class="com-comment-item">
+        <div class="com-comment-av" style="background:linear-gradient(135deg,${colors[ci]})">${ini}</div>
+        <div class="com-comment-body">
+          <div class="com-comment-name">${_comEsc(c.display_name)} <span style="font-size:10px;color:#4a6b55;font-weight:400">${_comTimeAgo(c.created_at)}</span></div>
+          <div class="com-comment-text">${_comEsc(c.content)}</div>
+        </div>
+      </div>`;
+    }).join('') : '<div style="font-size:12px;color:#4a6b55;padding:8px 0">Sin comentarios aún.</div>';
+  } catch(e) { el.innerHTML = ''; }
+}
+
+async function _comAddComment(postId) {
+  if (!_sb || !_sbUser) { alert('Inicia sesión para comentar'); return; }
+  const input = document.getElementById(`comCF-${postId}`);
+  if (!input) return;
+  const text = input.value.trim();
+  if (!text) return;
+  input.value = '';
+  const displayName = _sbUser.user_metadata?.full_name || _sbUser.email?.split('@')[0] || 'Usuario';
+  try {
+    await _sb.from('community_comments').insert({ post_id: postId, user_id: _sbUser.id, display_name: displayName, content: text });
+    await _sb.rpc('increment_comments_count', { post_id: postId }).catch(() => {
+      // Fallback: direct update
+      _sb.from('community_posts').update({ comments_count: (_comPosts.find(p=>p.id===postId)?.comments_count||0)+1 }).eq('id', postId).catch(()=>{});
+    });
+    const cntEl = document.getElementById(`comCnt-${postId}`);
+    if (cntEl) cntEl.textContent = Number(cntEl.textContent||0) + 1;
+    await _comLoadComments(postId);
+  } catch(e) { console.warn('[com comment]', e.message); }
+}
+
+async function _comToggleLike(postId, btn) {
+  if (!_sb || !_sbUser) { alert('Inicia sesión para dar me gusta'); return; }
+  const liked = _comMyLikes.has(postId);
+  const span = btn.querySelector('span');
+  const svg = btn.querySelector('svg');
+  const post = _comPosts.find(p => p.id === postId);
+  try {
+    if (liked) {
+      await _sb.from('community_likes').delete().eq('user_id', _sbUser.id).eq('post_id', postId);
+      await _sb.from('community_posts').update({ likes_count: Math.max(0, (post?.likes_count||1)-1) }).eq('id', postId);
+      _comMyLikes.delete(postId);
+      btn.classList.remove('liked');
+      if (svg) svg.setAttribute('fill','none');
+      if (span) span.textContent = Math.max(0, Number(span.textContent||1)-1);
+      if (post) post.likes_count = Math.max(0, (post.likes_count||1)-1);
+    } else {
+      await _sb.from('community_likes').insert({ user_id: _sbUser.id, post_id: postId });
+      await _sb.from('community_posts').update({ likes_count: (post?.likes_count||0)+1 }).eq('id', postId);
+      _comMyLikes.add(postId);
+      btn.classList.add('liked');
+      if (svg) svg.setAttribute('fill','currentColor');
+      if (span) span.textContent = Number(span.textContent||0)+1;
+      if (post) post.likes_count = (post.likes_count||0)+1;
+    }
+  } catch(e) { console.warn('[com like]', e.message); }
+}
+
+async function _comDeletePost(postId, btn) {
+  if (!_sb || !_sbUser || !confirm('¿Eliminar esta publicación?')) return;
+  try {
+    await _sb.from('community_posts').delete().eq('id', postId).eq('user_id', _sbUser.id);
+    btn.closest('.com-post')?.remove();
+  } catch(e) { console.warn('[com delete]', e.message); }
+}
+
+function _comFilter(btn, type) {
+  document.querySelectorAll('.com-pill').forEach(p => p.classList.remove('active'));
+  btn.classList.add('active');
+  _comFilter_active = type;
+  _comLoadFeed();
+}
+
+function _comOpenModal(tab) {
+  if (!_sb || !_sbUser) { alert('Inicia sesión para publicar'); return; }
+  document.getElementById('comModal').classList.add('open');
+  _comSwitchTab(tab);
+  document.getElementById('comPostMsg').style.display = 'none';
+}
+
+function _comCloseModal() {
+  document.getElementById('comModal').classList.remove('open');
+}
+
+function _comSwitchTab(tab) {
+  _comModalTab = tab;
+  ['texto','portfolio','transaccion'].forEach(t => {
+    const form = document.getElementById('comForm' + t.charAt(0).toUpperCase() + t.slice(1));
+    const btn = document.getElementById('comTab' + t.charAt(0).toUpperCase() + t.slice(1));
+    if (form) form.style.display = t === tab ? 'block' : 'none';
+    if (btn) btn.classList.toggle('active', t === tab);
+  });
+}
+
+function _comAutofillPortfolio() {
+  try {
+    const totalEl = document.getElementById('total') || document.getElementById('summaryTotal');
+    const investedEl = document.getElementById('investedTotal') || document.getElementById('summaryInvested');
+    const total = typeof assets !== 'undefined' ? assets.reduce((s,a) => s + (a.currentPrice||0)*(a.quantity||0), 0) : 0;
+    const invested = typeof assets !== 'undefined' ? assets.reduce((s,a) => s + (a.investedAmount||0), 0) : 0;
+    const positions = typeof assets !== 'undefined' ? assets.length : 0;
+    const gainPct = invested > 0 ? ((total - invested) / invested * 100) : 0;
+    if (document.getElementById('comPfTotal')) document.getElementById('comPfTotal').value = total.toFixed(2);
+    if (document.getElementById('comPfInvested')) document.getElementById('comPfInvested').value = invested.toFixed(2);
+    if (document.getElementById('comPfGain')) document.getElementById('comPfGain').value = gainPct.toFixed(2);
+    if (document.getElementById('comPfPositions')) document.getElementById('comPfPositions').value = positions;
+  } catch(e) {}
+}
+
+async function _comPublish() {
+  if (!_sb || !_sbUser) return;
+  const btn = document.getElementById('comPublishBtn');
+  const msgEl = document.getElementById('comPostMsg');
+  const displayName = _sbUser.user_metadata?.full_name || _sbUser.email?.split('@')[0] || 'Usuario';
+
+  let payload = { user_id: _sbUser.id, display_name: displayName, post_type: _comModalTab };
+
+  if (_comModalTab === 'texto') {
+    const content = document.getElementById('comTextContent')?.value.trim();
+    if (!content) { msgEl.textContent = 'Escribe algo para publicar'; msgEl.style.display = ''; return; }
+    payload.content = content;
+    payload.tags = document.getElementById('comTextTags')?.value.trim() || null;
+  } else if (_comModalTab === 'portfolio') {
+    const content = document.getElementById('comPfContent')?.value.trim();
+    const total = Number(document.getElementById('comPfTotal')?.value);
+    if (!total) { msgEl.textContent = 'Introduce el valor total del portfolio'; msgEl.style.display = ''; return; }
+    payload.content = content || null;
+    payload.pf_total = total;
+    payload.pf_invested = Number(document.getElementById('comPfInvested')?.value) || null;
+    payload.pf_gain_pct = Number(document.getElementById('comPfGain')?.value) || null;
+    payload.pf_positions = Number(document.getElementById('comPfPositions')?.value) || null;
+    payload.tags = document.getElementById('comPfTags')?.value.trim() || null;
+  } else if (_comModalTab === 'transaccion') {
+    const asset = document.getElementById('comTxAsset')?.value.trim();
+    if (!asset) { msgEl.textContent = 'Indica el activo de la transacción'; msgEl.style.display = ''; return; }
+    payload.tx_asset = asset;
+    payload.tx_type = document.getElementById('comTxType')?.value || 'Compra';
+    payload.tx_date = document.getElementById('comTxDate')?.value || null;
+    payload.tx_qty = Number(document.getElementById('comTxQty')?.value) || null;
+    payload.tx_price = Number(document.getElementById('comTxPrice')?.value) || null;
+    payload.content = document.getElementById('comTxComment')?.value.trim() || null;
+  }
+
+  btn.textContent = '…'; btn.disabled = true;
+  try {
+    const { error } = await _sb.from('community_posts').insert(payload);
+    if (error) throw error;
+    _comCloseModal();
+    // Reset form fields
+    ['comTextContent','comTextTags','comPfContent','comPfTotal','comPfInvested','comPfGain','comPfPositions','comPfTags','comTxAsset','comTxQty','comTxPrice','comTxComment'].forEach(id => { const el=document.getElementById(id); if(el) el.value=''; });
+    await _comLoadFeed();
+  } catch(e) {
+    msgEl.textContent = e.message || 'Error al publicar'; msgEl.style.display = '';
+  } finally {
+    btn.textContent = '✦ Publicar'; btn.disabled = false;
+  }
+}
+
+async function _comShowProfile(userId, displayName) {
+  const modal = document.getElementById('comProfileModal');
+  const content = document.getElementById('comProfileContent');
+  if (!modal || !content) return;
+  modal.classList.add('open');
+  content.innerHTML = '<div class="com-loading">Cargando perfil…</div>';
+
+  try {
+    const { data: posts } = await _sb.from('community_posts').select('*').eq('user_id', userId).order('created_at', { ascending: false }).limit(20);
+    const userPosts = posts || [];
+    const totalLikes = userPosts.reduce((s,p) => s + (p.likes_count||0), 0);
+    const initials = (displayName||'?').slice(0,2).toUpperCase();
+    const colors = ['#1a7a43,#2ecc71','#1a4a6a,#3498db','#6a1a4a,#c39bd3','#4a3a1a,#d4af37'];
+    const ci = (displayName||'?').charCodeAt(0) % colors.length;
+    const isMe = _sbUser && userId === _sbUser.id;
+
+    content.innerHTML = `
+      <div class="com-profile-hd">
+        <div class="com-profile-av" style="background:linear-gradient(135deg,${colors[ci]})">${initials}</div>
+        <div class="com-profile-name">${_comEsc(displayName)}${isMe?' (Tú)':''}</div>
+        <div class="com-profile-handle">@${(displayName||'').toLowerCase().replace(/\s+/,'')}</div>
+      </div>
+      <div class="com-profile-stats">
+        <div class="com-profile-stat"><div class="com-profile-stat-val">${userPosts.length}</div><div class="com-profile-stat-lbl">Publicaciones</div></div>
+        <div class="com-profile-stat"><div class="com-profile-stat-val">${totalLikes}</div><div class="com-profile-stat-lbl">Me gustas</div></div>
+        <div class="com-profile-stat"><div class="com-profile-stat-val">${userPosts.filter(p=>p.post_type==='portfolio').length}</div><div class="com-profile-stat-lbl">Portafolios</div></div>
+      </div>
+      <div class="com-profile-posts">
+        <div style="font-size:11px;font-weight:700;color:#4a6b55;text-transform:uppercase;letter-spacing:.1em;margin-bottom:12px">Últimas publicaciones</div>
+        ${userPosts.slice(0,5).map(p => _comRenderPost(p)).join('') || '<div class="com-empty">Sin publicaciones</div>'}
+      </div>`;
+  } catch(e) {
+    content.innerHTML = `<div class="com-empty">Error cargando perfil</div>`;
+  }
+}
+
+function _comLoadMarkets() {
+  // Static placeholder — could be replaced with live data
+  const el = document.getElementById('comMarkets');
+  if (!el) return;
+  el.innerHTML = [
+    ['S&P 500','5.218','−1.24%',false],
+    ['NASDAQ','16.342','−1.87%',false],
+    ['IBEX 35','13.041','+0.32%',true],
+    ['EUR/USD','1.0821','+0.15%',true],
+    ['Oro','3.017 $','+0.89%',true],
+  ].map(([name,val,chg,pos]) => `
+    <div class="com-market-row">
+      <div><div class="com-market-name">${name}</div><div class="com-market-val">${val}</div></div>
+      <div class="com-market-chg ${pos?'com-chg-pos':'com-chg-neg'}">${chg}</div>
+    </div>`).join('');
+}
+
+async function _comLoadTopMembers() {
+  const el = document.getElementById('comTopMembers');
+  if (!el || !_sb) return;
+  try {
+    const { data } = await _sb.from('community_posts').select('user_id,display_name,likes_count');
+    const byUser = {};
+    (data||[]).forEach(p => {
+      if (!byUser[p.user_id]) byUser[p.user_id] = { name: p.display_name, posts: 0, likes: 0 };
+      byUser[p.user_id].posts++;
+      byUser[p.user_id].likes += (p.likes_count||0);
+    });
+    const sorted = Object.entries(byUser).sort((a,b) => b[1].likes - a[1].likes).slice(0,4);
+    if (!sorted.length) { el.innerHTML = '<div style="font-size:12px;color:#4a6b55">Aún no hay miembros activos</div>'; return; }
+    const colors = ['#1a7a43,#2ecc71','#1a4a6a,#3498db','#4a3a1a,#d4af37','#6a1a4a,#c39bd3'];
+    el.innerHTML = sorted.map(([uid, u], i) => `
+      <div class="com-top-user" onclick="_comShowProfile('${uid}','${_comEsc(u.name)}')">
+        <div class="com-top-user-av" style="background:linear-gradient(135deg,${colors[i%colors.length]})">${(u.name||'?').slice(0,2).toUpperCase()}</div>
+        <div><div class="com-top-user-name">${_comEsc(u.name)}</div><div class="com-top-user-handle">${u.posts} posts</div></div>
+        <div class="com-top-user-gain com-chg-pos">♥ ${u.likes}</div>
+      </div>`).join('');
+  } catch(e) { el.innerHTML = ''; }
+}
+
+function _comTimeAgo(ts) {
+  if (!ts) return '';
+  const diff = (Date.now() - new Date(ts).getTime()) / 1000;
+  if (diff < 60) return 'ahora';
+  if (diff < 3600) return `hace ${Math.floor(diff/60)}m`;
+  if (diff < 86400) return `hace ${Math.floor(diff/3600)}h`;
+  return `hace ${Math.floor(diff/86400)}d`;
+}
+
+function _comEsc(str) {
+  return String(str||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
 
 </script>

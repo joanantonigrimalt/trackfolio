@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
+<script>/* cache-bust v20260327-8 */(function(){var V='20260327-8',k='_fav';if(localStorage.getItem(k)!==V){localStorage.setItem(k,V);var u=location.pathname+'?_v='+V+(location.hash||'');window.location.replace(u);}}());</script>
 <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-QM1KR7PMFW"></script>
 <script>
@@ -61,7 +62,7 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"
   integrity="sha384-9nhczxUqK87bcKHh20fSQcTGD4qq5GhayNYSYWqwBkINBhOfQLg/P5HG5lF1urn4"
   crossorigin="anonymous"></script>
-<script src="/lib/finasset-auth.js?v=3"></script>
+<script src="/lib/finasset-auth.js?v=7"></script>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}html,body{height:100%}body{font-family:'DM Sans',sans-serif;background:linear-gradient(180deg,#e8f2eb 0%,#f2f5f3 40%,#eaecef 100%);display:flex;justify-content:center;align-items:flex-start;padding:12px;color:#142018}.shell{width:min(100vw - 16px,430px);display:flex;justify-content:center}.phone{width:min(100%,390px);height:min(calc(100dvh - 24px),844px);background:linear-gradient(180deg,#f7faf8 0%,#f2f5f3 100%);border-radius:38px;border:1px solid rgba(20,32,24,.08);overflow:hidden;position:relative;box-shadow:0 28px 80px rgba(20,32,24,.16)}.notch{position:absolute;top:10px;left:50%;transform:translateX(-50%);width:120px;height:24px;background:#111;border-radius:0 0 16px 16px;z-index:3;opacity:.92}.status{display:flex;justify-content:space-between;align-items:center;padding:18px 20px 6px;font-size:12px;color:#688071;font-weight:500}.screen{display:none;padding:12px 16px 114px;height:100%;overflow-y:auto;-webkit-overflow-scrolling:touch}.screen.active{display:block}.screen::-webkit-scrollbar{width:0}#screen-asset{padding-bottom:134px}
 .top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:14px;gap:10px}.title{font-size:28px;font-weight:800;letter-spacing:-.03em;line-height:1.1}.sub{font-size:12px;color:#7d9080;margin-top:5px;line-height:1.4}.badge{padding:7px 12px;border-radius:999px;background:rgba(21,128,61,.09);color:#15803d;font-size:11px;font-weight:700;border:1px solid rgba(21,128,61,.13);white-space:nowrap}
@@ -784,6 +785,347 @@ a.d-nav-item{text-decoration:none;color:inherit;}.d-nav-item.active{background:#
 .d-new-pos-btn{display:flex;align-items:center;gap:6px;padding:8px 16px;border-radius:10px;background:#15803d;color:#fff;font:inherit;font-size:13px;font-weight:700;cursor:pointer;border:none;transition:background .15s;white-space:nowrap}
 .d-new-pos-btn:hover{background:#127034}
 .d-content{flex:1;overflow:hidden;display:flex;flex-direction:column}
+/* ═══════════════ COMUNIDAD ═══════════════ */
+#screen-comunidad{padding:0;background:#fff;color:#1a1a1a;min-height:100%}
+.com-inner{max-width:1100px;margin:0 auto;padding:24px 24px 48px;display:grid;grid-template-columns:1fr 300px;gap:24px}
+@media(max-width:900px){.com-inner{grid-template-columns:1fr}.com-sidebar-col{display:none}}
+.com-feed-col{display:flex;flex-direction:column;gap:0}
+.com-sidebar-col{display:flex;flex-direction:column;gap:16px}
+.com-compose{background:#162118;border:1px solid #1f3225;border-radius:16px;padding:18px;margin-bottom:16px}
+.com-compose-row{display:flex;align-items:center;gap:10px;margin-bottom:14px}
+.com-av{width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;flex-shrink:0;background:linear-gradient(135deg,#1a7a43,#2ecc71);color:#fff}
+.com-compose-trigger{flex:1;background:#111f16;border:1px solid #2a4433;border-radius:24px;padding:10px 18px;font-size:14px;color:#4a6b55;cursor:pointer;text-align:left;font-family:inherit;transition:border-color .2s}
+.com-compose-trigger:hover{border-color:#2ecc71;color:#7a9e88}
+.com-compose-btns{display:flex;gap:8px;flex-wrap:wrap}
+.com-type-btn{display:flex;align-items:center;gap:6px;padding:7px 14px;background:#111f16;border:1px solid #2a4433;border-radius:20px;color:#7a9e88;font-size:12px;font-weight:600;cursor:pointer;transition:all .2s;font-family:inherit}
+.com-type-btn:hover{background:rgba(46,204,113,.1);border-color:#1a7a43;color:#2ecc71}
+.com-filters{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
+.com-pill{padding:6px 14px;border-radius:20px;font-size:12px;font-weight:600;cursor:pointer;border:1px solid #2a4433;color:#7a9e88;background:transparent;transition:all .2s;font-family:inherit}
+.com-pill:hover{border-color:#1a7a43;color:#2ecc71}
+.com-pill.active{background:rgba(46,204,113,.1);border-color:#2ecc71;color:#2ecc71}
+.com-post{background:#162118;border:1px solid #1f3225;border-radius:16px;padding:18px;margin-bottom:14px;transition:border-color .25s,background .25s}
+.com-post:hover{border-color:#2a4433;background:#1c2b1f}
+.com-post-hd{display:flex;align-items:flex-start;gap:12px;margin-bottom:12px}
+.com-post-av{width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;flex-shrink:0;border:2px solid #2a4433;cursor:pointer}
+.com-post-meta{flex:1;min-width:0}
+.com-post-name{font-weight:700;font-size:14px;color:#e8f5ee;cursor:pointer;display:inline-flex;align-items:center;gap:5px}
+.com-post-name:hover{color:#2ecc71}
+.com-post-handle{font-size:12px;color:#4a6b55;margin-top:1px}
+.com-post-time{font-size:11px;color:#4a6b55;white-space:nowrap;margin-left:auto}
+.com-post-badge{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:12px;font-size:10px;font-weight:700;margin-bottom:10px;text-transform:uppercase;letter-spacing:.5px}
+.com-badge-texto{background:rgba(46,204,113,.1);color:#2ecc71;border:1px solid rgba(46,204,113,.2)}
+.com-badge-portfolio{background:rgba(46,204,113,.1);color:#2ecc71;border:1px solid rgba(46,204,113,.2)}
+.com-badge-transaccion{background:rgba(212,175,55,.1);color:#d4af37;border:1px solid rgba(212,175,55,.2)}
+.com-post-text{font-size:14px;line-height:1.65;color:#e8f5ee;margin-bottom:12px}
+.com-post-text .com-tag{color:#2ecc71;cursor:pointer}
+.com-pf-widget{background:linear-gradient(135deg,#0f2418,#162118);border:1px solid #2a4433;border-radius:12px;padding:16px;margin:10px 0}
+.com-pf-hd{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px}
+.com-pf-total{font-size:22px;font-weight:800;color:#e8f5ee;letter-spacing:-.04em}
+.com-pf-gain{font-size:13px;font-weight:700}
+.com-pf-gain.pos{color:#2ecc71}
+.com-pf-gain.neg{color:#e74c3c}
+.com-pf-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px}
+.com-pf-stat{background:rgba(0,0,0,.2);border-radius:8px;padding:9px 10px}
+.com-pf-stat-lbl{font-size:9px;text-transform:uppercase;letter-spacing:.8px;color:#4a6b55;margin-bottom:3px}
+.com-pf-stat-val{font-size:14px;font-weight:700;color:#e8f5ee}
+.com-pf-chart{height:52px;margin-top:6px}
+.com-pf-chart svg{width:100%;height:100%}
+.com-tx-widget{background:#111f16;border:1px solid #2a4433;border-radius:12px;padding:13px 15px;margin:10px 0;display:flex;align-items:center;gap:12px}
+.com-tx-date-col{font-size:11px;color:#4a6b55;display:flex;flex-direction:column;align-items:center;min-width:32px}
+.com-tx-date-col strong{font-size:16px;font-weight:800;color:#e8f5ee;line-height:1}
+.com-tx-logo{width:34px;height:34px;border-radius:8px;background:rgba(255,255,255,.05);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
+.com-tx-info{flex:1;min-width:0}
+.com-tx-asset{font-weight:700;font-size:14px;color:#e8f5ee}
+.com-tx-detail{font-size:11px;color:#4a6b55;margin-top:2px}
+.com-tx-amount{font-weight:800;font-size:15px}
+.com-tx-amount.buy{color:#2ecc71}
+.com-tx-amount.sell{color:#e74c3c}
+.com-post-actions{display:flex;align-items:center;gap:4px;padding-top:12px;border-top:1px solid #1f3225;margin-top:12px}
+.com-action-btn{display:flex;align-items:center;gap:5px;padding:6px 12px;border-radius:20px;background:none;border:none;color:#7a9e88;font-size:12px;font-weight:600;cursor:pointer;transition:all .2s;font-family:inherit}
+.com-action-btn:hover{background:rgba(46,204,113,.1);color:#2ecc71}
+.com-action-btn.liked{color:#2ecc71}
+.com-action-btn svg{width:15px;height:15px}
+.com-action-sep{flex:1}
+.com-comments{display:none;margin-top:12px;border-top:1px solid #1f3225;padding-top:12px}
+.com-comments.open{display:block}
+.com-comment-item{display:flex;gap:9px;padding:8px 0;border-bottom:1px solid #1f3225}
+.com-comment-item:last-child{border-bottom:none}
+.com-comment-av{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0}
+.com-comment-body .com-comment-name{font-size:12px;font-weight:700;color:#e8f5ee;margin-bottom:2px}
+.com-comment-body .com-comment-text{font-size:13px;color:#7a9e88;line-height:1.5}
+.com-comment-input{display:flex;gap:8px;align-items:center;margin-top:10px}
+.com-comment-field{flex:1;background:#111f16;border:1px solid #2a4433;border-radius:20px;padding:8px 15px;font-family:inherit;font-size:13px;color:#e8f5ee;outline:none;transition:border-color .2s}
+.com-comment-field:focus{border-color:#1a7a43}
+.com-comment-field::placeholder{color:#4a6b55}
+.com-comment-send{padding:8px 16px;background:#2ecc71;color:#0a1a0e;border:none;border-radius:20px;font-family:inherit;font-size:12px;font-weight:700;cursor:pointer;transition:opacity .2s;white-space:nowrap}
+.com-comment-send:hover{opacity:.85}
+.com-sb-card{background:#162118;border:1px solid #1f3225;border-radius:16px;padding:18px}
+.com-sb-title{font-size:14px;font-weight:700;color:#e8f5ee;margin-bottom:14px;display:flex;align-items:center;gap:8px}
+.com-market-row{display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid #1f3225}
+.com-market-row:last-child{border-bottom:none}
+.com-market-name{font-size:13px;font-weight:500;color:#e8f5ee}
+.com-market-val{font-size:12px;color:#7a9e88}
+.com-market-chg{font-size:12px;font-weight:700}
+.com-chg-pos{color:#2ecc71}.com-chg-neg{color:#e74c3c}
+.com-top-user{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid #1f3225;cursor:pointer}
+.com-top-user:last-child{border-bottom:none}
+.com-top-user:hover{opacity:.8}
+.com-top-user-av{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0}
+.com-top-user-name{font-size:13px;font-weight:600;color:#e8f5ee}
+.com-top-user-handle{font-size:11px;color:#4a6b55}
+.com-top-user-gain{margin-left:auto;font-size:13px;font-weight:700}
+.com-trending-tag{display:inline-flex;align-items:center;gap:5px;padding:6px 11px;background:#111f16;border:1px solid #2a4433;border-radius:10px;font-size:12px;cursor:pointer;margin:3px;transition:all .2s;color:#7a9e88;font-family:inherit}
+.com-trending-tag:hover{border-color:#1a7a43;color:#2ecc71;background:rgba(46,204,113,.07)}
+.com-trending-tag .com-tc{font-size:10px;color:#4a6b55}
+.com-empty{text-align:center;padding:48px 20px;color:#4a6b55;font-size:13px}
+.com-loading{text-align:center;padding:32px;color:#4a6b55;font-size:13px}
+/* Compose modal */
+.com-modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.75);backdrop-filter:blur(8px);z-index:210;display:none;align-items:center;justify-content:center;padding:20px}
+.com-modal-overlay.open{display:flex}
+.com-modal{background:#162118;border:1px solid #2a4433;border-radius:20px;width:100%;max-width:560px;max-height:90vh;overflow-y:auto;animation:comModalIn .25s ease}
+@keyframes comModalIn{from{opacity:0;transform:translateY(20px) scale(.97)}to{opacity:1;transform:none}}
+.com-modal-hd{display:flex;align-items:center;justify-content:space-between;padding:18px 22px;border-bottom:1px solid #1f3225}
+.com-modal-title{font-size:17px;font-weight:800;color:#e8f5ee}
+.com-modal-close{width:30px;height:30px;border-radius:50%;background:#111f16;border:1px solid #2a4433;color:#7a9e88;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:16px;transition:all .2s}
+.com-modal-close:hover{color:#e8f5ee;border-color:#4a6b55}
+.com-modal-tabs{display:flex;gap:6px;padding:14px 22px 0;overflow-x:auto}
+.com-modal-tab{padding:8px 16px;border-radius:20px;background:none;border:1.5px solid #2a4433;color:#7a9e88;font-family:inherit;font-size:12px;font-weight:700;cursor:pointer;transition:all .2s;white-space:nowrap}
+.com-modal-tab.active{background:rgba(46,204,113,.1);border-color:#2ecc71;color:#2ecc71}
+.com-modal-body{padding:18px 22px}
+.com-form-group{margin-bottom:14px}
+.com-form-label{display:block;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:#4a6b55;margin-bottom:7px}
+.com-form-input,.com-form-textarea,.com-form-select{width:100%;background:#111f16;border:1px solid #2a4433;border-radius:10px;padding:10px 13px;font-family:inherit;font-size:13px;color:#e8f5ee;outline:none;transition:border-color .2s}
+.com-form-input:focus,.com-form-textarea:focus,.com-form-select:focus{border-color:#2ecc71}
+.com-form-input::placeholder,.com-form-textarea::placeholder{color:#4a6b55}
+.com-form-textarea{resize:vertical;min-height:90px}
+.com-form-select option{background:#162118}
+.com-form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.com-modal-ft{padding:14px 22px;border-top:1px solid #1f3225;display:flex;justify-content:flex-end;gap:10px}
+.com-btn-cancel{padding:9px 18px;background:#111f16;border:1px solid #2a4433;border-radius:10px;color:#7a9e88;font-family:inherit;font-size:13px;font-weight:600;cursor:pointer}
+.com-btn-publish{padding:9px 22px;background:#2ecc71;border:none;border-radius:10px;color:#0a1a0e;font-family:inherit;font-size:13px;font-weight:800;cursor:pointer;transition:opacity .2s}
+.com-btn-publish:hover{opacity:.88}
+.com-pf-autofill{background:rgba(46,204,113,.08);border:1px solid rgba(46,204,113,.2);border-radius:10px;padding:11px 13px;margin-bottom:12px;font-size:12px;color:#7a9e88;display:flex;align-items:center;justify-content:space-between;gap:10px}
+.com-pf-autofill-btn{padding:6px 12px;background:#2ecc71;color:#0a1a0e;border:none;border-radius:8px;font-size:11px;font-weight:700;cursor:pointer;font-family:inherit;white-space:nowrap}
+/* Profile modal */
+.com-profile-modal{background:#162118;border:1px solid #2a4433;border-radius:20px;width:100%;max-width:480px;max-height:85vh;overflow-y:auto;animation:comModalIn .25s ease}
+.com-profile-hd{background:linear-gradient(135deg,#0f2418,#162118);padding:24px 22px 20px;border-bottom:1px solid #1f3225}
+.com-profile-av{width:60px;height:60px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:800;border:3px solid #2a4433;margin-bottom:12px}
+.com-profile-name{font-size:20px;font-weight:800;color:#e8f5ee;letter-spacing:-.03em}
+.com-profile-handle{font-size:13px;color:#4a6b55;margin-top:2px}
+.com-profile-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;padding:16px 22px;border-bottom:1px solid #1f3225}
+.com-profile-stat{text-align:center}
+.com-profile-stat-val{font-size:18px;font-weight:800;color:#e8f5ee}
+.com-profile-stat-lbl{font-size:10px;color:#4a6b55;margin-top:2px}
+.com-profile-posts{padding:16px 22px}
+
+/* ═══════════════ REFERIDOS ═══════════════ */
+#screen-referidos{padding:20px 24px 40px}
+.ref-hero{background:linear-gradient(150deg,#0c1e13 0%,#152d1e 55%,#0a1a0f 100%);border-radius:22px;padding:24px 22px 22px;margin-bottom:18px;position:relative;overflow:hidden}
+.ref-hero::after{content:'';position:absolute;top:-70px;right:-70px;width:200px;height:200px;border-radius:50%;background:radial-gradient(circle,rgba(29,179,106,.12) 0%,transparent 70%);pointer-events:none}
+.ref-hero-eyebrow{font-size:9px;font-weight:700;color:rgba(255,255,255,.35);text-transform:uppercase;letter-spacing:.12em;margin-bottom:8px}
+.ref-hero-title{font-size:22px;font-weight:800;color:#fff;letter-spacing:-.04em;margin-bottom:4px}
+.ref-hero-sub{font-size:11px;color:rgba(255,255,255,.4);line-height:1.5}
+.ref-stats-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:18px}
+.ref-stat-card{background:#fff;border:1px solid rgba(20,32,24,.08);border-radius:16px;padding:16px 14px;box-shadow:0 1px 4px rgba(0,0,0,.05)}
+.ref-stat-label{font-size:9px;font-weight:700;color:#8fa090;text-transform:uppercase;letter-spacing:.1em;margin-bottom:6px}
+.ref-stat-value{font-size:26px;font-weight:800;color:#0f1c15;letter-spacing:-.04em;font-family:'DM Mono',monospace}
+.ref-stat-sub{font-size:10px;color:#8fa090;margin-top:3px}
+.ref-link-card{background:#fff;border:1px solid rgba(20,32,24,.08);border-radius:16px;padding:18px;margin-bottom:14px;box-shadow:0 1px 4px rgba(0,0,0,.05)}
+.ref-link-label{font-size:10px;font-weight:700;color:#8fa090;text-transform:uppercase;letter-spacing:.1em;margin-bottom:10px}
+.ref-link-row{display:flex;gap:8px;align-items:center}
+.ref-link-input{flex:1;padding:10px 12px;border:1.5px solid rgba(20,32,24,.1);border-radius:10px;font-size:12px;font-family:'DM Mono',monospace;color:#142018;background:#f8faf8;outline:none;cursor:pointer}
+.ref-link-copy{padding:10px 18px;background:#142018;color:#f5fbf6;border:none;border-radius:10px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;white-space:nowrap;transition:background .15s}
+.ref-link-copy:hover{background:#1e3028}
+.ref-copy-ok{font-size:11px;color:#16924f;font-weight:600;margin-top:6px;display:none}
+.ref-share-row{display:flex;gap:8px;margin-top:10px}
+.ref-share-btn{flex:1;padding:9px;border-radius:10px;border:1.5px solid rgba(20,32,24,.1);background:#f8faf8;font-size:12px;font-weight:600;color:#142018;cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:6px;transition:background .15s}
+.ref-share-btn:hover{background:#eef2ef}
+.ref-how-card{background:#f0f9f4;border:1px solid rgba(29,179,106,.15);border-radius:16px;padding:18px;margin-bottom:14px}
+.ref-how-title{font-size:11px;font-weight:700;color:#16924f;text-transform:uppercase;letter-spacing:.1em;margin-bottom:12px}
+.ref-how-steps{display:flex;flex-direction:column;gap:10px}
+.ref-how-step{display:flex;align-items:flex-start;gap:10px}
+.ref-how-num{width:22px;height:22px;border-radius:50%;background:#1db36a;color:#fff;font-size:10px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
+.ref-how-text{font-size:12px;color:#2d5040;line-height:1.5}
+.ref-how-text strong{color:#0f1c15;font-weight:700}
+.ref-table-card{background:#fff;border:1px solid rgba(20,32,24,.08);border-radius:16px;overflow:hidden;box-shadow:0 1px 4px rgba(0,0,0,.05)}
+.ref-table-head{display:grid;grid-template-columns:1fr 100px 100px;padding:10px 16px;background:#f8faf8;border-bottom:1px solid rgba(20,32,24,.06)}
+.ref-table-head-cell{font-size:9px;font-weight:700;color:#8fa090;text-transform:uppercase;letter-spacing:.1em}
+.ref-table-row{display:grid;grid-template-columns:1fr 100px 100px;padding:11px 16px;border-bottom:1px solid rgba(20,32,24,.05);align-items:center}
+.ref-table-row:last-child{border-bottom:none}
+.ref-table-row:hover{background:#fafcfa}
+.ref-table-email{font-size:12px;font-weight:600;color:#0f1c15}
+.ref-table-date{font-size:11px;color:#8fa090}
+.ref-table-status{display:inline-flex;align-items:center;gap:4px;padding:3px 8px;border-radius:20px;font-size:10px;font-weight:700}
+.ref-table-status.registered{background:rgba(37,99,235,.08);color:#2563eb}
+.ref-table-status.converted{background:rgba(29,179,106,.1);color:#16924f}
+.ref-empty{text-align:center;padding:32px 16px;color:#8fa090;font-size:12px}
+.ref-section-title{font-size:10px;font-weight:700;color:#8fa090;text-transform:uppercase;letter-spacing:.1em;margin:16px 0 8px}
+.ref-login-prompt{background:#fff;border:1.5px dashed rgba(20,32,24,.12);border-radius:16px;padding:32px;text-align:center}
+.ref-login-prompt p{font-size:13px;color:#8fa090;margin-bottom:14px}
+.ref-login-btn{padding:12px 24px;background:#142018;color:#f5fbf6;border:none;border-radius:12px;font:inherit;font-size:13px;font-weight:700;cursor:pointer}
+
+/* ═══════════════ DESKTOP LAYOUT ═══════════════ */
+body{display:flex;height:100vh;padding:0;overflow:hidden;background:#f2f5f3;justify-content:flex-start;align-items:stretch}
+.shell,.phone{all:unset;display:contents}
+.notch,.status,.tab{display:none!important}
+.screen{display:none;height:100%;overflow-y:auto;padding:28px 36px 48px;box-sizing:border-box}
+.screen.active{display:block}
+.screen::-webkit-scrollbar{width:6px}.screen::-webkit-scrollbar-track{background:transparent}.screen::-webkit-scrollbar-thumb{background:rgba(20,32,24,.15);border-radius:4px}
+/* Fix overlays from absolute→fixed */
+.cover-screen{position:fixed!important;z-index:200}
+.liqOverlay,.alertOverlay,.authOverlay{position:fixed!important;z-index:210}
+.liqSheet,.alertSheet,.authSheet{position:fixed!important;z-index:211}
+/* Desktop layout */
+.d-layout{display:flex;width:100%;height:100vh;overflow:hidden}
+.d-sidebar{width:220px;flex-shrink:0;background:#fff;border-right:1px solid rgba(20,32,24,.08);display:flex;flex-direction:column;height:100vh;overflow-y:auto}
+.d-logo{display:flex;align-items:center;gap:10px;padding:20px 16px 16px;border-bottom:1px solid rgba(20,32,24,.06)}
+.d-logo-mark{width:32px;height:32px;border-radius:10px;background:linear-gradient(135deg,#142018,#1a3f2c);display:flex;align-items:center;justify-content:center;color:#f5fbf6;font-size:16px;font-weight:800;flex-shrink:0}
+.d-logo span{font-size:15px;font-weight:800;color:#142018;letter-spacing:-.02em}
+.d-nav{flex:1;padding:10px 8px;display:flex;flex-direction:column;gap:1px}
+.d-nav-section{font-size:9px;font-weight:800;color:#b0c0b5;letter-spacing:.1em;text-transform:uppercase;padding:12px 8px 5px}
+.d-nav-item,a.d-nav-item{display:flex;align-items:center;gap:10px;width:100%;padding:9px 10px;border-radius:10px;border:none;background:transparent;font-family:inherit;font-size:13px;font-weight:600;color:#5a6e5e;cursor:pointer;text-align:left;transition:all .15s}
+.d-nav-item:hover{background:#f4f7f5;color:#142018}
+a.d-nav-item{text-decoration:none;color:inherit;}.d-nav-item.active{background:#e6faf3;color:#15803d;font-weight:700}
+.d-nav-ico{font-size:16px;width:22px;text-align:center;flex-shrink:0}
+.d-nav-badge{background:#15803d;color:#fff;font-size:10px;font-weight:800;padding:2px 6px;border-radius:10px;margin-left:auto}
+.d-sidebar-footer{padding:12px 10px;border-top:1px solid rgba(20,32,24,.06);flex-shrink:0}
+.d-user-info{display:flex;align-items:center;gap:10px;cursor:pointer;padding:8px;border-radius:10px;transition:background .15s}
+.d-user-info:hover{background:#f4f7f5}
+.d-user-av{width:34px;height:34px;border-radius:10px;background:linear-gradient(135deg,#142018,#1a3f2c);color:#f5fbf6;font-size:13px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.d-user-name{font-size:13px;font-weight:700;color:#142018;line-height:1.2}
+.d-user-plan{font-size:11px;color:#15803d;font-weight:600}
+.d-main{flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0}
+.d-topbar{height:56px;background:#fff;border-bottom:1px solid rgba(20,32,24,.08);display:flex;align-items:center;padding:0 24px;gap:14px;flex-shrink:0}
+.d-topbar-title{font-size:15px;font-weight:800;color:#142018;letter-spacing:-.02em}
+.d-topbar-sep{width:1px;height:18px;background:rgba(20,32,24,.1)}
+.d-topbar-sub{font-size:13px;color:#8fa090;font-weight:500;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.d-topbar-right{margin-left:auto;display:flex;align-items:center;gap:8px;flex-shrink:0}
+.d-badge-ok{background:#e6faf3;color:#15803d;border:1px solid rgba(21,128,61,.2);font-size:11px;font-weight:700;padding:5px 10px;border-radius:20px;display:flex;align-items:center;gap:6px;white-space:nowrap}
+.d-badge-ok::before{content:'●';font-size:7px}
+.d-search-btn{display:flex;align-items:center;gap:7px;padding:7px 14px;border:1px solid rgba(20,32,24,.12);border-radius:10px;background:#f4f7f5;font:inherit;font-size:13px;font-weight:600;color:#8fa090;cursor:pointer;transition:all .15s;white-space:nowrap}
+.d-search-btn:hover{border-color:#15803d;color:#15803d}
+.d-new-pos-btn{display:flex;align-items:center;gap:6px;padding:8px 16px;border-radius:10px;background:#15803d;color:#fff;font:inherit;font-size:13px;font-weight:700;cursor:pointer;border:none;transition:background .15s;white-space:nowrap}
+.d-new-pos-btn:hover{background:#127034}
+.d-content{flex:1;overflow:hidden;display:flex;flex-direction:column}
+
+/* ═══════════════ FORO — LIGHT REDESIGN ═══════════════ */
+#screen-comunidad{background:#f2f5f3}
+
+/* Layout */
+.com-inner{padding:28px 24px 56px}
+
+/* Compose card */
+.com-compose{background:#fff;border:1px solid #e2e9e4;border-radius:18px;padding:20px;margin-bottom:20px;box-shadow:0 1px 8px rgba(20,60,30,.05)}
+.com-compose-trigger{background:#f5f8f6;border:1.5px solid #dde8e0;color:#8aad96;border-radius:26px;padding:11px 20px;font-size:14px;transition:all .2s}
+.com-compose-trigger:hover{border-color:#16a34a;color:#16a34a;background:#f0fdf4}
+.com-type-btn{background:#f5f8f6;border:1.5px solid #dde8e0;color:#4a7a5a;border-radius:22px;font-size:12.5px;padding:7px 14px;transition:all .2s}
+.com-type-btn:hover{background:#dcfce7;border-color:#16a34a;color:#15803d}
+
+/* Filter pills */
+.com-filters{margin-bottom:18px}
+.com-pill{background:#fff;border:1.5px solid #dde8e0;color:#4a7a5a;border-radius:22px;padding:6px 16px;font-size:12.5px;font-weight:600;transition:all .2s}
+.com-pill:hover{border-color:#16a34a;color:#15803d;background:#f0fdf4}
+.com-pill.active{background:#dcfce7;border-color:#16a34a;color:#15803d;box-shadow:0 0 0 3px rgba(22,163,74,.08)}
+
+/* Posts */
+.com-post{background:#fff;border:1px solid #e2e9e4;border-radius:18px;padding:20px;margin-bottom:14px;box-shadow:0 1px 4px rgba(20,60,30,.04);transition:transform .15s,box-shadow .15s,border-color .15s}
+.com-post:hover{border-color:#b8d4bf;box-shadow:0 4px 16px rgba(20,60,30,.09);transform:translateY(-1px)}
+.com-post-name{color:#1a2e1e;font-weight:700}
+.com-post-name:hover{color:#16a34a}
+.com-post-handle{color:#94a89c}
+.com-post-time{color:#94a89c}
+.com-post-text{color:#374151;line-height:1.7}
+.com-post-text .com-tag{color:#16a34a}
+.com-post-av{border:2px solid #e2e9e4}
+
+/* Action bar */
+.com-post-actions{border-top:1px solid #f0f4f2;padding-top:10px;margin-top:10px}
+
+/* Comments */
+.com-comments-area{background:#f8faf9;border-top:1px solid #f0f4f2;border-radius:0 0 16px 16px;padding:14px 18px}
+.com-comment-field{background:#fff;border:1.5px solid #dde8e0;color:#1a2e1e;border-radius:22px}
+.com-comment-field:focus{border-color:#16a34a;box-shadow:0 0 0 3px rgba(22,163,74,.07)}
+.com-comment-field::placeholder{color:#94a89c}
+.com-comment-send{background:#16a34a;color:#fff;border-radius:22px;font-weight:700}
+.com-comment-send:hover{background:#15803d}
+
+/* Portfolio widget */
+.com-pf-widget{background:linear-gradient(135deg,#f0fdf4,#e8f5ee);border:1px solid #bbf7d0;border-radius:14px}
+.com-pf-total{color:#1a2e1e}
+.com-pf-gain.pos{color:#16a34a}
+.com-pf-stat{background:rgba(255,255,255,.75);border-radius:9px}
+.com-pf-stat-lbl{color:#6b7280}
+.com-pf-stat-val{color:#1a2e1e}
+
+/* Transaction widget */
+.com-tx-widget{background:#f8faf9;border:1px solid #e2e9e4;border-radius:14px}
+.com-tx-asset{color:#1a2e1e}
+.com-tx-detail{color:#6b7280}
+.com-tx-date-col{color:#6b7280}
+.com-tx-date-col strong{color:#1a2e1e}
+
+/* Sidebar — keep dark for contrast */
+.com-sb-card{background:#182b1f;border:1px solid #243b2b;border-radius:18px;box-shadow:0 2px 16px rgba(0,0,0,.14)}
+.com-sb-title{color:#e8f5ee;font-size:14px;font-weight:700;margin-bottom:14px}
+.com-market-row{border-bottom:1px solid #243b2b}
+.com-market-row:last-child{border-bottom:none}
+.com-market-name{color:#e8f5ee}
+.com-market-val{color:#7a9e88}
+.com-chg-pos{color:#4ade80}.com-chg-neg{color:#f87171}
+.com-top-user{border-bottom:1px solid #243b2b}
+.com-top-user:last-child{border-bottom:none}
+.com-top-user-name{color:#e8f5ee}
+.com-top-user-handle{color:#4a6b55}
+.com-trending-tag{background:#111f16;border:1px solid #2a4433;color:#7a9e88;border-radius:10px}
+.com-trending-tag:hover{border-color:#16a34a;color:#4ade80;background:rgba(74,222,128,.06)}
+.com-trending-tag .com-tc{color:#4a6b55}
+
+/* Badges */
+.com-badge-texto{background:#dcfce7;color:#15803d;border:1px solid #bbf7d0}
+.com-badge-portfolio{background:#dbeafe;color:#1d4ed8;border:1px solid #bfdbfe}
+.com-badge-transaccion{background:#fef3c7;color:#92400e;border:1px solid #fde68a}
+
+/* Avatars */
+.com-av{background:linear-gradient(135deg,#16a34a,#4ade80);color:#fff}
+
+/* Empty / loading */
+.com-empty{color:#94a89c;background:#fff;border-radius:18px;border:1px dashed #dde8e0;margin:8px 0;box-shadow:none}
+.com-loading{color:#94a89c}
+
+/* Modal */
+.com-modal{background:#fff;border:1px solid #e2e9e4;box-shadow:0 20px 60px rgba(0,0,0,.15)}
+.com-modal-hd{border-bottom:1px solid #f0f4f2}
+.com-modal-title{color:#1a2e1e}
+.com-modal-close{background:#f5f8f6;border:1px solid #e2e9e4;color:#4a7a5a}
+.com-modal-close:hover{color:#1a2e1e;border-color:#b8d4bf}
+.com-modal-tab{border:1.5px solid #dde8e0;color:#4a7a5a}
+.com-modal-tab.active{background:#dcfce7;border-color:#16a34a;color:#15803d}
+.com-modal-ft{border-top:1px solid #f0f4f2}
+.com-btn-cancel{background:#f5f8f6;border:1px solid #e2e9e4;color:#4a7a5a}
+.com-form-label{color:#5a7a5a;font-weight:700}
+.com-form-input,.com-form-textarea,.com-form-select{background:#f8faf9;border:1.5px solid #dde8e0;color:#1a2e1e;border-radius:11px}
+.com-form-input:focus,.com-form-textarea:focus,.com-form-select:focus{border-color:#16a34a;box-shadow:0 0 0 3px rgba(22,163,74,.07)}
+.com-form-input::placeholder,.com-form-textarea::placeholder{color:#94a89c}
+.com-form-select option{background:#fff;color:#1a2e1e}
+.com-pf-autofill{background:#f0fdf4;border:1px solid #bbf7d0;color:#4a7a5a}
+.com-pf-autofill-btn{background:#16a34a;color:#fff}
+.com-btn-publish{background:linear-gradient(135deg,#16a34a,#15803d);color:#fff;border-radius:11px;box-shadow:0 2px 8px rgba(22,163,74,.3)}
+.com-btn-publish:hover{opacity:.92;transform:translateY(-1px)}
+
+/* Profile modal */
+.com-profile-modal{background:#fff;border:1px solid #e2e9e4}
+.com-profile-hd{background:linear-gradient(135deg,#f0fdf4,#fff);border-bottom:1px solid #f0f4f2}
+.com-profile-name{color:#1a2e1e}
+.com-profile-handle{color:#94a89c}
+.com-profile-stats{border-bottom:1px solid #f0f4f2}
+.com-profile-stat-val{color:#1a2e1e}
+.com-profile-stat-lbl{color:#94a89c}
+
+/* Header title */
+#screen-comunidad .d-content-header{background:#fff;border-bottom:1px solid #e2e9e4;box-shadow:0 1px 6px rgba(0,0,0,.04)}
+
+/* ═══════════════ END FORO LIGHT ═══════════════ */
+#brokerFilterBar{display:none;gap:6px;overflow-x:auto;padding:0 0 10px;-webkit-overflow-scrolling:touch;scrollbar-width:none}#brokerFilterBar::-webkit-scrollbar{display:none}.bfBtn{padding:6px 14px;border-radius:20px;border:1.5px solid rgba(20,32,24,.12);background:#fff;font-size:12px;font-weight:700;color:#8fa090;cursor:pointer;white-space:nowrap;transition:all .15s;flex-shrink:0}.bfBtn.active{background:#15803d;color:#fff;border-color:#15803d}
 </style>
 </head>
 <body>
@@ -798,16 +1140,16 @@ a.d-nav-item{text-decoration:none;color:inherit;}.d-nav-item.active{background:#
   <nav class="d-nav">
     <div class="d-nav-section">PRINCIPAL</div>
     <button class="d-nav-item active" data-screen="home"><span class="d-nav-ico">⌂</span>Inicio</button>
-    <button class="d-nav-item" data-screen="portfolio"><span class="d-nav-ico">≡</span>Cartera</button>
     <button class="d-nav-item" data-screen="analysis"><span class="d-nav-ico">◈</span>Análisis</button>
     <button class="d-nav-item" data-screen="dividends"><span class="d-nav-ico">◎</span>Dividendos</button>
-    <a class="d-nav-item" href="https://t.me/finassetes" target="_blank" rel="noopener noreferrer"><span class="d-nav-ico">💬</span>Comunidad</a>
+    <button class="d-nav-item" data-screen="comunidad"><span class="d-nav-ico">⊞</span>Foro</button>
     <div class="d-nav-section">HERRAMIENTAS</div>
     <button class="d-nav-item" data-screen="ia"><span class="d-nav-ico">✦</span>IA — Vera</button>
     <button class="d-nav-item" data-screen="impuestos"><span class="d-nav-ico">◫</span>Fiscal</button>
-    <button class="d-nav-item" data-screen="topinvestors"><span class="d-nav-ico">◆</span>Insiders</button>
     <button class="d-nav-item" data-screen="alerts"><span class="d-nav-ico">◉</span>Alertas <span class="d-nav-badge" id="deskAlertBadge" style="display:none"></span></button>
-    <a class="d-nav-item" href="/mobile" target="_blank" rel="noopener noreferrer"><span class="d-nav-ico">📱</span>Versión móvil</a>
+    <a class="d-nav-item" href="/mobile" target="_blank" rel="noopener noreferrer"><span class="d-nav-ico">⊟</span>Versión móvil</a>
+    <div class="d-nav-section">REFERIDOS</div>
+    <button class="d-nav-item" data-screen="referidos"><span class="d-nav-ico">◇</span>Referidos</button>
   </nav>
   <!-- User dropdown menu -->
   <div id="deskUserMenu" style="display:none;position:absolute;bottom:76px;left:10px;right:10px;background:#fff;border-radius:14px;box-shadow:0 4px 24px rgba(0,0,0,.13);z-index:1000;overflow:hidden;border:1px solid rgba(20,32,24,.07)">
@@ -1017,6 +1359,7 @@ a.d-nav-item{text-decoration:none;color:inherit;}.d-nav-item.active{background:#
       Añadir Liquidez
     </button>
   </div>
+  <div id="brokerFilterBar"></div>
   <div class="card"><div class="sectionTitle" data-i18n="myPortfolio">Mi cartera</div><div id="list"></div></div>
   <div class="card" id="homeLiqCard" style="display:none">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
@@ -1136,6 +1479,13 @@ a.d-nav-item{text-decoration:none;color:inherit;}.d-nav-item.active{background:#
         <div style="font-size:11px;color:#8fa090;margin-top:1px">Aviso al alcanzar el precio</div>
       </div>
       <label class="alertToggle"><input type="checkbox" id="alertsNotifCk" checked onchange="handleAlertNotifToggle(this)"><span class="alertToggleSlider"></span></label>
+    </div>
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 12px;background:#f7faf8;border-radius:12px;margin-bottom:14px">
+      <div>
+        <div style="font-size:13px;font-weight:700;color:#142018">Notificación por email</div>
+        <div style="font-size:11px;color:#8fa090;margin-top:1px">Envío a tu correo al activarse</div>
+      </div>
+      <label class="alertToggle"><input type="checkbox" id="alertsEmailCk"><span class="alertToggleSlider"></span></label>
     </div>
     <div style="display:flex;gap:8px">
       <button onclick="hideAlertForm()" style="flex:1;padding:12px;border-radius:14px;border:1.5px solid rgba(20,32,24,.1);background:#fff;font:inherit;font-size:13px;font-weight:700;color:#4a5f4e;cursor:pointer">Cancelar</button>
@@ -2034,6 +2384,14 @@ a.d-nav-item{text-decoration:none;color:inherit;}.d-nav-item.active{background:#
           </div>
           <div class="addAssetPrice" id="addAssetPrice">—</div>
         </div>
+        <div class="modeSwitcher" style="margin:0 0 4px">
+          <button class="modeSwitchBtn active" id="addModeSimpleBtn" onclick="setAddFormMode('simple')">Simple</button>
+          <button class="modeSwitchBtn" id="addModeTxBtn" onclick="setAddFormMode('transactions')">Por transacciones</button>
+        </div>
+        <div class="mFieldGroup" id="addDateField" style="display:none">
+          <div class="mLabel" id="addDateLabel">Fecha de compra</div>
+          <div class="mFieldRow"><input type="date" id="addTxDateInput" style="flex:1;color:#142018;font-size:15px;background:transparent;border:none;outline:none;padding:4px 0"></div>
+        </div>
         <div class="mFieldGroup">
           <div class="mLabel">Participaciones / Unidades</div>
           <div class="mFieldRow"><input type="text" inputmode="decimal" id="addQty" placeholder="0"></div>
@@ -2476,6 +2834,208 @@ a.d-nav-item{text-decoration:none;color:inherit;}.d-nav-item.active{background:#
   </div>
 </div>
 
+<!-- ============ REFERIDOS ============ -->
+<div id="screen-referidos" class="screen">
+  <div class="top">
+    <div>
+      <div class="title">Referidos</div>
+      <div class="sub">Comparte Finasset y gana comisiones</div>
+    </div>
+  </div>
+
+  <div class="ref-hero">
+    <div class="ref-hero-eyebrow">Programa de referidos</div>
+    <div class="ref-hero-title">Invita y gana</div>
+    <div class="ref-hero-sub">Comparte tu enlace personal. Por cada amigo que se suscriba, tú y él obtenéis beneficios exclusivos.</div>
+  </div>
+
+  <div id="refMainContent">
+    <!-- Filled by JS -->
+    <div class="ref-empty" style="padding:48px 0">Cargando…</div>
+  </div>
+</div>
+
+<!-- ============ COMUNIDAD ============ -->
+<div id="screen-comunidad" class="screen">
+  <div class="com-inner">
+    <div class="com-feed-col">
+
+      <!-- Compose -->
+      <div class="com-compose">
+        <div class="com-compose-row">
+          <div class="com-av" id="comAvatar">?</div>
+          <button class="com-compose-trigger" onclick="_comOpenModal('texto')">¿Qué quieres compartir hoy?</button>
+        </div>
+        <div class="com-compose-btns">
+          <button class="com-type-btn" onclick="_comOpenModal('portfolio')">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+            Portafolio
+          </button>
+          <button class="com-type-btn" onclick="_comOpenModal('transaccion')">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 16V4m0 0L3 8m4-4 4 4M17 8v12m0 0 4-4m-4 4-4-4"/></svg>
+            Transacción
+          </button>
+          <button class="com-type-btn" onclick="_comOpenModal('texto')">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+            Análisis
+          </button>
+        </div>
+      </div>
+
+      <!-- Filters -->
+      <div class="com-filters">
+        <button class="com-pill active" onclick="_comFilter(this,'all')">Todo</button>
+        <button class="com-pill" onclick="_comFilter(this,'portfolio')">📊 Portafolios</button>
+        <button class="com-pill" onclick="_comFilter(this,'transaccion')">💸 Transacciones</button>
+        <button class="com-pill" onclick="_comFilter(this,'texto')">💬 Análisis</button>
+      </div>
+
+      <!-- Feed -->
+      <div id="comFeed"><div class="com-loading">Cargando comunidad…</div></div>
+    </div>
+
+    <div class="com-sidebar-col">
+      <!-- Market data (static, real data via coverage) -->
+      <div class="com-sb-card">
+        <div class="com-sb-title">📈 Mercados</div>
+        <div id="comMarkets"><div style="font-size:12px;color:#4a6b55">Cargando…</div></div>
+      </div>
+      <!-- Top members -->
+      <div class="com-sb-card">
+        <div class="com-sb-title">🏆 Top miembros</div>
+        <div id="comTopMembers"><div style="font-size:12px;color:#4a6b55">Cargando…</div></div>
+      </div>
+      <!-- Trending tags -->
+      <div class="com-sb-card">
+        <div class="com-sb-title">🔥 Tendencias</div>
+        <div id="comTrending">
+          <span class="com-trending-tag">#Dividendos <span class="com-tc">142</span></span>
+          <span class="com-trending-tag">#ETF <span class="com-tc">98</span></span>
+          <span class="com-trending-tag">#FIRE <span class="com-tc">76</span></span>
+          <span class="com-trending-tag">#SP500 <span class="com-tc">64</span></span>
+          <span class="com-trending-tag">#DCA <span class="com-tc">51</span></span>
+          <span class="com-trending-tag">#LargoPlazo <span class="com-tc">43</span></span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- COMPOSE MODAL -->
+<div class="com-modal-overlay" id="comModal" onclick="if(event.target===this)_comCloseModal()">
+  <div class="com-modal">
+    <div class="com-modal-hd">
+      <div class="com-modal-title">Nueva publicación</div>
+      <button class="com-modal-close" onclick="_comCloseModal()">✕</button>
+    </div>
+    <div class="com-modal-tabs">
+      <button class="com-modal-tab active" id="comTabTexto" onclick="_comSwitchTab('texto')">💬 Texto</button>
+      <button class="com-modal-tab" id="comTabPortfolio" onclick="_comSwitchTab('portfolio')">📊 Portafolio</button>
+      <button class="com-modal-tab" id="comTabTx" onclick="_comSwitchTab('transaccion')">💸 Transacción</button>
+    </div>
+    <div class="com-modal-body">
+      <!-- Texto -->
+      <div id="comFormTexto">
+        <div class="com-form-group">
+          <label class="com-form-label">Contenido</label>
+          <textarea class="com-form-textarea" id="comTextContent" placeholder="Comparte tu análisis, opinión o pregunta con la comunidad…"></textarea>
+        </div>
+        <div class="com-form-group">
+          <label class="com-form-label">Etiquetas (opcional)</label>
+          <input type="text" class="com-form-input" id="comTextTags" placeholder="#ETF #Dividendos #LargoPlazo">
+        </div>
+      </div>
+      <!-- Portfolio -->
+      <div id="comFormPortfolio" style="display:none">
+        <div class="com-pf-autofill" id="comPfAutofill">
+          <span>Autorellena con tu cartera actual</span>
+          <button class="com-pf-autofill-btn" onclick="_comAutofillPortfolio()">Autorellenar</button>
+        </div>
+        <div class="com-form-group">
+          <label class="com-form-label">Descripción</label>
+          <textarea class="com-form-textarea" id="comPfContent" placeholder="Comparte tu estrategia y composición…" style="min-height:70px"></textarea>
+        </div>
+        <div class="com-form-row">
+          <div class="com-form-group">
+            <label class="com-form-label">Valor total (€)</label>
+            <input type="number" class="com-form-input" id="comPfTotal" placeholder="0">
+          </div>
+          <div class="com-form-group">
+            <label class="com-form-label">Capital invertido (€)</label>
+            <input type="number" class="com-form-input" id="comPfInvested" placeholder="0">
+          </div>
+        </div>
+        <div class="com-form-row">
+          <div class="com-form-group">
+            <label class="com-form-label">Rentabilidad (%)</label>
+            <input type="text" class="com-form-input" id="comPfGain" placeholder="+6.06">
+          </div>
+          <div class="com-form-group">
+            <label class="com-form-label">Posiciones</label>
+            <input type="number" class="com-form-input" id="comPfPositions" placeholder="17">
+          </div>
+        </div>
+        <div class="com-form-group">
+          <label class="com-form-label">Etiquetas</label>
+          <input type="text" class="com-form-input" id="comPfTags" placeholder="#ETF #Dividendos">
+        </div>
+      </div>
+      <!-- Transaccion -->
+      <div id="comFormTx" style="display:none">
+        <div class="com-form-group">
+          <label class="com-form-label">Activo / Empresa</label>
+          <input type="text" class="com-form-input" id="comTxAsset" placeholder="Ej: MSCI World, Apple, Vanguard…">
+        </div>
+        <div class="com-form-row">
+          <div class="com-form-group">
+            <label class="com-form-label">Tipo</label>
+            <select class="com-form-select" id="comTxType">
+              <option>Compra</option>
+              <option>Venta</option>
+              <option>Dividendo</option>
+            </select>
+          </div>
+          <div class="com-form-group">
+            <label class="com-form-label">Fecha</label>
+            <input type="date" class="com-form-input" id="comTxDate">
+          </div>
+        </div>
+        <div class="com-form-row">
+          <div class="com-form-group">
+            <label class="com-form-label">Cantidad</label>
+            <input type="number" class="com-form-input" id="comTxQty" placeholder="6">
+          </div>
+          <div class="com-form-group">
+            <label class="com-form-label">Precio/acción (€)</label>
+            <input type="number" class="com-form-input" id="comTxPrice" placeholder="320.45">
+          </div>
+        </div>
+        <div class="com-form-group">
+          <label class="com-form-label">Comentario (opcional)</label>
+          <textarea class="com-form-textarea" id="comTxComment" placeholder="¿Por qué esta operación?" style="min-height:60px"></textarea>
+        </div>
+      </div>
+      <div id="comPostMsg" style="display:none;margin-top:8px;font-size:12px;color:#e74c3c"></div>
+    </div>
+    <div class="com-modal-ft">
+      <button class="com-btn-cancel" onclick="_comCloseModal()">Cancelar</button>
+      <button class="com-btn-publish" id="comPublishBtn" onclick="_comPublish()">✦ Publicar</button>
+    </div>
+  </div>
+</div>
+
+<!-- PROFILE MODAL -->
+<div class="com-modal-overlay" id="comProfileModal" onclick="if(event.target===this)document.getElementById('comProfileModal').classList.remove('open')">
+  <div class="com-profile-modal">
+    <div class="com-modal-hd">
+      <div class="com-modal-title">Perfil</div>
+      <button class="com-modal-close" onclick="document.getElementById('comProfileModal').classList.remove('open')">✕</button>
+    </div>
+    <div id="comProfileContent"><div class="com-loading">Cargando perfil…</div></div>
+  </div>
+</div>
+
+
 <!-- TAB BAR -->
 <div class="tab" id="mainTabBar">
   <div class="tab-row tab-row-extra" id="tabExtraRow">
@@ -2658,7 +3218,7 @@ function escapeHtml(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt
 // costCcy() — currency in which the user entered their avg cost (may differ from price currency)
 function costCcy(a){ return a.costCurrency||'EUR'; }
 // toEur() — convert any currency amount to EUR
-function toEur(amount,ccy){ if(!ccy||ccy==='EUR')return amount; const r=_fxRates[ccy]; return (r&&r>0)?amount/r:amount; }
+function toEur(amount,ccy){ if(!ccy||ccy==='EUR')return amount; if(ccy==='GBp'||ccy==='GBX'){const r=_fxRates['GBP'];return (r&&r>0)?(amount/100)/r:amount/100;} const r=_fxRates[ccy]; return (r&&r>0)?amount/r:amount; }
 // toDisplay() — convert to user's display currency (via EUR bridge)
 function toDisplay(amount,fromCcy){ return toEur(amount,fromCcy)*(_fxRates[_displayCcy]||1); }
 // fd() — convert fromCcy → _displayCcy and format
@@ -2716,6 +3276,8 @@ function iconInitials(a){return(a.name||a.isin).replace(/^i([A-Z])/,'I$1').slice
 function assetCategory(a){if(['IE00B4ND3602','IE00B579F325'].includes(a.isin))return'Oro';if(a.mapping?.type==='etf')return'ETFs';if(a.mapping?.type==='etc')return'Oro';if(a.mapping?.type==='stock')return currentLang==='es'?'Acciones':'Stocks';return'Fondos';}
 
 function showScreen(name,keepTab=false){
+  if(name==='comunidad')_comLoad();
+  if(name==='referidos')_loadReferralScreen();
   if(name==='privacy'||name==='terms'){
     document.querySelectorAll('.screen').forEach(el=>el.classList.remove('active'));
     const s=document.getElementById('screen-'+name);
@@ -2802,6 +3364,10 @@ async function renderChart(){
   const aPct=lp.totalCurrent>0?lp.approximateCurrent/lp.totalCurrent*100:0;
   const noteText=aPct>0.5?`${series.length} pts · ${aPct.toFixed(0)}% ${currentLang==='es'?'estimado':'estimated'}`:currentLang==='es'?`${series.length} puntos históricos`:`${series.length} historical points`;
   _drawChart(canvas,series.map(p=>dateLabel(p.date,selectedRange)),values,note,meta,rv,noteText);
+  // Override with actual invested return (back-projected chart gain is misleading)
+  const _tInv=assets.reduce((s,a)=>s+(a.invested||0),0);
+  const _tVal=assets.reduce((s,a)=>s+(a.value||0),0);
+  if(_tInv>0){const _d=_tVal-_tInv,_p=(_d/_tInv)*100,_u=_d>=0;meta.textContent=(_u?'+':'') +fe(_d)+'  '+(_u?'+':'') +_p.toFixed(2)+'%';}
 }
 
 // ========== Asset Detail ==========
@@ -3457,9 +4023,7 @@ const AN_TER_MAP = {
   // ── Portfolio assets ────────────────────────────────────────────────────
   'IE00BYX5NK04':0.12,'IE00BYX5P602':0.12,'IE00B4ND3602':0.15,'IE00B579F325':0.12,
   'DE000A0F5UH1':0.10,'IE00BZ4BMM98':0.29,'IE00B9CQXS71':0.45,'NL0011683594':0.38,
-  'IE000QAZP7L2':0.17,'LU0084617165':0.80,'LU2145461757':0.80,
-  'ES0146309002':1.35,'ES0112611001':1.50,'ES0146311008':1.35,'LU1598719752':1.40,
-  'ES0173311103':1.35,'ES0159259011':1.35,'ES0174115057':1.35,
+  'IE000QAZP7L2':0.17,
   // ── iShares / BlackRock ─────────────────────────────────────────────────
   'IE00B52MJD48':0.20,'IE00B4L5Y983':0.20,'IE00B02KXK85':0.40,'IE00B1XNHC34':0.40,
   'IE00B3YLTY66':0.12,'IE00B0M62Q58':0.20,'IE00B0M62X26':0.40,'IE00B27YCF74':0.20,
@@ -3491,18 +4055,19 @@ const AN_TER_MAP = {
   // ── HANetf ───────────────────────────────────────────────────────────────
   'IE00BLRPQH31':0.29,'IE00BN4Q0601':0.30,'IE00BHBX3Z21':0.49,
 };
-// Populate a.ter from ETF profile for assets not in AN_TER_MAP
+// Fetch TER for all assets not in the hardcoded map via /api/ter/fetch
+// (scrapes FT Markets, caches in DB for 1 year)
 async function _prefetchMissingTers() {
-  const missing = assets.filter(a => a.quantity > 0 && (a.ter ?? AN_TER_MAP[a.isin]) == null && a.isin);
+  const missing = assets.filter(a => a.isin && a.quantity > 0 && a.ter == null && AN_TER_MAP[a.isin] == null);
   if (!missing.length) return false;
+  const isins = missing.map(a => a.isin);
   try {
-    const isins = missing.map(a => a.isin).join(',');
-    const data = await getJson(`/api/etf/profile?isin=${encodeURIComponent(isins)}`, 8000);
+    const data = await getJson(`/api/ter/fetch?isin=${encodeURIComponent(isins.join(','))}`, 25000);
     let updated = false;
-    (data.results || []).forEach(r => {
-      if (r.overview?.ter != null) {
-        const a = assets.find(x => x.isin === r.isin);
-        if (a) { a.ter = r.overview.ter; updated = true; }
+    Object.entries(data.results || {}).forEach(([isin, ter]) => {
+      if (ter != null) {
+        const a = assets.find(x => x.isin === isin);
+        if (a && a.ter == null) { a.ter = ter; updated = true; }
       }
     });
     return updated;
@@ -4884,7 +5449,24 @@ function getDayPct(a){
   const last=a.history[a.history.length-1].close,prev=a.history[a.history.length-2].close;
   return prev>0?(last-prev)/prev*100:null;
 }
+let _activeBrokerFilter=null;
+function renderBrokerFilter(){
+  const bar=document.getElementById('brokerFilterBar');
+  if(!bar)return;
+  const brokers=[...new Set(assets.filter(a=>a.quantity>0&&a.broker).map(a=>a.broker))].sort();
+  if(!brokers.length){bar.style.display='none';return;}
+  bar.style.display='flex';
+  const isEs=currentLang==='es';
+  bar.innerHTML=[
+    `<button class="bfBtn${_activeBrokerFilter===null?' active':''}" data-bf="">${isEs?'Agregado':'All'}</button>`,
+    ...brokers.map(b=>`<button class="bfBtn${_activeBrokerFilter===b?' active':''}" data-bf="${b.replace(/"/g,'&quot;')}">${b.replace(/</g,'&lt;')}</button>`)
+  ].join('');
+  bar.querySelectorAll('.bfBtn').forEach(btn=>{
+    btn.onclick=()=>{_activeBrokerFilter=btn.dataset.bf||null;renderBrokerFilter();renderLists();};
+  });
+}
 function renderLists(){
+  renderBrokerFilter();
   if(_sbUser && assets.length===0){
     const isEs=currentLang==='es';
     const emptyHtml=`<div style="padding:32px 16px;text-align:center">
@@ -4896,7 +5478,7 @@ function renderLists(){
     document.getElementById('portfolioList').innerHTML=emptyHtml;
     return;
   }
-  const html=[...assets].filter(a=>a.quantity>0).sort((a,b)=>{const d=toDisplay(b.value,assetCcy(b))-toDisplay(a.value,assetCcy(a));return isNaN(d)?0:d;}).map(a=>{
+  const html=[...assets].filter(a=>a.quantity>0&&(_activeBrokerFilter===null||a.broker===_activeBrokerFilter)).sort((a,b)=>{const d=toDisplay(b.value,assetCcy(b))-toDisplay(a.value,assetCcy(a));return isNaN(d)?0:d;}).map(a=>{
     const _av=toDisplay(a.value,assetCcy(a)),_ai=toDisplay(a.invested,costCcy(a)),_ag=_av-_ai,_agp=_ai>0?(_ag/_ai)*100:a.gainPct;
     const dp=getDayPct(a);
     const dayHtml=dp!=null
@@ -4986,9 +5568,15 @@ async function boot(){
       const entry=cvMap[pos.isin]||{},mapping=entry.mapping||null;
       const currentPrice=Number(pos.currentPrice)||0,buyPrice=Number(pos.buyPrice)||0,quantity=Number(pos.quantity)||0;
       const history=normalizeHistory(entry.data?.history||[]);
-      const gain=quantity*(currentPrice-buyPrice);
       const priceCurrency=entry.data?.quote?.currency||null;
-      return{isin:pos.isin,name:pos.shortName||pos.name||mapping?.name||pos.isin,fullName:pos.name||mapping?.name||pos.isin,quantity,buyPrice,currentPrice,invested:quantity*buyPrice,value:quantity*currentPrice,gain,gainPct:buyPrice?((currentPrice-buyPrice)/buyPrice)*100:0,mapping,provider:entry.data?.provider||null,coverageStatus:entry.data?.coverage?.status||'MISSING',coverage:entry.data?.coverage||{status:'MISSING'},history,hasRealHistory:history.length>1,_rawQty:quantity,_rawBuyPrice:buyPrice,customCurrency:priceCurrency};
+      // GBp/GBX = pence: Yahoo returns LSE prices in pence (1/100 GBP). Normalize to GBP.
+      const _isGBp=priceCurrency==='GBp'||priceCurrency==='GBX';
+      const adjPrice=_isGBp?currentPrice/100:currentPrice;
+      const adjBuyPrice=_isGBp?buyPrice/100:buyPrice;
+      const adjCcy=_isGBp?'GBP':priceCurrency;
+      const adjHistory=_isGBp&&history.length?history.map(p=>({...p,close:p.close/100})):history;
+      const gain=quantity*(adjPrice-adjBuyPrice);
+      return{isin:pos.isin,name:pos.shortName||pos.name||mapping?.name||pos.isin,fullName:pos.name||mapping?.name||pos.isin,quantity,buyPrice:adjBuyPrice,currentPrice:adjPrice,invested:quantity*adjBuyPrice,value:quantity*adjPrice,gain,gainPct:adjBuyPrice?((adjPrice-adjBuyPrice)/adjBuyPrice)*100:0,mapping,provider:entry.data?.provider||null,coverageStatus:entry.data?.coverage?.status||'MISSING',coverage:entry.data?.coverage||{status:'MISSING'},history:adjHistory,hasRealHistory:adjHistory.length>1,_rawQty:quantity,_rawBuyPrice:adjBuyPrice,customCurrency:adjCcy,costCurrency:_isGBp?'GBP':null};
     });
   }
   _rawSeedAssets=buildAssets({});
@@ -5183,6 +5771,12 @@ function showSearchResults(){
 function showAddForm(result,price,currency,history){
   _searchResult={...result,currentPrice:price,currency,history};
   document.getElementById('addAssetForm').style.display='';
+  _addFormMode='simple';
+  var _afsB=document.getElementById('addModeSimpleBtn'),_aftB=document.getElementById('addModeTxBtn');
+  if(_afsB)_afsB.classList.add('active'); if(_aftB)_aftB.classList.remove('active');
+  var _afdf=document.getElementById('addDateField'); if(_afdf)_afdf.style.display='none';
+  var _afdi=document.getElementById('addTxDateInput'); if(_afdi)_afdi.value=new Date().toISOString().slice(0,10);
+  var _aflbl=document.getElementById('addAvgCostLabel'); if(_aflbl)_aflbl.textContent='Avg cost per share';
   document.getElementById('searchResultsList').style.display='none';
   document.getElementById('searchHint').style.display='none';
 
@@ -5282,7 +5876,22 @@ function renderSearchResults(results){
   });
 }
 
-async function saveNewAsset(){
+let _addFormMode='simple';
+function setAddFormMode(mode){
+  _addFormMode=mode;
+  const btnS=document.getElementById('addModeSimpleBtn');
+  const btnT=document.getElementById('addModeTxBtn');
+  if(btnS)btnS.classList.toggle('active',mode==='simple');
+  if(btnT)btnT.classList.toggle('active',mode==='transactions');
+  const df=document.getElementById('addDateField');
+  if(df)df.style.display=mode==='transactions'?'':'none';
+  const lbl=document.getElementById('addAvgCostLabel');
+  const isEs=currentLang==='es';
+  if(lbl)lbl.textContent=mode==='transactions'
+    ?(isEs?'Precio por accion (en esa fecha)':'Price per share (at that date)')
+    :'Avg cost per share';
+}
+function saveNewAsset(){
   if(!_searchResult)return;
   const qty=parseNum('addQty');
   const avgCost=parseNum('addAvgCost');
@@ -5299,7 +5908,9 @@ async function saveNewAsset(){
 
   // Save position
   const ov=getOverrides();
-  ov[sym]={quantity:qty,avgCost,costCurrency:avgCostCurrency,isCustom:true,...(broker&&{broker})};
+  const _txD=_addFormMode==='transactions'?document.getElementById('addTxDateInput')?.value:null;
+  const _txEntry=_txD?[{type:'buy',qty,price:avgCost,date:_txD}]:[];
+  ov[sym]={quantity:qty,avgCost,costCurrency:avgCostCurrency,isCustom:true,...(_txD&&{transactions:_txEntry}),...(broker&&{broker})};
   saveOverrides(ov);
 
   // Inject into assets immediately and rebuild
@@ -5310,7 +5921,7 @@ async function saveNewAsset(){
   _debouncedSync(true); // sync immediately — asset add is critical
 
   closeSearch();
-  showScreen('portfolio');
+  showScreen('home');
 }
 
 
@@ -5949,14 +6560,15 @@ function handleAlertNotifToggle(el){
   if(el.checked&&'Notification'in window&&Notification.permission==='default') Notification.requestPermission();
 }
 function requestAlertNotifPerms(){
-  if('Notification'in window) Notification.requestPermission().then(p=>{
-    if(p==='granted'){document.getElementById('alertsNotifBanner').style.display='none';showToast('Notificaciones activadas ✓');}
+  requestAlertPushPerms().then(p=>{
+    if(p==='granted'){const b=document.getElementById('alertsNotifBanner');if(b)b.style.display='none';showToast('Notificaciones activadas ✓');registerPushSW();}
   });
 }
 
 // ── Alerts screen ────────────────────────────────────────────────
 function renderAlertsScreen(){
   hideAlertForm();
+  if(typeof registerPushSW==='function'&&'Notification'in window&&Notification.permission==='granted')registerPushSW();
   // Notif banner
   const banner=document.getElementById('alertsNotifBanner');
   if(banner) banner.style.display=('Notification'in window&&Notification.permission!=='granted')?'flex':'none';
@@ -5964,10 +6576,12 @@ function renderAlertsScreen(){
 }
 
 function showAlertForm(){
+  if(_userPlan==='free'){_showUpgradeModal('alerts');return;}
   _alertsCond='above';_alertsAssetISIN=null;
   const fc=document.getElementById('alertFormCard');if(fc)fc.style.display='';
   document.getElementById('alertsPriceInput').value='';
   document.getElementById('alertsNotifCk').checked=true;
+  const _ec=document.getElementById('alertsEmailCk');if(_ec)_ec.checked=false;
   document.getElementById('alertsCondAbove').classList.add('active');
   document.getElementById('alertsCondBelow').classList.remove('active');
   const sw=document.getElementById('alertsSelWrap');if(sw)sw.style.display='none';
@@ -6020,7 +6634,7 @@ function saveAlertFromScreen(){
   if(!priceVal||priceVal<=0){showToast('Introduce un precio válido');return;}
   const asset=assets.find(a=>a.isin===_alertsAssetISIN);if(!asset)return;
   const alerts=getAlerts();
-  alerts.push({id:Date.now().toString(),isin:_alertsAssetISIN,name:asset.shortName||asset.name,targetPrice:priceVal,cond:_alertsCond,notif:document.getElementById('alertsNotifCk').checked,triggered:false,createdAt:new Date().toISOString()});
+  alerts.push({id:Date.now().toString(),isin:_alertsAssetISIN,name:asset.shortName||asset.name,targetPrice:priceVal,cond:_alertsCond,notif:document.getElementById('alertsNotifCk').checked,emailNotif:document.getElementById('alertsEmailCk')?.checked??false,triggered:false,createdAt:new Date().toISOString()});
   saveAlerts(alerts);
   hideAlertForm();
   _renderAlertsListScreen();
@@ -6074,6 +6688,29 @@ function _renderAlertsListScreen(){
   }).join('');
 }
 
+
+// ── Service Worker & Web Push ─────────────────────────────────────────────
+const _VAPID_PUBLIC = 'BBHN8WCt5YeIWwJ8iE3e8cUGalr4HRxtyrzyBMH55i1wNCh0t03-0Y_SqP527LbCWnohbVe-99jgnFR1D8fg5U8';
+let _pushSubscription = null;
+function _urlB64ToUint8Array(b){const p='='.repeat((4-b.length%4)%4);const b64=(b+p).replace(/-/g,'+').replace(/_/g,'/');const raw=atob(b64);return Uint8Array.from({length:raw.length},(_,i)=>raw.charCodeAt(i));}
+async function registerPushSW(){
+  if(!('serviceWorker'in navigator)||!('PushManager'in window))return;
+  try{
+    const reg=await navigator.serviceWorker.register('/sw.js',{scope:'/'});
+    await navigator.serviceWorker.ready;
+    _pushSubscription=await reg.pushManager.getSubscription();
+    if(_pushSubscription)return;
+    _pushSubscription=await reg.pushManager.subscribe({userVisibleOnly:true,applicationServerKey:_urlB64ToUint8Array(_VAPID_PUBLIC)});
+    const tok=localStorage.getItem('fa_token');
+    if(tok)fetch('/api/alerts/subscribe',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+tok},body:JSON.stringify({subscription:_pushSubscription.toJSON()})}).catch(()=>{});
+  }catch(e){console.log('[sw]',e.message);}
+}
+async function requestAlertPushPerms(){
+  const perm=await Notification.requestPermission();
+  if(perm==='granted')registerPushSW();
+  return perm;
+}
+
 function checkAlertsTrigger(){
   const alerts=getAlerts();if(!alerts.length)return;
   let changed=false;
@@ -6084,6 +6721,7 @@ function checkAlertsTrigger(){
     const hit=a.cond==='above'?price>=a.targetPrice:price<=a.targetPrice;
     if(hit){
       a.triggered=true;changed=true;
+      (()=>{const tok=localStorage.getItem('fa_token');if(tok)fetch('/api/alerts/notify',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+tok},body:JSON.stringify({alertName:a.name,condition:a.cond,targetPrice:a.targetPrice,currentPrice:price,sendEmail:!!a.emailNotif,currency:'EUR'})}).catch(()=>{});})();
       if(a.notif){
         const msg=`${a.name} ha ${a.cond==='above'?'superado':'bajado de'} ${fe(a.targetPrice)}`;
         if('Notification'in window&&Notification.permission==='granted'){
@@ -6121,11 +6759,17 @@ async function enterDemo(){
     function _buildDemo(cvMap){
       return seed.positions.filter(p=>Number(p.quantity)>0).map(pos=>{
         const entry=cvMap[pos.isin]||{},mapping=entry.mapping||null;
-        const currentPrice=Number(entry.data?.quote?.price||entry.data?.quote?.close||pos.currentPrice)||0;
+        const _rawPrice=Number(entry.data?.quote?.price||entry.data?.quote?.close||pos.currentPrice)||0;
         const buyPrice=Number(pos.buyPrice)||0,quantity=Number(pos.quantity)||0;
         const history=normalizeHistory(entry.data?.history||[]);
-        const gain=quantity*(currentPrice-buyPrice);
-        return{isin:pos.isin,name:pos.shortName||pos.name||pos.isin,fullName:pos.name||pos.isin,quantity,buyPrice,currentPrice,invested:quantity*buyPrice,value:quantity*currentPrice,gain,gainPct:buyPrice?((currentPrice-buyPrice)/buyPrice)*100:0,mapping,provider:entry.data?.provider||null,coverageStatus:entry.data?.coverage?.status||'MISSING',coverage:entry.data?.coverage||{status:'MISSING'},history,hasRealHistory:history.length>1,_rawQty:quantity,_rawBuyPrice:buyPrice};
+        const _demoCcy=entry.data?.quote?.currency||null;
+        const _demoGBp=_demoCcy==='GBp'||_demoCcy==='GBX';
+        const currentPrice=_demoGBp?_rawPrice/100:_rawPrice;
+        const adjBuyPrice=_demoGBp?buyPrice/100:buyPrice;
+        const adjCcy=_demoGBp?'GBP':_demoCcy;
+        const adjHistory=_demoGBp&&history.length?history.map(p=>({...p,close:p.close/100})):history;
+        const gain=quantity*(currentPrice-adjBuyPrice);
+        return{isin:pos.isin,name:pos.shortName||pos.name||pos.isin,fullName:pos.name||pos.isin,quantity,buyPrice:adjBuyPrice,currentPrice,invested:quantity*adjBuyPrice,value:quantity*currentPrice,gain,gainPct:adjBuyPrice?((currentPrice-adjBuyPrice)/adjBuyPrice)*100:0,mapping,provider:entry.data?.provider||null,coverageStatus:entry.data?.coverage?.status||'MISSING',coverage:entry.data?.coverage||{status:'MISSING'},history:adjHistory,hasRealHistory:adjHistory.length>1,_rawQty:quantity,_rawBuyPrice:adjBuyPrice,customCurrency:adjCcy,costCurrency:_demoGBp?'GBP':null};
       });
     }
     _rawSeedAssets=_buildDemo({});
@@ -7458,7 +8102,7 @@ function _insClearSearch() {
     } catch(e) { showMsg('Error de red.', false); }
   }
   async function _deskLogout() {
-    ['tf_positions','tf_custom_assets','tf_last_sync','fa_liquidity','_rawCustomAssets','fa_active_user_id'].forEach(k=>localStorage.removeItem(k));
+    ['tf_positions','tf_custom_assets','tf_last_sync','fa_liquidity','_rawCustomAssets','fa_active_user_id','fa_token'].forEach(k=>localStorage.removeItem(k));
     if (_sb) await _sb.auth.signOut();
     const m = document.getElementById('deskUserMenu');
     if (m) m.style.display = 'none';
@@ -7511,9 +8155,7 @@ window._toggleUserMenu = function() {
   }
 };
 window._deskLogout = function() {
-  if (typeof _deskLogout === 'function') { _deskLogout(); return; }
-  // Fallback if inner fn not accessible
-  ['tf_positions','tf_custom_assets','tf_last_sync','fa_liquidity','_rawCustomAssets','fa_active_user_id'].forEach(k=>localStorage.removeItem(k));
+  ['tf_positions','tf_custom_assets','tf_last_sync','fa_liquidity','_rawCustomAssets','fa_active_user_id','fa_token'].forEach(k=>localStorage.removeItem(k));
   if (typeof _sb !== 'undefined' && _sb) _sb.auth.signOut().catch(()=>{});
   const m = document.getElementById('deskUserMenu');
   if (m) m.style.display = 'none';
@@ -7533,6 +8175,641 @@ function _highlightCcy() {
       btn.style.borderColor = ccy === c ? '#142018' : 'rgba(20,32,24,.15)';
     }
   });
+}
+
+
+
+function _genRefCode() {
+  const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+  let code = '';
+  for (let i = 0; i < 8; i++) {
+    code += chars[Math.floor(Math.random() * chars.length)];
+  }
+  return code;
+}
+
+async function _loadReferralScreen() {
+  const el = document.getElementById('refMainContent');
+  if (!el) return;
+
+  if (!_sb || !_sbUser) {
+    el.innerHTML = `<div class="ref-login-prompt">
+      <p>Inicia sesión para ver tu panel de referidos y obtener tu enlace personalizado.</p>
+      <button class="ref-login-btn" onclick="openAuthModal()">Iniciar sesión</button>
+    </div>`;
+    return;
+  }
+
+  el.innerHTML = '<div class="ref-empty" style="padding:48px 0">Cargando datos…</div>';
+
+  try {
+    // 1. Get or create referral code
+    let { data: codeRow, error: codeErr } = await _sb
+      .from('referral_codes')
+      .select('code')
+      .eq('user_id', _sbUser.id)
+      .maybeSingle();
+
+    if (!codeRow) {
+      const newCode = _genRefCode();
+      const { data: inserted, error: insErr } = await _sb
+        .from('referral_codes')
+        .insert({ user_id: _sbUser.id, code: newCode })
+        .select('code')
+        .single();
+      if (insErr) throw insErr;
+      codeRow = inserted;
+    }
+
+    const code = codeRow.code;
+    const refLink = `https://finasset.app/?ref=${code}`;
+
+    // 2. Load referral rows
+    const { data: refs, error: refsErr } = await _sb
+      .from('referrals')
+      .select('referred_id, subscribed, subscribed_at, created_at')
+      .eq('referrer_id', _sbUser.id)
+      .order('created_at', { ascending: false });
+
+    if (refsErr) throw refsErr;
+
+    const registered = refs ? refs.length : 0;
+    const converted  = refs ? refs.filter(r => r.subscribed).length : 0;
+    const earned     = refs ? 0 : 0;
+
+    // Mask email: show first 2 chars + *** + @domain
+    function maskEmail(email) {
+      if (!email) return '—';
+      const [u, d] = email.split('@');
+      return u.slice(0, 2) + '***' + (d ? '@' + d : '');
+    }
+
+    const tableRows = refs && refs.length
+      ? refs.map(r => `
+        <div class="ref-table-row">
+          <div class="ref-table-email">${('Usuario ' + (r.referred_id ? r.referred_id.slice(0,8) : '—'))}</div>
+          <div class="ref-table-date">${r.created_at ? new Date(r.created_at).toLocaleDateString('es-ES') : '—'}</div>
+          <div><span class="ref-table-status ${r.subscribed ? 'converted' : 'registered'}">${r.subscribed ? '✓ Suscrito' : '· Registrado'}</span></div>
+        </div>`).join('')
+      : `<div class="ref-empty">Todavía no tienes referidos.<br>¡Comparte tu enlace para empezar!</div>`;
+
+    el.innerHTML = `
+      <div class="ref-stats-grid">
+        <div class="ref-stat-card">
+          <div class="ref-stat-label">Registrados</div>
+          <div class="ref-stat-value">${registered}</div>
+          <div class="ref-stat-sub">usuarios via tu enlace</div>
+        </div>
+        <div class="ref-stat-card">
+          <div class="ref-stat-label">Suscritos</div>
+          <div class="ref-stat-value">${converted}</div>
+          <div class="ref-stat-sub">con plan de pago</div>
+        </div>
+        <div class="ref-stat-card">
+          <div class="ref-stat-label">Ingresos generados</div>
+          <div class="ref-stat-value">${earned.toFixed(2)} €</div>
+          <div class="ref-stat-sub">hasta hoy</div>
+        </div>
+      </div>
+
+      <div class="ref-link-card">
+        <div class="ref-link-label">Tu enlace de referido</div>
+        <div class="ref-link-row">
+          <input class="ref-link-input" id="refLinkInput" readonly value="${refLink}" onclick="this.select()">
+          <button class="ref-link-copy" onclick="_copyRefLink()">Copiar enlace</button>
+        </div>
+        <div class="ref-copy-ok" id="refCopyOk">✓ Enlace copiado al portapapeles</div>
+        <div class="ref-share-row">
+          <button class="ref-share-btn" onclick="_shareRefWhatsapp('${encodeURIComponent(refLink)}')">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="#25D366"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 2C6.477 2 2 6.477 2 12c0 1.89.525 3.66 1.438 5.168L2 22l4.985-1.406A9.945 9.945 0 0012 22c5.523 0 10-4.477 10-10S17.523 2 12 2z"/></svg>
+            WhatsApp
+          </button>
+          <button class="ref-share-btn" onclick="_shareRefEmail('${encodeURIComponent(refLink)}')">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#4a5f4e" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 01-2.06 0L2 7"/></svg>
+            Email
+          </button>
+          <button class="ref-share-btn" onclick="_shareRefTelegram('${encodeURIComponent(refLink)}')">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="#0088cc"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12L8.32 14.617l-2.96-.924c-.643-.204-.657-.643.136-.953l11.57-4.461c.537-.194 1.006.131.828.942z"/></svg>
+            Telegram
+          </button>
+        </div>
+      </div>
+
+      <div class="ref-how-card">
+        <div class="ref-how-title">¿Cómo funciona?</div>
+        <div class="ref-how-steps">
+          <div class="ref-how-step">
+            <div class="ref-how-num">1</div>
+            <div class="ref-how-text"><strong>Comparte tu enlace</strong> con amigos, familia o redes sociales</div>
+          </div>
+          <div class="ref-how-step">
+            <div class="ref-how-num">2</div>
+            <div class="ref-how-text"><strong>Se registran</strong> en Finasset usando tu enlace personalizado</div>
+          </div>
+          <div class="ref-how-step">
+            <div class="ref-how-num">3</div>
+            <div class="ref-how-text"><strong>Si suscriben un plan de pago</strong>, tú generas una comisión automáticamente</div>
+          </div>
+        </div>
+      </div>
+
+      ${registered > 0 ? `
+      <div class="ref-section-title">Tus referidos (${registered})</div>
+      <div class="ref-table-card">
+        <div class="ref-table-head">
+          <div class="ref-table-head-cell">Email</div>
+          <div class="ref-table-head-cell">Fecha</div>
+          <div class="ref-table-head-cell">Estado</div>
+        </div>
+        ${tableRows}
+      </div>` : ''}
+    `;
+  } catch (e) {
+    console.warn('[referrals]', e.message);
+    const isTableMissing = e.message?.includes('relation') || e.message?.includes('does not exist') || e.code === '42P01';
+    el.innerHTML = isTableMissing
+      ? `<div class="ref-login-prompt">
+          <p style="font-size:12px;color:#8fa090;margin-bottom:0">La funcionalidad de referidos estará disponible próximamente.<br>Las tablas de base de datos están siendo configuradas.</p>
+         </div>`
+      : `<div class="ref-empty" style="color:#e03636">Error al cargar datos: ${e.message}</div>`;
+  }
+}
+
+function _copyRefLink() {
+  const input = document.getElementById('refLinkInput');
+  if (!input) return;
+  navigator.clipboard.writeText(input.value).then(() => {
+    const ok = document.getElementById('refCopyOk');
+    if (ok) { ok.style.display = ''; setTimeout(() => { ok.style.display = 'none'; }, 2500); }
+  }).catch(() => {
+    input.select();
+    document.execCommand('copy');
+  });
+}
+
+function _shareRefWhatsapp(encodedLink) {
+  window.open(`https://wa.me/?text=Te%20invito%20a%20Finasset%2C%20la%20app%20para%20gestionar%20tu%20cartera%20de%20inversi%C3%B3n.%20Reg%C3%ADstrate%20aqu%C3%AD%3A%20${encodedLink}`, '_blank');
+}
+function _shareRefEmail(encodedLink) {
+  window.open(`mailto:?subject=Te%20invito%20a%20Finasset&body=Gestiona%20tu%20cartera%20de%20inversi%C3%B3n%20con%20Finasset.%20Reg%C3%ADstrate%20con%20mi%20enlace%3A%20${encodedLink}`, '_blank');
+}
+function _shareRefTelegram(encodedLink) {
+  window.open(`https://t.me/share/url?url=${encodedLink}&text=Te%20invito%20a%20Finasset%20%F0%9F%93%88%20La%20app%20de%20seguimiento%20de%20carteras`, '_blank');
+}
+
+// ── Register referral after signup ──────────────────────────────────────────
+// Called from onAuthStateChange SIGNED_IN when a pending referral is in localStorage
+async function _registerPendingReferral(userId) {
+  const pendingCode = localStorage.getItem('fa_pending_ref');
+  if (!pendingCode || !_sb) return;
+
+  try {
+    // Find the referrer by code
+    const { data: codeRow } = await _sb
+      .from('referral_codes')
+      .select('user_id')
+      .eq('code', pendingCode)
+      .maybeSingle();
+
+    if (!codeRow || codeRow.user_id === userId) {
+      // Code not found or self-referral — clear and abort
+      localStorage.removeItem('fa_pending_ref');
+      return;
+    }
+
+    // Check if this user was already referred
+    const { data: existing } = await _sb
+      .from('referrals')
+      .select('id')
+      .eq('referred_id', userId)
+      .maybeSingle();
+
+    if (existing) { localStorage.removeItem('fa_pending_ref'); return; }
+
+    // Insert referral record
+    const email = _sbUser?.email || null;
+    await _sb.from('referrals').insert({
+      referrer_id: codeRow.user_id,
+      referred_id: userId,
+      referred_email: email,
+      code_used: pendingCode,
+      registered_at: new Date().toISOString(),
+    });
+
+    localStorage.removeItem('fa_pending_ref');
+    console.log('[referral] registered via code', pendingCode);
+  } catch (e) {
+    // Silently fail — referral tracking is non-critical
+    console.warn('[referral] register failed:', e.message);
+  }
+}
+
+// ── Comunidad ────────────────────────────────────────────────────────────────
+let _comFilter_active = 'all';
+let _comPosts = [];
+let _comMyLikes = new Set();
+let _comModalTab = 'texto';
+
+function _comLoad() {
+  // Update avatar
+  const av = document.getElementById('comAvatar');
+  if (av && _sbUser) {
+    const initials = (_sbUser.email || '?').slice(0, 2).toUpperCase();
+    av.textContent = initials;
+  }
+  _comLoadFeed();
+  _comLoadMarkets();
+  _comLoadTopMembers();
+}
+
+async function _comLoadFeed() {
+  const el = document.getElementById('comFeed');
+  if (!el) return;
+  if (!_sb) { el.innerHTML = '<div class="com-empty">Inicia sesión para ver la comunidad</div>'; return; }
+
+  el.innerHTML = '<div class="com-loading">Cargando…</div>';
+  try {
+    let query = _sb.from('community_posts').select('*').order('created_at', { ascending: false }).limit(30);
+    if (_comFilter_active !== 'all') query = query.eq('post_type', _comFilter_active);
+    const { data: posts, error } = await query;
+    if (error) throw error;
+
+    _comPosts = posts || [];
+
+    // Load user's likes
+    if (_sbUser) {
+      const { data: likes } = await _sb.from('community_likes').select('post_id').eq('user_id', _sbUser.id);
+      _comMyLikes = new Set((likes || []).map(l => l.post_id));
+    }
+
+    if (!_comPosts.length) {
+      el.innerHTML = `<div class="com-empty">
+        <div style="font-size:32px;margin-bottom:12px">🌱</div>
+        <div style="font-weight:700;color:#7a9e88;margin-bottom:6px">La comunidad está creciendo</div>
+        <div>¡Sé el primero en publicar!</div>
+      </div>`;
+      return;
+    }
+
+    el.innerHTML = _comPosts.map(p => _comRenderPost(p)).join('');
+  } catch (e) {
+    const isNew = e.message?.includes('relation') || e.message?.includes('does not exist');
+    el.innerHTML = isNew
+      ? `<div class="com-empty"><div style="font-size:28px;margin-bottom:10px">🛠️</div><div>Comunidad en configuración.<br>Crea las tablas en Supabase para activarla.</div></div>`
+      : `<div class="com-empty" style="color:#e74c3c">Error: ${e.message}</div>`;
+  }
+}
+
+function _comRenderPost(p) {
+  const liked = _comMyLikes.has(p.id);
+  const initials = (p.display_name || '?').slice(0, 2).toUpperCase();
+  const colors = ['#1a7a43,#2ecc71','#1a4a6a,#3498db','#6a1a4a,#c39bd3','#4a3a1a,#d4af37','#3a1a1a,#e74c3c'];
+  const colorIdx = p.display_name ? p.display_name.charCodeAt(0) % colors.length : 0;
+  const timeAgo = _comTimeAgo(p.created_at);
+  const badgeClass = p.post_type === 'transaccion' ? 'com-badge-transaccion' : 'com-badge-portfolio';
+  const badgeLabel = p.post_type === 'portfolio' ? '📊 Portafolio' : p.post_type === 'transaccion' ? '💸 Transacción' : '💬 Análisis';
+
+  let widget = '';
+  if (p.post_type === 'portfolio' && p.pf_total) {
+    const gain = Number(p.pf_gain_pct || 0);
+    const gainStr = (gain >= 0 ? '▲ +' : '▼ ') + Math.abs(gain).toFixed(2) + '%';
+    const gainClass = gain >= 0 ? 'pos' : 'neg';
+    widget = `
+      <div class="com-pf-widget">
+        <div class="com-pf-hd">
+          <div>
+            <div style="font-size:9px;text-transform:uppercase;letter-spacing:.8px;color:#4a6b55;margin-bottom:4px">Valor total</div>
+            <div class="com-pf-total">${Number(p.pf_total).toLocaleString('es-ES', {minimumFractionDigits:2,maximumFractionDigits:2})} €</div>
+          </div>
+          <div style="text-align:right">
+            <div class="com-pf-gain ${gainClass}">${gainStr}</div>
+            <div style="font-size:11px;color:#4a6b55;margin-top:2px">${p.pf_positions || 0} posiciones</div>
+          </div>
+        </div>
+        <div class="com-pf-stats">
+          <div class="com-pf-stat"><div class="com-pf-stat-lbl">Invertido</div><div class="com-pf-stat-val">${Number(p.pf_invested||0).toLocaleString('es-ES',{maximumFractionDigits:0})} €</div></div>
+          <div class="com-pf-stat"><div class="com-pf-stat-lbl">Posiciones</div><div class="com-pf-stat-val">${p.pf_positions||0}</div></div>
+          <div class="com-pf-stat"><div class="com-pf-stat-lbl">Rentab.</div><div class="com-pf-stat-val" style="color:#2ecc71">${gain>=0?'+':''}${gain.toFixed(2)}%</div></div>
+        </div>
+      </div>`;
+  } else if (p.post_type === 'transaccion' && p.tx_asset) {
+    const isBuy = (p.tx_type || 'Compra') === 'Compra';
+    const total = (Number(p.tx_qty||0) * Number(p.tx_price||0)).toLocaleString('es-ES',{minimumFractionDigits:2,maximumFractionDigits:2});
+    const txDate = p.tx_date ? new Date(p.tx_date) : null;
+    const day = txDate ? txDate.getDate() : '—';
+    const mon = txDate ? txDate.toLocaleString('es-ES',{month:'short'}) : '';
+    widget = `
+      <div class="com-tx-widget">
+        <div class="com-tx-date-col"><strong>${day}</strong><span>${mon}</span><span style="font-size:10px;color:#4a6b55">${isBuy?'▼':'▲'}</span></div>
+        <div class="com-tx-logo">📈</div>
+        <div class="com-tx-info">
+          <div class="com-tx-asset">${_comEsc(p.tx_asset)}</div>
+          <div class="com-tx-detail">${p.tx_type} × ${p.tx_qty} acc · ${Number(p.tx_price||0).toFixed(2)} €/acc</div>
+        </div>
+        <div class="com-tx-amount ${isBuy?'buy':'sell'}">${isBuy?'+':'-'}€${total}</div>
+      </div>`;
+  }
+
+  const tags = (p.tags||'').split(/\s+/).filter(Boolean).map(t => `<span class="com-tag">${_comEsc(t)}</span>`).join(' ');
+
+  return `<div class="com-post" data-id="${p.id}">
+    <div class="com-post-hd">
+      <div class="com-post-av" style="background:linear-gradient(135deg,${colors[colorIdx]})" onclick="_comShowProfile('${p.user_id}','${_comEsc(p.display_name)}')">${initials}</div>
+      <div class="com-post-meta">
+        <div class="com-post-name" onclick="_comShowProfile('${p.user_id}','${_comEsc(p.display_name)}')">${_comEsc(p.display_name)}</div>
+        <div class="com-post-handle">@${(p.display_name||'').toLowerCase().replace(/\s+/,'')}</div>
+      </div>
+      <div class="com-post-time">${timeAgo}</div>
+    </div>
+    <span class="com-post-badge ${badgeClass}">${badgeLabel}</span>
+    ${p.content ? `<p class="com-post-text">${_comEsc(p.content)} ${tags}</p>` : `<p class="com-post-text">${tags}</p>`}
+    ${widget}
+    <div class="com-post-actions">
+      <button class="com-action-btn${liked?' liked':''}" onclick="_comToggleLike('${p.id}',this)">
+        <svg viewBox="0 0 24 24" fill="${liked?'currentColor':'none'}" stroke="currentColor" stroke-width="2"><path d="M14 9V5a3 3 0 00-3-3l-4 9v11h11.28a2 2 0 002-1.7l1.38-9a2 2 0 00-2-2.3H14z"/></svg>
+        <span>${p.likes_count||0}</span>
+      </button>
+      <button class="com-action-btn" onclick="_comToggleComments('${p.id}',this)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+        <span id="comCnt-${p.id}">${p.comments_count||0}</span>
+      </button>
+      <div class="com-action-sep"></div>
+      ${_sbUser && p.user_id === _sbUser.id ? `<button class="com-action-btn" onclick="_comDeletePost('${p.id}',this)" title="Eliminar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/></svg></button>` : ''}
+    </div>
+    <div class="com-comments" id="comComments-${p.id}">
+      <div id="comCommentsList-${p.id}"><div class="com-loading" style="padding:12px 0">Cargando comentarios…</div></div>
+      <div class="com-comment-input">
+        <div class="com-av" style="width:28px;height:28px;font-size:11px">${_sbUser?(_sbUser.email||'?').slice(0,2).toUpperCase():'?'}</div>
+        <input type="text" class="com-comment-field" placeholder="Escribe un comentario…" id="comCF-${p.id}" onkeydown="if(event.key==='Enter')_comAddComment('${p.id}')">
+        <button class="com-comment-send" onclick="_comAddComment('${p.id}')">Enviar</button>
+      </div>
+    </div>
+  </div>`;
+}
+
+async function _comToggleComments(postId, btn) {
+  const section = document.getElementById(`comComments-${postId}`);
+  if (!section) return;
+  const isOpen = section.classList.toggle('open');
+  if (btn) btn.style.color = isOpen ? '#2ecc71' : '';
+  if (isOpen) await _comLoadComments(postId);
+}
+
+async function _comLoadComments(postId) {
+  const el = document.getElementById(`comCommentsList-${postId}`);
+  if (!el || !_sb) return;
+  try {
+    const { data: comments } = await _sb.from('community_comments').select('*').eq('post_id', postId).order('created_at', { ascending: true });
+    const list = comments || [];
+    el.innerHTML = list.length ? list.map(c => {
+      const ini = (c.display_name||'?').slice(0,2).toUpperCase();
+      const colors = ['#1a7a43,#2ecc71','#1a4a6a,#3498db','#6a1a4a,#c39bd3'];
+      const ci = (c.display_name||'?').charCodeAt(0) % colors.length;
+      return `<div class="com-comment-item">
+        <div class="com-comment-av" style="background:linear-gradient(135deg,${colors[ci]})">${ini}</div>
+        <div class="com-comment-body">
+          <div class="com-comment-name">${_comEsc(c.display_name)} <span style="font-size:10px;color:#4a6b55;font-weight:400">${_comTimeAgo(c.created_at)}</span></div>
+          <div class="com-comment-text">${_comEsc(c.content)}</div>
+        </div>
+      </div>`;
+    }).join('') : '<div style="font-size:12px;color:#4a6b55;padding:8px 0">Sin comentarios aún.</div>';
+  } catch(e) { el.innerHTML = ''; }
+}
+
+async function _comAddComment(postId) {
+  if (!_sb || !_sbUser) { alert('Inicia sesión para comentar'); return; }
+  const input = document.getElementById(`comCF-${postId}`);
+  if (!input) return;
+  const text = input.value.trim();
+  if (!text) return;
+  input.value = '';
+  const displayName = _sbUser.user_metadata?.full_name || _sbUser.email?.split('@')[0] || 'Usuario';
+  try {
+    await _sb.from('community_comments').insert({ post_id: postId, user_id: _sbUser.id, display_name: displayName, content: text });
+    await _sb.rpc('increment_comments_count', { post_id: postId }).catch(() => {
+      // Fallback: direct update
+      _sb.from('community_posts').update({ comments_count: (_comPosts.find(p=>p.id===postId)?.comments_count||0)+1 }).eq('id', postId).catch(()=>{});
+    });
+    const cntEl = document.getElementById(`comCnt-${postId}`);
+    if (cntEl) cntEl.textContent = Number(cntEl.textContent||0) + 1;
+    await _comLoadComments(postId);
+  } catch(e) { console.warn('[com comment]', e.message); }
+}
+
+async function _comToggleLike(postId, btn) {
+  if (!_sb || !_sbUser) { alert('Inicia sesión para dar me gusta'); return; }
+  const liked = _comMyLikes.has(postId);
+  const span = btn.querySelector('span');
+  const svg = btn.querySelector('svg');
+  const post = _comPosts.find(p => p.id === postId);
+  try {
+    if (liked) {
+      await _sb.from('community_likes').delete().eq('user_id', _sbUser.id).eq('post_id', postId);
+      await _sb.from('community_posts').update({ likes_count: Math.max(0, (post?.likes_count||1)-1) }).eq('id', postId);
+      _comMyLikes.delete(postId);
+      btn.classList.remove('liked');
+      if (svg) svg.setAttribute('fill','none');
+      if (span) span.textContent = Math.max(0, Number(span.textContent||1)-1);
+      if (post) post.likes_count = Math.max(0, (post.likes_count||1)-1);
+    } else {
+      await _sb.from('community_likes').insert({ user_id: _sbUser.id, post_id: postId });
+      await _sb.from('community_posts').update({ likes_count: (post?.likes_count||0)+1 }).eq('id', postId);
+      _comMyLikes.add(postId);
+      btn.classList.add('liked');
+      if (svg) svg.setAttribute('fill','currentColor');
+      if (span) span.textContent = Number(span.textContent||0)+1;
+      if (post) post.likes_count = (post.likes_count||0)+1;
+    }
+  } catch(e) { console.warn('[com like]', e.message); }
+}
+
+async function _comDeletePost(postId, btn) {
+  if (!_sb || !_sbUser || !confirm('¿Eliminar esta publicación?')) return;
+  try {
+    await _sb.from('community_posts').delete().eq('id', postId).eq('user_id', _sbUser.id);
+    btn.closest('.com-post')?.remove();
+  } catch(e) { console.warn('[com delete]', e.message); }
+}
+
+function _comFilter(btn, type) {
+  document.querySelectorAll('.com-pill').forEach(p => p.classList.remove('active'));
+  btn.classList.add('active');
+  _comFilter_active = type;
+  _comLoadFeed();
+}
+
+function _comOpenModal(tab) {
+  if (!_sb || !_sbUser) { alert('Inicia sesión para publicar'); return; }
+  document.getElementById('comModal').classList.add('open');
+  _comSwitchTab(tab);
+  document.getElementById('comPostMsg').style.display = 'none';
+}
+
+function _comCloseModal() {
+  document.getElementById('comModal').classList.remove('open');
+}
+
+function _comSwitchTab(tab) {
+  _comModalTab = tab;
+  ['texto','portfolio','transaccion'].forEach(t => {
+    const form = document.getElementById('comForm' + t.charAt(0).toUpperCase() + t.slice(1));
+    const btn = document.getElementById('comTab' + t.charAt(0).toUpperCase() + t.slice(1));
+    if (form) form.style.display = t === tab ? 'block' : 'none';
+    if (btn) btn.classList.toggle('active', t === tab);
+  });
+}
+
+function _comAutofillPortfolio() {
+  try {
+    const totalEl = document.getElementById('total') || document.getElementById('summaryTotal');
+    const investedEl = document.getElementById('investedTotal') || document.getElementById('summaryInvested');
+    const total = typeof assets !== 'undefined' ? assets.reduce((s,a) => s + (a.currentPrice||0)*(a.quantity||0), 0) : 0;
+    const invested = typeof assets !== 'undefined' ? assets.reduce((s,a) => s + (a.investedAmount||0), 0) : 0;
+    const positions = typeof assets !== 'undefined' ? assets.length : 0;
+    const gainPct = invested > 0 ? ((total - invested) / invested * 100) : 0;
+    if (document.getElementById('comPfTotal')) document.getElementById('comPfTotal').value = total.toFixed(2);
+    if (document.getElementById('comPfInvested')) document.getElementById('comPfInvested').value = invested.toFixed(2);
+    if (document.getElementById('comPfGain')) document.getElementById('comPfGain').value = gainPct.toFixed(2);
+    if (document.getElementById('comPfPositions')) document.getElementById('comPfPositions').value = positions;
+  } catch(e) {}
+}
+
+async function _comPublish() {
+  if (!_sb || !_sbUser) return;
+  const btn = document.getElementById('comPublishBtn');
+  const msgEl = document.getElementById('comPostMsg');
+  const displayName = _sbUser.user_metadata?.full_name || _sbUser.email?.split('@')[0] || 'Usuario';
+
+  let payload = { user_id: _sbUser.id, display_name: displayName, post_type: _comModalTab };
+
+  if (_comModalTab === 'texto') {
+    const content = document.getElementById('comTextContent')?.value.trim();
+    if (!content) { msgEl.textContent = 'Escribe algo para publicar'; msgEl.style.display = ''; return; }
+    payload.content = content;
+    payload.tags = document.getElementById('comTextTags')?.value.trim() || null;
+  } else if (_comModalTab === 'portfolio') {
+    const content = document.getElementById('comPfContent')?.value.trim();
+    const total = Number(document.getElementById('comPfTotal')?.value);
+    if (!total) { msgEl.textContent = 'Introduce el valor total del portfolio'; msgEl.style.display = ''; return; }
+    payload.content = content || null;
+    payload.pf_total = total;
+    payload.pf_invested = Number(document.getElementById('comPfInvested')?.value) || null;
+    payload.pf_gain_pct = Number(document.getElementById('comPfGain')?.value) || null;
+    payload.pf_positions = Number(document.getElementById('comPfPositions')?.value) || null;
+    payload.tags = document.getElementById('comPfTags')?.value.trim() || null;
+  } else if (_comModalTab === 'transaccion') {
+    const asset = document.getElementById('comTxAsset')?.value.trim();
+    if (!asset) { msgEl.textContent = 'Indica el activo de la transacción'; msgEl.style.display = ''; return; }
+    payload.tx_asset = asset;
+    payload.tx_type = document.getElementById('comTxType')?.value || 'Compra';
+    payload.tx_date = document.getElementById('comTxDate')?.value || null;
+    payload.tx_qty = Number(document.getElementById('comTxQty')?.value) || null;
+    payload.tx_price = Number(document.getElementById('comTxPrice')?.value) || null;
+    payload.content = document.getElementById('comTxComment')?.value.trim() || null;
+  }
+
+  btn.textContent = '…'; btn.disabled = true;
+  try {
+    const { error } = await _sb.from('community_posts').insert(payload);
+    if (error) throw error;
+    _comCloseModal();
+    // Reset form fields
+    ['comTextContent','comTextTags','comPfContent','comPfTotal','comPfInvested','comPfGain','comPfPositions','comPfTags','comTxAsset','comTxQty','comTxPrice','comTxComment'].forEach(id => { const el=document.getElementById(id); if(el) el.value=''; });
+    await _comLoadFeed();
+  } catch(e) {
+    msgEl.textContent = e.message || 'Error al publicar'; msgEl.style.display = '';
+  } finally {
+    btn.textContent = '✦ Publicar'; btn.disabled = false;
+  }
+}
+
+async function _comShowProfile(userId, displayName) {
+  const modal = document.getElementById('comProfileModal');
+  const content = document.getElementById('comProfileContent');
+  if (!modal || !content) return;
+  modal.classList.add('open');
+  content.innerHTML = '<div class="com-loading">Cargando perfil…</div>';
+
+  try {
+    const { data: posts } = await _sb.from('community_posts').select('*').eq('user_id', userId).order('created_at', { ascending: false }).limit(20);
+    const userPosts = posts || [];
+    const totalLikes = userPosts.reduce((s,p) => s + (p.likes_count||0), 0);
+    const initials = (displayName||'?').slice(0,2).toUpperCase();
+    const colors = ['#1a7a43,#2ecc71','#1a4a6a,#3498db','#6a1a4a,#c39bd3','#4a3a1a,#d4af37'];
+    const ci = (displayName||'?').charCodeAt(0) % colors.length;
+    const isMe = _sbUser && userId === _sbUser.id;
+
+    content.innerHTML = `
+      <div class="com-profile-hd">
+        <div class="com-profile-av" style="background:linear-gradient(135deg,${colors[ci]})">${initials}</div>
+        <div class="com-profile-name">${_comEsc(displayName)}${isMe?' (Tú)':''}</div>
+        <div class="com-profile-handle">@${(displayName||'').toLowerCase().replace(/\s+/,'')}</div>
+      </div>
+      <div class="com-profile-stats">
+        <div class="com-profile-stat"><div class="com-profile-stat-val">${userPosts.length}</div><div class="com-profile-stat-lbl">Publicaciones</div></div>
+        <div class="com-profile-stat"><div class="com-profile-stat-val">${totalLikes}</div><div class="com-profile-stat-lbl">Me gustas</div></div>
+        <div class="com-profile-stat"><div class="com-profile-stat-val">${userPosts.filter(p=>p.post_type==='portfolio').length}</div><div class="com-profile-stat-lbl">Portafolios</div></div>
+      </div>
+      <div class="com-profile-posts">
+        <div style="font-size:11px;font-weight:700;color:#4a6b55;text-transform:uppercase;letter-spacing:.1em;margin-bottom:12px">Últimas publicaciones</div>
+        ${userPosts.slice(0,5).map(p => _comRenderPost(p)).join('') || '<div class="com-empty">Sin publicaciones</div>'}
+      </div>`;
+  } catch(e) {
+    content.innerHTML = `<div class="com-empty">Error cargando perfil</div>`;
+  }
+}
+
+function _comLoadMarkets() {
+  // Static placeholder — could be replaced with live data
+  const el = document.getElementById('comMarkets');
+  if (!el) return;
+  el.innerHTML = [
+    ['S&P 500','5.218','−1.24%',false],
+    ['NASDAQ','16.342','−1.87%',false],
+    ['IBEX 35','13.041','+0.32%',true],
+    ['EUR/USD','1.0821','+0.15%',true],
+    ['Oro','3.017 $','+0.89%',true],
+  ].map(([name,val,chg,pos]) => `
+    <div class="com-market-row">
+      <div><div class="com-market-name">${name}</div><div class="com-market-val">${val}</div></div>
+      <div class="com-market-chg ${pos?'com-chg-pos':'com-chg-neg'}">${chg}</div>
+    </div>`).join('');
+}
+
+async function _comLoadTopMembers() {
+  const el = document.getElementById('comTopMembers');
+  if (!el || !_sb) return;
+  try {
+    const { data } = await _sb.from('community_posts').select('user_id,display_name,likes_count');
+    const byUser = {};
+    (data||[]).forEach(p => {
+      if (!byUser[p.user_id]) byUser[p.user_id] = { name: p.display_name, posts: 0, likes: 0 };
+      byUser[p.user_id].posts++;
+      byUser[p.user_id].likes += (p.likes_count||0);
+    });
+    const sorted = Object.entries(byUser).sort((a,b) => b[1].likes - a[1].likes).slice(0,4);
+    if (!sorted.length) { el.innerHTML = '<div style="font-size:12px;color:#4a6b55">Aún no hay miembros activos</div>'; return; }
+    const colors = ['#1a7a43,#2ecc71','#1a4a6a,#3498db','#4a3a1a,#d4af37','#6a1a4a,#c39bd3'];
+    el.innerHTML = sorted.map(([uid, u], i) => `
+      <div class="com-top-user" onclick="_comShowProfile('${uid}','${_comEsc(u.name)}')">
+        <div class="com-top-user-av" style="background:linear-gradient(135deg,${colors[i%colors.length]})">${(u.name||'?').slice(0,2).toUpperCase()}</div>
+        <div><div class="com-top-user-name">${_comEsc(u.name)}</div><div class="com-top-user-handle">${u.posts} posts</div></div>
+        <div class="com-top-user-gain com-chg-pos">♥ ${u.likes}</div>
+      </div>`).join('');
+  } catch(e) { el.innerHTML = ''; }
+}
+
+function _comTimeAgo(ts) {
+  if (!ts) return '';
+  const diff = (Date.now() - new Date(ts).getTime()) / 1000;
+  if (diff < 60) return 'ahora';
+  if (diff < 3600) return `hace ${Math.floor(diff/60)}m`;
+  if (diff < 86400) return `hace ${Math.floor(diff/3600)}h`;
+  return `hace ${Math.floor(diff/86400)}d`;
+}
+
+function _comEsc(str) {
+  return String(str||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
 
 </script>
