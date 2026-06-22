@@ -1,11 +1,14 @@
 export const config = { runtime: 'edge' };
 
 // POST /api/email/send — send transactional email via Resend
+// Body: { to, subject, html, from? }
+// Auth: requires valid Supabase JWT (Bearer token)
 export default async (req) => {
   if (req.method !== 'POST') {
     return new Response(JSON.stringify({ error: 'Method not allowed' }), { status: 405 });
   }
 
+  // Verify caller has a valid Supabase session (basic auth guard)
   const auth = req.headers.get('Authorization') || '';
   if (!auth.startsWith('Bearer ')) {
     return new Response(JSON.stringify({ error: 'Unauthorized' }), { status: 401 });
