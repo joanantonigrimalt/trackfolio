@@ -5356,7 +5356,9 @@ async function boot(){
     showCover('cs-auth');
     return;
   }
-  await fetchGlobalFxRates();
+  // Fire FX rates + seed fetch in parallel — never block the first render on FX
+  // Seed prices are pre-converted EUR so the initial display works with default rates
+  const _fxPromise = fetchGlobalFxRates().catch(()=>{});
   const _ovMig=getOverrides();let _ovChanged=false;
   Object.keys(_ovMig).forEach(k=>{if(_ovMig[k]&&!_ovMig[k].costCurrency){_ovMig[k].costCurrency='EUR';_ovChanged=true;}});
   if(_ovChanged)saveOverrides(_ovMig);
@@ -5366,8 +5368,8 @@ async function boot(){
   let seed,_seedStale=false;
   try{const _sc=localStorage.getItem(_SEED_CK);if(_sc){const _p=JSON.parse(_sc);if(_p?.data){seed=_p.data;_seedStale=(Date.now()-_p.ts)>=180_000;}}}catch(_){}
   if(!seed){
-    // No cache at all — must fetch once (only on absolute first load)
-    try{ seed=await getJson('/api/portfolio/seed',10000); }
+    // No cache — fetch seed and FX in parallel (save ~500ms on first load)
+    try{ [seed]=await Promise.all([getJson('/api/portfolio/seed',10000),_fxPromise]); }
     catch(e){ document.getElementById('chartNote').textContent=(currentLang==='es'?'Error cargando portfolio: ':'Error loading portfolio: ')+e.message; return; }
     try{localStorage.setItem(_SEED_CK,JSON.stringify({data:seed,ts:Date.now()}));}catch(_){}
   }
@@ -6024,18 +6026,25 @@ async function syncFromCloud(){
     const cloudTs=new Date(data.updated_at).getTime();
     const localTs=new Date(localStorage.getItem('tf_last_sync')||0).getTime();
     const localEmpty=!Object.keys(getOverrides()).length&&!Object.keys(getCustomAssets()).length;
+    // Defensive: handle both object (server-parsed) and string (raw TEXT) forms
+    const _ov = typeof data.overrides === 'string' ? JSON.parse(data.overrides || '{}') : (data.overrides || {});
+    const _ca = typeof data.custom_assets === 'string' ? JSON.parse(data.custom_assets || '{}') : (data.custom_assets || {});
+    // Custom assets: ALWAYS merge from cloud (additive). Cloud adds to local — never loses assets added on any device.
+    // This guarantees cross-device consistency regardless of timestamp comparison.
+    const _localCa=getCustomAssets();
+    const _mergedCa={..._localCa,..._ca}; // cloud wins on duplicates (more authoritative)
+    const _caChanged=Object.keys(_mergedCa).length!==Object.keys(_localCa).length||JSON.stringify(_mergedCa)!==JSON.stringify(_localCa);
+    if(_caChanged)localStorage.setItem('tf_custom_assets',JSON.stringify(_mergedCa));
     if(cloudTs>localTs||localEmpty){
-      // Write directly to localStorage without triggering _debouncedSync
-      // Defensive: handle both object (server-parsed) and string (raw TEXT) forms
-      const _ov = typeof data.overrides === 'string' ? JSON.parse(data.overrides || '{}') : (data.overrides || {});
-      const _ca = typeof data.custom_assets === 'string' ? JSON.parse(data.custom_assets || '{}') : (data.custom_assets || {});
+      // Overrides (quantities, buy prices): apply only when cloud is newer — avoids overwriting local edits
       localStorage.setItem('tf_positions', JSON.stringify(_ov));
-      localStorage.setItem('tf_custom_assets', JSON.stringify(_ca));
       if(data.liquidity)localStorage.setItem('fa_liquidity',JSON.stringify(data.liquidity));
       // Auto-migrate: ensure costCurrency is set for all existing overrides
       const _ovMig=getOverrides();let _migrated=false;
       Object.keys(_ovMig).forEach(k=>{if(_ovMig[k]&&!_ovMig[k].costCurrency){_ovMig[k].costCurrency='EUR';_migrated=true;}});
       if(_migrated)localStorage.setItem('tf_positions',JSON.stringify(_ovMig));
+    }
+    if(cloudTs>localTs||localEmpty||_caChanged){
       assets=applyOverridesToAssets(_rawSeedAssets);
       loadCustomIntoAssets();render();renderLiquidity();
     }
