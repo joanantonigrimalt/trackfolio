@@ -8330,7 +8330,7 @@ async function _comAddComment(postId) {
 }
 
 async function _comToggleLike(postId, btn) {
-  if (!_sb || !_sbUser) { alert('Inicia sesión para dar me gusta'); return; }
+  if (!_sb || !_sbUser) { alert(currentLang==='es'?'Inicia sesión para dar me gusta':'Sign in to like posts'); return; }
   const liked = _comMyLikes.has(postId);
   const span = btn.querySelector('span');
   const svg = btn.querySelector('svg');
@@ -8357,7 +8357,7 @@ async function _comToggleLike(postId, btn) {
 }
 
 async function _comDeletePost(postId, btn) {
-  if (!_sb || !_sbUser || !confirm('¿Eliminar esta publicación?')) return;
+  if (!_sb || !_sbUser || !confirm(currentLang==='es'?'¿Eliminar esta publicación?':'Delete this post?')) return;
   try {
     await _sb.from('community_posts').delete().eq('id', postId).eq('user_id', _sbUser.id);
     btn.closest('.com-post')?.remove();
@@ -8372,7 +8372,7 @@ function _comFilter(btn, type) {
 }
 
 function _comOpenModal(tab) {
-  if (!_sb || !_sbUser) { alert('Inicia sesión para publicar'); return; }
+  if (!_sb || !_sbUser) { alert(currentLang==='es'?'Inicia sesión para publicar':'Sign in to post'); return; }
   document.getElementById('comModal').classList.add('open');
   _comSwitchTab(tab);
   document.getElementById('comPostMsg').style.display = 'none';
@@ -8417,13 +8417,13 @@ async function _comPublish() {
 
   if (_comModalTab === 'texto') {
     const content = document.getElementById('comTextContent')?.value.trim();
-    if (!content) { msgEl.textContent = 'Escribe algo para publicar'; msgEl.style.display = ''; return; }
+    if (!content) { msgEl.textContent = currentLang==='es'?'Escribe algo para publicar':'Write something to post'; msgEl.style.display = ''; return; }
     payload.content = content;
     payload.tags = document.getElementById('comTextTags')?.value.trim() || null;
   } else if (_comModalTab === 'portfolio') {
     const content = document.getElementById('comPfContent')?.value.trim();
     const total = Number(document.getElementById('comPfTotal')?.value);
-    if (!total) { msgEl.textContent = 'Introduce el valor total del portfolio'; msgEl.style.display = ''; return; }
+    if (!total) { msgEl.textContent = currentLang==='es'?'Introduce el valor total del portfolio':'Enter the total portfolio value'; msgEl.style.display = ''; return; }
     payload.content = content || null;
     payload.pf_total = total;
     payload.pf_invested = Number(document.getElementById('comPfInvested')?.value) || null;
@@ -8432,7 +8432,7 @@ async function _comPublish() {
     payload.tags = document.getElementById('comPfTags')?.value.trim() || null;
   } else if (_comModalTab === 'transaccion') {
     const asset = document.getElementById('comTxAsset')?.value.trim();
-    if (!asset) { msgEl.textContent = 'Indica el activo de la transacción'; msgEl.style.display = ''; return; }
+    if (!asset) { msgEl.textContent = currentLang==='es'?'Indica el activo de la transacción':'Indicate the transaction asset'; msgEl.style.display = ''; return; }
     payload.tx_asset = asset;
     payload.tx_type = document.getElementById('comTxType')?.value || 'Compra';
     payload.tx_date = document.getElementById('comTxDate')?.value || null;
@@ -8450,9 +8450,9 @@ async function _comPublish() {
     ['comTextContent','comTextTags','comPfContent','comPfTotal','comPfInvested','comPfGain','comPfPositions','comPfTags','comTxAsset','comTxQty','comTxPrice','comTxComment'].forEach(id => { const el=document.getElementById(id); if(el) el.value=''; });
     await _comLoadFeed();
   } catch(e) {
-    msgEl.textContent = e.message || 'Error al publicar'; msgEl.style.display = '';
+    msgEl.textContent = e.message || (currentLang==='es'?'Error al publicar':'Error publishing'); msgEl.style.display = '';
   } finally {
-    btn.textContent = '✦ Publicar'; btn.disabled = false;
+    btn.textContent = currentLang==='es'?'✦ Publicar':'✦ Publish'; btn.disabled = false;
   }
 }
 
@@ -8461,7 +8461,7 @@ async function _comShowProfile(userId, displayName) {
   const content = document.getElementById('comProfileContent');
   if (!modal || !content) return;
   modal.classList.add('open');
-  content.innerHTML = '<div class="com-loading">Cargando perfil…</div>';
+  content.innerHTML = `<div class="com-loading">${currentLang==='es'?'Cargando perfil…':'Loading profile…'}</div>`;
 
   try {
     const { data: posts } = await _sb.from('community_posts').select('*').eq('user_id', userId).order('created_at', { ascending: false }).limit(20);
@@ -8475,20 +8475,20 @@ async function _comShowProfile(userId, displayName) {
     content.innerHTML = `
       <div class="com-profile-hd">
         <div class="com-profile-av" style="background:linear-gradient(135deg,${colors[ci]})">${initials}</div>
-        <div class="com-profile-name">${_comEsc(displayName)}${isMe?' (Tú)':''}</div>
+        <div class="com-profile-name">${_comEsc(displayName)}${isMe?` (${currentLang==='es'?'Tú':'You'})`:''}</div>
         <div class="com-profile-handle">@${(displayName||'').toLowerCase().replace(/\s+/,'')}</div>
       </div>
       <div class="com-profile-stats">
-        <div class="com-profile-stat"><div class="com-profile-stat-val">${userPosts.length}</div><div class="com-profile-stat-lbl">Publicaciones</div></div>
-        <div class="com-profile-stat"><div class="com-profile-stat-val">${totalLikes}</div><div class="com-profile-stat-lbl">Me gustas</div></div>
-        <div class="com-profile-stat"><div class="com-profile-stat-val">${userPosts.filter(p=>p.post_type==='portfolio').length}</div><div class="com-profile-stat-lbl">Portafolios</div></div>
+        <div class="com-profile-stat"><div class="com-profile-stat-val">${userPosts.length}</div><div class="com-profile-stat-lbl">${currentLang==='es'?'Publicaciones':'Posts'}</div></div>
+        <div class="com-profile-stat"><div class="com-profile-stat-val">${totalLikes}</div><div class="com-profile-stat-lbl">${currentLang==='es'?'Me gustas':'Likes'}</div></div>
+        <div class="com-profile-stat"><div class="com-profile-stat-val">${userPosts.filter(p=>p.post_type==='portfolio').length}</div><div class="com-profile-stat-lbl">${currentLang==='es'?'Portafolios':'Portfolios'}</div></div>
       </div>
       <div class="com-profile-posts">
-        <div style="font-size:11px;font-weight:700;color:#4a6b55;text-transform:uppercase;letter-spacing:.1em;margin-bottom:12px">Últimas publicaciones</div>
-        ${userPosts.slice(0,5).map(p => _comRenderPost(p)).join('') || '<div class="com-empty">Sin publicaciones</div>'}
+        <div style="font-size:11px;font-weight:700;color:#4a6b55;text-transform:uppercase;letter-spacing:.1em;margin-bottom:12px">${currentLang==='es'?'Últimas publicaciones':'Latest posts'}</div>
+        ${userPosts.slice(0,5).map(p => _comRenderPost(p)).join('') || `<div class="com-empty">${currentLang==='es'?'Sin publicaciones':'No posts'}</div>`}
       </div>`;
   } catch(e) {
-    content.innerHTML = `<div class="com-empty">Error cargando perfil</div>`;
+    content.innerHTML = `<div class="com-empty">${currentLang==='es'?'Error cargando perfil':'Error loading profile'}</div>`;
   }
 }
 
