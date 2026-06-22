@@ -5496,8 +5496,8 @@ async function boot(){
   const _COV_CK='fa_cov_v2_'+_strHash(isinList); // #8 fix: hash instead of truncating (no collision risk)
   let _cachedCov=null,_covStale=false;
   try{const _cc=localStorage.getItem(_COV_CK);if(_cc){const _p=JSON.parse(_cc);if(_p?.data){_cachedCov=_p.data;_covStale=(Date.now()-_p.ts)>=900_000;}}}catch(_){}
-  // Prices count as "live" only if cache is fresh (< 15min) — prevents flash of stale total
-  _pricesLive=_cachedCov&&!_covStale;
+  // Always fetch live prices from API — never trust cache for total display
+  _pricesLive=false;
   const _initCvMap=_cachedCov?Object.fromEntries((_cachedCov.results||[]).map(e=>[e.isin,e])):{};
   _rawSeedAssets=buildAssets(_initCvMap);
 
@@ -5506,33 +5506,31 @@ async function boot(){
   loadCustomIntoAssets(_cachedCov?_initCvMap:undefined);
   dataReady=true;
   if(!assets.length){const _cn=document.getElementById('chartNote');if(_cn)_cn.innerHTML=currentLang==='es'?'&#128202; Tu cartera está vacía. Pulsa <strong>+ Nueva posición</strong> para añadir tu primer activo.':'&#128202; Your portfolio is empty. Click <strong>+ New position</strong> to add your first asset.';}
-  render(); // ← shows positions instantly; total shows only if _pricesLive
+  render(); // ← shows positions instantly; total shows "Actualizando…" until live prices arrive
 
   // Background: cloud sync — syncFromCloud renders internally when data changes (#10 fix: no extra render)
   if(_sbUser)syncFromCloud().catch(()=>{});
   else _syncWithToken(); // fallback: direct REST sync via fa_token when Supabase session is null
 
-  // Background: refresh stale seed + coverage in parallel, then re-render
-  if(!_cachedCov||_covStale||_seedStale){
-    (async()=>{
-      try{
-        const[freshSeed,coverage]=await Promise.all([
-          _seedStale?getJson('/api/portfolio/seed',10000).then(s=>{try{localStorage.setItem(_SEED_CK,JSON.stringify({data:s,ts:Date.now()}));}catch(_){}return s;}).catch(()=>seed):Promise.resolve(seed),
-          getJson('/api/portfolio/coverage?isin='+encodeURIComponent(isinList),9500),
-          _fxPromise, // ensure live FX rates are loaded before computing values
-        ]);
-        seed=freshSeed;
-        // Only cache coverage if we got real results (don't cache timeouts/failures)
-        if(coverage?.results?.length>0){try{localStorage.setItem(_COV_CK,JSON.stringify({data:coverage,ts:Date.now()}));}catch(_){}}
-        const cvMap=Object.fromEntries((coverage.results||[]).map(e=>[e.isin,e]));
-        _rawSeedAssets=buildAssets(cvMap);
-        assets=applyOverridesToAssets(_rawSeedAssets);
-        loadCustomIntoAssets(cvMap);
-        _pricesLive=true; // live prices ready — unlock total display
-        render();
-      }catch(e){console.warn('[boot] bg refresh:',e.message);}
-    })();
-  }
+  // Always fetch live coverage from API (cache used only for instant position list above)
+  (async()=>{
+    try{
+      const[freshSeed,coverage]=await Promise.all([
+        getJson('/api/portfolio/seed',10000).then(s=>{try{localStorage.setItem(_SEED_CK,JSON.stringify({data:s,ts:Date.now()}));}catch(_){}return s;}).catch(()=>seed),
+        getJson('/api/portfolio/coverage?isin='+encodeURIComponent(isinList),9500),
+        _fxPromise, // ensure live FX rates are loaded before computing values
+      ]);
+      seed=freshSeed;
+      // Cache coverage for fast initial position list on next load
+      if(coverage?.results?.length>0){try{localStorage.setItem(_COV_CK,JSON.stringify({data:coverage,ts:Date.now()}));}catch(_){}}
+      const cvMap=Object.fromEntries((coverage.results||[]).map(e=>[e.isin,e]));
+      _rawSeedAssets=buildAssets(cvMap);
+      assets=applyOverridesToAssets(_rawSeedAssets);
+      loadCustomIntoAssets(cvMap);
+      _pricesLive=true; // live prices ready — show real total
+      render();
+    }catch(e){console.warn('[boot] live prices fetch:',e.message);}
+  })();
 
   // Step 3: pre-fetch dividends in background so Dividends tab is instant
   _prefetchDividends();
@@ -5914,7 +5912,7 @@ function _updateIACreditsBar() {
   const bar = document.getElementById('iaCreditsBar');
   if (!bar) return;
   if (_userPlan === 'free') {
-    bar.innerHTML = `<span style="color:#8fa090;font-size:.7rem">Plan Free · 3 msgs/día</span><button onclick="_showUpgradeModal('ia')" style="font-size:.68rem;background:#142018;color:#4ade80;border:none;border-radius:6px;padding:3px 8px;cursor:pointer;font-weight:700;font-family:inherit">Mejorar plan</button>`;
+    bar.innerHTML = `<span style="color:#8fa090;font-size:.7rem">Plan Free · 3 msgs/${currentLang==='es'?'día':'day'}</span><button onclick="_showUpgradeModal('ia')" style="font-size:.68rem;background:#142018;color:#4ade80;border:none;border-radius:6px;padding:3px 8px;cursor:pointer;font-weight:700;font-family:inherit">${currentLang==='es'?'Mejorar plan':'Upgrade plan'}</button>`;
     bar.style.display = 'flex';
   } else if (_userCredits && _userCredits.limit > 0) {
     const pct = Math.max(0, Math.min(100, (_userCredits.remaining / _userCredits.limit) * 100));
@@ -5938,6 +5936,7 @@ function _showUpgradeModal(reason) {
     topinvestors: { es: 'Top Inversores', en: 'Top Investors' },
     dividends:    { es: 'Detalle de dividendos', en: 'Dividend detail' },
     ia:           { es: 'Más conversaciones con Vera', en: 'More Vera AI conversations' },
+    alerts:       { es: 'Alertas de precio Premium', en: 'Premium price alerts' },
   };
   const descs = {
     assets:       { es: 'El plan Free está limitado a <b>5 activos</b>. Con Starter o Pro tienes posiciones ilimitadas.', en: 'Free plan is limited to <b>5 assets</b>. Starter and Pro have unlimited positions.' },
@@ -5946,6 +5945,7 @@ function _showUpgradeModal(reason) {
     topinvestors: { es: 'Accede a las carteras de los mejores inversores con el plan <b>Starter</b>.', en: 'Access top investor portfolios with the <b>Starter</b> plan.' },
     dividends:    { es: 'El detalle completo de dividendos está disponible con el plan <b>Starter</b>.', en: 'Full dividend detail is available with the <b>Starter</b> plan.' },
     ia:           { es: 'Con el plan <b>Pro</b> tienes €5/mes de créditos de IA Vera (~4.000 msgs). Con <b>Starter</b>, €0,50/mes (~400 msgs).', en: 'With <b>Pro</b> you get €5/month in Vera AI credits (~4,000 msgs). With <b>Starter</b>, €0.50/month (~400 msgs).' },
+    alerts:       { es: 'Las alertas de precio son una función Premium. Actualiza tu plan para activarlas.', en: 'Price alerts are a Premium feature. Upgrade your plan to activate them.' },
   };
   const isEs = typeof currentLang !== 'undefined' ? currentLang === 'es' : true;
   const lang = isEs ? 'es' : 'en';
@@ -6665,7 +6665,7 @@ function renderAlertsScreen(){
 function showAlertForm(){
   if(_userPlan==='free'){
     const isEs=currentLang==='es';
-    showUpgradeModal('alerts',isEs?'Las alertas de precio son una función Premium. Actualiza tu plan para activarlas.':'Price alerts are a Premium feature. Upgrade your plan to activate them.');
+    _showUpgradeModal('alerts');
     return;
   }
   _alertsCond='above';_alertsAssetISIN=null;
@@ -7626,7 +7626,8 @@ let _taxYear = new Date().getFullYear() - 1; // default previous year
 let _taxCharts = {};
 
 function cycleImpuestosYear(){
-  const years = [2025, 2024, 2023, 2022];
+  const curYear = new Date().getFullYear();
+  const years = [curYear-1, curYear-2, curYear-3, curYear-4];
   const idx = years.indexOf(_taxYear);
   _taxYear = years[(idx + 1) % years.length];
   const _tyl=document.getElementById('taxYearLabel');if(_tyl)_tyl.textContent=_taxYear;
@@ -8145,8 +8146,8 @@ function _comLoad() {
   // Update avatar
   const av = document.getElementById('comAvatar');
   if (av && _sbUser) {
-    const initials = (_sbUser.email || '?').slice(0, 2).toUpperCase();
-    av.textContent = initials;
+    const _dn = localStorage.getItem('tf_display_name') || _sbUser.user_metadata?.full_name || _sbUser.email?.split('@')[0] || '?';
+    av.textContent = _dn.slice(0, 2).toUpperCase();
   }
   _comLoadFeed();
   _comLoadMarkets();
@@ -8163,23 +8164,23 @@ async function _comLoadFeed() {
   if (!el) return;
   el.innerHTML = `<div style="padding:16px;color:#999">${currentLang==='es'?'Cargando…':'Loading…'}</div>`;
 
+  if (!_sb) {
+    el.innerHTML = '<div style="padding:24px;text-align:center;color:#8fa090;font-size:13px">'
+      + (currentLang==='es' ? 'Inicia sesión para ver la comunidad 👋' : 'Sign in to view the community 👋')
+      + '</div>';
+    return;
+  }
   try {
-    const apiUrl = '/rest/v1/community_posts?order=created_at.desc&limit=50&_v=' + Date.now();
-    const token = localStorage.getItem('fa_token');
-    const headers = token ? { 'Authorization': 'Bearer ' + token } : {};
+    const { data, error } = await _sb.from('community_posts')
+      .select('*')
+      .order('created_at', { ascending: false })
+      .limit(50);
+    if (error) throw new Error(error.message || 'Supabase error');
+    const posts = Array.isArray(data) ? data : [];
 
-    const r = await fetch(apiUrl, { headers });
-    const statusOk = r.ok;
-    const d = await r.json();
-    const posts = Array.isArray(d) ? d : [];
-
-    // DEBUG: always show what we got
     if (posts.length === 0) {
-      el.innerHTML = '<div style="padding:16px;font-size:12px;color:#666">'
-        + 'Feed vacío.<br>'
-        + 'URL: ' + apiUrl.slice(0,60) + '<br>'
-        + 'HTTP: ' + r.status + ' ok=' + statusOk + '<br>'
-        + 'Response: ' + JSON.stringify(d).slice(0,120)
+      el.innerHTML = '<div style="padding:24px;text-align:center;color:#999">'
+        + (currentLang==='es' ? 'Sé el primero en publicar algo 👋' : 'Be the first to post something 👋')
         + '</div>';
       return;
     }
@@ -8276,7 +8277,7 @@ function _comRenderPost(p) {
     <div class="com-comments" id="comComments-${p.id}">
       <div id="comCommentsList-${p.id}"><div class="com-loading" style="padding:12px 0">${_isEsCom?'Cargando comentarios…':'Loading comments…'}</div></div>
       <div class="com-comment-input">
-        <div class="com-av" style="width:28px;height:28px;font-size:11px">${_sbUser?(_sbUser.email||'?').slice(0,2).toUpperCase():'?'}</div>
+        <div class="com-av" style="width:28px;height:28px;font-size:11px">${_sbUser?(localStorage.getItem('tf_display_name')||_sbUser.user_metadata?.full_name||_sbUser.email||'?').slice(0,2).toUpperCase():'?'}</div>
         <input type="text" class="com-comment-field" placeholder="${_isEsCom?'Escribe un comentario…':'Write a comment…'}" id="comCF-${p.id}" onkeydown="if(event.key==='Enter')_comAddComment('${p.id}')">
         <button class="com-comment-send" onclick="_comAddComment('${p.id}')">${_isEsCom?'Enviar':'Send'}</button>
       </div>
@@ -8496,20 +8497,30 @@ async function _comShowProfile(userId, displayName) {
   }
 }
 
-function _comLoadMarkets() {
-  // Static placeholder — could be replaced with live data
+async function _comLoadMarkets() {
   const el = document.getElementById('comMarkets');
   if (!el) return;
+  // Live EUR/USD from already-fetched FX rates
+  const eurUsd = _fxRates?.USD ? _fxRates.USD.toFixed(4) : '—';
+  const eurGbp = _fxRates?.GBP ? (1/_fxRates.GBP).toFixed(4) : '—';
+  // Try to get live gold price from portfolio coverage if IGLN is held, else fallback ETF fetch
+  let goldStr = '—';
+  try {
+    const goldAsset = assets.find(a => a.isin === 'IE00B4ND3602' && a.currentPrice > 0);
+    if (goldAsset) goldStr = goldAsset.currentPrice.toFixed(2) + ' €';
+    else {
+      const r = await getJson('/api/portfolio/coverage?isin=IE00B4ND3602', 5000);
+      const entry = r?.results?.[0];
+      if (entry?.data?.quote?.price > 0) goldStr = entry.data.quote.price.toFixed(2) + ' $';
+    }
+  } catch(_) {}
   el.innerHTML = [
-    ['S&P 500','5.218','−1.24%',false],
-    ['NASDAQ','16.342','−1.87%',false],
-    ['IBEX 35','13.041','+0.32%',true],
-    ['EUR/USD','1.0821','+0.15%',true],
-    ['Oro','3.017 $','+0.89%',true],
-  ].map(([name,val,chg,pos]) => `
+    ['EUR/USD', eurUsd, null, null],
+    ['EUR/GBP', eurGbp, null, null],
+    ['Oro (IGLN)', goldStr, null, null],
+  ].map(([name, val]) => `
     <div class="com-market-row">
       <div><div class="com-market-name">${name}</div><div class="com-market-val">${val}</div></div>
-      <div class="com-market-chg ${pos?'com-chg-pos':'com-chg-neg'}">${chg}</div>
     </div>`).join('');
 }
 
