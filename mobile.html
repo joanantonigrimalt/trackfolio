@@ -5557,7 +5557,10 @@ async function boot(){
         currentPrice=seedPrice; // seed prices are pre-converted EUR (authoritative fallback)
       }
       const gain=quantity*(currentPrice-adjBuyPrice);
-      return{isin:pos.isin,name:pos.shortName||pos.name||mapping?.name||pos.isin,fullName:pos.name||mapping?.name||pos.isin,quantity,buyPrice:adjBuyPrice,currentPrice,invested:quantity*adjBuyPrice,value:quantity*currentPrice,gain,gainPct:adjBuyPrice?((currentPrice-adjBuyPrice)/adjBuyPrice)*100:0,mapping,provider:entry.data?.provider||null,coverageStatus:entry.data?.coverage?.status||'MISSING',coverage:entry.data?.coverage||{status:'MISSING'},history:adjHistory,hasRealHistory:adjHistory.length>1,_rawQty:quantity,_rawBuyPrice:adjBuyPrice,customCurrency:adjCcy||'EUR',costCurrency:null};
+      // NOTE: currentPrice and value are always stored in EUR (converted by toEur above).
+      // customCurrency is therefore 'EUR' so toDisplay(value,'EUR')=value (no double-conversion).
+      // _nativeCurrency stores the source currency for reference (e.g. GBp handling, display hints).
+      return{isin:pos.isin,name:pos.shortName||pos.name||mapping?.name||pos.isin,fullName:pos.name||mapping?.name||pos.isin,quantity,buyPrice:adjBuyPrice,currentPrice,invested:quantity*adjBuyPrice,value:quantity*currentPrice,gain,gainPct:adjBuyPrice?((currentPrice-adjBuyPrice)/adjBuyPrice)*100:0,mapping,provider:entry.data?.provider||null,coverageStatus:entry.data?.coverage?.status||'MISSING',coverage:entry.data?.coverage||{status:'MISSING'},history:adjHistory,hasRealHistory:adjHistory.length>1,_rawQty:quantity,_rawBuyPrice:adjBuyPrice,customCurrency:'EUR',_nativeCurrency:adjCcy||'EUR',costCurrency:null};
     });
   }
   // Coverage — stale-while-revalidate: show ANY cached data instantly, refresh in bg
@@ -6963,7 +6966,7 @@ async function enterDemo(){
           currentPrice=seedPrice;
         }
         const gain=quantity*(currentPrice-adjBuyPrice);
-        return{isin:pos.isin,name:pos.shortName||pos.name||pos.isin,fullName:pos.name||pos.isin,quantity,buyPrice:adjBuyPrice,currentPrice,invested:quantity*adjBuyPrice,value:quantity*currentPrice,gain,gainPct:adjBuyPrice?((currentPrice-adjBuyPrice)/adjBuyPrice)*100:0,mapping,provider:entry.data?.provider||null,coverageStatus:entry.data?.coverage?.status||'MISSING',coverage:entry.data?.coverage||{status:'MISSING'},history:adjHistory,hasRealHistory:adjHistory.length>1,_rawQty:quantity,_rawBuyPrice:adjBuyPrice,customCurrency:adjCcy||'EUR',costCurrency:null};
+        return{isin:pos.isin,name:pos.shortName||pos.name||pos.isin,fullName:pos.name||pos.isin,quantity,buyPrice:adjBuyPrice,currentPrice,invested:quantity*adjBuyPrice,value:quantity*currentPrice,gain,gainPct:adjBuyPrice?((currentPrice-adjBuyPrice)/adjBuyPrice)*100:0,mapping,provider:entry.data?.provider||null,coverageStatus:entry.data?.coverage?.status||'MISSING',coverage:entry.data?.coverage||{status:'MISSING'},history:adjHistory,hasRealHistory:adjHistory.length>1,_rawQty:quantity,_rawBuyPrice:adjBuyPrice,customCurrency:'EUR',_nativeCurrency:adjCcy||'EUR',costCurrency:null};
       });
     }
     _rawSeedAssets=_buildDemo({});
