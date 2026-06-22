@@ -7696,13 +7696,14 @@ function _taxComputeInterest(){
     const amt = Number(l.amount)||0;
     const rate = Number(l.rate)||0;
     const gross = toEur(amt, l.currency||'EUR') * rate / 100;
-    return {name: l.name||l.provider||'Cuenta remunerada', rate, amount:toEur(amt,l.currency||'EUR'), gross, ret19:gross*0.19, net:gross*0.81};
+    return {name: l.name||l.provider||(currentLang==='es'?'Cuenta remunerada':'Savings account'), rate, amount:toEur(amt,l.currency||'EUR'), gross, ret19:gross*0.19, net:gross*0.81};
   });
 }
 
 function renderImpuestos(){
   const year = _taxYear;
-  document.getElementById('taxHeroSup').textContent = 'Estimación fiscal · Año '+year;
+  const _isEsTax=currentLang==='es';
+  document.getElementById('taxHeroSup').textContent = (_isEsTax?'Estimación fiscal · Año ':'Tax estimate · Year ')+year;
 
   // Compute all sources
   const gains = _taxComputeGains(year);
@@ -7726,24 +7727,24 @@ function renderImpuestos(){
 
   // Hero
   document.getElementById('taxHeroAmount').textContent = _taxEuro(cuota);
-  document.getElementById('taxHeroSub').textContent = 'Cuota íntegra estimada · Base '+_taxEuro(base);
+  document.getElementById('taxHeroSub').textContent = (_isEsTax?'Cuota íntegra estimada · Base ':'Estimated gross tax · Base ')+_taxEuro(base);
   document.getElementById('taxHDiv').textContent  = grossDiv>0 ? _taxEuro(grossDiv) : '—';
   document.getElementById('taxHInt').textContent  = grossInt>0 ? _taxEuro(grossInt) : '—';
   document.getElementById('taxHGain').textContent = _taxEuro(grossGain);
   document.getElementById('taxHBase').textContent = _taxEuro(base);
   document.getElementById('taxHRate').textContent = avgRate.toFixed(1)+'%';
   document.getElementById('taxHRet').textContent  = '-'+_taxEuro(totalRet);
-  document.getElementById('taxRetPct').textContent= _taxEuro(totalRet)+' de '+_taxEuro(cuota);
+  document.getElementById('taxRetPct').textContent= _taxEuro(totalRet)+(_isEsTax?' de ':' of ')+_taxEuro(cuota);
   document.getElementById('taxRetBar').style.width = retPct+'%';
   document.getElementById('taxDue').textContent = _taxEuro(due);
 
   // Breakdown card
   const bd = document.getElementById('taxBreakdown');
   bd.innerHTML = [
-    {icon:'💰',bg:'#dcfce7',name:'Dividendos recibidos',desc: divs.length+' activos con dividendos',amt:grossDiv,taxStr:'Retención 19% → -'+_taxEuro(retDiv),taxCls:grossDiv>0?'neg':''},
-    {icon:'🏦',bg:'#dbeafe',name:'Intereses de cuentas',desc: ints.length+' cuenta'+(ints.length!==1?'s':'')+' remunerada'+(ints.length!==1?'s':''),amt:grossInt,taxStr:'Retención 19% → -'+_taxEuro(retInt),taxCls:grossInt>0?'neg':''},
-    {icon:'📈',bg:'#f3e8ff',name:'Ganancias patrimoniales',desc:gains.filter(t=>t.gain>0).length+' ventas con ganancia',amt:posGains,taxStr:'Sin retención · A declarar',taxCls:''},
-    negGains<0?{icon:'📉',bg:'#fee2e2',name:'Pérdidas a compensar',desc:gains.filter(t=>t.gain<0).length+' ventas con pérdida',amt:negGains,taxStr:'Reduce base imponible',taxCls:'pos',amtColor:'#e03636'}:null
+    {icon:'💰',bg:'#dcfce7',name:_isEsTax?'Dividendos recibidos':'Dividends received',desc:divs.length+(_isEsTax?' activos con dividendos':' assets with dividends'),amt:grossDiv,taxStr:(_isEsTax?'Retención 19% → -':'Withholding 19% → -')+_taxEuro(retDiv),taxCls:grossDiv>0?'neg':''},
+    {icon:'🏦',bg:'#dbeafe',name:_isEsTax?'Intereses de cuentas':'Interest income',desc:_isEsTax?ints.length+' cuenta'+(ints.length!==1?'s':'')+' remunerada'+(ints.length!==1?'s':''):ints.length+' remunerated account'+(ints.length!==1?'s':''),amt:grossInt,taxStr:(_isEsTax?'Retención 19% → -':'Withholding 19% → -')+_taxEuro(retInt),taxCls:grossInt>0?'neg':''},
+    {icon:'📈',bg:'#f3e8ff',name:_isEsTax?'Ganancias patrimoniales':'Capital gains',desc:gains.filter(t=>t.gain>0).length+(_isEsTax?' ventas con ganancia':' profitable sales'),amt:posGains,taxStr:_isEsTax?'Sin retención · A declarar':'No withholding · To declare',taxCls:''},
+    negGains<0?{icon:'📉',bg:'#fee2e2',name:_isEsTax?'Pérdidas a compensar':'Losses to offset',desc:gains.filter(t=>t.gain<0).length+(_isEsTax?' ventas con pérdida':' sales at a loss'),amt:negGains,taxStr:_isEsTax?'Reduce base imponible':'Reduces tax base',taxCls:'pos',amtColor:'#e03636'}:null
   ].filter(Boolean).map(r=>`
     <div class="src-row">
       <div class="src-icon" style="background:${r.bg}">${r.icon}</div>
@@ -7758,7 +7759,7 @@ function renderImpuestos(){
   _renderTaxChart('taxBaseChart', {
     type:'bar',
     data:{
-      labels:['Ganancias','Dividendos','Intereses','Pérdidas'],
+      labels:_isEsTax?['Ganancias','Dividendos','Intereses','Pérdidas']:['Gains','Dividends','Interest','Losses'],
       datasets:[{
         data:[posGains, grossDiv, grossInt, negGains||0],
         backgroundColor:['rgba(29,179,106,.8)','rgba(37,99,235,.75)','rgba(245,158,11,.75)','rgba(224,54,54,.75)'],
@@ -7778,21 +7779,21 @@ function renderImpuestos(){
   // Brackets
   const BRACKETS=[{range:'Hasta 6.000 €',pct:'19%',bar:40,col:'#1db36a'},{range:'6.001 – 50.000 €',pct:'21%',bar:65,col:'#f5b731'},{range:'50.001 – 200.000 €',pct:'23%',bar:85,col:'#f97316'},{range:'Más de 200.000 €',pct:'27%',bar:100,col:'#e03636'}];
   const myBracket = base<=6000?0:base<=50000?1:base<=200000?2:3;
-  document.getElementById('taxBrackets').innerHTML = '<div style="font-size:12px;font-weight:700;color:#0f1c15;margin-bottom:12px">Escala del ahorro · España 2025</div>'
+  document.getElementById('taxBrackets').innerHTML = '<div style="font-size:12px;font-weight:700;color:#0f1c15;margin-bottom:12px">'+(_isEsTax?'Escala del ahorro · España 2025':'Savings tax scale · Spain 2025')+'</div>'
     + BRACKETS.map((b,i)=>`
     <div class="brk-row">
       <div class="brk-range">${b.range}</div>
       <div class="brk-bar"><div class="brk-fill" style="width:${b.bar}%;background:${b.col}"></div></div>
       <div class="brk-pct">${b.pct}</div>
-      <div>${i===myBracket?'<span class="tx-badge pos">Tu tramo</span>':'<span class="tx-badge neu">—</span>'}</div>
+      <div>${i===myBracket?'<span class="tx-badge pos">'+(_isEsTax?'Tu tramo':'Your bracket')+'</span>':'<span class="tx-badge neu">—</span>'}</div>
     </div>`).join('')
-    + (base>0?`<div style="margin-top:10px;background:rgba(29,179,106,.09);border-radius:9px;padding:10px 12px;border-left:2px solid #16924f"><div style="font-size:11px;color:#3d5248;line-height:1.55">Tu base de ahorro de <strong style="color:#0f1c15">${_taxEuro(base)}</strong> tributa principalmente al <strong style="color:#16924f">${BRACKETS[myBracket].pct}</strong>. Cuota estimada: <strong style="font-family:'DM Mono',monospace">${_taxEuro(cuota)}</strong> antes de retenciones.</div></div>`:'');
+    + (base>0?_isEsTax?`<div style="margin-top:10px;background:rgba(29,179,106,.09);border-radius:9px;padding:10px 12px;border-left:2px solid #16924f"><div style="font-size:11px;color:#3d5248;line-height:1.55">Tu base de ahorro de <strong style="color:#0f1c15">${_taxEuro(base)}</strong> tributa principalmente al <strong style="color:#16924f">${BRACKETS[myBracket].pct}</strong>. Cuota estimada: <strong style="font-family:'DM Mono',monospace">${_taxEuro(cuota)}</strong> antes de retenciones.</div></div>`:`<div style="margin-top:10px;background:rgba(29,179,106,.09);border-radius:9px;padding:10px 12px;border-left:2px solid #16924f"><div style="font-size:11px;color:#3d5248;line-height:1.55">Your savings base of <strong style="color:#0f1c15">${_taxEuro(base)}</strong> is taxed mainly at <strong style="color:#16924f">${BRACKETS[myBracket].pct}</strong>. Estimated tax: <strong style="font-family:'DM Mono',monospace">${_taxEuro(cuota)}</strong> before withholdings.</div></div>`:'');
 
   // Sell rows
   const sellEl = document.getElementById('taxSellRows');
   const COLORS=['#1d4ed8','#0f4c81','#6d28d9','#be123c','#374151','#166534','#854d0e','#1e40af'];
   if(!gains.length){
-    sellEl.innerHTML='<div class="tx-empty">No hay ventas registradas para '+year+'.<br><small>Registra transacciones de venta en cada activo.</small></div>';
+    sellEl.innerHTML='<div class="tx-empty">'+(_isEsTax?'No hay ventas registradas para ':'No sales registered for ')+year+'.'+(_isEsTax?'<br><small>Registra transacciones de venta en cada activo.</small>':'<br><small>Register sell transactions for each asset.</small>')+'</div>';
   } else {
     sellEl.innerHTML = gains.map((t,i)=>{
       const isPos=t.gain>=0;
@@ -7800,33 +7801,33 @@ function renderImpuestos(){
       const irpf = isPos ? _taxIRPF(t.gain) : 0;
       return`<div class="tx-row-item">
         <div class="tx-logo" style="background:${COLORS[i%COLORS.length]}">${initials}</div>
-        <div class="tx-inf"><div class="tx-nm">${escapeHtml(t.shortName||t.name)}</div><div class="tx-mt">Vendido ${t.date} · ${t.qty} part. @ ${_taxEuro(t.sellPrice)}</div></div>
+        <div class="tx-inf"><div class="tx-nm">${escapeHtml(t.shortName||t.name)}</div><div class="tx-mt">${_isEsTax?`Vendido ${t.date} · ${t.qty} part. @ ${_taxEuro(t.sellPrice)}`:`Sold ${t.date} · ${t.qty} units @ ${_taxEuro(t.sellPrice)}`}</div></div>
         <div class="tx-rt">
           <div class="tx-gn ${isPos?'pos':'neg'}">${isPos?'+':''}${_taxEuro(t.gain)}</div>
-          <div class="tx-tx ${isPos?'':'comp'}">${isPos?'IRPF: ~'+_taxEuro(irpf):'Compensa ganancia'}</div>
+          <div class="tx-tx ${isPos?'':'comp'}">${isPos?(_isEsTax?'IRPF: ~':'Tax: ~')+_taxEuro(irpf):(_isEsTax?'Compensa ganancia':'Offsets gains')}</div>
         </div>
       </div>`;
     }).join('');
   }
   const neto = gains.reduce((s,t)=>s+t.gain,0);
   document.getElementById('taxSellSummary').innerHTML = `
-    <div style="display:flex;justify-content:space-between;align-items:center"><span style="font-size:11px;font-weight:600;color:#3d5248">Ganancia neta transmisiones</span><span class="tx-badge ${neto>=0?'pos':'neg'}">${neto>=0?'+':''}${_taxEuro(neto)}</span></div>
+    <div style="display:flex;justify-content:space-between;align-items:center"><span style="font-size:11px;font-weight:600;color:#3d5248">${_isEsTax?'Ganancia neta transmisiones':'Net capital gain'}</span><span class="tx-badge ${neto>=0?'pos':'neg'}">${neto>=0?'+':''}${_taxEuro(neto)}</span></div>
   `;
 
   // Dividend rows
   const divEl = document.getElementById('taxDivRows');
   if(!divs.length){
-    divEl.innerHTML='<div class="tx-empty">No hay datos de dividendos disponibles.<br><small>Visita la pestaña Dividendos primero para cargar los datos.</small></div>';
+    divEl.innerHTML='<div class="tx-empty">'+(_isEsTax?'No hay datos de dividendos disponibles.<br><small>Visita la pestaña Dividendos primero para cargar los datos.</small>':'No dividend data available.<br><small>Visit the Dividends tab first to load the data.</small>')+'</div>';
   } else {
     divEl.innerHTML = divs.slice(0,6).map((d,i)=>{
       const initials=(d.shortName||'').slice(0,4).toUpperCase();
-      const freq=d.payMonths.length>0?d.payMonths.length+' pagos/año':'Anual';
+      const freq=d.payMonths.length>0?d.payMonths.length+(_isEsTax?' pagos/año':' payments/yr'):(_isEsTax?'Anual':'Annual');
       return`<div class="tx-row-item">
         <div class="tx-logo" style="background:${COLORS[i%COLORS.length]}">${initials}</div>
         <div class="tx-inf"><div class="tx-nm">${escapeHtml(d.shortName||d.name)}</div><div class="tx-mt">${freq}</div></div>
         <div class="tx-rt">
           <div class="tx-gn pos">+${_taxEuro(d.gross)}</div>
-          <div class="tx-tx">Ret. 19%: -${_taxEuro(d.ret19)}</div>
+          <div class="tx-tx">${_isEsTax?'Ret. 19%: -':'Withh. 19%: -'}${_taxEuro(d.ret19)}</div>
         </div>
       </div>`;
     }).join('');
@@ -7858,23 +7859,23 @@ function renderImpuestos(){
   // Interest rows
   const intEl = document.getElementById('taxIntRows');
   if(!ints.length){
-    intEl.innerHTML='<div class="tx-empty">No hay cuentas remuneradas con tasa registrada.<br><small>Añade liquidez con tasa de interés para calcular este apartado.</small></div>';
+    intEl.innerHTML='<div class="tx-empty">'+(_isEsTax?'No hay cuentas remuneradas con tasa registrada.<br><small>Añade liquidez con tasa de interés para calcular este apartado.</small>':'No remunerated accounts with a rate registered.<br><small>Add liquidity with an interest rate to calculate this section.</small>')+'</div>';
   } else {
     intEl.innerHTML = ints.map((it,i)=>`
       <div class="tx-row-item">
         <div class="tx-logo" style="background:${COLORS[i%COLORS.length]}">${(it.name||'').slice(0,2).toUpperCase()}</div>
-        <div class="tx-inf"><div class="tx-nm">${escapeHtml(it.name)}</div><div class="tx-mt">${it.rate}% TAE · ${_taxEuro(it.amount)}</div></div>
+        <div class="tx-inf"><div class="tx-nm">${escapeHtml(it.name)}</div><div class="tx-mt">${it.rate}${_isEsTax?'% TAE · ':'% APR · '}${_taxEuro(it.amount)}</div></div>
         <div class="tx-rt">
           <div class="tx-gn pos">+${_taxEuro(it.gross)}</div>
-          <div class="tx-tx">Ret. 19%: -${_taxEuro(it.ret19)}</div>
+          <div class="tx-tx">${_isEsTax?'Ret. 19%: -':'Withh. 19%: -'}${_taxEuro(it.ret19)}</div>
         </div>
       </div>`).join('')
       + `<div style="display:flex;justify-content:space-between;align-items:center;padding-top:9px;margin-top:4px;border-top:1px solid rgba(0,0,0,.06)">
-        <span style="font-size:11px;font-weight:600;color:#3d5248">Total intereses</span>
+        <span style="font-size:11px;font-weight:600;color:#3d5248">${_isEsTax?'Total intereses':'Total interest'}</span>
         <span class="tx-badge pos">+${_taxEuro(grossInt)}</span>
       </div>
       <div style="display:flex;justify-content:space-between;align-items:center;margin-top:5px">
-        <span style="font-size:11px;font-weight:600;color:#3d5248">Retenciones aplicadas</span>
+        <span style="font-size:11px;font-weight:600;color:#3d5248">${_isEsTax?'Retenciones aplicadas':'Withholdings applied'}</span>
         <span class="tx-badge neg">-${_taxEuro(retInt)}</span>
       </div>`;
   }
@@ -7883,8 +7884,8 @@ function renderImpuestos(){
   document.getElementById('taxRetTotal').textContent = _taxEuro(totalRet);
   const retGrid = document.getElementById('taxRetGrid');
   retGrid.innerHTML = [
-    {lbl:'Dividendos',val:retDiv,bg:'rgba(29,179,106,.09)',col:'#1db36a'},
-    {lbl:'Intereses',val:retInt,bg:'rgba(37,99,235,.09)',col:'#2563eb'}
+    {lbl:_isEsTax?'Dividendos':'Dividends',val:retDiv,bg:'rgba(29,179,106,.09)',col:'#1db36a'},
+    {lbl:_isEsTax?'Intereses':'Interest',val:retInt,bg:'rgba(37,99,235,.09)',col:'#2563eb'}
   ].map(r=>`<div style="background:${r.bg};border-radius:9px;padding:9px 11px">
     <div style="font-size:8px;color:#8da098;text-transform:uppercase;letter-spacing:.08em;font-weight:600;margin-bottom:3px">${r.lbl}</div>
     <div style="font-size:14px;font-weight:700;color:${r.col};font-family:'DM Mono',monospace">${_taxEuro(r.val)}</div>
@@ -7893,7 +7894,7 @@ function renderImpuestos(){
   _renderTaxChart('taxRetChart',{
     type:'doughnut',
     data:{
-      labels:['Dividendos','Intereses'],
+      labels:_isEsTax?['Dividendos','Intereses']:['Dividends','Interest'],
       datasets:[{data:[parseFloat(retDiv.toFixed(2)),parseFloat(retInt.toFixed(2))],backgroundColor:['#1db36a','#2563eb'],borderWidth:3,borderColor:'#fff',hoverOffset:4}]
     },
     options:{
@@ -7914,7 +7915,7 @@ function _renderTaxChart(id, config){
 }
 
 function exportTaxPDF(){
-  showToast('Exportación PDF próximamente');
+  showToast(currentLang==='es'?'Exportación PDF próximamente':'PDF export coming soon');
 }
 
 
