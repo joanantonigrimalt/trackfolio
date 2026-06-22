@@ -1,0 +1,12 @@
+{
+  "name": "finasset",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "vercel dev",
+    "start": "vercel dev"
+  },
+  "devDependencies": {
+    "sharp": "^0.34.5"
+  }
+}

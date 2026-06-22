@@ -1,0 +1,346 @@
+{
+  "generatedAt": "2026-03-16",
+  "policy": {
+    "noFakeSeries": true,
+    "ifNoRealHistory": "show_unavailable",
+    "fallbackOrder": [
+      "yahoo",
+      "eodhd",
+      "twelvedata",
+      "fund-source",
+      "fmp"
+    ]
+  },
+  "assets": [
+    {
+      "isin": "IE00B9CQXS71",
+      "name": "SPDR S&P Global Dividend Aristocrats UCITS ETF",
+      "type": "etf",
+      "status": "mapped",
+      "recommendedProvider": "yahoo",
+      "providerSymbol": null,
+      "yahooSymbol": "GLDV.MI",
+      "notes": "SPDR Global Dividend Aristocrats ETF. GLDV.MI (Borsa Italiana, EUR) for correct EUR price."
+    },
+    {
+      "isin": "IE00BZ4BMM98",
+      "name": "Invesco Euro STOXX High Dividend Low Volatility UCITS ETF",
+      "type": "etf",
+      "status": "mapped",
+      "recommendedProvider": "yahoo",
+      "providerSymbol": null,
+      "yahooSymbol": "EUHD.MI",
+      "notes": "Invesco Euro STOXX High Div Low Vol ETF. EUHD.MI (Borsa Italiana, EUR). EUHD.L is London in GBp — use MI for correct EUR price."
+    },
+    {
+      "isin": "IE00BYX5NK04",
+      "name": "Fidelity MSCI World Index Fund P-ACC-USD",
+      "type": "fund",
+      "status": "mapped",
+      "recommendedProvider": "yahoo",
+      "providerSymbol": null,
+      "yahooSymbol": "0P0001CJGW.F",
+      "notes": "Fidelity MSCI World mutual fund (USD). Yahoo: 0P0001CJGW.F. Morningstar used as primary for live NAV."
+    },
+    {
+      "isin": "ES0146309002",
+      "name": "Horos Value Internacional",
+      "type": "fund",
+      "status": "mapped",
+      "recommendedProvider": "yahoo",
+      "providerSymbol": null,
+      "yahooSymbol": "0P0001DFE8.F",
+      "notes": "Available on Yahoo Finance as Morningstar fund symbol 0P0001DFE8.F (MUTUALFUND)."
+    },
+    {
+      "isin": "IE00B4ND3602",
+      "name": "iShares Physical Gold ETC",
+      "type": "etc",
+      "status": "mapped",
+      "recommendedProvider": "eodhd",
+      "providerSymbol": "IGLN.L",
+      "yahooSymbol": "IGLN.L",
+      "notes": "Yahoo and EODHD both support IGLN.L (London). Yahoo ISIN direct may also work."
+    },
+    {
+      "isin": "ES0112611001",
+      "name": "AzValor Internacional",
+      "type": "fund",
+      "status": "mapped",
+      "recommendedProvider": "yahoo",
+      "providerSymbol": null,
+      "yahooSymbol": "0P00016YQ5.F",
+      "notes": "Available on Yahoo Finance as 0P00016YQ5.F (MUTUALFUND)."
+    },
+    {
+      "isin": "ES0146311008",
+      "name": "Horos Value Iberia",
+      "type": "fund",
+      "status": "mapped",
+      "recommendedProvider": "yahoo",
+      "providerSymbol": null,
+      "yahooSymbol": "0P0001DFE7.F",
+      "notes": "Yahoo Finance: 0P0001DFE7.F (MUTUALFUND)."
+    },
+    {
+      "isin": "LU1598719752",
+      "name": "Cobas International",
+      "type": "fund",
+      "status": "mapped",
+      "recommendedProvider": "yahoo",
+      "providerSymbol": null,
+      "yahooSymbol": "0P0001A94B.F",
+      "notes": "Yahoo Finance: 0P0001A94B.F (MUTUALFUND). 1260+ daily NAV points."
+    },
+    {
+      "isin": "IE00BYX5P602",
+      "name": "iShares Core MSCI World UCITS ETF EUR Hedged (Acc)",
+      "type": "etf",
+      "status": "mapped",
+      "recommendedProvider": "eodhd",
+      "providerSymbol": "IWDE.L",
+      "yahooSymbol": "IWDE.L",
+      "notes": "EUR-hedged share class. IWDE.L on LSE. Yahoo ISIN direct may also resolve."
+    },
+    {
+      "isin": "ES0173311103",
+      "name": "Numantia Patrimonio",
+      "type": "fund",
+      "status": "mapped",
+      "recommendedProvider": "yahoo",
+      "providerSymbol": null,
+      "yahooSymbol": "0P000168OI.F",
+      "notes": "Yahoo Finance: 0P000168OI.F (MUTUALFUND). 1260+ daily NAV points."
+    },
+    {
+      "isin": "IE000QAZP7L2",
+      "name": "iShares Core MSCI EM IMI UCITS ETF USD (Dist)",
+      "type": "etf",
+      "status": "mapped",
+      "recommendedProvider": "eodhd",
+      "providerSymbol": "EIMI.L",
+      "yahooSymbol": "EIMI.L",
+      "notes": "EIMI.L on LSE. Yahoo ISIN direct may also resolve."
+    },
+    {
+      "isin": "ES0159259011",
+      "name": "Magallanes European",
+      "type": "fund",
+      "status": "mapped",
+      "recommendedProvider": "yahoo",
+      "providerSymbol": null,
+      "yahooSymbol": "0P0001572X.F",
+      "notes": "Yahoo Finance: 0P0001572X.F (MUTUALFUND). 1260+ daily NAV points."
+    },
+    {
+      "isin": "ES0174115057",
+      "name": "Cinvest Tercio B",
+      "type": "fund",
+      "status": "mapped",
+      "recommendedProvider": "yahoo",
+      "providerSymbol": null,
+      "yahooSymbol": "0P0001OR4H.F",
+      "notes": "Yahoo Finance: 0P0001OR4H.F (MUTUALFUND). 1260+ daily NAV points."
+    },
+    {
+      "isin": "LU0084617165",
+      "name": "Robeco Asia Pacific Equities",
+      "type": "fund",
+      "status": "mapped",
+      "recommendedProvider": "yahoo",
+      "providerSymbol": null,
+      "yahooSymbol": "FHQI.F",
+      "notes": "Yahoo Finance: FHQI.F (ETF). Limited history, weekly data only."
+    },
+    {
+      "isin": "IE00B579F325",
+      "name": "Invesco Physical Gold ETC",
+      "type": "etc",
+      "status": "mapped",
+      "recommendedProvider": "eodhd",
+      "providerSymbol": "SGLD.L",
+      "yahooSymbol": "SGLD.L",
+      "notes": "SGLD.L on LSE. Yahoo and EODHD both support it."
+    },
+    {
+      "isin": "DE000A0F5UH1",
+      "name": "iShares Core EURO STOXX 50 UCITS ETF (DE)",
+      "type": "etf",
+      "status": "mapped",
+      "recommendedProvider": "eodhd",
+      "providerSymbol": "EXW1.DE",
+      "yahooSymbol": "EXW1.DE",
+      "notes": "EXW1.DE on XETRA. Yahoo and EODHD both support it."
+    },
+    {
+      "isin": "IE00BZ4BMM98",
+      "name": "Invesco S&P 500 High Dividend Low Volatility UCITS ETF",
+      "type": "etf",
+      "status": "mapped",
+      "recommendedProvider": "yahoo",
+      "providerSymbol": "HDLG.L",
+      "yahooSymbol": "EUHD.L",
+      "notes": "Yahoo Finance: EUHD.L — Invesco EURO STOXX High Dividend Low Volatility ETF."
+    },
+    {
+      "isin": "IE00B9CQXS71",
+      "name": "SPDR S&P Global Dividend Aristocrats UCITS ETF",
+      "type": "etf",
+      "status": "mapped",
+      "recommendedProvider": "eodhd",
+      "providerSymbol": "GBDV.L",
+      "yahooSymbol": "GBDV.L",
+      "notes": "GBDV.L on LSE. Yahoo and EODHD both support it."
+    },
+    {
+      "isin": "NL0011683594",
+      "name": "VanEck Morningstar Developed Markets Dividend Leaders UCITS ETF",
+      "type": "etf",
+      "status": "mapped",
+      "recommendedProvider": "twelvedata",
+      "providerSymbol": "TDIV",
+      "yahooSymbol": "TDIV.AS",
+      "notes": "TDIV.AS on Euronext Amsterdam. Yahoo ISIN direct may also resolve."
+    },
+    {
+      "isin": "NL0011821202",
+      "name": "ING Groep N.V.",
+      "type": "stock",
+      "status": "mapped",
+      "recommendedProvider": "yahoo",
+      "providerSymbol": null,
+      "yahooSymbol": "INGA.AS",
+      "notes": "ING Groep - Euronext Amsterdam (EUR). Prefer INGA.AS over NYSE ING (USD)."
+    },
+    {
+      "isin": "LU2145461757",
+      "name": "Robeco Smart Energy D EUR",
+      "type": "fund",
+      "status": "mapped",
+      "recommendedProvider": "yahoo",
+      "providerSymbol": "LU2145461757.SG",
+      "yahooSymbol": "0P0001KWJF.F",
+      "notes": "Yahoo Finance: 0P0001KWJF.F (MUTUALFUND, Frankfurt). Full NAV history available."
+    },
+    {
+      "isin": "N5396",
+      "name": "Indexa Más Rentabilidad Acciones PP",
+      "type": "pension",
+      "status": "mapped",
+      "recommendedProvider": "yahoo",
+      "providerSymbol": null,
+      "yahooSymbol": "0P0001RHQ7.F",
+      "notes": "Plan de Pensiones DGS N5396. Yahoo: 0P0001RHQ7.F"
+    },
+    {
+      "isin": "N5227",
+      "name": "Indexa Más Rentabilidad Bonos PP",
+      "type": "pension",
+      "status": "mapped",
+      "recommendedProvider": "yahoo",
+      "providerSymbol": null,
+      "yahooSymbol": "0P0001RHQ5.F",
+      "notes": "Plan de Pensiones DGS N5227. Yahoo: 0P0001RHQ5.F"
+    },
+    {
+      "isin": "N4659",
+      "name": "MyInvestor Indexado S&P 500 PP",
+      "type": "pension",
+      "status": "mapped",
+      "recommendedProvider": "manual",
+      "providerSymbol": null,
+      "yahooSymbol": null,
+      "notes": "Plan de Pensiones DGS N4659. NAV manual."
+    },
+    {
+      "isin": "N5122",
+      "name": "Cobas Pensiones PP",
+      "type": "pension",
+      "status": "mapped",
+      "recommendedProvider": "manual",
+      "providerSymbol": null,
+      "yahooSymbol": null,
+      "notes": "Plan de Pensiones DGS N5122. NAV manual."
+    },
+    {
+      "isin": "N1894",
+      "name": "BBVA Plan Multiactivo Moderado PP",
+      "type": "pension",
+      "status": "mapped",
+      "recommendedProvider": "yahoo",
+      "providerSymbol": null,
+      "yahooSymbol": "0P00019MX6.F",
+      "notes": "Plan de Pensiones DGS N1894. Yahoo: 0P00019MX6.F"
+    },
+    {
+      "isin": "N1893",
+      "name": "BBVA Plan Multiactivo Decidido PP",
+      "type": "pension",
+      "status": "mapped",
+      "recommendedProvider": "yahoo",
+      "providerSymbol": null,
+      "yahooSymbol": "0P00019MX5.F",
+      "notes": "Plan de Pensiones DGS N1893. Yahoo: 0P00019MX5.F"
+    },
+    {
+      "isin": "N2477",
+      "name": "CaixaBank Destino 2025 PP",
+      "type": "pension",
+      "status": "mapped",
+      "recommendedProvider": "manual",
+      "providerSymbol": null,
+      "yahooSymbol": null,
+      "notes": "Plan de Pensiones DGS N2477. NAV manual."
+    },
+    {
+      "isin": "N4636",
+      "name": "Finizens Plan Pensiones 5 PP",
+      "type": "pension",
+      "status": "mapped",
+      "recommendedProvider": "manual",
+      "providerSymbol": null,
+      "yahooSymbol": null,
+      "notes": "Plan de Pensiones DGS N4636. NAV manual."
+    },
+    {
+      "isin": "N4633",
+      "name": "Finizens Plan Pensiones 3 PP",
+      "type": "pension",
+      "status": "mapped",
+      "recommendedProvider": "manual",
+      "providerSymbol": null,
+      "yahooSymbol": null,
+      "notes": "Plan de Pensiones DGS N4633. NAV manual."
+    },
+    {
+      "isin": "N5148",
+      "name": "Naranja Estándar PP ING",
+      "type": "pension",
+      "status": "mapped",
+      "recommendedProvider": "manual",
+      "providerSymbol": null,
+      "yahooSymbol": null,
+      "notes": "Plan de Pensiones DGS N5148. NAV manual."
+    },
+    {
+      "isin": "N4673",
+      "name": "Mapfre Compromiso Pensión PP",
+      "type": "pension",
+      "status": "mapped",
+      "recommendedProvider": "manual",
+      "providerSymbol": null,
+      "yahooSymbol": null,
+      "notes": "Plan de Pensiones DGS N4673. NAV manual."
+    },
+    {
+      "isin": "N1298",
+      "name": "Mutua Pensión Bolsa FP",
+      "type": "pension",
+      "status": "mapped",
+      "recommendedProvider": "manual",
+      "providerSymbol": null,
+      "yahooSymbol": null,
+      "notes": "Plan de Pensiones DGS N1298. NAV manual."
+    }
+  ]
+}
