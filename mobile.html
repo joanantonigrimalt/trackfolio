@@ -3797,25 +3797,27 @@ function _anRenderAllocContent(tab) {
   } else if (tab === 'type') {
     assets.forEach(a => { const c = assetCategory(a); groups[c]=(groups[c]||0)+toDisplay(a.value,assetCcy(a)); });
   } else if (tab === 'country') {
+    const _isEsC=currentLang==='es';
     const regionOf = a => {
       const isin = (a.isin||'').toUpperCase();
-      if (isin.startsWith('ES')) return 'España';
+      if (isin.startsWith('ES')) return _isEsC?'España':'Spain';
       if (isin.startsWith('US')) return 'USA';
-      if (isin.startsWith('IE')||isin.startsWith('LU')||isin.startsWith('DE')||isin.startsWith('NL')||isin.startsWith('FR')) return 'Europa/Int\'l';
-      return 'Internacional';
+      if (isin.startsWith('IE')||isin.startsWith('LU')||isin.startsWith('DE')||isin.startsWith('NL')||isin.startsWith('FR')) return _isEsC?'Europa/Int\'l':'Europe/Int\'l';
+      return _isEsC?'Internacional':'International';
     };
     assets.forEach(a => { const r = regionOf(a); groups[r]=(groups[r]||0)+toDisplay(a.value,assetCcy(a)); });
   } else if (tab === 'sector') {
+    const _isEsS=currentLang==='es';
     const sectorOf = a => {
       const n = (a.name||a.shortName||'').toLowerCase();
-      if (n.includes('gold')||n.includes('oro')||n.includes('physical')||n.includes('sgld')||n.includes('igln')) return 'Materias Primas';
-      if (n.includes('energy')||n.includes('energ')) return 'Energía';
-      if (n.includes('dividend')||n.includes('tdiv')||n.includes('aristocrat')||n.includes('high div')) return 'Dividendos';
-      if (n.includes('asia')||n.includes('pacific')||n.includes('japan')||n.includes('china')) return 'RV Asia/Pacífico';
-      if (n.includes('world')||n.includes('msci')||n.includes('global')||n.includes('emerg')) return 'RV Global';
-      if (n.includes('europe')||n.includes('stoxx')||n.includes('iberia')||n.includes('magallanes')) return 'RV Europa';
-      if (n.includes('value')||n.includes('patrimonio')||n.includes('capital')||n.includes('numantia')||n.includes('cobas')||n.includes('azvalor')||n.includes('horos')||n.includes('cinvest')) return 'RV Value';
-      return 'Otros';
+      if (n.includes('gold')||n.includes('oro')||n.includes('physical')||n.includes('sgld')||n.includes('igln')) return _isEsS?'Materias Primas':'Commodities';
+      if (n.includes('energy')||n.includes('energ')) return _isEsS?'Energía':'Energy';
+      if (n.includes('dividend')||n.includes('tdiv')||n.includes('aristocrat')||n.includes('high div')) return _isEsS?'Dividendos':'Dividends';
+      if (n.includes('asia')||n.includes('pacific')||n.includes('japan')||n.includes('china')) return _isEsS?'RV Asia/Pacífico':'EQ Asia/Pacific';
+      if (n.includes('world')||n.includes('msci')||n.includes('global')||n.includes('emerg')) return _isEsS?'RV Global':'Global EQ';
+      if (n.includes('europe')||n.includes('stoxx')||n.includes('iberia')||n.includes('magallanes')) return _isEsS?'RV Europa':'European EQ';
+      if (n.includes('value')||n.includes('patrimonio')||n.includes('capital')||n.includes('numantia')||n.includes('cobas')||n.includes('azvalor')||n.includes('horos')||n.includes('cinvest')) return _isEsS?'RV Value':'Value EQ';
+      return _isEsS?'Otros':'Other';
     };
     assets.forEach(a => { const s = sectorOf(a); groups[s]=(groups[s]||0)+toDisplay(a.value,assetCcy(a)); });
   } else if (tab === 'broker') {
@@ -3833,7 +3835,7 @@ function _anRenderAllocContent(tab) {
     <div style="display:flex;flex-direction:column;gap:6px;flex:1">
       ${entries.map(([n,v],i)=>`<div class="legendItem"><div class="legendDot" style="background:${cols[i]}"></div><span style="flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${escapeHtml(n)}</span><span style="color:#8fa090;font-weight:700;margin-left:6px">${pcts[i]}%</span></div>`).join('')}
     </div>
-  </div>${brokerBarsHtml}${tab==='sector'?'<div style="margin-top:10px;font-size:11px;color:#8fa090">Clasificación estimada por nombre del activo</div>':''}`;
+  </div>${brokerBarsHtml}${tab==='sector'?`<div style="margin-top:10px;font-size:11px;color:#8fa090">${currentLang==='es'?'Clasificación estimada por nombre del activo':'Estimated classification by asset name'}</div>`:''}`;
 
   requestAnimationFrame(() => {
     const cv = document.getElementById(canvasId);
@@ -3958,8 +3960,8 @@ function _anRenderCosts() {
   }
   html += `<div style="margin-top:12px">
     <div style="display:flex;justify-content:space-between;margin-bottom:4px">
-      <span style="font-size:9px;font-weight:600;color:#8fa090">TER bajo</span>
-      <span style="font-size:9px;font-weight:600;color:#8fa090">TER alto</span>
+      <span style="font-size:9px;font-weight:600;color:#8fa090">${isEs?'TER bajo':'Low TER'}</span>
+      <span style="font-size:9px;font-weight:600;color:#8fa090">${isEs?'TER alto':'High TER'}</span>
     </div>
     <div style="height:4px;border-radius:3px;background:linear-gradient(to right,#2dc98a,#f5b731,#f05252)"></div>
     <div style="display:flex;justify-content:space-between;margin-top:3px">
@@ -4773,12 +4775,13 @@ function _renderDivGoal(totalAnnual){
   const remains=Math.max(0,target-totalAnnual);
   const today=new Date();
   const daysLeft=Math.round((new Date(today.getFullYear(),11,31)-today)/(1000*60*60*24));
-  document.getElementById('divGoalLabel').textContent=`${fe(totalAnnual)} de ${fe(target)}`;
+  const _isEsGoal=currentLang==='es';
+  document.getElementById('divGoalLabel').textContent=`${fe(totalAnnual)} ${_isEsGoal?'de':'of'} ${fe(target)}`;
   document.getElementById('divGoalPct').textContent=pct+'%';
   document.getElementById('divGoalFill').style.width=pct+'%';
-  document.getElementById('divGoalRemains').textContent=remains>0?`Faltan ${fe(remains)}`:'Meta alcanzada!';
-  document.getElementById('divGoalDeadline').textContent=`${daysLeft} días para fin de año`;
-  const yrsAtRate=remains>0&&totalAnnual>0?(remains/totalAnnual).toFixed(1)+' años':'—';
+  document.getElementById('divGoalRemains').textContent=remains>0?(_isEsGoal?`Faltan ${fe(remains)}`:`${fe(remains)} remaining`):(_isEsGoal?'Meta alcanzada!':'Goal reached!');
+  document.getElementById('divGoalDeadline').textContent=`${daysLeft} ${_isEsGoal?'días para fin de año':'days to year end'}`;
+  const yrsAtRate=remains>0&&totalAnnual>0?(remains/totalAnnual).toFixed(1)+(_isEsGoal?' años':' yrs'):'—';
   document.getElementById('divGoalRate').textContent=yrsAtRate;
   // With DRIP reinvestment estimate
   const drip10=totalAnnual*(((Math.pow(1.05,10)-1)/0.05));
@@ -4800,15 +4803,22 @@ function _editDivGoal(){
 
 // ── DRIP comparison ───────────────────────────────────────────────────────────
 function _renderDivDrip(totalAnnual){
+  const isEs=currentLang==='es';
   const years=10,rate=0.05;
   const simple=totalAnnual*years;
   const drip=totalAnnual*(((Math.pow(1+rate,years)-1)/rate));
   const gain=drip-simple;
+  // Update static HTML labels that aren't data-i18n
+  const _titleEl=document.querySelector('#divDripCard .sectionTitle');
+  if(_titleEl)_titleEl.textContent=isEs?'DRIP – Reinversión de dividendos':'DRIP – Dividend Reinvestment';
+  const _lblEls=document.querySelectorAll('#divDripCard .div-drip-lbl');
+  if(_lblEls[0])_lblEls[0].textContent=isEs?'Sin reinvertir':'Without reinvesting';
+  if(_lblEls[1])_lblEls[1].textContent=isEs?'Reinvirtiendo':'Reinvesting';
   document.getElementById('divDripBase').textContent=fe(simple);
   document.getElementById('divDripDrip').textContent=fe(drip);
-  document.getElementById('divDripBaseSub').textContent=`${currentLang==='es'?'en '+years+' años (acumulado)':('in '+years+' years (total)')}`;
-  document.getElementById('divDripDripSub').textContent=`${currentLang==='es'?'en '+years+' años (+'+(rate*100).toFixed(0)+'%/año)':'in '+years+' years (+'+(rate*100).toFixed(0)+'%/yr)'}`;
-  document.getElementById('divDripNote').textContent=`${currentLang==='es'?'Reinvirtiendo los dividendos al '+(rate*100).toFixed(0)+'% anual obtendrías '+fe(gain)+' más en '+years+' años.':'Reinvesting dividends at '+(rate*100).toFixed(0)+'%/yr you would earn '+fe(gain)+' more over '+years+' years.'}`;
+  document.getElementById('divDripBaseSub').textContent=`${isEs?'en '+years+' años (acumulado)':('in '+years+' years (total)')}`;
+  document.getElementById('divDripDripSub').textContent=`${isEs?'en '+years+' años (+'+(rate*100).toFixed(0)+'%/año)':'in '+years+' years (+'+(rate*100).toFixed(0)+'%/yr)'}`;
+  document.getElementById('divDripNote').textContent=`${isEs?'Reinvirtiendo los dividendos al '+(rate*100).toFixed(0)+'% anual obtendrías '+fe(gain)+' más en '+years+' años.':'Reinvesting dividends at '+(rate*100).toFixed(0)+'%/yr you would earn '+fe(gain)+' more over '+years+' years.'}`;
 }
 
 // ── Future Value ──────────────────────────────────────────────────────────────
@@ -4844,9 +4854,10 @@ function _calcAndRenderFV(){
     portData.push(Math.round(port*100)/100);
   }
   const finalDiv=divData[divData.length-1]||0;
-  const lbl=`en ${years} año${years===1?'':'s'}`;
+  const _isEsFV=currentLang==='es';
+  const lbl=_isEsFV?`en ${years} año${years===1?'':'s'}`:`in ${years} yr${years===1?'':'s'}`;
   document.getElementById('divFVValue').textContent=fe(finalDiv);
-  document.getElementById('divFVLabel').textContent=lbl+'/año en dividendos';
+  document.getElementById('divFVLabel').textContent=lbl+(_isEsFV?'/año en dividendos':'/yr in dividends');
   // Chart
   const canvas=document.getElementById('divFVChart');
   if(!canvas)return;
@@ -4856,7 +4867,7 @@ function _calcAndRenderFV(){
     data:{
       labels,
       datasets:[
-        {label:'Dividendo anual',data:divData,backgroundColor:'rgba(59,130,246,.7)',borderRadius:4,borderSkipped:false,order:2},
+        {label:currentLang==='es'?'Dividendo anual':'Annual dividend',data:divData,backgroundColor:'rgba(59,130,246,.7)',borderRadius:4,borderSkipped:false,order:2},
         {label:'Portfolio',data:portData,type:'line',borderColor:'rgba(34,197,94,.8)',backgroundColor:'transparent',borderWidth:2,pointRadius:0,order:1,yAxisID:'yPort'}
       ]
     },
@@ -5193,7 +5204,10 @@ function renderIA(){
   if(briefEl){
     const gainSign=gainAmt>=0?'+':'';
     const cls=gainAmt>=0?'brief-up':'brief-down';
-    briefEl.innerHTML=`Tu portfolio vale <b>${fe(total)}</b>. Rentabilidad acumulada: <span class="${cls}">${gainSign}${fe(gainAmt)} (${gainSign}${gainPct.toFixed(2)}%)</span>. Health Score: <b>${score}/100</b>.`;
+    const _isEsBrief=currentLang==='es';
+    briefEl.innerHTML=_isEsBrief
+      ?`Tu portfolio vale <b>${fe(total)}</b>. Rentabilidad acumulada: <span class="${cls}">${gainSign}${fe(gainAmt)} (${gainSign}${gainPct.toFixed(2)}%)</span>. Health Score: <b>${score}/100</b>.`
+      :`Your portfolio is worth <b>${fe(total)}</b>. Accumulated return: <span class="${cls}">${gainSign}${fe(gainAmt)} (${gainSign}${gainPct.toFixed(2)}%)</span>. Health Score: <b>${score}/100</b>.`;
   }
 
   // Metrics strip
@@ -5269,10 +5283,17 @@ function renderIA(){
   const hsPct=document.getElementById('hsPercentile');
   if(hsPct) hsPct.textContent=score<40?'10%':score<50?'25%':score<60?'40%':score<70?'60%':'75%';
 
-  // Portfolio actions data — inject real values
-  _iaActionData.full.text=`📊 <b>Resumen:</b> Portfolio valorado en ${fe(total)} · ${gainPct>=0?'+':''}${gainPct.toFixed(2)}% rentabilidad (+${fe(gainAmt)}) sobre ${fe(invested)} invertido · ${assets.length} posiciones.<br><br>✅ <b>Fortalezas:</b> Rentabilidad sólida. Bajo TER.<br><br>⚠️ <b>Áreas de mejora:</b> Concentración elevada. Health Score ${score}/100.<br><br>🎯 <b>Acciones prioritarias:</b> (1) Añadir 2º activo no correlacionado → +20 pts. (2) Limitar peso máximo al 70%.`;
-  _iaActionData.balance.text=`Tu portfolio vale <b>${fe(total)}</b> con rentabilidad acumulada de <b>${gainPct>=0?'+':''}${gainPct.toFixed(2)}%</b> (${fe(gainAmt)}) sobre ${fe(invested)} invertido. ${assets.length} posiciones activas. Health Score ${score}/100.`;
-  _iaActionData.riesgo.text=`Tu principal riesgo es la <b>concentración</b>. Acciones: (1) Limita cualquier activo al 60-70% del portfolio. (2) Añade bonos (10-15%) — reduce volatilidad de ~14% a ~9%. (3) Mantén liquidez por encima del 10%. Escenario 2008: ${fe(-total*0.57)}.`;
+  // Portfolio actions data — inject real values (bilingual)
+  const _isEsIA=currentLang==='es';
+  _iaActionData.full.text=_isEsIA
+    ?`📊 <b>Resumen:</b> Portfolio valorado en ${fe(total)} · ${gainPct>=0?'+':''}${gainPct.toFixed(2)}% rentabilidad (+${fe(gainAmt)}) sobre ${fe(invested)} invertido · ${assets.length} posiciones.<br><br>✅ <b>Fortalezas:</b> Rentabilidad sólida. Bajo TER.<br><br>⚠️ <b>Áreas de mejora:</b> Concentración elevada. Health Score ${score}/100.<br><br>🎯 <b>Acciones prioritarias:</b> (1) Añadir 2º activo no correlacionado → +20 pts. (2) Limitar peso máximo al 70%.`
+    :`📊 <b>Summary:</b> Portfolio valued at ${fe(total)} · ${gainPct>=0?'+':''}${gainPct.toFixed(2)}% return (+${fe(gainAmt)}) on ${fe(invested)} invested · ${assets.length} positions.<br><br>✅ <b>Strengths:</b> Solid returns. Low TER.<br><br>⚠️ <b>Areas to improve:</b> High concentration. Health Score ${score}/100.<br><br>🎯 <b>Priority actions:</b> (1) Add a 2nd uncorrelated asset → +20 pts. (2) Limit max weight to 70%.`;
+  _iaActionData.balance.text=_isEsIA
+    ?`Tu portfolio vale <b>${fe(total)}</b> con rentabilidad acumulada de <b>${gainPct>=0?'+':''}${gainPct.toFixed(2)}%</b> (${fe(gainAmt)}) sobre ${fe(invested)} invertido. ${assets.length} posiciones activas. Health Score ${score}/100.`
+    :`Your portfolio is worth <b>${fe(total)}</b> with accumulated return of <b>${gainPct>=0?'+':''}${gainPct.toFixed(2)}%</b> (${fe(gainAmt)}) on ${fe(invested)} invested. ${assets.length} active positions. Health Score ${score}/100.`;
+  _iaActionData.riesgo.text=_isEsIA
+    ?`Tu principal riesgo es la <b>concentración</b>. Acciones: (1) Limita cualquier activo al 60-70% del portfolio. (2) Añade bonos (10-15%) — reduce volatilidad de ~14% a ~9%. (3) Mantén liquidez por encima del 10%. Escenario 2008: ${fe(-total*0.57)}.`
+    :`Your main risk is <b>concentration</b>. Actions: (1) Limit any single asset to 60-70% of portfolio. (2) Add bonds (10-15%) — reduces volatility from ~14% to ~9%. (3) Keep cash above 10%. 2008 scenario: ${fe(-total*0.57)}.`;
 }
 
 // ========== Lists ==========
@@ -7340,7 +7361,7 @@ function iaAddVeraMsg(text, confidence) {
   const confColor = confidence>=90?'#1aab70':confidence>=80?'#d97706':'#8a9e93';
   const div = document.createElement('div');
   div.className = 'ia-msg';
-  div.innerHTML=`<div class="ia-msg-av av-vera2"><svg viewBox="0 0 16 16" fill="none"><rect x="2" y="4" width="12" height="8" rx="2" fill="rgba(255,255,255,0.12)" stroke="rgba(255,255,255,0.5)" stroke-width="1"/><circle cx="6" cy="8" r="1.3" fill="#2dc98a"/><circle cx="10" cy="8" r="1.3" fill="#2dc98a"/></svg></div><div style="display:flex;flex-direction:column;gap:4px;max-width:78%;"><div class="ia-bubble vera">${text}</div><div style="display:flex;align-items:center;gap:5px;padding:0 2px;"><div style="flex:1;height:3px;background:#f0f0f0;border-radius:2px;overflow:hidden;"><div style="width:${confidence}%;height:100%;background:${confColor};border-radius:2px;"></div></div><span style="font-size:.55rem;font-weight:700;color:${confColor};flex-shrink:0;">Confianza ${confidence}%</span></div></div>`;
+  div.innerHTML=`<div class="ia-msg-av av-vera2"><svg viewBox="0 0 16 16" fill="none"><rect x="2" y="4" width="12" height="8" rx="2" fill="rgba(255,255,255,0.12)" stroke="rgba(255,255,255,0.5)" stroke-width="1"/><circle cx="6" cy="8" r="1.3" fill="#2dc98a"/><circle cx="10" cy="8" r="1.3" fill="#2dc98a"/></svg></div><div style="display:flex;flex-direction:column;gap:4px;max-width:78%;"><div class="ia-bubble vera">${text}</div><div style="display:flex;align-items:center;gap:5px;padding:0 2px;"><div style="flex:1;height:3px;background:#f0f0f0;border-radius:2px;overflow:hidden;"><div style="width:${confidence}%;height:100%;background:${confColor};border-radius:2px;"></div></div><span style="font-size:.55rem;font-weight:700;color:${confColor};flex-shrink:0;">${currentLang==='es'?'Confianza':'Confidence'} ${confidence}%</span></div></div>`;
   msgs.appendChild(div);
   msgs.scrollTop = msgs.scrollHeight;
 }

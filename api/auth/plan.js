@@ -20,7 +20,8 @@ module.exports = async (req, res) => {
 
     const meta = user.user_metadata || {};
     const plan = meta.plan || 'free';
-    const credits = meta.credits || { used: 0, limit: plan === 'pro' ? -1 : plan === 'starter' ? 50 : 10, remaining: 0, month: '' };
+    const _limit = plan === 'pro' ? -1 : plan === 'starter' ? 50 : 10;
+    const credits = meta.credits || { used: 0, limit: _limit, remaining: _limit < 0 ? -1 : _limit, month: '' };
 
     res.statusCode = 200;
     res.setHeader('Content-Type', 'application/json');
