@@ -2992,10 +2992,10 @@ async function buildIntraday1D() {
         for (const p of pts) { if (p.ts <= ts) price = p.close; else break; }
         if (price === null) price = pts[0].close;
         const ratio = lastClose > 0 ? price / lastClose : 1;
-        total += a.quantity * a.currentPrice * ratio;
+        total += toDisplay(a.quantity * a.currentPrice, assetCcy(a)) * ratio;
       } else {
-        // No intraday data for this asset — hold constant at known EUR value
-        total += a.quantity * a.currentPrice;
+        // No intraday data for this asset — hold constant at known display-currency value
+        total += toDisplay(a.quantity * a.currentPrice, assetCcy(a));
       }
     }
     const d = new Date(ts);
@@ -3022,8 +3022,9 @@ let _feFmt=null,_feFmtKey='';
 const fe=n=>{const k=currentLang+_displayCcy;if(k!==_feFmtKey){_feFmt=new Intl.NumberFormat(currentLang==='es'?'es-ES':'en-GB',{style:'currency',currency:_displayCcy,maximumFractionDigits:2});_feFmtKey=k;}return _feFmt.format(Number.isFinite(n)?n:0);};
 let _fnFmt=null,_fnFmtKey='';
 const fn=n=>{const k=currentLang;if(k!==_fnFmtKey){_fnFmt=new Intl.NumberFormat(currentLang==='es'?'es-ES':'en-GB',{maximumFractionDigits:2});_fnFmtKey=k;}return _fnFmt.format(Number.isFinite(n)?n:0);};
-// fc() — format in a specific native currency (per-share prices, not converted)
-const fc = (n,ccy) => new Intl.NumberFormat(currentLang==='es'?'es-ES':'en-GB',{style:'currency',currency:ccy||'EUR',maximumFractionDigits:4}).format(Number.isFinite(n)?n:0);
+// fc() — format in a specific native currency (per-share prices, not converted). Cached per locale+ccy.
+const _fcCache={};
+const fc=(n,ccy)=>{const loc=currentLang==='es'?'es-ES':'en-GB',c=ccy||'EUR',k=loc+'|'+c;if(!_fcCache[k])_fcCache[k]=new Intl.NumberFormat(loc,{style:'currency',currency:c,maximumFractionDigits:4});return _fcCache[k].format(Number.isFinite(n)?n:0);};
 // assetCcy() — native currency of an asset (price currency)
 function assetCcy(a){ return a.customCurrency||'EUR'; }
 // escapeHtml() — escape special HTML characters to prevent XSS when inserting user/API text into innerHTML
@@ -3291,9 +3292,10 @@ function _refreshAssetDivRow(isin){
   const d=_divDataCache.find(x=>x.isin===isin);
   const a=assets.find(x=>x.isin===isin);
   if(!d||!a||!(d.annualPerShare>0)){row.style.display='none';return;}
-  const annual=d.annualPerShare*(a.quantity||0);
-  const yld=d.yieldPct!=null?((d.yieldPct*100).toFixed(2)+'%'):null;
-  const yoc=d.yieldOnCostPct!=null?((d.yieldOnCostPct*100).toFixed(2)+'%'):null;
+  const annual=toDisplay(d.annualPerShare*(a.quantity||0),'EUR');
+  const yld=d.annualPerShare>0&&a.currentPrice>0?((d.annualPerShare/a.currentPrice)*100).toFixed(2)+'%':null;
+  const _bpEurRow=toEur(a.buyPrice,costCcy(a));
+  const yoc=d.annualPerShare>0&&_bpEurRow>0?((d.annualPerShare/_bpEurRow)*100).toFixed(2)+'%':null;
   const isEs=currentLang==='es';
   row.style.display='';
   row.innerHTML=`<div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0 2px;margin-top:10px;border-top:1px solid rgba(20,32,24,.07)">
@@ -3534,7 +3536,7 @@ function saveTransaction(){
   if(qty<=0||price<=0||!date){const _fe=document.getElementById('txError');if(_fe){_fe.textContent=currentLang==='es'?'Completa cantidad, precio y fecha.':'Fill in quantity, price and date.';_fe.style.display='';}return;}
   const ov=getOverrides();
   const a=assets.find(x=>x.isin===currentModalIsin);
-  const existing=ov[currentModalIsin]||{quantity:a?.quantity||0,avgCost:a?.buyPrice||0,transactions:[]};
+  const existing=ov[currentModalIsin]||{quantity:a?.quantity||0,avgCost:a?.buyPrice||0,costCurrency:costCcy(a)||'EUR',transactions:[]};
   existing.transactions=existing.transactions||[];
   existing.transactions.push({type:txType,qty,price,date});
   // Recompute position from seed + all transactions (use _rawQty/_rawBuyPrice as base)
@@ -3575,8 +3577,6 @@ function reapplyAndRender(){
   // Refresh assets from current seed data + overrides
   const rawAssets=assets.map(a=>({...a,quantity:a._rawQty??a.quantity,buyPrice:a._rawBuyPrice??a.buyPrice,value:(a._rawQty??a.quantity)*a.currentPrice,invested:(a._rawQty??a.quantity)*(a._rawBuyPrice??a.buyPrice),gainPct:a._rawBuyPrice>0?((a.currentPrice-(a._rawBuyPrice??a.buyPrice))/(a._rawBuyPrice??a.buyPrice))*100:0}));
   assets=applyOverridesToAssets(rawAssets);
-  _divDataCache=null; // positions changed → refresh dividend data on next tab visit
-  resetDividendDetailCache(); // also reset detail cache so history reloads fresh
   render();
   if(selectedAsset){const fresh=assets.find(x=>x.isin===selectedAsset.isin);if(fresh)showAssetDetail(fresh,prevScreen);else{selectedAsset=null;showScreen(prevScreen||'home');}}
 }
@@ -3630,7 +3630,7 @@ function _anRenderSummary(){
   const isEs=currentLang==='es';
   // Today's change
   let todayGain=null,todayPct=null;
-  {let prev=0,has=false;assets.forEach(a=>{const dp=getDayPct(a);if(dp!=null&&a.history&&a.history.length>=2){prev+=toDisplay(a.quantity*(a.history[a.history.length-2].close??0),assetCcy(a));has=true;}else prev+=toDisplay(a.value,assetCcy(a));});
+  {let prev=0,has=false;assets.forEach(a=>{const dp=getDayPct(a);if(dp!=null&&a.history&&a.history.length>=2){const _lc=a.history[a.history.length-1].close;const _f=_lc>0&&a.currentPrice>0?a.currentPrice/_lc:1;prev+=toDisplay(a.quantity*(a.history[a.history.length-2].close??0)*_f,assetCcy(a));has=true;}else prev+=toDisplay(a.value,assetCcy(a));});
   if(has&&prev>0){todayGain=total-prev;todayPct=(todayGain/prev)*100;}}
   const elVal=document.getElementById('anSumValue'),elDB=document.getElementById('anSumDayBadge');
   const elDG=document.getElementById('anSumDayGain'),elInv=document.getElementById('anSumInvested');
@@ -5384,7 +5384,7 @@ async function boot(){
   const _fxPromise = fetchGlobalFxRates().catch(()=>{});
   const _ovMig=getOverrides();let _ovChanged=false;
   Object.keys(_ovMig).forEach(k=>{if(_ovMig[k]&&!_ovMig[k].costCurrency){_ovMig[k].costCurrency='EUR';_ovChanged=true;}});
-  if(_ovChanged)saveOverrides(_ovMig);
+  if(_ovChanged)localStorage.setItem('tf_positions',JSON.stringify(_ovMig));
 
   // Step 1: seed — stale-while-revalidate: show ANY cached data instantly, refresh in bg
   const _SEED_CK='fa_seed_v2';
@@ -6065,7 +6065,7 @@ async function _syncWithToken(){
       await fetch(`${_base}?user_id=eq.${uid}`,{method:'PATCH',headers:{..._hdrs,'Prefer':'return=minimal'},body:JSON.stringify(patchPayload)});
     }
     // Overrides: apply only when cloud is newer or local is empty
-    const _localEmpty=!Object.keys(getOverrides()).length&&!_localCa.length;
+    const _localEmpty=!Object.keys(getOverrides()).length&&!Object.keys(_localCa).length;
     if(cloudTs>localTs||_localEmpty){
       localStorage.setItem('tf_positions',JSON.stringify(_ov));
       if(data.liquidity)localStorage.setItem('fa_liquidity',JSON.stringify(data.liquidity));
@@ -6149,7 +6149,10 @@ async function syncFromCloud(){
 }
 
 function _debouncedSync(immediate=false){
-  if(!_sbUser)return;
+  if(!_sbUser){
+    if(localStorage.getItem('fa_token')){clearTimeout(_syncTimer);_syncTimer=setTimeout(()=>_syncWithToken().catch(()=>{}),2000);}
+    return;
+  }
   clearTimeout(_syncTimer);
   if(immediate){syncToCloud().catch(()=>{});return;}
   _syncTimer=setTimeout(()=>syncToCloud().catch(()=>{}),1000);
