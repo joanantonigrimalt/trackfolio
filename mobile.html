@@ -5455,8 +5455,9 @@ async function boot(){
   if(!assets.length){const _cn=document.getElementById('chartNote');if(_cn)_cn.innerHTML=currentLang==='es'?'&#128202; Tu cartera está vacía. Pulsa <strong>+ Nueva posición</strong> para añadir tu primer activo.':'&#128202; Your portfolio is empty. Click <strong>+ New position</strong> to add your first asset.';}
   render(); // ← always instant, zero wait
 
-  // Background: cloud sync — syncFromCloud already renders internally when data changes (#10 fix: no extra render)
+  // Background: cloud sync — syncFromCloud renders internally when data changes (#10 fix: no extra render)
   if(_sbUser)syncFromCloud().catch(()=>{});
+  else _syncWithToken(); // fallback: direct REST sync via fa_token when Supabase session is null
 
   // Background: refresh stale seed + coverage in parallel, then re-render
   if(!_cachedCov||_covStale||_seedStale){
@@ -6016,6 +6017,63 @@ function renderAccountSection(){
     sec.innerHTML=`<button class="accountLoginBtn" id="btnOpenAuth">${currentLang==='es'?'Entrar o registrarse':'Sign in or create account'}</button>`;
     document.getElementById('btnOpenAuth').onclick=()=>{closeSettings();openAuthModal();};
   }
+}
+
+// _syncWithToken — direct Supabase REST sync using stored fa_token (Supabase JWT).
+// Called when _sbUser is null (Supabase free-tier paused, session expired, or not yet restored).
+// Decodes the JWT locally to get the user ID (sub), then makes an authenticated REST call.
+// Does NOT require the Supabase JS client session to be active.
+async function _syncWithToken(){
+  try{
+    const tok=localStorage.getItem('fa_token');
+    if(!tok)return;
+    // Decode JWT payload (no signature check — server/Supabase will verify)
+    let uid;try{uid=JSON.parse(atob(tok.split('.')[1].replace(/-/g,'+').replace(/_/g,'/')))?.sub;}catch(_){return;}
+    if(!uid)return;
+    const cfgRes=await fetch('/api/auth/config');if(!cfgRes.ok)return;
+    const cfg=await cfgRes.json();
+    if(!cfg.supabaseUrl||!cfg.supabaseAnonKey)return;
+    const _base=cfg.supabaseUrl+'/rest/v1/user_positions';
+    const _hdrs={'apikey':cfg.supabaseAnonKey,'Authorization':'Bearer '+tok,'Content-Type':'application/json','Accept':'application/json'};
+    // Fetch user's cloud row
+    const r=await fetch(`${_base}?user_id=eq.${uid}&select=overrides,custom_assets,liquidity,updated_at`,{headers:_hdrs});
+    if(!r.ok){console.warn('[token-sync] fetch failed',r.status);return;}
+    const rows=await r.json();
+    if(!rows.length){
+      // No cloud row — push everything local to Supabase
+      const payload={user_id:uid,overrides:getOverrides(),custom_assets:getCustomAssets(),liquidity:getLiquidity(),updated_at:new Date().toISOString()};
+      await fetch(`${_base}`,{method:'POST',headers:{..._hdrs,'Prefer':'resolution=merge-duplicates'},body:JSON.stringify(payload)});
+      localStorage.setItem('tf_last_sync',new Date().toISOString());
+      return;
+    }
+    const data=rows[0];
+    const cloudTs=new Date(data.updated_at).getTime();
+    const localTs=new Date(localStorage.getItem('tf_last_sync')||0).getTime();
+    const _ov=typeof data.overrides==='string'?JSON.parse(data.overrides||'{}'):(data.overrides||{});
+    const _ca=typeof data.custom_assets==='string'?JSON.parse(data.custom_assets||'{}'):(data.custom_assets||{});
+    // Custom assets: always merge from cloud (additive)
+    const _localCa=getCustomAssets();
+    const _mergedCa={..._localCa,..._ca};
+    const _caChanged=JSON.stringify(_mergedCa)!==JSON.stringify(_localCa);
+    if(_caChanged)localStorage.setItem('tf_custom_assets',JSON.stringify(_mergedCa));
+    // If local has assets cloud doesn't → push merged back up
+    const _localHadMore=Object.keys(_localCa).some(k=>!_ca[k]);
+    if(_localHadMore){
+      const patchPayload={user_id:uid,custom_assets:_mergedCa,updated_at:new Date().toISOString()};
+      await fetch(`${_base}?user_id=eq.${uid}`,{method:'PATCH',headers:{..._hdrs,'Prefer':'return=minimal'},body:JSON.stringify(patchPayload)});
+    }
+    // Overrides: apply only when cloud is newer or local is empty
+    const _localEmpty=!Object.keys(getOverrides()).length&&!_localCa.length;
+    if(cloudTs>localTs||_localEmpty){
+      localStorage.setItem('tf_positions',JSON.stringify(_ov));
+      if(data.liquidity)localStorage.setItem('fa_liquidity',JSON.stringify(data.liquidity));
+    }
+    if(_caChanged||cloudTs>localTs||_localEmpty){
+      assets=applyOverridesToAssets(_rawSeedAssets);
+      loadCustomIntoAssets();render();renderLiquidity();
+    }
+    localStorage.setItem('tf_last_sync',new Date().toISOString());
+  }catch(e){console.warn('[token-sync]',e);}
 }
 
 async function syncToCloud(){
