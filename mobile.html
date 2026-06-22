@@ -5564,9 +5564,11 @@ async function boot(){
     });
   }
   // Coverage — stale-while-revalidate: show ANY cached data instantly, refresh in bg
-  const _COV_CK='fa_cov_v2_'+_strHash(isinList); // #8 fix: hash instead of truncating (no collision risk)
+  const _COV_CK='fa_cov_v3_'+_strHash(isinList); // v3: bump clears stale v107/v108 cache (customCurrency fix)
+  // Clean up old cache versions to avoid localStorage bloat
+  try{Object.keys(localStorage).filter(k=>k.startsWith('fa_cov_v1_')||k.startsWith('fa_cov_v2_')).forEach(k=>localStorage.removeItem(k));}catch(_){}
   let _cachedCov=null,_covStale=false;
-  try{const _cc=localStorage.getItem(_COV_CK);if(_cc){const _p=JSON.parse(_cc);if(_p?.data){_cachedCov=_p.data;_covStale=(Date.now()-_p.ts)>=900_000;}}}catch(_){}
+  try{const _cc=localStorage.getItem(_COV_CK);if(_cc){const _p=JSON.parse(_cc);if(_p?.data){_cachedCov=_p.data;_covStale=(Date.now()-_p.ts)>=300_000;}}}catch(_){} // TTL 5min (was 15min)
   // Always fetch live prices from API — never trust cache for total display
   _pricesLive=false;
   const _initCvMap=_cachedCov?Object.fromEntries((_cachedCov.results||[]).map(e=>[e.isin,e])):{};
