@@ -6035,6 +6035,10 @@ async function syncFromCloud(){
     const _mergedCa={..._localCa,..._ca}; // cloud wins on duplicates (more authoritative)
     const _caChanged=Object.keys(_mergedCa).length!==Object.keys(_localCa).length||JSON.stringify(_mergedCa)!==JSON.stringify(_localCa);
     if(_caChanged)localStorage.setItem('tf_custom_assets',JSON.stringify(_mergedCa));
+    // If local had custom assets the cloud didn't know about → push them up immediately
+    // This bootstraps the cloud when custom assets exist locally but not yet in Supabase
+    const _localHadMore=Object.keys(_localCa).some(k=>!_ca[k]);
+    if(_localHadMore)syncToCloud().catch(()=>{});
     if(cloudTs>localTs||localEmpty){
       // Overrides (quantities, buy prices): apply only when cloud is newer — avoids overwriting local edits
       localStorage.setItem('tf_positions', JSON.stringify(_ov));
