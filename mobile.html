@@ -5399,7 +5399,8 @@ async function boot(){
   _rawSeedAssets=buildAssets({});
   // For logged-in users: pull latest overrides from cloud before first render
   // so their saved positions are visible immediately (not filtered out)
-  if(_sbUser) await syncFromCloud().catch(()=>{});
+  // Wrapped with a 4s timeout so a slow/missing Supabase table never blocks rendering
+  if(_sbUser) await Promise.race([syncFromCloud(),new Promise(r=>setTimeout(r,4000))]).catch(()=>{});
   assets=applyOverridesToAssets(_rawSeedAssets);
   loadCustomIntoAssets();
   dataReady=true;
