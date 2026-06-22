@@ -3039,14 +3039,15 @@ function toEur(amount,ccy){ if(!ccy||ccy==='EUR')return amount; if(ccy==='GBp'||
 function toDisplay(amount,fromCcy){ return toEur(amount,fromCcy)*(_fxRates[_displayCcy]||1); }
 // fd() — convert fromCcy → _displayCcy and format
 function fd(n,fromCcy){ return fe(toDisplay(Number.isFinite(n)?n:0,fromCcy)); }
-// fetchGlobalFxRates() — fetch live EUR→X rates at boot (localStorage cached 1h)
+// fetchGlobalFxRates() — fetch live EUR→X rates via server proxy (avoids Frankfurter CORS/redirect issue)
 async function fetchGlobalFxRates(){
   try{
     const _LS='fa_fx_rates',_stored=localStorage.getItem(_LS);
-    if(_stored){const _p=JSON.parse(_stored);if(_p?.rates&&(Date.now()-_p.ts)<900_000){_fxRates={EUR:1,..._p.rates};return;}} // 15min TTL (was 1h)
-    const r=await fetch('https://api.frankfurter.app/latest?from=EUR&to=USD,GBP,CHF');
+    if(_stored){const _p=JSON.parse(_stored);if(_p?.rates&&(Date.now()-_p.ts)<900_000){_fxRates={EUR:1,..._p.rates};return;}} // 15min TTL
+    const r=await fetch('/api/fx/rates'); // server-side proxy → Frankfurter (no CORS issues)
     const d=await r.json();
-    if(d.rates){_fxRates={EUR:1,...d.rates};localStorage.setItem(_LS,JSON.stringify({rates:d.rates,ts:Date.now()}));}
+    if(d.rates&&!d.fallback){_fxRates={EUR:1,...d.rates};localStorage.setItem(_LS,JSON.stringify({rates:d.rates,ts:Date.now()}));}
+    else if(d.rates){_fxRates={EUR:1,...d.rates};} // fallback rates, don't cache
   }catch(_){}
 }
 // setDisplayCcy() — change display currency and re-render
@@ -3670,7 +3671,7 @@ function _anRenderPeriodStrip(){
     if(full&&full.length>=2){const f=filterByRange(full,key);if(f&&f.length>=2){const b=f[0].totalValue,c=f[f.length-1].totalValue;if(b>0){pct=(c-b)/b*100;abs=c-b;}}}
     const cl=pct==null?'neu':pct>=0?'pos':'neg';
     const ps=pct==null?'—':`${pct>=0?'+':''}${pct.toFixed(1)}%`;
-    const as=abs==null?'—':Math.abs(abs)>=1000?`${abs>=0?'+':'-'}${(Math.abs(abs)/1000).toFixed(1)}k`:`${abs>=0?'+':''}${fe(abs)}`;
+    const as=abs==null?'—':Math.abs(abs)>=1000?`${abs>=0?'+':''}${fe(Math.round(abs/1000)*1000)}`:`${abs>=0?'+':''}${fe(abs)}`;
     return`<div class="an-period-item"><span class="an-period-label">${label}</span><span class="an-period-pct ${cl}">${ps}</span><span class="an-period-abs ${cl}">${as}</span></div>`;
   }).join('');
 }
@@ -3706,7 +3707,7 @@ function _anRenderBestWorst(){
     const ticker=escapeHtml((a.name||a.isin||'').slice(0,sm?8:10));
     const fname=escapeHtml((a.name||a.isin||'').slice(0,sm?12:16));
     const pctStr=(pos?'+':'')+a.gainPct.toFixed(1)+'%';
-    const eurStr=(a.gain>=0?'+':'')+fe(toDisplay(a.gain,assetCcy(a)));
+    const eurStr=(a.gain>=0?'+':'')+fd(a.gain,'EUR');
     const val=toDisplay(a.value,assetCcy(a));
     const valStr=(a.gain>=0?'+':'')+(val>=1000?fe(Math.round(val/100)*100):fe(val));
     const smValStr=(a.gain>=0?'+':'')+(val>=1000?(val>=10000?Math.round(val/1000)+'K':(val/1000).toFixed(1)+'K'):Math.round(val)+'');
@@ -3715,7 +3716,7 @@ function _anRenderBestWorst(){
     const logoDiv=`<div class="an-bw-logo" style="background:${col}">${escapeHtml(iconInitials(a))}</div>`;
     const _hasPriceErr=coverageStatus(a)==='MISSING'&&!(a.currentPrice>0);const price=_hasPriceErr?'<span style="color:#f05252;font-size:10px;font-weight:700">⚠ sin precio</span>':fc(a.currentPrice,assetCcy(a));
     const bottom=sm
-      ?`<div class="an-bw-bottom"><span class="an-bw-price" style="font-size:9px">${price}</span><span class="an-bw-total ${cl}">€${smValStr}</span></div>`
+      ?`<div class="an-bw-bottom"><span class="an-bw-price" style="font-size:9px">${price}</span><span class="an-bw-total ${cl}">${(a.gain>=0?'+':'')+(val>=10000?fe(Math.round(val/1000)*1000):fe(val))}</span></div>`
       :`<div class="an-bw-bottom"><span class="an-bw-price">${price}</span><span class="an-bw-total ${cl}">${valStr}</span></div>`;
     const spark=`<canvas class="an-bw-spark" id="${sparkId}"></canvas>`;
     if(sm) return`<div class="an-bw-item ${cl} sm"><div class="an-bw-top">${logoDiv}${nameWrap}</div>${badge}${spark}${bottom}</div>`;
@@ -3750,7 +3751,7 @@ function _anRenderTreemap(){
   const W=container.offsetWidth||358,H=260;
   container.innerHTML='';if(!assets.length)return;
   const all=[...assets.map(a=>({name:a.name.length>18?a.name.slice(0,16)+'…':a.name,weight:toDisplay(a.value,assetCcy(a)),gainPct:a.gainPct??0,today:getDayPct(a)??0}))];
-  const liqTot=getLiquidity().reduce((s,l)=>s+(Number(l.amount)||0),0);
+  const liqTot=getLiquidity().reduce((s,l)=>s+toDisplay(Number(l.amount)||0,l.currency||'EUR'),0);
   if(liqTot>0)all.push({name:currentLang==='es'?'Efectivo':'Cash',weight:liqTot,gainPct:null,today:0});
   const tot=all.reduce((s,i)=>s+i.weight,0);if(!tot||!Number.isFinite(tot))return;
   function colFor(item){if(item.gainPct==null)return'#2563eb';const p=item.gainPct;if(p>20)return'#14532d';if(p>5)return'#15803d';if(p>0)return'#22c55e';if(p>-5)return'#dc2626';if(p>-15)return'#b91c1c';return'#7f1d1d';}
@@ -4629,7 +4630,7 @@ function _renderDivHoldings(divItems, liqWithRate){
       </td>
       <td>
         <div class="div-tbl-amt">${fe(d.annualIncome)}</div>
-        <div class="div-tbl-yoc">${fe(d.monthlyIncome)}/mes</div>
+        <div class="div-tbl-yoc">${fe(d.monthlyIncome)}/${currentLang==='es'?'mes':'mo'}</div>
       </td>
     </tr>`;
   }).join('');
@@ -5565,9 +5566,14 @@ const TYPE_LABELS={stock:'Acción',etf:'ETF',fund:'Fondo',pension:'Plan Pensione
 
 function buildCustomAssetObj(ca,pos){
   const qty=pos.quantity||0,bp=pos.avgCost||0,cp=ca.currentPrice||0;
+  const cc=pos.costCurrency||'EUR',assetNativeCcy=ca.currency||'EUR';
+  // Normalize both prices to EUR to compute gain/gainPct correctly across currencies
+  const bpEur=toEur(bp,cc),cpEur=toEur(cp,assetNativeCcy);
+  const gain=qty*(cpEur-bpEur); // always EUR
+  const gainPct=bpEur>0?((cpEur-bpEur)/bpEur)*100:0;
   const pts=ca.history?.length||0;
   const covSt=pts>=1200?'OK':pts>=60?'PARTIAL':'MISSING';
-  return{isin:ca.isin||ca.symbol,name:ca.name||ca.shortName||ca.symbol,fullName:ca.name||ca.symbol,symbol:ca.symbol,quantity:qty,buyPrice:bp,currentPrice:cp,invested:qty*bp,value:qty*cp,gainPct:bp>0?((cp-bp)/bp)*100:0,mapping:{type:ca.type||'stock'},provider:'yahoo',coverageStatus:covSt,history:ca.history||[],hasRealHistory:pts>1,_rawQty:qty,_rawBuyPrice:bp,isCustom:true,customCurrency:ca.currency};
+  return{isin:ca.isin||ca.symbol,name:ca.name||ca.shortName||ca.symbol,fullName:ca.name||ca.symbol,symbol:ca.symbol,quantity:qty,buyPrice:bp,currentPrice:cp,invested:qty*bp,value:qty*cp,gain,gainPct,mapping:{type:ca.type||'stock'},provider:'yahoo',coverageStatus:covSt,history:ca.history||[],hasRealHistory:pts>1,_rawQty:qty,_rawBuyPrice:bp,isCustom:true,customCurrency:ca.currency};
 }
 
 function loadCustomIntoAssets(cvMap){
@@ -6678,7 +6684,7 @@ function saveAlertFromScreen(){
   if(!priceVal||priceVal<=0){showToast('Introduce un precio válido');return;}
   const asset=assets.find(a=>a.isin===_alertsAssetISIN);if(!asset)return;
   const alerts=getAlerts();
-  alerts.push({id:Date.now().toString(),isin:_alertsAssetISIN,name:asset.shortName||asset.name,targetPrice:priceVal,cond:_alertsCond,notif:document.getElementById('alertsNotifCk'),emailNotif:document.getElementById('alertsEmailCk')?.checked??false.checked,triggered:false,createdAt:new Date().toISOString()});
+  alerts.push({id:Date.now().toString(),isin:_alertsAssetISIN,name:asset.shortName||asset.name,targetPrice:priceVal,cond:_alertsCond,notif:document.getElementById('alertsNotifCk').checked,emailNotif:document.getElementById('alertsEmailCk')?.checked??false,triggered:false,createdAt:new Date().toISOString()});
   saveAlerts(alerts);
   hideAlertForm();
   _renderAlertsListScreen();
@@ -6700,7 +6706,7 @@ function _renderAlertsListScreen(){
   if(empty)empty.style.display='none';
   list.innerHTML=alerts.map(a=>{
     const isTriggered=a.triggered;
-    const condLabel=a.cond==='above'?'▲ Por encima de':'▼ Por debajo de';
+    const condLabel=a.cond==='above'?(currentLang==='es'?'▲ Por encima de':'▲ Above'):(currentLang==='es'?'▼ Por debajo de':'▼ Below');
     const condColor=a.cond==='above'?'#15803d':'#dc2626';
     const asset=assets.find(x=>x.isin===a.isin);
     const curPrice=asset?(asset.currentPrice||(asset.value/(asset.quantity||1))):null;
@@ -6708,7 +6714,7 @@ function _renderAlertsListScreen(){
       <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:8px">
         <div>
           <div style="font-size:14px;font-weight:800;color:#142018">${escapeHtml(a.name)}</div>
-          <div style="font-size:11px;color:#8fa090;margin-top:2px">${new Date(a.createdAt).toLocaleDateString('es-ES')}</div>
+          <div style="font-size:11px;color:#8fa090;margin-top:2px">${new Date(a.createdAt).toLocaleDateString(currentLang==='es'?'es-ES':'en-GB')}</div>
         </div>
         <div style="display:flex;align-items:center;gap:8px">
           ${isTriggered?'<span style="font-size:10px;font-weight:700;background:#e6faf3;color:#15803d;border-radius:6px;padding:2px 7px">✓ Alcanzada</span>':''}
