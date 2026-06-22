@@ -6685,7 +6685,7 @@ function showAlertForm(){
         <span style="flex:1;font-size:12px;font-weight:600;color:#142018;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${escapeHtml(a.shortName||a.name)}</span>
         <span style="font-size:11px;color:#8fa090;flex-shrink:0">${fe(price)}</span>
       </div>`;
-    }).join('')||'<div style="padding:8px;font-size:12px;color:#8fa090">Sin activos en cartera</div>';
+    }).join('')||`<div style="padding:8px;font-size:12px;color:#8fa090">${currentLang==='es'?'Sin activos en cartera':'No assets in portfolio'}</div>`;
   }
   fc.scrollIntoView({behavior:'smooth',block:'nearest'});
 }
@@ -6719,16 +6719,16 @@ function setAlertsCond(cond){
 }
 
 function saveAlertFromScreen(){
-  if(!_alertsAssetISIN){showToast('Selecciona un activo');return;}
+  if(!_alertsAssetISIN){showToast(currentLang==='es'?'Selecciona un activo':'Select an asset');return;}
   const priceVal=parseFloat(document.getElementById('alertsPriceInput').value);
-  if(!priceVal||priceVal<=0){showToast('Introduce un precio válido');return;}
+  if(!priceVal||priceVal<=0){showToast(currentLang==='es'?'Introduce un precio válido':'Enter a valid price');return;}
   const asset=assets.find(a=>a.isin===_alertsAssetISIN);if(!asset)return;
   const alerts=getAlerts();
   alerts.push({id:Date.now().toString(),isin:_alertsAssetISIN,name:asset.shortName||asset.name,targetPrice:priceVal,cond:_alertsCond,notif:document.getElementById('alertsNotifCk').checked,emailNotif:document.getElementById('alertsEmailCk')?.checked??false,triggered:false,createdAt:new Date().toISOString()});
   saveAlerts(alerts);
   hideAlertForm();
   _renderAlertsListScreen();
-  showToast('Alerta creada ✓');
+  showToast(currentLang==='es'?'Alerta creada ✓':'Alert created ✓');
   if('Notification'in window&&Notification.permission==='default') Notification.requestPermission();
 }
 
@@ -6757,23 +6757,23 @@ function _renderAlertsListScreen(){
           <div style="font-size:11px;color:#8fa090;margin-top:2px">${new Date(a.createdAt).toLocaleDateString(currentLang==='es'?'es-ES':'en-GB')}</div>
         </div>
         <div style="display:flex;align-items:center;gap:8px">
-          ${isTriggered?'<span style="font-size:10px;font-weight:700;background:#e6faf3;color:#15803d;border-radius:6px;padding:2px 7px">✓ Alcanzada</span>':''}
+          ${isTriggered?`<span style="font-size:10px;font-weight:700;background:#e6faf3;color:#15803d;border-radius:6px;padding:2px 7px">✓ ${currentLang==='es'?'Alcanzada':'Triggered'}</span>`:''}
           <button onclick="deleteAlertFromScreen('${a.id}')" style="background:rgba(20,32,24,.06);border:none;width:28px;height:28px;border-radius:8px;cursor:pointer;font-size:12px;color:#8fa090">✕</button>
         </div>
       </div>
       <div style="display:flex;align-items:center;gap:10px">
         <div style="flex:1;background:#f7faf8;border-radius:10px;padding:8px 12px">
-          <div style="font-size:10px;color:#8fa090;font-weight:600;margin-bottom:2px">Precio objetivo</div>
+          <div style="font-size:10px;color:#8fa090;font-weight:600;margin-bottom:2px">${currentLang==='es'?'Precio objetivo':'Target price'}</div>
           <div style="font-size:16px;font-weight:800;color:#142018">${fe(a.targetPrice)}</div>
           <div style="font-size:10px;font-weight:700;color:${condColor};margin-top:2px">${condLabel}</div>
         </div>
         ${curPrice!=null?`<div style="flex:1;background:#f7faf8;border-radius:10px;padding:8px 12px">
-          <div style="font-size:10px;color:#8fa090;font-weight:600;margin-bottom:2px">Precio actual</div>
+          <div style="font-size:10px;color:#8fa090;font-weight:600;margin-bottom:2px">${currentLang==='es'?'Precio actual':'Current price'}</div>
           <div style="font-size:16px;font-weight:800;color:#142018">${fe(curPrice)}</div>
-          <div style="font-size:10px;font-weight:700;color:#8fa090;margin-top:2px">Diferencia: ${((curPrice-a.targetPrice)/a.targetPrice*100).toFixed(1)}%</div>
+          <div style="font-size:10px;font-weight:700;color:#8fa090;margin-top:2px">${currentLang==='es'?'Diferencia':'Diff'}: ${((curPrice-a.targetPrice)/a.targetPrice*100).toFixed(1)}%</div>
         </div>`:''}
       </div>
-      ${a.notif?'<div style="font-size:10px;color:#8fa090;margin-top:8px;display:flex;align-items:center;gap:4px">◉ Notificación activada</div>':''}
+      ${a.notif?`<div style="font-size:10px;color:#8fa090;margin-top:8px;display:flex;align-items:center;gap:4px">◉ ${currentLang==='es'?'Notificación activada':'Notification active'}</div>`:''}
     </div>`;
   }).join('');
 }
@@ -6833,9 +6833,9 @@ function checkAlertsTrigger(){
       a.triggered=true;changed=true;
       (()=>{const tok=localStorage.getItem('fa_token');if(tok)fetch('/api/alerts/notify',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+tok},body:JSON.stringify({alertName:a.name,condition:a.cond,targetPrice:a.targetPrice,currentPrice:price,sendEmail:!!a.emailNotif,currency:'EUR'})}).catch(()=>{});})();
       if(a.notif){
-        const msg=`${a.name} ha ${a.cond==='above'?'superado':'bajado de'} ${fe(a.targetPrice)}`;
+        const msg=currentLang==='es'?`${a.name} ha ${a.cond==='above'?'superado':'bajado de'} ${fe(a.targetPrice)}`:`${a.name} has ${a.cond==='above'?'risen above':'dropped below'} ${fe(a.targetPrice)}`;
         if('Notification'in window&&Notification.permission==='granted'){
-          new Notification('◉ Alerta de precio',{body:msg,icon:'/icons/icon-192.png'});
+          new Notification(currentLang==='es'?'◉ Alerta de precio':'◉ Price alert',{body:msg,icon:'/icons/icon-192.png'});
         } else { showToast(msg,5000); }
       }
     }
