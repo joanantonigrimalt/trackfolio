@@ -3059,7 +3059,7 @@ function tick(){const cl=document.getElementById('clock');if(cl)cl.textContent=n
 function getOverrides(){try{const o=JSON.parse(localStorage.getItem('tf_positions')||'{}');return o!==null&&typeof o==='object'&&!Array.isArray(o)?o:{};}catch{return {};}}
 function getKnownBrokers(){const ov=getOverrides();const s=new Set();Object.values(ov).forEach(v=>{if(v.broker)s.add(v.broker);});try{const liq=JSON.parse(localStorage.getItem('tf_liquidity')||'[]');liq.forEach(e=>{if(e.broker)s.add(e.broker);});}catch{}return[...s];}
 function renderBrokerChips(inputId,chipsId){const brokers=getKnownBrokers();const el=document.getElementById(chipsId);if(!el)return;if(!brokers.length){el.innerHTML='';return;}el.innerHTML=brokers.map(b=>`<span class="brokerChip" data-broker="${escapeHtml(b)}">${escapeHtml(b)}</span>`).join('');el.querySelectorAll('.brokerChip').forEach(chip=>{chip.addEventListener('click',()=>{const inp=document.getElementById(inputId);if(inp){inp.value=chip.dataset.broker;inp.dispatchEvent(new Event('input'));}});});}
-function saveOverrides(o){localStorage.setItem('tf_positions',JSON.stringify(o));_debouncedSync();}
+function saveOverrides(o){localStorage.setItem('tf_positions',JSON.stringify(o));try{localStorage.removeItem('fa_seed_v2');}catch(_){}try{Object.keys(localStorage).filter(k=>k.startsWith('fa_cov_v2_')).forEach(k=>localStorage.removeItem(k));}catch(_){}_debouncedSync();}
 function applyOverridesToAssets(rawAssets){
   const ov=getOverrides();
   const mapped=rawAssets.map(a=>{
@@ -5360,10 +5360,15 @@ async function boot(){
   Object.keys(_ovMig).forEach(k=>{if(_ovMig[k]&&!_ovMig[k].costCurrency){_ovMig[k].costCurrency='EUR';_ovChanged=true;}});
   if(_ovChanged)saveOverrides(_ovMig);
 
-  // Step 1: seed — fail hard if unavailable
-  let seed;
-  try{ seed=await getJson('/api/portfolio/seed',10000); }
-  catch(e){ document.getElementById('chartNote').textContent=(currentLang==='es'?'Error cargando portfolio: ':'Error loading portfolio: ')+e.message; return; }
+  // Step 1: seed — try localStorage cache (3 min TTL) for instant load
+  const _SEED_CK='fa_seed_v2';
+  let seed,_seedFresh=false;
+  try{const _sc=localStorage.getItem(_SEED_CK);if(_sc){const _p=JSON.parse(_sc);if(_p?.data&&(Date.now()-_p.ts)<180_000){seed=_p.data;}}}catch(_){}
+  if(!seed){
+    try{ seed=await getJson('/api/portfolio/seed',10000); _seedFresh=true; }
+    catch(e){ document.getElementById('chartNote').textContent=(currentLang==='es'?'Error cargando portfolio: ':'Error loading portfolio: ')+e.message; return; }
+    try{localStorage.setItem(_SEED_CK,JSON.stringify({data:seed,ts:Date.now()}));}catch(_){}
+  }
 
   // Empty portfolio — show friendly onboarding prompt
   if (!seed.positions || !seed.positions.length) {
@@ -5396,27 +5401,34 @@ async function boot(){
       return{isin:pos.isin,name:pos.shortName||pos.name||mapping?.name||pos.isin,fullName:pos.name||mapping?.name||pos.isin,quantity,buyPrice:adjBuyPrice,currentPrice:adjPrice,invested:quantity*adjBuyPrice,value:quantity*adjPrice,gain,gainPct:adjBuyPrice?((adjPrice-adjBuyPrice)/adjBuyPrice)*100:0,mapping,provider:entry.data?.provider||null,coverageStatus:entry.data?.coverage?.status||'MISSING',coverage:entry.data?.coverage||{status:'MISSING'},history:adjHistory,hasRealHistory:adjHistory.length>1,_rawQty:quantity,_rawBuyPrice:adjBuyPrice,customCurrency:adjCcy,costCurrency:_isGBp?'GBP':null};
     });
   }
-  _rawSeedAssets=buildAssets({});
+  // Try coverage cache (15 min TTL) for instant first render with full prices+history
+  const _COV_CK='fa_cov_v2_'+isinList.replace(/,/g,'').slice(0,40);
+  let _cachedCov=null;
+  try{const _cc=localStorage.getItem(_COV_CK);if(_cc){const _p=JSON.parse(_cc);if(_p?.data&&(Date.now()-_p.ts)<900_000){_cachedCov=_p.data;}}}catch(_){}
+  const _initCvMap=_cachedCov?Object.fromEntries((_cachedCov.results||[]).map(e=>[e.isin,e])):{};
+  _rawSeedAssets=buildAssets(_initCvMap);
   // For logged-in users: pull latest overrides from cloud before first render
   // so their saved positions are visible immediately (not filtered out)
   // Wrapped with a 4s timeout so a slow/missing Supabase table never blocks rendering
   if(_sbUser) await Promise.race([syncFromCloud(),new Promise(r=>setTimeout(r,4000))]).catch(()=>{});
   assets=applyOverridesToAssets(_rawSeedAssets);
-  loadCustomIntoAssets();
+  loadCustomIntoAssets(_cachedCov?_initCvMap:undefined);
   dataReady=true;
   if(!assets.length){const _cn=document.getElementById('chartNote');if(_cn)_cn.innerHTML=currentLang==='es'?'&#128202; Tu cartera está vacía. Pulsa <strong>+ Nueva posición</strong> para añadir tu primer activo.':'&#128202; Your portfolio is empty. Click <strong>+ New position</strong> to add your first asset.';}
-  render(); // ← Home visible immediately
+  render(); // ← Home visible immediately (instant if cache hit)
 
-  // Step 2: coverage (history) — runs AFTER first render, best-effort
+  // Step 2: coverage (history) — skip if fresh cache, otherwise fetch and cache
   let coverage={results:[]};
-  try{ coverage=await getJson('/api/portfolio/coverage?isin='+encodeURIComponent(isinList),9500); }
-  catch(e){ console.warn('[boot] coverage failed:',e.message); }
-
-  const cvMap=Object.fromEntries((coverage.results||[]).map(e=>[e.isin,e]));
-  _rawSeedAssets=buildAssets(cvMap);
-  assets=applyOverridesToAssets(_rawSeedAssets);
-  loadCustomIntoAssets(cvMap);
-  render(); // ← Second render with charts/history
+  if(!_cachedCov||_seedFresh){
+    try{ coverage=await getJson('/api/portfolio/coverage?isin='+encodeURIComponent(isinList),9500); }
+    catch(e){ console.warn('[boot] coverage failed:',e.message); }
+    try{localStorage.setItem(_COV_CK,JSON.stringify({data:coverage,ts:Date.now()}));}catch(_){}
+    const cvMap=Object.fromEntries((coverage.results||[]).map(e=>[e.isin,e]));
+    _rawSeedAssets=buildAssets(cvMap);
+    assets=applyOverridesToAssets(_rawSeedAssets);
+    loadCustomIntoAssets(cvMap);
+    render(); // ← Second render with updated charts/history
+  }
 
   // Step 3: pre-fetch dividends in background so Dividends tab is instant
   _prefetchDividends();
