@@ -6917,13 +6917,15 @@ let _liqType = 'savings';
 
 const LIQ_ICONS = {savings:'🏦', deposit:'🔒', moneymarket:'📈', pension:'🏛️', cash:'💳', fondoprivado:'🏢'};
 const LIQ_LABELS = {savings:'Ahorro', deposit:'Depósito', moneymarket:'F. Monetario', pension:'Plan Pensión', cash:'Cta. Cte.', fondoprivado:'Fondo Privado'};
+const LIQ_LABELS_EN = {savings:'Savings', deposit:'Deposit', moneymarket:'Money Mkt', pension:'Pension Plan', cash:'Curr. Acct.', fondoprivado:'Private Fund'};
+function liqLabel(type){ return currentLang==='es'?LIQ_LABELS[type]||type:LIQ_LABELS_EN[type]||type; }
 
 function openLiqModal(id) {
   _liqEditId = id || null;
   const liq = getLiquidity();
   const item = id ? liq.find(x=>x.id===id) : null;
   _liqType = item?.type || 'savings';
-  document.getElementById('liqSheetTitle').textContent = item ? 'Editar Liquidez' : 'Añadir Liquidez';
+  document.getElementById('liqSheetTitle').textContent = item ? (currentLang==='es'?'Editar Liquidez':'Edit Liquidity') : (currentLang==='es'?'Añadir Liquidez':'Add Liquidity');
   document.getElementById('liqName').value = item?.name || '';
   document.getElementById('liqBroker').value = item?.broker || '';
   document.getElementById('liqAmount').value = item?.amount || '';
@@ -6971,9 +6973,9 @@ function setLiqType(type) {
   const fpFields = document.getElementById('liqFPFields');
   if(fpFields) fpFields.style.display = isFP ? '' : 'none';
   const amtLbl = document.getElementById('liqAmountLbl');
-  if(amtLbl) amtLbl.textContent = isFP ? 'Capital actual' : 'Importe';
+  if(amtLbl) amtLbl.textContent = isFP ? (currentLang==='es'?'Capital actual':'Current value') : (currentLang==='es'?'Importe':'Amount');
   const rateLbl = document.getElementById('liqRateLbl');
-  if(rateLbl) rateLbl.textContent = isFP ? 'Rendimiento anual esperado (%)' : 'Tipo de interés anual (%)';
+  if(rateLbl) rateLbl.textContent = isFP ? (currentLang==='es'?'Rendimiento anual esperado (%)':'Expected annual return (%)') : (currentLang==='es'?'Tipo de interés anual (%)':'Annual interest rate (%)');
 }
 function saveLiqItem() {
   const name = document.getElementById('liqName').value.trim();
@@ -7029,7 +7031,7 @@ function renderLiquidity() {
   const rows = liq.map(x=>{
     const annualInterest = x.amount*(x.rate/100);
     const dispAmt = fd(x.amount, x.currency||'EUR');
-    const dispInt = x.rate>0 ? `+${fd(annualInterest,x.currency||'EUR')}/año` : '';
+    const dispInt = x.rate>0 ? `+${fd(annualInterest,x.currency||'EUR')}/${currentLang==='es'?'año':'yr'}` : '';
     const icon = LIQ_ICONS[x.type]||'💰';
     const isFP = x.type==='fondoprivado';
     const gainPct = isFP&&x.capitalInvertido>0 ? ((x.amount-x.capitalInvertido)/x.capitalInvertido*100) : null;
@@ -7038,8 +7040,8 @@ function renderLiquidity() {
       <div class="liqIcon">${icon}</div>
       <div style="min-width:0;flex:1">
         <div class="liqName">${x.name}</div>
-        <div class="liqMeta">${LIQ_LABELS[x.type]||x.type}${x.broker?' · '+x.broker:''}${x.rate>0?' · '+x.rate.toFixed(2)+'%/año':''}${metaExtra}</div>
-        ${isFP&&x.capitalInvertido>0?`<div class="liqMeta">Invertido: ${fd(x.capitalInvertido,x.currency||'EUR')}</div>`:''}
+        <div class="liqMeta">${liqLabel(x.type)}${x.broker?' · '+x.broker:''}${x.rate>0?' · '+x.rate.toFixed(2)+'%/'+(currentLang==='es'?'año':'yr'):''}${metaExtra}</div>
+        ${isFP&&x.capitalInvertido>0?`<div class="liqMeta">${currentLang==='es'?'Invertido':'Invested'}: ${fd(x.capitalInvertido,x.currency||'EUR')}</div>`:''}
       </div>
       <div class="liqRight">
         <div class="liqAmt">${dispAmt}</div>
@@ -7083,9 +7085,11 @@ async function startApp() {
       history.replaceState(null, '', window.location.pathname);
     }
     const _err = _ap.get('error');
-    const _errMsgs = { expired: 'El enlace ha expirado. Solicita uno nuevo.', invalid: 'Enlace inválido.', used: 'Este enlace ya fue usado.' };
+    const _errMsgs = currentLang==='es'
+      ? { expired: 'El enlace ha expirado. Solicita uno nuevo.', invalid: 'Enlace inválido.', used: 'Este enlace ya fue usado.' }
+      : { expired: 'The link has expired. Request a new one.', invalid: 'Invalid link.', used: 'This link has already been used.' };
     if (_err) {
-      localStorage.setItem('fa_pending_error', _errMsgs[_err] || 'Error al procesar el enlace.');
+      localStorage.setItem('fa_pending_error', _errMsgs[_err] || (currentLang==='es'?'Error al procesar el enlace.':'Error processing the link.'));
       history.replaceState(null, '', window.location.pathname);
     }
   } catch(_) {}
@@ -8521,7 +8525,7 @@ async function _comLoadTopMembers() {
       byUser[p.user_id].likes += (p.likes_count||0);
     });
     const sorted = Object.entries(byUser).sort((a,b) => b[1].likes - a[1].likes).slice(0,4);
-    if (!sorted.length) { el.innerHTML = '<div style="font-size:12px;color:#4a6b55">Aún no hay miembros activos</div>'; return; }
+    if (!sorted.length) { el.innerHTML = `<div style="font-size:12px;color:#4a6b55">${currentLang==='es'?'Aún no hay miembros activos':'No active members yet'}</div>`; return; }
     const colors = ['#1a7a43,#2ecc71','#1a4a6a,#3498db','#4a3a1a,#d4af37','#6a1a4a,#c39bd3'];
     el.innerHTML = sorted.map(([uid, u], i) => `
       <div class="com-top-user" onclick="_comShowProfile('${uid}','${_comEsc(u.name)}')">
@@ -8535,10 +8539,11 @@ async function _comLoadTopMembers() {
 function _comTimeAgo(ts) {
   if (!ts) return '';
   const diff = (Date.now() - new Date(ts).getTime()) / 1000;
-  if (diff < 60) return 'ahora';
-  if (diff < 3600) return `hace ${Math.floor(diff/60)}m`;
-  if (diff < 86400) return `hace ${Math.floor(diff/3600)}h`;
-  return `hace ${Math.floor(diff/86400)}d`;
+  const es = currentLang==='es';
+  if (diff < 60) return es?'ahora':'now';
+  if (diff < 3600) return es?`hace ${Math.floor(diff/60)}m`:`${Math.floor(diff/60)}m ago`;
+  if (diff < 86400) return es?`hace ${Math.floor(diff/3600)}h`:`${Math.floor(diff/3600)}h ago`;
+  return es?`hace ${Math.floor(diff/86400)}d`:`${Math.floor(diff/86400)}d ago`;
 }
 
 function _comEsc(str) {
