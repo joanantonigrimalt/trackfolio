@@ -5900,7 +5900,7 @@ function _goPricing(plan) {
 
 
 // ========== Supabase Auth ==========
-let _sb=null,_sbUser=null,_syncTimer=null;
+let _sb=null,_sbUser=null,_syncTimer=null,_syncDone=false;
 
 let _sbInitErr='';
 async function initSupabase(){
@@ -5919,14 +5919,21 @@ async function initSupabase(){
       renderAccountSection();
       if(event==='SIGNED_IN'){
         if(session?.access_token)localStorage.setItem('fa_token',session.access_token);
+        _syncDone=false; // reset on new sign-in so full sync runs
         await syncFromCloud(); loadUserPlan().catch(()=>{});
+        _syncDone=true;
       }
-      if(event==='TOKEN_REFRESHED'){
+      // TOKEN_REFRESHED fires when Supabase wakes from pause (free tier) and restores the session.
+      // INITIAL_SESSION fires on startup with the existing session.
+      // Both can deliver a session that getSession() missed if Supabase was still starting up.
+      if(event==='TOKEN_REFRESHED'||event==='INITIAL_SESSION'){
         if(session?.access_token)localStorage.setItem('fa_token',session.access_token);
+        if(_sbUser&&!_syncDone){syncFromCloud().catch(()=>{});_syncDone=true;}
       }
       if(event==='PASSWORD_RECOVERY'){setTimeout(()=>{openAuthModal();_setAuthMode('resetpass');},300);}
       if(event==='SIGNED_OUT'){
         localStorage.removeItem('fa_token');localStorage.removeItem('fa_user');
+        _syncDone=false;
         // If we're in the main app, redirect to login
         const home=document.getElementById('screen-home');
         const inApp=home&&home.classList.contains('active');
@@ -5937,15 +5944,13 @@ async function initSupabase(){
         }
       }
     });
-    // Run getSession without a hard timeout — if Supabase is paused (free tier),
-    // this call wakes it up in the background. By the time the user fills in
-    // their credentials, the project is ready. A timeout here only causes false
-    // "server too slow" errors for users on first load.
+    // Run getSession — if Supabase is paused (free tier), this wakes it up in the background.
+    // TOKEN_REFRESHED / INITIAL_SESSION will fire once Supabase is awake and session restores.
     _sb.auth.getSession().then(res=>{
       const session=res?.data?.session||null;
       _sbUser=session?.user||null;
       renderAccountSection();
-      if(_sbUser)syncFromCloud();
+      if(_sbUser&&!_syncDone){syncFromCloud();_syncDone=true;}
     }).catch(e=>{_sbInitErr=e.message;console.warn('[auth getSession]',e.message);});
   }catch(e){_sb=null;_sbInitErr=e.message;console.warn('[auth]',e.message);}
 }
