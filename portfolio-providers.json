@@ -40,7 +40,8 @@
       "recommendedProvider": "yahoo",
       "providerSymbol": null,
       "yahooSymbol": "0P0001CJGW.F",
-      "notes": "Fidelity MSCI World mutual fund (USD). Yahoo: 0P0001CJGW.F. Morningstar used as primary for live NAV."
+      "nativeCurrency": "USD",
+      "notes": "Fidelity MSCI World mutual fund — USD share class. Morningstar primary via fundNav. nativeCurrency=USD so coverage prices are converted to EUR by buildAssets."
     },
     {
       "isin": "ES0146309002",
@@ -60,7 +61,8 @@
       "recommendedProvider": "yahoo",
       "providerSymbol": "IGLN.L",
       "yahooSymbol": "IGLN.L",
-      "notes": "Yahoo returns IGLN.L with correct USD currency; EODHD was missing the currency field causing wrong EUR conversion."
+      "nativeCurrency": "USD",
+      "notes": "Yahoo returns IGLN.L ~$81.7 USD. nativeCurrency=USD so buildAssets converts to EUR (~€71)."
     },
     {
       "isin": "ES0112611001",
@@ -144,13 +146,14 @@
     },
     {
       "isin": "LU0084617165",
-      "name": "Robeco Asia Pacific Equities",
+      "name": "Robeco Asia Pacific Equities D EUR",
       "type": "fund",
       "status": "mapped",
       "recommendedProvider": "yahoo",
       "providerSymbol": null,
       "yahooSymbol": "FHQI.F",
-      "notes": "Yahoo Finance: FHQI.F (ETF). Limited history, weekly data only."
+      "nativeCurrency": "EUR",
+      "notes": "Yahoo FHQI.F returns EUR ~€363 (sparse history). Morningstar via fundNav provides full daily NAV history. nativeCurrency=EUR so price used directly."
     },
     {
       "isin": "IE00B579F325",

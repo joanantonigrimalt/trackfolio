@@ -5390,17 +5390,31 @@ async function boot(){
   function buildAssets(cvMap){
     return seed.positions.map(pos=>{
       const entry=cvMap[pos.isin]||{},mapping=entry.mapping||null;
-      const currentPrice=Number(pos.currentPrice)||0,buyPrice=Number(pos.buyPrice)||0,quantity=Number(pos.quantity)||0;
+      const seedPrice=Number(pos.currentPrice)||0,buyPrice=Number(pos.buyPrice)||0,quantity=Number(pos.quantity)||0;
       const history=normalizeHistory(entry.data?.history||[]);
-      const priceCurrency=entry.data?.quote?.currency||null;
-      // GBp/GBX = pence: Yahoo returns LSE prices in pence (1/100 GBP). Normalize to GBP.
+      const isSupabaseCache=entry.data?.provider==='supabase_cache';
+      // Currency resolution: quote.currency is set by Yahoo/EODHD/JustETF/fundNav.
+      // nativeCurrency from providers.json is the fallback for fundNav (Morningstar) which doesn't add currency.
+      // Supabase cache stores raw values without reliable currency — never apply nativeCurrency to it.
+      const quoteCurrency=entry.data?.quote?.currency||null;
+      const priceCurrency=quoteCurrency||(!isSupabaseCache?mapping?.nativeCurrency:null)||null;
+      // GBp/GBX = pence (1/100 GBP). Only relevant for LSE ETFs in GBp.
       const _isGBp=priceCurrency==='GBp'||priceCurrency==='GBX';
-      const adjPrice=_isGBp?currentPrice/100:currentPrice;
-      const adjBuyPrice=_isGBp?buyPrice/100:buyPrice;
       const adjCcy=_isGBp?'GBP':priceCurrency;
       const adjHistory=_isGBp&&history.length?history.map(p=>({...p,close:p.close/100})):history;
-      const gain=quantity*(adjPrice-adjBuyPrice);
-      return{isin:pos.isin,name:pos.shortName||pos.name||mapping?.name||pos.isin,fullName:pos.name||mapping?.name||pos.isin,quantity,buyPrice:adjBuyPrice,currentPrice:adjPrice,invested:quantity*adjBuyPrice,value:quantity*adjPrice,gain,gainPct:adjBuyPrice?((adjPrice-adjBuyPrice)/adjBuyPrice)*100:0,mapping,provider:entry.data?.provider||null,coverageStatus:entry.data?.coverage?.status||'MISSING',coverage:entry.data?.coverage||{status:'MISSING'},history:adjHistory,hasRealHistory:adjHistory.length>1,_rawQty:quantity,_rawBuyPrice:adjBuyPrice,customCurrency:adjCcy,costCurrency:_isGBp?'GBP':null};
+      const adjBuyPrice=_isGBp?buyPrice/100:buyPrice;
+      // Use live price from coverage API when we have a valid price AND known currency → convert to EUR.
+      // Fall back to seed price (always in EUR) when no trusted currency available.
+      const _rawLive=entry.data?.quote?.price??entry.data?.quote?.close;
+      let currentPrice;
+      if(_rawLive&&Number.isFinite(_rawLive)&&_rawLive>0&&priceCurrency){
+        const _pAdj=_isGBp?_rawLive/100:_rawLive;
+        currentPrice=adjCcy&&adjCcy!=='EUR'?toEur(_pAdj,adjCcy):_pAdj;
+      }else{
+        currentPrice=seedPrice; // seed prices are pre-converted EUR (authoritative fallback)
+      }
+      const gain=quantity*(currentPrice-adjBuyPrice);
+      return{isin:pos.isin,name:pos.shortName||pos.name||mapping?.name||pos.isin,fullName:pos.name||mapping?.name||pos.isin,quantity,buyPrice:adjBuyPrice,currentPrice,invested:quantity*adjBuyPrice,value:quantity*currentPrice,gain,gainPct:adjBuyPrice?((currentPrice-adjBuyPrice)/adjBuyPrice)*100:0,mapping,provider:entry.data?.provider||null,coverageStatus:entry.data?.coverage?.status||'MISSING',coverage:entry.data?.coverage||{status:'MISSING'},history:adjHistory,hasRealHistory:adjHistory.length>1,_rawQty:quantity,_rawBuyPrice:adjBuyPrice,customCurrency:'EUR',costCurrency:null};
     });
   }
   // Coverage — stale-while-revalidate: show ANY cached data instantly, refresh in bg
@@ -6691,17 +6705,23 @@ async function enterDemo(){
     function _buildDemo(cvMap){
       return seed.positions.filter(p=>Number(p.quantity)>0).map(pos=>{
         const entry=cvMap[pos.isin]||{},mapping=entry.mapping||null;
-        const _rawPrice=Number(entry.data?.quote?.price||entry.data?.quote?.close||pos.currentPrice)||0;
-        const buyPrice=Number(pos.buyPrice)||0,quantity=Number(pos.quantity)||0;
+        const seedPrice=Number(pos.currentPrice)||0,buyPrice=Number(pos.buyPrice)||0,quantity=Number(pos.quantity)||0;
         const history=normalizeHistory(entry.data?.history||[]);
-        const _demoCcy=entry.data?.quote?.currency||null;
+        const _demoCcy=entry.data?.quote?.currency||mapping?.nativeCurrency||null;
         const _demoGBp=_demoCcy==='GBp'||_demoCcy==='GBX';
-        const currentPrice=_demoGBp?_rawPrice/100:_rawPrice;
-        const adjBuyPrice=_demoGBp?buyPrice/100:buyPrice;
         const adjCcy=_demoGBp?'GBP':_demoCcy;
         const adjHistory=_demoGBp&&history.length?history.map(p=>({...p,close:p.close/100})):history;
+        const adjBuyPrice=_demoGBp?buyPrice/100:buyPrice;
+        const _rawLive=entry.data?.quote?.price??entry.data?.quote?.close;
+        let currentPrice;
+        if(_rawLive&&Number.isFinite(_rawLive)&&_rawLive>0&&_demoCcy){
+          const _pAdj=_demoGBp?_rawLive/100:_rawLive;
+          currentPrice=adjCcy&&adjCcy!=='EUR'?toEur(_pAdj,adjCcy):_pAdj;
+        }else{
+          currentPrice=seedPrice;
+        }
         const gain=quantity*(currentPrice-adjBuyPrice);
-        return{isin:pos.isin,name:pos.shortName||pos.name||pos.isin,fullName:pos.name||pos.isin,quantity,buyPrice:adjBuyPrice,currentPrice,invested:quantity*adjBuyPrice,value:quantity*currentPrice,gain,gainPct:adjBuyPrice?((currentPrice-adjBuyPrice)/adjBuyPrice)*100:0,mapping,provider:entry.data?.provider||null,coverageStatus:entry.data?.coverage?.status||'MISSING',coverage:entry.data?.coverage||{status:'MISSING'},history:adjHistory,hasRealHistory:adjHistory.length>1,_rawQty:quantity,_rawBuyPrice:adjBuyPrice,customCurrency:adjCcy,costCurrency:_demoGBp?'GBP':null};
+        return{isin:pos.isin,name:pos.shortName||pos.name||pos.isin,fullName:pos.name||pos.isin,quantity,buyPrice:adjBuyPrice,currentPrice,invested:quantity*adjBuyPrice,value:quantity*currentPrice,gain,gainPct:adjBuyPrice?((currentPrice-adjBuyPrice)/adjBuyPrice)*100:0,mapping,provider:entry.data?.provider||null,coverageStatus:entry.data?.coverage?.status||'MISSING',coverage:entry.data?.coverage||{status:'MISSING'},history:adjHistory,hasRealHistory:adjHistory.length>1,_rawQty:quantity,_rawBuyPrice:adjBuyPrice,customCurrency:'EUR',costCurrency:null};
       });
     }
     _rawSeedAssets=_buildDemo({});
