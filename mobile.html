@@ -3060,6 +3060,67 @@ function setDisplayCcy(ccy){
 async function getJson(u,timeout=12000){const ctrl=new AbortController();const tid=setTimeout(()=>ctrl.abort(),timeout);try{const r=await fetch(u,{signal:ctrl.signal});if(!r.ok)throw new Error('HTTP '+r.status);return await r.json();}catch(e){if(e.name==='AbortError')throw new Error('Request timed out ('+Math.round(timeout/1000)+'s)');throw e;}finally{clearTimeout(tid);}}
 function tick(){const cl=document.getElementById('clock');if(cl)cl.textContent=new Date().toLocaleTimeString(currentLang==='es'?'es-ES':'en-GB',{hour:'2-digit',minute:'2-digit'});}
 
+// ── Live ETF/ETC/stock price refresh ──────────────────────────────────────────
+// Exchange-traded assets (ETF/ETC/stock) have continuous intraday prices that
+// change every minute. Funds have daily NAV only and are NOT refreshed here.
+// Calls /api/portfolio/intraday?format=simple (5-min server cache, skips API
+// calls when market closed). Runs every 60s while the tab is visible.
+let _liveRefreshTimer=null;
+const _LIVE_INTERVAL=60_000;
+
+async function _refreshLivePrices(){
+  if(!_pricesLive||!assets.length)return;
+  // Only ETF/ETC/stock assets with a Yahoo symbol need live refresh
+  const tradable=assets.filter(a=>
+    a.quantity>0&&assetYahooSym(a)&&a.mapping?.type!=='fund'&&a.mapping?.type!=='pension'
+  );
+  if(!tradable.length)return;
+  const syms=[...new Set(tradable.map(a=>assetYahooSym(a)))];
+  let data;
+  try{data=await getJson('/api/portfolio/intraday?format=simple&symbols='+encodeURIComponent(syms.join(',')),10000);}
+  catch(_){return;}
+  if(!data?.symbols)return;
+  let changed=false;
+  for(const a of tradable){
+    const sym=assetYahooSym(a);
+    const entry=data.symbols[sym];
+    if(!entry||entry.error||!Number.isFinite(entry.price)||entry.price<=0)continue;
+    if(entry.marketClosed)continue; // price hasn't changed — skip
+    // Convert native-currency price → EUR (same logic as buildAssets)
+    const ccy=entry.currency||'EUR';
+    const isGBp=ccy==='GBp'||ccy==='GBX';
+    const rawPrice=isGBp?entry.price/100:entry.price;
+    const adjCcy=isGBp?'GBP':ccy;
+    const newEur=adjCcy!=='EUR'?toEur(rawPrice,adjCcy):rawPrice;
+    if(!Number.isFinite(newEur)||newEur<=0)continue;
+    if(Math.abs(newEur-a.currentPrice)<0.0001)continue; // no meaningful change
+    a.currentPrice=newEur;
+    a.value=a.quantity*newEur;
+    a.gain=a.quantity*(newEur-(a.buyPrice||0));
+    a.gainPct=a.buyPrice>0?((newEur-a.buyPrice)/a.buyPrice)*100:0;
+    changed=true;
+  }
+  if(changed)render();
+}
+
+function _startLiveRefresh(){
+  if(_liveRefreshTimer)clearInterval(_liveRefreshTimer);
+  // First refresh: 30s after boot so boot queries settle first
+  setTimeout(()=>{
+    _refreshLivePrices();
+    _liveRefreshTimer=setInterval(_refreshLivePrices,_LIVE_INTERVAL);
+  },30_000);
+  // Pause when tab goes to background; resume immediately on focus
+  document.addEventListener('visibilitychange',()=>{
+    if(document.visibilityState==='hidden'){
+      clearInterval(_liveRefreshTimer);_liveRefreshTimer=null;
+    }else{
+      _refreshLivePrices();
+      _liveRefreshTimer=setInterval(_refreshLivePrices,_LIVE_INTERVAL);
+    }
+  });
+}
+
 // ========== localStorage positions ==========
 function getOverrides(){try{const o=JSON.parse(localStorage.getItem('tf_positions')||'{}');return o!==null&&typeof o==='object'&&!Array.isArray(o)?o:{};}catch{return {};}}
 function getKnownBrokers(){const ov=getOverrides();const s=new Set();Object.values(ov).forEach(v=>{if(v.broker)s.add(v.broker);});try{const liq=JSON.parse(localStorage.getItem('tf_liquidity')||'[]');liq.forEach(e=>{if(e.broker)s.add(e.broker);});}catch{}return[...s];}
@@ -3094,7 +3155,7 @@ function coverageStatus(a){return a.coverageStatus||(a.coverage?.status)||'MISSI
 function counts(){return{total:assets.length,ok:assets.filter(a=>coverageStatus(a)==='OK').length,partial:assets.filter(a=>coverageStatus(a)==='PARTIAL').length,missing:assets.filter(a=>coverageStatus(a)==='MISSING').length};}
 function assetType(a){const t=a.mapping?.type||'';if(t==='fund')return'fund';if(t==='etc')return'etc';if(t==='stock')return'stock';return'etf';}
 function iconInitials(a){return(a.name||a.isin).replace(/^i([A-Z])/,'I$1').slice(0,2).toUpperCase();}
-function assetCategory(a){if(['IE00B4ND3602','IE00B579F325'].includes(a.isin))return'Oro';if(a.mapping?.type==='etf')return'ETFs';if(a.mapping?.type==='etc')return'Oro';if(a.mapping?.type==='stock')return currentLang==='es'?'Acciones':'Stocks';return'Fondos';}
+function assetCategory(a){if(['IE00B4ND3602','IE00B579F325'].includes(a.isin))return'Oro';if(['IE00B43VDT70'].includes(a.isin))return'Plata';if(a.mapping?.type==='etf')return'ETFs';if(a.mapping?.type==='etc'){return(a.isin==='IE00B43VDT70')?'Plata':'Oro';}if(a.mapping?.type==='stock')return currentLang==='es'?'Acciones':'Stocks';return'Fondos';}
 
 function showScreen(name,keepTab=false){
   if(name==='comunidad')_comLoad();
@@ -3435,7 +3496,7 @@ function openModal(isin){
   const _hint=document.getElementById('modalEditHint');
   const _typeLabel=TYPE_LABELS[a.mapping?.type||'']||a.mapping?.type||'';
   if(_hint)_hint.textContent=(_typeLabel?_typeLabel+' · ':'')+(_isEdit?(currentLang==='es'?'Editar posición':'Edit position'):(currentLang==='es'?'Nueva posición':'New position'));
-  document.getElementById('simpleQty').value=fn(ov.quantity??a.quantity).replace(/\./g,'').replace(',','.');
+  document.getElementById('simpleQty').value=String(Number(ov.quantity??a.quantity));
   document.getElementById('simpleAvgCost').value=(ov.avgCost??a.buyPrice).toFixed(2);
   const _scl=document.getElementById('simpleAvgCostCcy');if(_scl)_scl.textContent=costCcy(a)||'EUR';
   document.getElementById('simpleBroker').value=ov.broker||'';
@@ -3523,8 +3584,10 @@ function saveSimple(){
   const avgCost=parseNum('simpleAvgCost');
   const broker=(document.getElementById('simpleBroker')?.value||'').trim();
   const ov=getOverrides();
-  if(qty<=0){delete ov[currentModalIsin];}
-  else{ov[currentModalIsin]={...(ov[currentModalIsin]||{}),quantity:qty,avgCost,...(broker&&{broker})};}
+  if(qty<=0){
+    // Zero quantity: preserve transaction history, just zero out the position
+    ov[currentModalIsin]={...(ov[currentModalIsin]||{}),quantity:0,avgCost:0,...(broker&&{broker})};
+  }else{ov[currentModalIsin]={...(ov[currentModalIsin]||{}),quantity:qty,avgCost,...(broker&&{broker})};}
   saveOverrides(ov);
   _debouncedSync(true);
   reapplyAndRender();closeModal();
@@ -3853,6 +3916,9 @@ function _anRenderAllocContent(tab) {
 const AN_TER_MAP = {
   // ── Portfolio assets ────────────────────────────────────────────────────
   'IE00BYX5NK04':0.12,'IE00BYX5P602':0.12,'IE00B4ND3602':0.15,'IE00B579F325':0.12,
+  'IE00BZ4D7648':0.75,'IE00B42LF923':0.30,'IE00B43VDT70':0.19,'ES0119199018':1.30,
+  'ES0146309002':1.36,'ES0146311008':1.36,'ES0112611001':1.36,'LU1598719752':1.50,
+  'LU0084617165':1.10,
   'DE000A0F5UH1':0.10,'IE00BZ4BMM98':0.29,'IE00B9CQXS71':0.45,'NL0011683594':0.38,
   'IE000QAZP7L2':0.17,
   // ── iShares / BlackRock ─────────────────────────────────────────────────
@@ -4232,8 +4298,9 @@ function _anRenderCorrelation(){
 
   // Correlation by category (simplified)
   const CORR_TABLE={
-    'ETFs-ETFs':0.85,'ETFs-Fondos':0.75,'ETFs-Oro':-0.15,
-    'Fondos-Fondos':0.7,'Fondos-Oro':-0.1,'Oro-Oro':1
+    'ETFs-ETFs':0.85,'ETFs-Fondos':0.75,'ETFs-Oro':-0.15,'ETFs-Plata':-0.05,
+    'Fondos-Fondos':0.7,'Fondos-Oro':-0.1,'Fondos-Plata':-0.05,
+    'Oro-Oro':1,'Oro-Plata':0.75,'Plata-Plata':1
   };
   function getCorrColor(c){
     if(c>=0.7)return{bg:'#fee2e2',text:'#991b1b'};
@@ -4603,12 +4670,13 @@ function _renderDivHoldings(divItems, liqWithRate){
   const palette=['#3b82f6','#f97316','#22c55e','#ef4444','#a855f7','#eab308','#06b6d4','#ec4899'];
   const sorted=[...divItems].sort((a,b)=>(b.annualIncome||0)-(a.annualIncome||0));
   const wrap=document.getElementById('divHoldingsList');
+  const _es=currentLang==='es';
   wrap.innerHTML=`<table class="div-tbl" style="width:100%">
     <thead><tr>
-      <th style="width:38%">Activo</th>
-      <th style="width:16%">Trimestral</th>
+      <th style="width:38%">${_es?'Activo':'Asset'}</th>
+      <th style="width:16%">${_es?'Trimestral':'Quarterly'}</th>
       <th style="width:22%">Yield / YoC</th>
-      <th style="width:24%">Anual</th>
+      <th style="width:24%">${_es?'Anual':'Annual'}</th>
     </tr></thead>
     <tbody id="divHoldingsTbody"></tbody>
   </table>`;
@@ -5489,7 +5557,7 @@ async function boot(){
         currentPrice=seedPrice; // seed prices are pre-converted EUR (authoritative fallback)
       }
       const gain=quantity*(currentPrice-adjBuyPrice);
-      return{isin:pos.isin,name:pos.shortName||pos.name||mapping?.name||pos.isin,fullName:pos.name||mapping?.name||pos.isin,quantity,buyPrice:adjBuyPrice,currentPrice,invested:quantity*adjBuyPrice,value:quantity*currentPrice,gain,gainPct:adjBuyPrice?((currentPrice-adjBuyPrice)/adjBuyPrice)*100:0,mapping,provider:entry.data?.provider||null,coverageStatus:entry.data?.coverage?.status||'MISSING',coverage:entry.data?.coverage||{status:'MISSING'},history:adjHistory,hasRealHistory:adjHistory.length>1,_rawQty:quantity,_rawBuyPrice:adjBuyPrice,customCurrency:'EUR',costCurrency:null};
+      return{isin:pos.isin,name:pos.shortName||pos.name||mapping?.name||pos.isin,fullName:pos.name||mapping?.name||pos.isin,quantity,buyPrice:adjBuyPrice,currentPrice,invested:quantity*adjBuyPrice,value:quantity*currentPrice,gain,gainPct:adjBuyPrice?((currentPrice-adjBuyPrice)/adjBuyPrice)*100:0,mapping,provider:entry.data?.provider||null,coverageStatus:entry.data?.coverage?.status||'MISSING',coverage:entry.data?.coverage||{status:'MISSING'},history:adjHistory,hasRealHistory:adjHistory.length>1,_rawQty:quantity,_rawBuyPrice:adjBuyPrice,customCurrency:adjCcy||'EUR',costCurrency:null};
     });
   }
   // Coverage — stale-while-revalidate: show ANY cached data instantly, refresh in bg
@@ -5529,6 +5597,7 @@ async function boot(){
       loadCustomIntoAssets(cvMap);
       _pricesLive=true; // live prices ready — show real total
       render();
+      _startLiveRefresh(); // start 60s ETF/ETC/stock live price refresh
     }catch(e){console.warn('[boot] live prices fetch:',e.message);}
   })();
 
@@ -5718,7 +5787,7 @@ function showAddForm(result,price,currency,history){
   if(_afsB)_afsB.classList.add('active'); if(_aftB)_aftB.classList.remove('active');
   var _afdf=document.getElementById('addDateField'); if(_afdf)_afdf.style.display='none';
   var _afdi=document.getElementById('addTxDateInput'); if(_afdi)_afdi.value=new Date().toISOString().slice(0,10);
-  var _aflbl=document.getElementById('addAvgCostLabel'); if(_aflbl)_aflbl.textContent='Avg cost per share';
+  var _aflbl=document.getElementById('addAvgCostLabel'); if(_aflbl)_aflbl.textContent=currentLang==='es'?'Coste medio por acción':'Avg cost per share';
   document.getElementById('searchResultsList').style.display='none';
   document.getElementById('searchHint').style.display='none';
 
@@ -6141,13 +6210,23 @@ async function syncToCloud(){
   if(!_sb||!_sbUser)return;
   try{
     const payload={user_id:_sbUser.id,overrides:getOverrides(),custom_assets:getCustomAssets(),liquidity:getLiquidity(),updated_at:new Date().toISOString()};
-    let{error}=await _sb.from('user_positions').upsert(payload,{onConflict:'user_id'});
+    const _url=_sb.supabaseUrl+'/rest/v1/user_positions?on_conflict=user_id';
+    const _tok=_comGetTok();
+    const _hdrs={'apikey':_sb.supabaseKey,'Authorization':'Bearer '+_tok,'Content-Type':'application/json','Prefer':'resolution=merge-duplicates,return=minimal'};
+    const ctrl=new AbortController();const _tid=setTimeout(()=>ctrl.abort(),10000);
+    let r=await fetch(_url,{method:'POST',headers:_hdrs,body:JSON.stringify(payload),signal:ctrl.signal});
+    clearTimeout(_tid);
     // Fallback: if liquidity column doesn't exist yet, sync without it
-    if(error&&(error.message?.includes('liquidity')||error.code==='42703')){
-      const{user_id,overrides,custom_assets,updated_at}=payload;
-      ({error}=await _sb.from('user_positions').upsert({user_id,overrides,custom_assets,updated_at},{onConflict:'user_id'}));
+    if(!r.ok&&r.status===400){
+      const t=await r.text().catch(()=>'');
+      if(t.includes('liquidity')){
+        const{user_id,overrides,custom_assets,updated_at}=payload;
+        const ctrl2=new AbortController();const _tid2=setTimeout(()=>ctrl2.abort(),10000);
+        r=await fetch(_url,{method:'POST',headers:_hdrs,body:JSON.stringify({user_id,overrides,custom_assets,updated_at}),signal:ctrl2.signal});
+        clearTimeout(_tid2);
+      }
     }
-    if(error)throw error;
+    if(!r.ok){const t=await r.text().catch(()=>'');throw new Error('HTTP '+r.status+(t?': '+t.slice(0,100):''));}
     localStorage.setItem('tf_last_sync',new Date().toISOString());
     renderAccountSection();
   }catch(e){
@@ -6166,8 +6245,14 @@ async function syncFromCloud(){
   }
   localStorage.setItem('fa_active_user_id', _sbUser.id);
   try{
-    const{data,error}=await _sb.from('user_positions').select('overrides,custom_assets,liquidity,updated_at').eq('user_id',_sbUser.id).single();
-    if(error&&error.code!=='PGRST116')throw error; // PGRST116 = no rows found
+    const _tok=_comGetTok();
+    const _url=_sb.supabaseUrl+'/rest/v1/user_positions?user_id=eq.'+encodeURIComponent(_sbUser.id)+'&select=overrides,custom_assets,liquidity,updated_at';
+    const ctrl=new AbortController();const _tid=setTimeout(()=>ctrl.abort(),10000);
+    const _r=await fetch(_url,{headers:{'apikey':_sb.supabaseKey,'Authorization':'Bearer '+_tok,'Accept':'application/vnd.pgrst.object+json'},signal:ctrl.signal});
+    clearTimeout(_tid);
+    // 404 / 406 (PGRST116 = no rows) means new user — push local data up
+    if(!_r.ok&&_r.status!==406&&_r.status!==404){throw new Error('HTTP '+_r.status);}
+    const data=(_r.ok&&_r.status!==204)?await _r.json().catch(()=>null):null;
     if(!data){await syncToCloud();return;}
     const cloudTs=new Date(data.updated_at).getTime();
     const localTs=new Date(localStorage.getItem('tf_last_sync')||0).getTime();
@@ -6176,20 +6261,15 @@ async function syncFromCloud(){
     const _ov = typeof data.overrides === 'string' ? JSON.parse(data.overrides || '{}') : (data.overrides || {});
     const _ca = typeof data.custom_assets === 'string' ? JSON.parse(data.custom_assets || '{}') : (data.custom_assets || {});
     // Custom assets: ALWAYS merge from cloud (additive). Cloud adds to local — never loses assets added on any device.
-    // This guarantees cross-device consistency regardless of timestamp comparison.
     const _localCa=getCustomAssets();
-    const _mergedCa={..._localCa,..._ca}; // cloud wins on duplicates (more authoritative)
+    const _mergedCa={..._localCa,..._ca};
     const _caChanged=Object.keys(_mergedCa).length!==Object.keys(_localCa).length||JSON.stringify(_mergedCa)!==JSON.stringify(_localCa);
     if(_caChanged)localStorage.setItem('tf_custom_assets',JSON.stringify(_mergedCa));
-    // If local had custom assets the cloud didn't know about → push them up immediately
-    // This bootstraps the cloud when custom assets exist locally but not yet in Supabase
     const _localHadMore=Object.keys(_localCa).some(k=>!_ca[k]);
     if(_localHadMore)syncToCloud().catch(()=>{});
     if(cloudTs>localTs||localEmpty){
-      // Overrides (quantities, buy prices): apply only when cloud is newer — avoids overwriting local edits
       localStorage.setItem('tf_positions', JSON.stringify(_ov));
       if(data.liquidity)localStorage.setItem('fa_liquidity',JSON.stringify(data.liquidity));
-      // Auto-migrate: ensure costCurrency is set for all existing overrides
       const _ovMig=getOverrides();let _migrated=false;
       Object.keys(_ovMig).forEach(k=>{if(_ovMig[k]&&!_ovMig[k].costCurrency){_ovMig[k].costCurrency='EUR';_migrated=true;}});
       if(_migrated)localStorage.setItem('tf_positions',JSON.stringify(_ovMig));
@@ -6883,7 +6963,7 @@ async function enterDemo(){
           currentPrice=seedPrice;
         }
         const gain=quantity*(currentPrice-adjBuyPrice);
-        return{isin:pos.isin,name:pos.shortName||pos.name||pos.isin,fullName:pos.name||pos.isin,quantity,buyPrice:adjBuyPrice,currentPrice,invested:quantity*adjBuyPrice,value:quantity*currentPrice,gain,gainPct:adjBuyPrice?((currentPrice-adjBuyPrice)/adjBuyPrice)*100:0,mapping,provider:entry.data?.provider||null,coverageStatus:entry.data?.coverage?.status||'MISSING',coverage:entry.data?.coverage||{status:'MISSING'},history:adjHistory,hasRealHistory:adjHistory.length>1,_rawQty:quantity,_rawBuyPrice:adjBuyPrice,customCurrency:'EUR',costCurrency:null};
+        return{isin:pos.isin,name:pos.shortName||pos.name||pos.isin,fullName:pos.name||pos.isin,quantity,buyPrice:adjBuyPrice,currentPrice,invested:quantity*adjBuyPrice,value:quantity*currentPrice,gain,gainPct:adjBuyPrice?((currentPrice-adjBuyPrice)/adjBuyPrice)*100:0,mapping,provider:entry.data?.provider||null,coverageStatus:entry.data?.coverage?.status||'MISSING',coverage:entry.data?.coverage||{status:'MISSING'},history:adjHistory,hasRealHistory:adjHistory.length>1,_rawQty:quantity,_rawBuyPrice:adjBuyPrice,customCurrency:adjCcy||'EUR',costCurrency:null};
       });
     }
     _rawSeedAssets=_buildDemo({});
@@ -7451,18 +7531,19 @@ function iaShowTyping(question) {
                   typing.remove();
                   typing = null;
                 }
-                if (!document.getElementById('iaStreamingMsg')) {
+                const _liveChat = document.getElementById('iaChatMsgs');
+                if (!document.getElementById('iaStreamingMsg') && _liveChat) {
                   const div = document.createElement('div');
                   div.className = 'ia-msg';
                   div.id = 'iaStreamingMsg';
                   div.innerHTML = `<div class="ia-msg-av av-vera2"><svg viewBox="0 0 16 16" fill="none"><rect x="2" y="4" width="12" height="8" rx="2" fill="rgba(255,255,255,0.12)" stroke="rgba(255,255,255,0.5)" stroke-width="1"/><circle cx="6" cy="8" r="1.3" fill="#2dc98a"/><circle cx="10" cy="8" r="1.3" fill="#2dc98a"/></svg></div><div class="ia-bubble vera streaming" id="iaStreamingText"></div>`;
-                  msgs.appendChild(div);
+                  _liveChat.appendChild(div);
                 }
                 const streamingText = document.getElementById('iaStreamingText');
                 if (streamingText) {
                   streamingText.innerHTML = _veraMarkdown(fullReply);
                 }
-                msgs.scrollTop = msgs.scrollHeight;
+                if (_liveChat) _liveChat.scrollTop = _liveChat.scrollHeight;
               }
             } catch (e) {}
           }
@@ -7599,7 +7680,7 @@ function openCat(key) {
 
 function refreshScore() {
   const btn=document.querySelector('#portfolioScoreCard .ps-update-btn');
-  if(btn){btn.style.opacity='0.5';btn.disabled=true;setTimeout(()=>{btn.style.opacity='1';btn.disabled=false;const upd=document.getElementById('psUpdated');if(upd)upd.textContent=currentLang==='es'?'Actualizado: ahora mismo · 2/5 análisis usados · reset lunes':'Updated: just now · 2/5 analyses used · resets Monday';},1500);}
+  if(btn){btn.style.opacity='0.5';btn.disabled=true;setTimeout(()=>{btn.style.opacity='1';btn.disabled=false;const upd=document.getElementById('psUpdated');if(upd){const _uc=_userCredits||{used:0,limit:0};const _ustr=_uc.limit>0?`${_uc.used}/${_uc.limit} ${currentLang==='es'?'análisis usados':'analyses used'}`:'';const _rst=currentLang==='es'?'reset lunes':'resets Mon';upd.textContent=(currentLang==='es'?'Actualizado: ahora mismo':'Updated: just now')+(_ustr?` · ${_ustr} · ${_rst}`:'');}},1500);}
 }
 
 function runAction(btn, key) {
@@ -7963,13 +8044,22 @@ async function _insLoad(symbol) {
   if(el) el.innerHTML = '<div style="text-align:center;padding:50px 0;color:#8fa090;font-size:13px"><div style="font-size:28px;margin-bottom:10px">⌛</div>'+(currentLang==='es'?'Cargando datos de insiders…':'Loading insider data…')+'</div>';
   try {
     const url = _insCurrentSymbol ? '/api/insiders?symbol='+encodeURIComponent(_insCurrentSymbol) : '/api/insiders';
-    const r = await fetch(url);
+    const ctrl = new AbortController();
+    const _tid = setTimeout(() => ctrl.abort(), 12000); // 12s max — SEC EDGAR can be slow
+    const r = await fetch(url, {signal: ctrl.signal});
+    clearTimeout(_tid);
     if(!r.ok) throw new Error('HTTP '+r.status);
     const json = await r.json();
     _insData = Array.isArray(json) ? json : (json.data||json.results||[]);
   } catch(e) {
     _insLoading = false;
     const el2 = document.getElementById('insidersContent');
+    if(e.name === 'AbortError') {
+      // Timeout — in discovery mode show search hint; in symbol mode show retry
+      if(_insIsDiscovery) { _insData = []; _insSeedDone = true; _insRender(); return; }
+      if(el2) el2.innerHTML = '<div style="text-align:center;padding:50px 0"><div style="font-size:28px;margin-bottom:10px">⏱️</div><div style="color:#8fa090;font-size:13px">'+(currentLang==='es'?'Tiempo de espera agotado. Inténtalo de nuevo.':'Request timed out. Try again.')+'</div><button onclick="_insLoad()" style="margin-top:14px;padding:9px 20px;background:#142018;color:#fff;border:none;border-radius:10px;font:inherit;font-size:13px;font-weight:700;cursor:pointer">'+(currentLang==='es'?'Reintentar':'Retry')+'</button></div>';
+      return;
+    }
     if(el2) el2.innerHTML = '<div style="text-align:center;padding:50px 0"><div style="font-size:28px;margin-bottom:10px">⚠️</div><div style="color:#dc2626;font-size:13px;font-weight:600">'+e.message+'</div><button onclick="_insLoad()" style="margin-top:14px;padding:9px 20px;background:#142018;color:#fff;border:none;border-radius:10px;font:inherit;font-size:13px;font-weight:700;cursor:pointer">'+(currentLang==='es'?'Reintentar':'Retry')+'</button></div>';
     return;
   }
@@ -8159,6 +8249,33 @@ var _comFilter_active = 'all';
 var _comPosts = [];
 var _comMyLikes = new Set();
 
+// ── Community REST helpers — bypass Supabase JS SDK auth lock ─────────────
+// The SDK hangs indefinitely when its auth mutex waits to refresh an
+// expired/missing session. Direct fetch to the REST API responds in ~400ms.
+function _comGetTok() {
+  if (!_sb) return '';
+  try {
+    const ref = (_sb.supabaseUrl.match(/\/\/([^.]+)/) || [])[1] || '';
+    const k = Object.keys(localStorage).find(k => k.includes(ref) && k.includes('auth'));
+    if (k) { const s = JSON.parse(localStorage.getItem(k)); return s?.access_token || _sb.supabaseKey; }
+  } catch {}
+  return _sb.supabaseKey;
+}
+async function _sbR(path, opts = {}) {
+  if (!_sb) throw new Error('no-sb');
+  const { method = 'GET', body, returnRep = false } = opts;
+  const tok = _comGetTok();
+  const headers = { 'apikey': _sb.supabaseKey, 'Authorization': 'Bearer ' + tok, 'Content-Type': 'application/json' };
+  if (method === 'POST' || returnRep) headers['Prefer'] = 'return=representation';
+  const r = await fetch(_sb.supabaseUrl + '/rest/v1/' + path, {
+    method, headers,
+    body: body != null ? JSON.stringify(body) : undefined
+  });
+  if (!r.ok) { const t = await r.text().catch(() => ''); throw new Error('HTTP ' + r.status + (t ? ': ' + t.slice(0,100) : '')); }
+  const text = await r.text();
+  return text ? JSON.parse(text) : null;
+}
+
 async function _comLoadFeed() {
   const el = document.getElementById('comFeed');
   if (!el) return;
@@ -8170,29 +8287,41 @@ async function _comLoadFeed() {
       + '</div>';
     return;
   }
-  try {
-    const { data, error } = await _sb.from('community_posts')
-      .select('*')
-      .order('created_at', { ascending: false })
-      .limit(50);
-    if (error) throw new Error(error.message || 'Supabase error');
-    const posts = Array.isArray(data) ? data : [];
 
-    if (posts.length === 0) {
+  try {
+    const posts = await Promise.race([
+      _sbR('community_posts?select=*&order=created_at.desc&limit=50'),
+      new Promise((_, rej) => setTimeout(() => rej(new Error('timeout')), 8000))
+    ]);
+    const _posts = Array.isArray(posts) ? posts : [];
+
+    if (_posts.length === 0) {
       el.innerHTML = '<div style="padding:24px;text-align:center;color:#999">'
         + (currentLang==='es' ? 'Sé el primero en publicar algo 👋' : 'Be the first to post something 👋')
         + '</div>';
       return;
     }
 
-    _comPosts = posts;
-    if (_sbUser && _sb) {
-      const { data: likes } = await _sb.from('community_likes').select('post_id').eq('user_id', _sbUser.id);
+    _comPosts = _posts;
+    if (_sbUser) {
+      const likes = await Promise.race([
+        _sbR('community_likes?select=post_id&user_id=eq.' + encodeURIComponent(_sbUser.id)),
+        new Promise((_, rej) => setTimeout(() => rej(new Error('timeout')), 5000))
+      ]).catch(() => []);
       _comMyLikes = new Set((likes || []).map(l => l.post_id));
     }
     el.innerHTML = _comPosts.map(p => _comRenderPost(p)).join('');
   } catch(e) {
-    el.innerHTML = '<div style="padding:16px;color:red">Error: ' + e.message + '</div>';
+    const _isEs = currentLang === 'es';
+    if (e.message === 'timeout') {
+      el.innerHTML = '<div style="padding:24px;text-align:center;color:#8fa090;font-size:13px">'
+        + (_isEs ? 'El foro no está disponible en este momento. Inténtalo de nuevo.' : 'Forum unavailable right now. Please try again.')
+        + '</div>';
+    } else {
+      el.innerHTML = '<div style="padding:16px;color:#8fa090;font-size:13px;text-align:center">'
+        + (_isEs ? 'Error al cargar el foro. Inténtalo de nuevo.' : 'Error loading forum. Please try again.')
+        + '</div>';
+    }
   }
 }
 
@@ -8297,8 +8426,8 @@ async function _comLoadComments(postId) {
   const el = document.getElementById(`comCommentsList-${postId}`);
   if (!el || !_sb) return;
   try {
-    const { data: comments } = await _sb.from('community_comments').select('*').eq('post_id', postId).order('created_at', { ascending: true });
-    const list = comments || [];
+    const comments = await _sbR('community_comments?post_id=eq.' + encodeURIComponent(postId) + '&order=created_at.asc');
+    const list = Array.isArray(comments) ? comments : [];
     el.innerHTML = list.length ? list.map(c => {
       const ini = (c.display_name||'?').slice(0,2).toUpperCase();
       const colors = ['#1a7a43,#2ecc71','#1a4a6a,#3498db','#6a1a4a,#c39bd3'];
@@ -8323,11 +8452,9 @@ async function _comAddComment(postId) {
   input.value = '';
   const displayName = _sbUser.user_metadata?.full_name || _sbUser.email?.split('@')[0] || (currentLang==='es'?'Usuario':'User');
   try {
-    await _sb.from('community_comments').insert({ post_id: postId, user_id: _sbUser.id, display_name: displayName, content: text });
-    await _sb.rpc('increment_comments_count', { post_id: postId }).catch(() => {
-      // Fallback: direct update
-      _sb.from('community_posts').update({ comments_count: (_comPosts.find(p=>p.id===postId)?.comments_count||0)+1 }).eq('id', postId).catch(()=>{});
-    });
+    await _sbR('community_comments', { method: 'POST', body: { post_id: postId, user_id: _sbUser.id, display_name: displayName, content: text } });
+    const newCount = (_comPosts.find(p => p.id === postId)?.comments_count || 0) + 1;
+    await _sbR('community_posts?id=eq.' + encodeURIComponent(postId), { method: 'PATCH', body: { comments_count: newCount } }).catch(() => {});
     const cntEl = document.getElementById(`comCnt-${postId}`);
     if (cntEl) cntEl.textContent = Number(cntEl.textContent||0) + 1;
     await _comLoadComments(postId);
@@ -8340,23 +8467,27 @@ async function _comToggleLike(postId, btn) {
   const span = btn.querySelector('span');
   const svg = btn.querySelector('svg');
   const post = _comPosts.find(p => p.id === postId);
+  // Optimistic UI update immediately
+  if (liked) {
+    _comMyLikes.delete(postId);
+    btn.classList.remove('liked');
+    if (svg) svg.setAttribute('fill','none');
+    if (span) span.textContent = Math.max(0, Number(span.textContent||1)-1);
+    if (post) post.likes_count = Math.max(0, (post.likes_count||1)-1);
+  } else {
+    _comMyLikes.add(postId);
+    btn.classList.add('liked');
+    if (svg) svg.setAttribute('fill','currentColor');
+    if (span) span.textContent = Number(span.textContent||0)+1;
+    if (post) post.likes_count = (post.likes_count||0)+1;
+  }
   try {
     if (liked) {
-      await _sb.from('community_likes').delete().eq('user_id', _sbUser.id).eq('post_id', postId);
-      await _sb.from('community_posts').update({ likes_count: Math.max(0, (post?.likes_count||1)-1) }).eq('id', postId);
-      _comMyLikes.delete(postId);
-      btn.classList.remove('liked');
-      if (svg) svg.setAttribute('fill','none');
-      if (span) span.textContent = Math.max(0, Number(span.textContent||1)-1);
-      if (post) post.likes_count = Math.max(0, (post.likes_count||1)-1);
+      await _sbR('community_likes?user_id=eq.' + encodeURIComponent(_sbUser.id) + '&post_id=eq.' + encodeURIComponent(postId), { method: 'DELETE' });
+      await _sbR('community_posts?id=eq.' + encodeURIComponent(postId), { method: 'PATCH', body: { likes_count: Math.max(0, (post?.likes_count||0)) } });
     } else {
-      await _sb.from('community_likes').insert({ user_id: _sbUser.id, post_id: postId });
-      await _sb.from('community_posts').update({ likes_count: (post?.likes_count||0)+1 }).eq('id', postId);
-      _comMyLikes.add(postId);
-      btn.classList.add('liked');
-      if (svg) svg.setAttribute('fill','currentColor');
-      if (span) span.textContent = Number(span.textContent||0)+1;
-      if (post) post.likes_count = (post.likes_count||0)+1;
+      await _sbR('community_likes', { method: 'POST', body: { user_id: _sbUser.id, post_id: postId } });
+      await _sbR('community_posts?id=eq.' + encodeURIComponent(postId), { method: 'PATCH', body: { likes_count: (post?.likes_count||0) } });
     }
   } catch(e) { console.warn('[com like]', e.message); }
 }
@@ -8364,8 +8495,9 @@ async function _comToggleLike(postId, btn) {
 async function _comDeletePost(postId, btn) {
   if (!_sb || !_sbUser || !confirm(currentLang==='es'?'¿Eliminar esta publicación?':'Delete this post?')) return;
   try {
-    await _sb.from('community_posts').delete().eq('id', postId).eq('user_id', _sbUser.id);
+    await _sbR('community_posts?id=eq.' + encodeURIComponent(postId) + '&user_id=eq.' + encodeURIComponent(_sbUser.id), { method: 'DELETE' });
     btn.closest('.com-post')?.remove();
+    _comPosts = _comPosts.filter(p => p.id !== postId);
   } catch(e) { console.warn('[com delete]', e.message); }
 }
 
@@ -8448,8 +8580,7 @@ async function _comPublish() {
 
   btn.textContent = '…'; btn.disabled = true;
   try {
-    const { error } = await _sb.from('community_posts').insert(payload);
-    if (error) throw error;
+    await _sbR('community_posts', { method: 'POST', body: payload });
     _comCloseModal();
     // Reset form fields
     ['comTextContent','comTextTags','comPfContent','comPfTotal','comPfInvested','comPfGain','comPfPositions','comPfTags','comTxAsset','comTxQty','comTxPrice','comTxComment'].forEach(id => { const el=document.getElementById(id); if(el) el.value=''; });
@@ -8469,8 +8600,8 @@ async function _comShowProfile(userId, displayName) {
   content.innerHTML = `<div class="com-loading">${currentLang==='es'?'Cargando perfil…':'Loading profile…'}</div>`;
 
   try {
-    const { data: posts } = await _sb.from('community_posts').select('*').eq('user_id', userId).order('created_at', { ascending: false }).limit(20);
-    const userPosts = posts || [];
+    const posts = await _sbR('community_posts?user_id=eq.' + encodeURIComponent(userId) + '&order=created_at.desc&limit=20');
+    const userPosts = Array.isArray(posts) ? posts : [];
     const totalLikes = userPosts.reduce((s,p) => s + (p.likes_count||0), 0);
     const initials = (displayName||'?').slice(0,2).toUpperCase();
     const colors = ['#1a7a43,#2ecc71','#1a4a6a,#3498db','#6a1a4a,#c39bd3','#4a3a1a,#d4af37'];
@@ -8528,9 +8659,9 @@ async function _comLoadTopMembers() {
   const el = document.getElementById('comTopMembers');
   if (!el || !_sb) return;
   try {
-    const { data } = await _sb.from('community_posts').select('user_id,display_name,likes_count');
+    const data = await _sbR('community_posts?select=user_id,display_name,likes_count');
     const byUser = {};
-    (data||[]).forEach(p => {
+    (Array.isArray(data) ? data : []).forEach(p => {
       if (!byUser[p.user_id]) byUser[p.user_id] = { name: p.display_name, posts: 0, likes: 0 };
       byUser[p.user_id].posts++;
       byUser[p.user_id].likes += (p.likes_count||0);

@@ -96,13 +96,58 @@
     },
     {
       "isin": "IE00BYX5P602",
-      "name": "iShares Core MSCI World UCITS ETF EUR Hedged (Acc)",
-      "type": "etf",
+      "name": "Fidelity MSCI World Index Fund EUR P Acc (Hedged)",
+      "type": "fund",
       "status": "mapped",
-      "recommendedProvider": "eodhd",
-      "providerSymbol": "IWDE.L",
-      "yahooSymbol": "IWDE.L",
-      "notes": "EUR-hedged share class. IWDE.L on LSE. Yahoo ISIN direct may also resolve."
+      "recommendedProvider": "yahoo",
+      "providerSymbol": null,
+      "yahooSymbol": "0P0001CJGV.F",
+      "nativeCurrency": "EUR",
+      "notes": "Fidelity MSCI World EUR-hedged share class. Morningstar Frankfurt: 0P0001CJGV.F (~€11.80). Compare USD class 0P0001CJGW.F (IE00BYX5NK04). IWDE.L was WRONG (different iShares fund at ~€117)."
+    },
+    {
+      "isin": "IE00BZ4D7648",
+      "name": "Polar Capital Global Technology R EUR",
+      "type": "fund",
+      "status": "mapped",
+      "recommendedProvider": "yahoo",
+      "providerSymbol": null,
+      "yahooSymbol": "0P0001ANEI.F",
+      "nativeCurrency": "EUR",
+      "notes": "Polar Capital Global Technology UCITS fund. Yahoo Morningstar Frankfurt: 0P0001ANEI.F (~€74.56, 1186+ daily points)."
+    },
+    {
+      "isin": "IE00B42LF923",
+      "name": "Vanguard Global Small-Cap Index Fund Institutional Shares USD",
+      "type": "fund",
+      "status": "mapped",
+      "recommendedProvider": "yahoo",
+      "providerSymbol": null,
+      "yahooSymbol": "0P0000MX66",
+      "nativeCurrency": "USD",
+      "notes": "Vanguard Global Small Cap institutional USD share class. Yahoo: 0P0000MX66 (~$515 USD, 1250+ points). nativeCurrency=USD so buildAssets converts to EUR."
+    },
+    {
+      "isin": "IE00B43VDT70",
+      "name": "Invesco Physical Silver ETC",
+      "type": "etc",
+      "status": "mapped",
+      "recommendedProvider": "yahoo",
+      "providerSymbol": "SSLV.L",
+      "yahooSymbol": "SSLV.L",
+      "nativeCurrency": "USD",
+      "notes": "Invesco Physical Silver ETC. SSLV.L on LSE — Yahoo returns USD price (~$62.65). quoteCurrency=USD takes priority; nativeCurrency=USD as correct fallback."
+    },
+    {
+      "isin": "ES0119199018",
+      "name": "Cobas Internacional FI Clase D",
+      "type": "fund",
+      "status": "mapped",
+      "recommendedProvider": "yahoo",
+      "providerSymbol": null,
+      "yahooSymbol": "0P0001LFVO.F",
+      "nativeCurrency": "EUR",
+      "notes": "Cobas Internacional FI share class D (direct). Yahoo Morningstar Frankfurt: 0P0001LFVO.F (~€296.04, 1219+ points). Different from Cobas LUX SICAV (LU1598719752)."
     },
     {
       "isin": "ES0173311103",
@@ -153,7 +198,8 @@
       "providerSymbol": null,
       "yahooSymbol": "FHQI.F",
       "nativeCurrency": "EUR",
-      "notes": "Yahoo FHQI.F returns EUR ~€363 (sparse history). Morningstar via fundNav provides full daily NAV history. nativeCurrency=EUR so price used directly."
+      "morningstarSecId": "F0GBR04AVQ",
+      "notes": "Morningstar secId=F0GBR04AVQ (direct — ISIN search fails for LU funds). Yahoo FHQI.F gives quote only (1 pt). morningstarSecId bypasses search to get full NAV history."
     },
     {
       "isin": "IE00B579F325",
