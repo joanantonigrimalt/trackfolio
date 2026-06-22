@@ -3059,7 +3059,8 @@ function tick(){const cl=document.getElementById('clock');if(cl)cl.textContent=n
 function getOverrides(){try{const o=JSON.parse(localStorage.getItem('tf_positions')||'{}');return o!==null&&typeof o==='object'&&!Array.isArray(o)?o:{};}catch{return {};}}
 function getKnownBrokers(){const ov=getOverrides();const s=new Set();Object.values(ov).forEach(v=>{if(v.broker)s.add(v.broker);});try{const liq=JSON.parse(localStorage.getItem('tf_liquidity')||'[]');liq.forEach(e=>{if(e.broker)s.add(e.broker);});}catch{}return[...s];}
 function renderBrokerChips(inputId,chipsId){const brokers=getKnownBrokers();const el=document.getElementById(chipsId);if(!el)return;if(!brokers.length){el.innerHTML='';return;}el.innerHTML=brokers.map(b=>`<span class="brokerChip" data-broker="${escapeHtml(b)}">${escapeHtml(b)}</span>`).join('');el.querySelectorAll('.brokerChip').forEach(chip=>{chip.addEventListener('click',()=>{const inp=document.getElementById(inputId);if(inp){inp.value=chip.dataset.broker;inp.dispatchEvent(new Event('input'));}});});}
-function saveOverrides(o){localStorage.setItem('tf_positions',JSON.stringify(o));try{localStorage.removeItem('fa_seed_v2');}catch(_){}try{Object.keys(localStorage).filter(k=>k.startsWith('fa_cov_v2_')).forEach(k=>localStorage.removeItem(k));}catch(_){}_debouncedSync();}
+function saveOverrides(o){localStorage.setItem('tf_positions',JSON.stringify(o));// Stamp local sync time so syncFromCloud won't overwrite with older cloud data
+try{localStorage.setItem('tf_last_sync',new Date().toISOString());}catch(_){}try{localStorage.removeItem('fa_seed_v2');}catch(_){}try{Object.keys(localStorage).filter(k=>k.startsWith('fa_cov_v2_')).forEach(k=>localStorage.removeItem(k));}catch(_){}_debouncedSync();}
 function applyOverridesToAssets(rawAssets){
   const ov=getOverrides();
   const mapped=rawAssets.map(a=>{
@@ -5494,7 +5495,7 @@ document.querySelectorAll('.langBtn').forEach(btn=>btn.addEventListener('click',
 
 // ========== Custom Assets (localStorage) ==========
 function getCustomAssets(){try{const o=JSON.parse(localStorage.getItem('tf_custom_assets')||'{}');return o!==null&&typeof o==='object'&&!Array.isArray(o)?o:{};}catch{return {};}}
-function saveCustomAssets(o){localStorage.setItem('tf_custom_assets',JSON.stringify(o));_debouncedSync();}
+function saveCustomAssets(o){localStorage.setItem('tf_custom_assets',JSON.stringify(o));try{localStorage.setItem('tf_last_sync',new Date().toISOString());}catch(_){}_debouncedSync();}
 
 // Type → icon style
 const TYPE_COLORS={stock:'linear-gradient(135deg,#1d6fa8,#38bdf8)',etf:'linear-gradient(135deg,#1d6fa8,#38bdf8)',fund:'linear-gradient(135deg,#7c3aed,#a78bfa)',crypto:'linear-gradient(135deg,#d97706,#fbbf24)',index:'linear-gradient(135deg,#475569,#94a3b8)',fx:'linear-gradient(135deg,#059669,#34d399)',unknown:'linear-gradient(135deg,#475569,#64748b)'};
