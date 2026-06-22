@@ -7984,13 +7984,13 @@ function _insCard(r) {
   const isSell = /^S/i.test(r.transactionType||'');
   const color   = isBuy ? '#15803d' : isSell ? '#dc2626' : '#8fa090';
   const bgBadge = isBuy ? '#e6faf3' : isSell ? '#fef2f2' : '#f0f4f2';
-  const label   = isBuy ? '▲ COMPRA' : isSell ? '▼ VENTA' : (r.transactionType||'—');
+  const label   = isBuy ? '▲ '+(currentLang==='es'?'COMPRA':'BUY') : isSell ? '▼ '+(currentLang==='es'?'VENTA':'SELL') : (r.transactionType||'—');
   const sym     = ((r.symbol||r.ticker||'')+'').toUpperCase()||'??';
   const co      = r.companyName||'';
   const shares  = Number(r.securitiesTransacted)||0;
   const price   = Number(r.price)||0;
   const value   = shares * price;
-  const sharesStr = shares ? shares.toLocaleString('es-ES') : '—';
+  const sharesStr = shares ? shares.toLocaleString(currentLang==='es'?'es-ES':'en-US') : '—';
   const priceStr  = price  ? '$'+price.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2}) : '—';
   const valueStr  = value > 500 ? _fmtMoney(value) : '';
   const date    = ((r.transactionDate||r.date||'')+'').slice(0,10);
@@ -8009,7 +8009,7 @@ function _insCard(r) {
     +'<div style="font-size:12px;color:#3d4f41;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+insider+'</div>'
     +(role?'<div style="font-size:10px;color:#8fa090;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+role+'</div>':'')
     +'<div style="display:flex;align-items:center;gap:8px;margin-top:5px;flex-wrap:wrap">'
-    +'<span style="font-size:11px;font-weight:700;color:#142018">'+sharesStr+' acc.</span>'
+    +'<span style="font-size:11px;font-weight:700;color:#142018">'+sharesStr+' '+(currentLang==='es'?'acc.':'shs.')+'</span>'
     +'<span style="font-size:11px;color:#8fa090">@ '+priceStr+'</span>'
     +(valueStr?'<span style="font-size:11px;font-weight:700;color:'+color+'">'+valueStr+'</span>':'')
     +'<span style="font-size:11px;color:#b0bfb5;margin-left:auto">'+date+'</span>'
@@ -8157,7 +8157,7 @@ var _comMyLikes = new Set();
 async function _comLoadFeed() {
   const el = document.getElementById('comFeed');
   if (!el) return;
-  el.innerHTML = '<div style="padding:16px;color:#999">Cargando…</div>';
+  el.innerHTML = `<div style="padding:16px;color:#999">${currentLang==='es'?'Cargando…':'Loading…'}</div>`;
 
   try {
     const apiUrl = '/rest/v1/community_posts?order=created_at.desc&limit=50&_v=' + Date.now();
@@ -8198,7 +8198,8 @@ function _comRenderPost(p) {
   const colorIdx = p.display_name ? p.display_name.charCodeAt(0) % colors.length : 0;
   const timeAgo = _comTimeAgo(p.created_at);
   const badgeClass = p.post_type === 'transaccion' ? 'com-badge-transaccion' : 'com-badge-portfolio';
-  const badgeLabel = p.post_type === 'portfolio' ? '📊 Portafolio' : p.post_type === 'transaccion' ? '💸 Transacción' : '💬 Análisis';
+  const _isEsCom=currentLang==='es';
+  const badgeLabel = p.post_type === 'portfolio' ? (_isEsCom?'📊 Portafolio':'📊 Portfolio') : p.post_type === 'transaccion' ? (_isEsCom?'💸 Transacción':'💸 Transaction') : (_isEsCom?'💬 Análisis':'💬 Analysis');
 
   let widget = '';
   if (p.post_type === 'portfolio' && p.pf_total) {
@@ -8209,33 +8210,34 @@ function _comRenderPost(p) {
       <div class="com-pf-widget">
         <div class="com-pf-hd">
           <div>
-            <div style="font-size:9px;text-transform:uppercase;letter-spacing:.8px;color:#4a6b55;margin-bottom:4px">Valor total</div>
-            <div class="com-pf-total">${Number(p.pf_total).toLocaleString('es-ES', {minimumFractionDigits:2,maximumFractionDigits:2})} €</div>
+            <div style="font-size:9px;text-transform:uppercase;letter-spacing:.8px;color:#4a6b55;margin-bottom:4px">${_isEsCom?'Valor total':'Total value'}</div>
+            <div class="com-pf-total">${Number(p.pf_total).toLocaleString(_isEsCom?'es-ES':'en-US', {minimumFractionDigits:2,maximumFractionDigits:2})} €</div>
           </div>
           <div style="text-align:right">
             <div class="com-pf-gain ${gainClass}">${gainStr}</div>
-            <div style="font-size:11px;color:#4a6b55;margin-top:2px">${p.pf_positions || 0} posiciones</div>
+            <div style="font-size:11px;color:#4a6b55;margin-top:2px">${p.pf_positions || 0} ${_isEsCom?'posiciones':'positions'}</div>
           </div>
         </div>
         <div class="com-pf-stats">
-          <div class="com-pf-stat"><div class="com-pf-stat-lbl">Invertido</div><div class="com-pf-stat-val">${Number(p.pf_invested||0).toLocaleString('es-ES',{maximumFractionDigits:0})} €</div></div>
-          <div class="com-pf-stat"><div class="com-pf-stat-lbl">Posiciones</div><div class="com-pf-stat-val">${p.pf_positions||0}</div></div>
-          <div class="com-pf-stat"><div class="com-pf-stat-lbl">Rentab.</div><div class="com-pf-stat-val" style="color:#2ecc71">${gain>=0?'+':''}${gain.toFixed(2)}%</div></div>
+          <div class="com-pf-stat"><div class="com-pf-stat-lbl">${_isEsCom?'Invertido':'Invested'}</div><div class="com-pf-stat-val">${Number(p.pf_invested||0).toLocaleString(_isEsCom?'es-ES':'en-US',{maximumFractionDigits:0})} €</div></div>
+          <div class="com-pf-stat"><div class="com-pf-stat-lbl">${_isEsCom?'Posiciones':'Positions'}</div><div class="com-pf-stat-val">${p.pf_positions||0}</div></div>
+          <div class="com-pf-stat"><div class="com-pf-stat-lbl">${_isEsCom?'Rentab.':'Return'}</div><div class="com-pf-stat-val" style="color:#2ecc71">${gain>=0?'+':''}${gain.toFixed(2)}%</div></div>
         </div>
       </div>`;
   } else if (p.post_type === 'transaccion' && p.tx_asset) {
     const isBuy = (p.tx_type || 'Compra') === 'Compra';
-    const total = (Number(p.tx_qty||0) * Number(p.tx_price||0)).toLocaleString('es-ES',{minimumFractionDigits:2,maximumFractionDigits:2});
+    const total = (Number(p.tx_qty||0) * Number(p.tx_price||0)).toLocaleString(_isEsCom?'es-ES':'en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
     const txDate = p.tx_date ? new Date(p.tx_date) : null;
     const day = txDate ? txDate.getDate() : '—';
-    const mon = txDate ? txDate.toLocaleString('es-ES',{month:'short'}) : '';
+    const mon = txDate ? txDate.toLocaleString(_isEsCom?'es-ES':'en-US',{month:'short'}) : '';
+    const txTypeLabel = _isEsCom ? p.tx_type : (isBuy ? 'Buy' : 'Sell');
     widget = `
       <div class="com-tx-widget">
         <div class="com-tx-date-col"><strong>${day}</strong><span>${mon}</span><span style="font-size:10px;color:#4a6b55">${isBuy?'▼':'▲'}</span></div>
         <div class="com-tx-logo">📈</div>
         <div class="com-tx-info">
           <div class="com-tx-asset">${_comEsc(p.tx_asset)}</div>
-          <div class="com-tx-detail">${p.tx_type} × ${p.tx_qty} acc · ${Number(p.tx_price||0).toFixed(2)} €/acc</div>
+          <div class="com-tx-detail">${txTypeLabel} × ${p.tx_qty} ${_isEsCom?'acc':'shs'} · ${Number(p.tx_price||0).toFixed(2)} €/${_isEsCom?'acc':'sh'}</div>
         </div>
         <div class="com-tx-amount ${isBuy?'buy':'sell'}">${isBuy?'+':'-'}€${total}</div>
       </div>`;
@@ -8265,14 +8267,14 @@ function _comRenderPost(p) {
         <span id="comCnt-${p.id}">${p.comments_count||0}</span>
       </button>
       <div class="com-action-sep"></div>
-      ${_sbUser && p.user_id === _sbUser.id ? `<button class="com-action-btn" onclick="_comDeletePost('${p.id}',this)" title="Eliminar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/></svg></button>` : ''}
+      ${_sbUser && p.user_id === _sbUser.id ? `<button class="com-action-btn" onclick="_comDeletePost('${p.id}',this)" title="${_isEsCom?'Eliminar':'Delete'}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/></svg></button>` : ''}
     </div>
     <div class="com-comments" id="comComments-${p.id}">
-      <div id="comCommentsList-${p.id}"><div class="com-loading" style="padding:12px 0">Cargando comentarios…</div></div>
+      <div id="comCommentsList-${p.id}"><div class="com-loading" style="padding:12px 0">${_isEsCom?'Cargando comentarios…':'Loading comments…'}</div></div>
       <div class="com-comment-input">
         <div class="com-av" style="width:28px;height:28px;font-size:11px">${_sbUser?(_sbUser.email||'?').slice(0,2).toUpperCase():'?'}</div>
-        <input type="text" class="com-comment-field" placeholder="Escribe un comentario…" id="comCF-${p.id}" onkeydown="if(event.key==='Enter')_comAddComment('${p.id}')">
-        <button class="com-comment-send" onclick="_comAddComment('${p.id}')">Enviar</button>
+        <input type="text" class="com-comment-field" placeholder="${_isEsCom?'Escribe un comentario…':'Write a comment…'}" id="comCF-${p.id}" onkeydown="if(event.key==='Enter')_comAddComment('${p.id}')">
+        <button class="com-comment-send" onclick="_comAddComment('${p.id}')">${_isEsCom?'Enviar':'Send'}</button>
       </div>
     </div>
   </div>`;
@@ -8303,18 +8305,18 @@ async function _comLoadComments(postId) {
           <div class="com-comment-text">${_comEsc(c.content)}</div>
         </div>
       </div>`;
-    }).join('') : '<div style="font-size:12px;color:#4a6b55;padding:8px 0">Sin comentarios aún.</div>';
+    }).join('') : `<div style="font-size:12px;color:#4a6b55;padding:8px 0">${currentLang==='es'?'Sin comentarios aún.':'No comments yet.'}</div>`;
   } catch(e) { el.innerHTML = ''; }
 }
 
 async function _comAddComment(postId) {
-  if (!_sb || !_sbUser) { alert('Inicia sesión para comentar'); return; }
+  if (!_sb || !_sbUser) { alert(currentLang==='es'?'Inicia sesión para comentar':'Sign in to comment'); return; }
   const input = document.getElementById(`comCF-${postId}`);
   if (!input) return;
   const text = input.value.trim();
   if (!text) return;
   input.value = '';
-  const displayName = _sbUser.user_metadata?.full_name || _sbUser.email?.split('@')[0] || 'Usuario';
+  const displayName = _sbUser.user_metadata?.full_name || _sbUser.email?.split('@')[0] || (currentLang==='es'?'Usuario':'User');
   try {
     await _sb.from('community_comments').insert({ post_id: postId, user_id: _sbUser.id, display_name: displayName, content: text });
     await _sb.rpc('increment_comments_count', { post_id: postId }).catch(() => {
@@ -8409,7 +8411,7 @@ async function _comPublish() {
   if (!_sb || !_sbUser) return;
   const btn = document.getElementById('comPublishBtn');
   const msgEl = document.getElementById('comPostMsg');
-  const displayName = _sbUser.user_metadata?.full_name || _sbUser.email?.split('@')[0] || 'Usuario';
+  const displayName = _sbUser.user_metadata?.full_name || _sbUser.email?.split('@')[0] || (currentLang==='es'?'Usuario':'User');
 
   let payload = { user_id: _sbUser.id, display_name: displayName, post_type: _comModalTab };
 
