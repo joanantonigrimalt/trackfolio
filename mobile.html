@@ -3714,7 +3714,7 @@ function _anRenderBestWorst(){
     const badge=`<div class="an-bw-badge"${sm?' style="align-items:flex-start"':''}><span class="an-bw-pct ${cl}">${arrow(a.gainPct)} ${pctStr}</span><span class="an-bw-eur ${cl}">${eurStr}</span></div>`;
     const nameWrap=`<div class="an-bw-nameWrap"><div class="an-bw-ticker">${ticker}</div><div class="an-bw-fname">${fname}</div></div>`;
     const logoDiv=`<div class="an-bw-logo" style="background:${col}">${escapeHtml(iconInitials(a))}</div>`;
-    const _hasPriceErr=coverageStatus(a)==='MISSING'&&!(a.currentPrice>0);const price=_hasPriceErr?'<span style="color:#f05252;font-size:10px;font-weight:700">⚠ sin precio</span>':fc(a.currentPrice,assetCcy(a));
+    const _hasPriceErr=coverageStatus(a)==='MISSING'&&!(a.currentPrice>0);const price=_hasPriceErr?`<span style="color:#f05252;font-size:10px;font-weight:700">⚠ ${currentLang==='es'?'sin precio':'no price'}</span>`:fc(a.currentPrice,assetCcy(a));
     const bottom=sm
       ?`<div class="an-bw-bottom"><span class="an-bw-price" style="font-size:9px">${price}</span><span class="an-bw-total ${cl}">${(a.gain>=0?'+':'')+(val>=10000?fe(Math.round(val/1000)*1000):fe(val))}</span></div>`
       :`<div class="an-bw-bottom"><span class="an-bw-price">${price}</span><span class="an-bw-total ${cl}">${valStr}</span></div>`;
@@ -3795,7 +3795,8 @@ function _anRenderAllocContent(tab) {
   if (tab === 'currency') {
     assets.forEach(a => { const c = assetCcy(a)||'EUR'; groups[c]=(groups[c]||0)+toDisplay(a.value,assetCcy(a)); });
   } else if (tab === 'type') {
-    assets.forEach(a => { const c = assetCategory(a); groups[c]=(groups[c]||0)+toDisplay(a.value,assetCcy(a)); });
+    const _catI18n={'Fondos':currentLang==='es'?'Fondos':'Funds','Oro':currentLang==='es'?'Oro':'Gold','Acciones':'Stocks','Stocks':'Stocks','ETFs':'ETFs','ETC':'ETC'};
+    assets.forEach(a => { const c = _catI18n[assetCategory(a)]||assetCategory(a); groups[c]=(groups[c]||0)+toDisplay(a.value,assetCcy(a)); });
   } else if (tab === 'country') {
     const _isEsC=currentLang==='es';
     const regionOf = a => {
@@ -4103,7 +4104,7 @@ function _anRenderPerfBars(){const _ytdEl=document.getElementById('ytdYearLabel'
   if(!active.length){wrap.innerHTML='<div style="font-size:12px;color:#8fa090;text-align:center;padding:16px">'+(currentLang==='es'?'Sin datos':'No data')+'</div>';return;}
 
   const rows=active.map(a=>{
-    const _bpEur=toEur(a.buyPrice,costCcy(a));const pct=_bpEur>0?((a.currentPrice-_bpEur)/_bpEur)*100:0;
+    const _bpEur=toEur(a.buyPrice,costCcy(a));const _cpEur=toEur(a.currentPrice,assetCcy(a));const pct=_bpEur>0?((_cpEur-_bpEur)/_bpEur)*100:0;
     const name=a.shortName||(a.name||'').split(' ').slice(0,2).join(' ')||a.isin||'—';
     return{name,pct,val:toDisplay(a.value,assetCcy(a))};
   }).sort((a,b)=>b.pct-a.pct);
@@ -4193,7 +4194,7 @@ function _anRenderTrendVsWorld(){
         <div style="font-size:14px;font-weight:800;color:#3b82f6">${msciTotal>=0?'+':''}${msciTotal.toFixed(1)}%</div>
       </div>
       <div style="background:#fefce8;border-radius:12px;padding:8px 10px;text-align:center">
-        <div style="font-size:8px;font-weight:700;color:#8fa090;text-transform:uppercase;letter-spacing:.07em;margin-bottom:3px">Mejor año</div>
+        <div style="font-size:8px;font-weight:700;color:#8fa090;text-transform:uppercase;letter-spacing:.07em;margin-bottom:3px">${currentLang==='es'?'Mejor año':'Best year'}</div>
         <div style="font-size:14px;font-weight:800;color:#b45309">${bestYear}</div>
       </div>`;
   }
@@ -4259,13 +4260,14 @@ function _anRenderCorrelation(){
   }
   highPairs.sort((a,b)=>b.c-a.c);
 
+  const _isEsCorr=currentLang==='es';
   let h=`<div class="an-corr-hdr">
-    <div style="font-size:9px;font-weight:700;color:#8fa090;text-transform:uppercase;letter-spacing:.1em;margin-bottom:3px">Correlaci&oacute;n de activos</div>
-    <div style="font-size:15px;font-weight:800;color:#142018;letter-spacing:-.02em">Asset Correlation</div>
+    <div style="font-size:9px;font-weight:700;color:#8fa090;text-transform:uppercase;letter-spacing:.1em;margin-bottom:3px">${_isEsCorr?'Correlaci&oacute;n de activos':'Asset Correlation'}</div>
+    <div style="font-size:15px;font-weight:800;color:#142018;letter-spacing:-.02em">${_isEsCorr?'Correlación de activos':'Asset Correlation'}</div>
     <div class="an-corr-pills" style="margin-top:10px">
-      <div class="an-corr-pill"><div class="an-corr-pill-lbl">Activos</div><div class="an-corr-pill-val">${active.length}</div></div>
-      <div class="an-corr-pill"><div class="an-corr-pill-lbl">Pares analizados</div><div class="an-corr-pill-val">${top.length*(top.length-1)/2}</div></div>
-      <div class="an-corr-pill"><div class="an-corr-pill-lbl">Alta corr.</div><div class="an-corr-pill-val" style="color:#dc2626">${highPairs.length}</div></div>
+      <div class="an-corr-pill"><div class="an-corr-pill-lbl">${_isEsCorr?'Activos':'Assets'}</div><div class="an-corr-pill-val">${active.length}</div></div>
+      <div class="an-corr-pill"><div class="an-corr-pill-lbl">${_isEsCorr?'Pares analizados':'Pairs analysed'}</div><div class="an-corr-pill-val">${top.length*(top.length-1)/2}</div></div>
+      <div class="an-corr-pill"><div class="an-corr-pill-lbl">${_isEsCorr?'Alta corr.':'High corr.'}</div><div class="an-corr-pill-val" style="color:#dc2626">${highPairs.length}</div></div>
     </div>
   </div>
   <div class="an-corr-legend">
@@ -4286,9 +4288,10 @@ function _anRenderCorrelation(){
         const c=getCorr(a,b);
         const {bg,text}=getCorrColor(c);
         const diag=i===j?' diag':'';
+        const _lvl=c>=0.7?(_isEsCorr?'Alto':'High'):c>=-0.1?(_isEsCorr?'Medio':'Mid'):(_isEsCorr?'Bajo':'Low');
         return`<td><div class="an-corr-cell${diag}" style="background:${i===j?'#1a2e22':bg}">
           <span class="cv" style="color:${i===j?'#fff':text}">${i===j?'—':c.toFixed(2)}</span>
-          <span class="cs" style="color:${i===j?'rgba(255,255,255,.5)':text}">${i===j?'':c>=0.7?'Alto':c>=-0.1?'Medio':'Bajo'}</span>
+          <span class="cs" style="color:${i===j?'rgba(255,255,255,.5)':text}">${i===j?'':_lvl}</span>
         </div></td>`;
       }).join('')}
     </tr>`).join('')}
@@ -4297,12 +4300,12 @@ function _anRenderCorrelation(){
 
   if(highPairs.length>0){
     h+=`<div class="an-corr-pairs">
-      <div style="font-size:10px;font-weight:700;color:#8fa090;margin-bottom:8px;text-transform:uppercase;letter-spacing:.06em">Pares con alta correlaci&oacute;n</div>
+      <div style="font-size:10px;font-weight:700;color:#8fa090;margin-bottom:8px;text-transform:uppercase;letter-spacing:.06em">${_isEsCorr?'Pares con alta correlaci&oacute;n':'High-correlation pairs'}</div>
       ${highPairs.slice(0,4).map(p=>`<div style="display:flex;align-items:center;justify-content:space-between;padding:8px 10px;background:#fef2f2;border-radius:10px;margin-bottom:6px">
         <div style="font-size:11px;font-weight:600;color:#142018">${escapeHtml(p.a)} &harr; ${escapeHtml(p.b)}</div>
         <div style="font-size:11px;font-weight:800;color:#dc2626">${p.c.toFixed(2)}</div>
       </div>`).join('')}
-      <div class="an-corr-tip"><span>💡</span><span>Alta correlaci&oacute;n entre activos reduce la diversificaci&oacute;n real de tu cartera. Considera activos descorrelacionados como oro, bonos o mercados emergentes.</span></div>
+      <div class="an-corr-tip"><span>💡</span><span>${_isEsCorr?'Alta correlaci&oacute;n entre activos reduce la diversificaci&oacute;n real de tu cartera. Considera activos descorrelacionados como oro, bonos o mercados emergentes.':'High correlation between assets reduces real diversification. Consider uncorrelated assets like gold, bonds or emerging markets.'}</span></div>
     </div>`;
   }
 
@@ -5294,6 +5297,22 @@ function renderIA(){
   _iaActionData.riesgo.text=_isEsIA
     ?`Tu principal riesgo es la <b>concentración</b>. Acciones: (1) Limita cualquier activo al 60-70% del portfolio. (2) Añade bonos (10-15%) — reduce volatilidad de ~14% a ~9%. (3) Mantén liquidez por encima del 10%. Escenario 2008: ${fe(-total*0.57)}.`
     :`Your main risk is <b>concentration</b>. Actions: (1) Limit any single asset to 60-70% of portfolio. (2) Add bonds (10-15%) — reduces volatility from ~14% to ~9%. (3) Keep cash above 10%. 2008 scenario: ${fe(-total*0.57)}.`;
+  _iaActionData.diversificacion.title=_isEsIA?'Plan de Diversificación':'Diversification Plan';
+  _iaActionData.diversificacion.text=_isEsIA
+    ?'Con alta concentración en renta variable, los próximos pasos son: <b>(1)</b> Vanguard FTSE EM (VWRD/EMIM) — mercados emergentes, correlación 0.47. <b>(2)</b> iShares MSCI Europe (IEUR) — mayor peso europeo. <b>(3)</b> AGGH bonos — reducción volatilidad. Asignación sugerida: 60% RV global · 25% Emergentes · 15% Bonos. Health Score estimado: 72/100.'
+    :'With high equity concentration, next steps: <b>(1)</b> Vanguard FTSE EM (VWRD/EMIM) — emerging markets, corr. 0.47. <b>(2)</b> iShares MSCI Europe (IEUR) — more European exposure. <b>(3)</b> AGGH bonds — volatility reduction. Suggested allocation: 60% global EQ · 25% EM · 15% Bonds. Estimated Health Score: 72/100.';
+  _iaActionData.dividendos.title=_isEsIA?'Plan de Dividendos':'Dividend Plan';
+  _iaActionData.dividendos.text=_isEsIA
+    ?'Tu yield actual es moderado. Para aumentar ingresos pasivos sin cambiar perfil de riesgo: <b>(1)</b> EHDV (Invesco EURO STOXX, yield ~4.2%). <b>(2)</b> TDIV (VanEck, yield ~3.3%). Asignando parte de liquidez a ETFs de dividendo podrías generar <b>~€180/año extra</b>.'
+    :'Your current yield is moderate. To increase passive income without changing risk profile: <b>(1)</b> EHDV (Invesco EURO STOXX, yield ~4.2%). <b>(2)</b> TDIV (VanEck, yield ~3.3%). Allocating liquidity to dividend ETFs could generate <b>~€180/yr extra</b>.';
+  _iaActionData.rentabilidad.title=_isEsIA?'Estrategia para Más Retorno':'Return Improvement Strategy';
+  _iaActionData.rentabilidad.text=_isEsIA
+    ?'Tu portfolio tiene buena rentabilidad. Para mejorar: <b>(1)</b> Aportaciones periódicas (DCA). <b>(2)</b> Reinvertir dividendos (+0.8% anual por capitalización). <b>(3)</b> Considera 10-15% en small caps (WSML) — históricamente +2.5% sobre el índice. <b>(4)</b> No vender en caídas cortas — coste de oportunidad medio: −7%/año.'
+    :'Your portfolio has solid returns. To improve: <b>(1)</b> Regular contributions (DCA). <b>(2)</b> Reinvest dividends (+0.8%/yr via compounding). <b>(3)</b> Consider 10-15% in small caps (WSML) — historically +2.5% over index. <b>(4)</b> Don\'t sell during short dips — avg opportunity cost: −7%/yr.';
+  _iaActionData.rebalanceo.title=_isEsIA?'Plan de Rebalanceo':'Rebalancing Plan';
+  _iaActionData.rebalanceo.text=_isEsIA
+    ?'Con alta concentración aún no hay mucho que rebalancear. Cuando diversifiques: <b>(1)</b> Define pesos objetivo (ej. 60/25/15). <b>(2)</b> Rebalancear cuando cualquier activo se desvíe ±5% del objetivo. <b>(3)</b> Usa nuevas aportaciones cuando sea posible — evita plusvalías.'
+    :'With high concentration there\'s not much to rebalance yet. When you diversify: <b>(1)</b> Set target weights (e.g. 60/25/15). <b>(2)</b> Rebalance when any asset drifts ±5% from target. <b>(3)</b> Use new contributions when possible — avoids capital gains tax.';
 }
 
 // ========== Lists ==========
@@ -7576,7 +7595,7 @@ function openCat(key) {
 
 function refreshScore() {
   const btn=document.querySelector('#portfolioScoreCard .ps-update-btn');
-  if(btn){btn.style.opacity='0.5';btn.disabled=true;setTimeout(()=>{btn.style.opacity='1';btn.disabled=false;const upd=document.getElementById('psUpdated');if(upd)upd.textContent='Actualizado: ahora mismo · 2/5 análisis usados · reset lunes';},1500);}
+  if(btn){btn.style.opacity='0.5';btn.disabled=true;setTimeout(()=>{btn.style.opacity='1';btn.disabled=false;const upd=document.getElementById('psUpdated');if(upd)upd.textContent=currentLang==='es'?'Actualizado: ahora mismo · 2/5 análisis usados · reset lunes':'Updated: just now · 2/5 analyses used · resets Monday';},1500);}
 }
 
 function runAction(btn, key) {
