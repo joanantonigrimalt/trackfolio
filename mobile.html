@@ -5361,12 +5361,13 @@ async function boot(){
   Object.keys(_ovMig).forEach(k=>{if(_ovMig[k]&&!_ovMig[k].costCurrency){_ovMig[k].costCurrency='EUR';_ovChanged=true;}});
   if(_ovChanged)saveOverrides(_ovMig);
 
-  // Step 1: seed — try localStorage cache (3 min TTL) for instant load
+  // Step 1: seed — stale-while-revalidate: show ANY cached data instantly, refresh in bg
   const _SEED_CK='fa_seed_v2';
-  let seed,_seedFresh=false;
-  try{const _sc=localStorage.getItem(_SEED_CK);if(_sc){const _p=JSON.parse(_sc);if(_p?.data&&(Date.now()-_p.ts)<180_000){seed=_p.data;}}}catch(_){}
+  let seed,_seedStale=false;
+  try{const _sc=localStorage.getItem(_SEED_CK);if(_sc){const _p=JSON.parse(_sc);if(_p?.data){seed=_p.data;_seedStale=(Date.now()-_p.ts)>=180_000;}}}catch(_){}
   if(!seed){
-    try{ seed=await getJson('/api/portfolio/seed',10000); _seedFresh=true; }
+    // No cache at all — must fetch once (only on absolute first load)
+    try{ seed=await getJson('/api/portfolio/seed',10000); }
     catch(e){ document.getElementById('chartNote').textContent=(currentLang==='es'?'Error cargando portfolio: ':'Error loading portfolio: ')+e.message; return; }
     try{localStorage.setItem(_SEED_CK,JSON.stringify({data:seed,ts:Date.now()}));}catch(_){}
   }
@@ -5377,7 +5378,7 @@ async function boot(){
     if (cn) cn.innerHTML = currentLang==='es'
       ? '&#128202; Tu cartera está vacía. Pulsa <strong>+ Nueva posición</strong> para añadir tu primer activo.'
       : '&#128202; Your portfolio is empty. Click <strong>+ New position</strong> to add your first asset.';
-    if(_sbUser) await syncFromCloud().catch(()=>{});
+    if(_sbUser)syncFromCloud().catch(()=>{});
     loadCustomIntoAssets(); dataReady=true; render();
     return;
   }
@@ -5402,33 +5403,40 @@ async function boot(){
       return{isin:pos.isin,name:pos.shortName||pos.name||mapping?.name||pos.isin,fullName:pos.name||mapping?.name||pos.isin,quantity,buyPrice:adjBuyPrice,currentPrice:adjPrice,invested:quantity*adjBuyPrice,value:quantity*adjPrice,gain,gainPct:adjBuyPrice?((adjPrice-adjBuyPrice)/adjBuyPrice)*100:0,mapping,provider:entry.data?.provider||null,coverageStatus:entry.data?.coverage?.status||'MISSING',coverage:entry.data?.coverage||{status:'MISSING'},history:adjHistory,hasRealHistory:adjHistory.length>1,_rawQty:quantity,_rawBuyPrice:adjBuyPrice,customCurrency:adjCcy,costCurrency:_isGBp?'GBP':null};
     });
   }
-  // Try coverage cache (15 min TTL) for instant first render with full prices+history
+  // Coverage — stale-while-revalidate: show ANY cached data instantly, refresh in bg
   const _COV_CK='fa_cov_v2_'+isinList.replace(/,/g,'').slice(0,40);
-  let _cachedCov=null;
-  try{const _cc=localStorage.getItem(_COV_CK);if(_cc){const _p=JSON.parse(_cc);if(_p?.data&&(Date.now()-_p.ts)<900_000){_cachedCov=_p.data;}}}catch(_){}
+  let _cachedCov=null,_covStale=false;
+  try{const _cc=localStorage.getItem(_COV_CK);if(_cc){const _p=JSON.parse(_cc);if(_p?.data){_cachedCov=_p.data;_covStale=(Date.now()-_p.ts)>=900_000;}}}catch(_){}
   const _initCvMap=_cachedCov?Object.fromEntries((_cachedCov.results||[]).map(e=>[e.isin,e])):{};
   _rawSeedAssets=buildAssets(_initCvMap);
-  // For logged-in users: pull latest overrides from cloud before first render
-  // so their saved positions are visible immediately (not filtered out)
-  // Wrapped with a 4s timeout so a slow/missing Supabase table never blocks rendering
-  if(_sbUser) await Promise.race([syncFromCloud(),new Promise(r=>setTimeout(r,4000))]).catch(()=>{});
+
+  // ── INSTANT RENDER — never block on network or cloud ──────────────────────
   assets=applyOverridesToAssets(_rawSeedAssets);
   loadCustomIntoAssets(_cachedCov?_initCvMap:undefined);
   dataReady=true;
   if(!assets.length){const _cn=document.getElementById('chartNote');if(_cn)_cn.innerHTML=currentLang==='es'?'&#128202; Tu cartera está vacía. Pulsa <strong>+ Nueva posición</strong> para añadir tu primer activo.':'&#128202; Your portfolio is empty. Click <strong>+ New position</strong> to add your first asset.';}
-  render(); // ← Home visible immediately (instant if cache hit)
+  render(); // ← always instant, zero wait
 
-  // Step 2: coverage (history) — skip if fresh cache, otherwise fetch and cache
-  let coverage={results:[]};
-  if(!_cachedCov||_seedFresh){
-    try{ coverage=await getJson('/api/portfolio/coverage?isin='+encodeURIComponent(isinList),9500); }
-    catch(e){ console.warn('[boot] coverage failed:',e.message); }
-    try{localStorage.setItem(_COV_CK,JSON.stringify({data:coverage,ts:Date.now()}));}catch(_){}
-    const cvMap=Object.fromEntries((coverage.results||[]).map(e=>[e.isin,e]));
-    _rawSeedAssets=buildAssets(cvMap);
-    assets=applyOverridesToAssets(_rawSeedAssets);
-    loadCustomIntoAssets(cvMap);
-    render(); // ← Second render with updated charts/history
+  // Background: cloud sync → silent re-render when done
+  if(_sbUser)syncFromCloud().then(()=>{assets=applyOverridesToAssets(_rawSeedAssets);render();}).catch(()=>{});
+
+  // Background: refresh stale seed + coverage in parallel, then re-render
+  if(!_cachedCov||_covStale||_seedStale){
+    (async()=>{
+      try{
+        const[freshSeed,coverage]=await Promise.all([
+          _seedStale?getJson('/api/portfolio/seed',10000).then(s=>{try{localStorage.setItem(_SEED_CK,JSON.stringify({data:s,ts:Date.now()}));}catch(_){}return s;}).catch(()=>seed):Promise.resolve(seed),
+          getJson('/api/portfolio/coverage?isin='+encodeURIComponent(isinList),9500),
+        ]);
+        seed=freshSeed;
+        try{localStorage.setItem(_COV_CK,JSON.stringify({data:coverage,ts:Date.now()}));}catch(_){}
+        const cvMap=Object.fromEntries((coverage.results||[]).map(e=>[e.isin,e]));
+        _rawSeedAssets=buildAssets(cvMap);
+        assets=applyOverridesToAssets(_rawSeedAssets);
+        loadCustomIntoAssets(cvMap);
+        render(); // ← silent background update with fresh prices
+      }catch(e){console.warn('[boot] bg refresh:',e.message);}
+    })();
   }
 
   // Step 3: pre-fetch dividends in background so Dividends tab is instant
