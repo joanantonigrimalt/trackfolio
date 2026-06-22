@@ -6103,8 +6103,8 @@ function _setAuthMode(mode){
   document.getElementById('authMsg').style.display='none';
 }
 async function _submitAuth(){
-  if(!_sb){try{await initSupabase();}catch(_){}}
-  if(!_sb){_showAuthMsg(currentLang==='es'?'Servicio no disponible.':'Service unavailable.','err');return;}
+  if(!_sb){try{await initSupabase();}catch(e){_showAuthMsg((e&&e.message)||'Error de conexión','err');return;}}
+  if(!_sb){_showAuthMsg(_sbInitErr||currentLang==='es'?'Error al conectar con el servidor.':'Server connection error.','err');return;}
   const btn=document.getElementById('authSubmitBtn');
   // Handle forgot password
   if(_authMode==='forgotpass'){
