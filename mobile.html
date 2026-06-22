@@ -3520,7 +3520,7 @@ function saveSimple(){
   const broker=(document.getElementById('simpleBroker')?.value||'').trim();
   const ov=getOverrides();
   if(qty<=0){delete ov[currentModalIsin];}
-  else{ov[currentModalIsin]={...(ov[currentModalIsin]||{}),quantity:qty,avgCost,costCurrency:'EUR',...(broker&&{broker})};}
+  else{ov[currentModalIsin]={...(ov[currentModalIsin]||{}),quantity:qty,avgCost,...(broker&&{broker})};}
   saveOverrides(ov);
   _debouncedSync(true);
   reapplyAndRender();closeModal();
@@ -4099,7 +4099,7 @@ function _anRenderPerfBars(){const _ytdEl=document.getElementById('ytdYearLabel'
   if(!active.length){wrap.innerHTML='<div style="font-size:12px;color:#8fa090;text-align:center;padding:16px">'+(currentLang==='es'?'Sin datos':'No data')+'</div>';return;}
 
   const rows=active.map(a=>{
-    const pct=((a.currentPrice-a.buyPrice)/a.buyPrice)*100;
+    const _bpEur=toEur(a.buyPrice,costCcy(a));const pct=_bpEur>0?((a.currentPrice-_bpEur)/_bpEur)*100:0;
     const name=a.shortName||(a.name||'').split(' ').slice(0,2).join(' ')||a.isin||'—';
     return{name,pct,val:toDisplay(a.value,assetCcy(a))};
   }).sort((a,b)=>b.pct-a.pct);
@@ -4406,7 +4406,8 @@ async function renderDividends(){
       const nextM=pm.length>0?(pm.find(m=>m>=cm)??pm[0]):null;
       const nextYear=today.getFullYear()+(nextM!=null&&nextM<cm?1:0);
       const _yPct=d.annualPerShare>0&&a.currentPrice>0?d.annualPerShare/a.currentPrice:(d.yieldPct||0);
-      const _yocPct=d.annualPerShare>0&&a.buyPrice>0?d.annualPerShare/a.buyPrice:(d.yieldOnCostPct||0);
+      const _bpEur=toEur(a.buyPrice,costCcy(a));
+      const _yocPct=d.annualPerShare>0&&_bpEur>0?d.annualPerShare/_bpEur:(d.yieldOnCostPct||0);
       return{...a,divData:d,annualIncome,monthlyIncome,nextPaymentAmount,perPay:nextPaymentAmount,nextMonth:nextM,nextYear,payMonths:pm,yieldPct:_yPct,yieldOnCostPct:_yocPct};
     }).filter(Boolean);
   _divItems=divItems;
@@ -5566,9 +5567,9 @@ function loadCustomIntoAssets(cvMap){
     const coveragePrice=cvMap&&cvMap[isin]?.data?.quote?.price;
     // If coverage returns a different currency (e.g. EUR from INGA.AS vs stored USD),
     // update both currency AND currentPrice so the price shows in the correct currency
-    const enrichedInfo=(coverageCurrency&&coverageCurrency!==(info.currency||'USD'))
-      ? {...info, currency:coverageCurrency, ...(coveragePrice>0&&{currentPrice:coveragePrice})}
-      : info;
+    const enrichedInfo=coveragePrice>0
+      ? {...info, ...(coverageCurrency&&{currency:coverageCurrency}), currentPrice:coveragePrice}
+      : (coverageCurrency&&coverageCurrency!==(info.currency||'USD')?{...info,currency:coverageCurrency}:info);
     return buildCustomAssetObj(enrichedInfo,pos);
   }).filter(a=>a.quantity>0);
   // Add to _rawSeedAssets and re-apply overrides (avoid duplicates with seed)
@@ -5733,7 +5734,7 @@ function renderSearchResults(results){
     </div>`;
   }).join('');
   // Background: fetch prices for each result and fill in placeholder
-  results.forEach((r,i)=>{
+  results.slice(0,5).forEach((r,i)=>{
     if(!r.symbol)return;
     const _priceUrl='/api/search/query?symbol='+encodeURIComponent(r.symbol)+(r.isin?'&isin='+encodeURIComponent(r.isin):'');
     getJson(_priceUrl).then(q=>{
@@ -5780,6 +5781,7 @@ function saveNewAsset(){
   const qty=parseNum('addQty');
   const avgCost=parseNum('addAvgCost');
   if(qty<=0){document.getElementById('addQty').focus();return;}
+  if(avgCost<=0){document.getElementById('addAvgCost').focus();return;}
   // Store avg cost in whatever currency the user entered (no conversion)
   const avgCostCurrency=_addInputCcy||'EUR';
   const broker=(document.getElementById('addBroker')?.value||'').trim();
@@ -5799,7 +5801,7 @@ function saveNewAsset(){
 
   // Inject into assets immediately and rebuild
   loadCustomIntoAssets();
-  _divDataCache=null; // force div refresh
+  if(['etf','stock','etc'].includes(_searchResult.type||''))_divDataCache=null;
   render();
   renderLiquidity();
   _debouncedSync(true); // sync immediately — asset add is critical
@@ -5819,7 +5821,7 @@ async function loadUserPlan() {
   try {
     const tok = localStorage.getItem('fa_token');
     if (!tok) { _userPlan = 'free'; _updatePlanUI(); return; }
-    const r = await fetch('/auth/v1/plan', {
+    const r = await fetch('/api/auth/plan', {
       headers: { 'Authorization': 'Bearer ' + tok }
     });
     if (!r.ok) return;
@@ -7619,7 +7621,7 @@ function _taxComputeDivs(){
   return _divDataCache.filter(d=>d.annualPerShare>0).map(d=>{
     const a = assets.find(x=>x.isin===d.isin);
     if(!a||a.quantity<=0) return null;
-    const gross = toDisplay(d.annualPerShare * a.quantity, assetCcy(a));
+    const gross = d.annualPerShare * a.quantity;
     return {isin:d.isin, name:a.name, shortName:a.shortName||(a.name||'').split(' ').slice(0,2).join(' '), gross, ret19: gross*0.19, net: gross*0.81, payMonths: d.payMonths||[]};
   }).filter(Boolean);
 }
@@ -8327,8 +8329,8 @@ function _comAutofillPortfolio() {
   try {
     const totalEl = document.getElementById('total') || document.getElementById('summaryTotal');
     const investedEl = document.getElementById('investedTotal') || document.getElementById('summaryInvested');
-    const total = typeof assets !== 'undefined' ? assets.reduce((s,a) => s + (a.currentPrice||0)*(a.quantity||0), 0) : 0;
-    const invested = typeof assets !== 'undefined' ? assets.reduce((s,a) => s + (a.investedAmount||0), 0) : 0;
+    const total = typeof assets !== 'undefined' ? assets.reduce((s,a) => s + (a.value||0), 0) : 0;
+    const invested = typeof assets !== 'undefined' ? assets.reduce((s,a) => s + (a.invested||0), 0) : 0;
     const positions = typeof assets !== 'undefined' ? assets.length : 0;
     const gainPct = invested > 0 ? ((total - invested) / invested * 100) : 0;
     if (document.getElementById('comPfTotal')) document.getElementById('comPfTotal').value = total.toFixed(2);
