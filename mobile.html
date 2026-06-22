@@ -5866,14 +5866,20 @@ let _sb=null,_sbUser=null,_syncTimer=null;
 let _sbInitErr='';
 async function initSupabase(){
   try{
+    if(window.__supabaseLoaded)await window.__supabaseLoaded;
     if(typeof supabase==='undefined'){throw new Error('finasset-auth shim not loaded');}
-    const _SU='';
-    const _SK='';
+    const cfgRes=await fetch('/api/auth/config');
+    if(!cfgRes.ok)throw new Error('Config error: '+cfgRes.status);
+    const cfg=await cfgRes.json();
+    const _SU=cfg.supabaseUrl||'';
+    const _SK=cfg.supabaseAnonKey||'';
+    if(!_SU||!_SK)throw new Error('Supabase credentials not configured');
     _sb=supabase.createClient(_SU,_SK);
     _sb.auth.onAuthStateChange(async(event,session)=>{
       _sbUser=session?.user||null;
       renderAccountSection();
       if(event==='SIGNED_IN'){await syncFromCloud(); loadUserPlan().catch(()=>{});}
+      if(event==='PASSWORD_RECOVERY'){setTimeout(()=>{openAuthModal();_setAuthMode('resetpass');},300);}
       if(event==='SIGNED_OUT'){
         // If we're in the main app, redirect to login
         const home=document.getElementById('screen-home');
@@ -6090,6 +6096,7 @@ function _setAuthMode(mode){
   document.getElementById('authMsg').style.display='none';
 }
 async function _submitAuth(){
+  if(!_sb){try{await initSupabase();}catch(_){}}
   if(!_sb){_showAuthMsg(currentLang==='es'?'Servicio no disponible.':'Service unavailable.','err');return;}
   const btn=document.getElementById('authSubmitBtn');
   // Handle forgot password
@@ -6098,9 +6105,10 @@ async function _submitAuth(){
     if(!email){_showAuthMsg(currentLang==='es'?'Introduce tu email.':'Enter your email.','err');return;}
     btn.textContent='…';btn.disabled=true;
     try{
-      await fetch('/auth/v1/recover',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email})});
+      const{error}=await _sb.auth.resetPasswordForEmail(email,{redirectTo:'https://finasset.app/mobile'});
+      if(error)throw error;
       _showAuthMsg(currentLang==='es'?'Si existe esa cuenta, recibirás un email en breve.':'If that account exists, check your email.','ok');
-    }catch(e){_showAuthMsg('Error de red.','err');}
+    }catch(e){_showAuthMsg(e.message||'Error.','err');}
     btn.textContent=currentLang==='es'?'Enviar enlace':'Send reset link';btn.disabled=false;
     return;
   }
@@ -6110,18 +6118,14 @@ async function _submitAuth(){
     const confirmPass=document.getElementById('authConfirmPass').value;
     if(!newPass||newPass.length<6){_showAuthMsg(currentLang==='es'?'Mínimo 6 caracteres.':'Minimum 6 characters.','err');return;}
     if(newPass!==confirmPass){_showAuthMsg(currentLang==='es'?'Las contraseñas no coinciden.':'Passwords do not match.','err');return;}
-    const token=localStorage.getItem('fa_reset_token');
-    if(!token){_showAuthMsg(currentLang==='es'?'Enlace inválido.':'Invalid link.','err');return;}
     btn.textContent='…';btn.disabled=true;
     try{
-      const r=await fetch('/auth/v1/reset-password',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({token,password:newPass})});
-      const d=await r.json();
-      if(!r.ok){_showAuthMsg(d.message||'Error','err');btn.textContent=currentLang==='es'?'Guardar contraseña':'Save password';btn.disabled=false;return;}
+      const{error}=await _sb.auth.updateUser({password:newPass});
+      if(error)throw error;
       localStorage.removeItem('fa_reset_token');
-      if(d.access_token){localStorage.setItem('fa_token',d.access_token);}
       _showAuthMsg(currentLang==='es'?'¡Contraseña actualizada! Entrando…':'Password updated! Signing in…','ok');
-      setTimeout(()=>location.reload(),1500);
-    }catch(e){_showAuthMsg('Error de red.','err');btn.textContent=currentLang==='es'?'Guardar contraseña':'Save password';btn.disabled=false;}
+      setTimeout(()=>{closeAuthModal();enterMainApp();},1500);
+    }catch(e){_showAuthMsg(e.message||'Error.','err');btn.textContent=currentLang==='es'?'Guardar contraseña':'Save password';btn.disabled=false;}
     return;
   }
   const email=document.getElementById('authEmail').value.trim();
@@ -6137,7 +6141,7 @@ async function _submitAuth(){
       closeAuthModal();
       enterMainApp();
     }else{
-      const{error}=await _sb.auth.signUp({email,password:pass,options:{data:{full_name:name},emailRedirectTo:'https://finasset.app'}});
+      const{error}=await _sb.auth.signUp({email,password:pass,options:{data:{full_name:name},emailRedirectTo:'https://finasset.app/mobile'}});
       if(error)throw error;
       document.getElementById('authFormWrap').style.display='none';
       document.getElementById('authTabs').style.display='none';
@@ -6350,7 +6354,7 @@ async function authSubmit() {
 
   try {
     if (_authMode === 'register') {
-      const { error } = await runAuth(() => _sb.auth.signUp({ email, password: pass, options: { data: { full_name: name }, emailRedirectTo: 'https://finasset.app' } }));
+      const { error } = await runAuth(() => _sb.auth.signUp({ email, password: pass, options: { data: { full_name: name }, emailRedirectTo: 'https://finasset.app/mobile' } }));
       if (error) throw error;
       showAuthErr(isEs ? '¡Revisa tu email para confirmar el registro!' : 'Check your email to confirm registration!', true);
     } else {
