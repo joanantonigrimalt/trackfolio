@@ -5878,9 +5878,16 @@ async function initSupabase(){
     _sb.auth.onAuthStateChange(async(event,session)=>{
       _sbUser=session?.user||null;
       renderAccountSection();
-      if(event==='SIGNED_IN'){await syncFromCloud(); loadUserPlan().catch(()=>{});}
+      if(event==='SIGNED_IN'){
+        if(session?.access_token)localStorage.setItem('fa_token',session.access_token);
+        await syncFromCloud(); loadUserPlan().catch(()=>{});
+      }
+      if(event==='TOKEN_REFRESHED'){
+        if(session?.access_token)localStorage.setItem('fa_token',session.access_token);
+      }
       if(event==='PASSWORD_RECOVERY'){setTimeout(()=>{openAuthModal();_setAuthMode('resetpass');},300);}
       if(event==='SIGNED_OUT'){
+        localStorage.removeItem('fa_token');localStorage.removeItem('fa_user');
         // If we're in the main app, redirect to login
         const home=document.getElementById('screen-home');
         const inApp=home&&home.classList.contains('active');
@@ -5933,7 +5940,7 @@ function renderAccountSection(){
       <button id="btnLogout" style="width:100%;padding:9px;background:none;border:1.5px solid rgba(20,32,24,.12);border-radius:9px;font-size:13px;color:#5a8f6a;font-weight:600;cursor:pointer;font-family:inherit">${currentLang==='es'?'Cerrar sesión':'Sign out'}</button>`;
     document.getElementById('btnUpgradePlan').onclick=()=>{ closeSettings(); _showUpgradeModal('assets'); };
     document.getElementById('btnLogout').onclick=async()=>{
-      ['tf_positions','tf_custom_assets','tf_last_sync','fa_liquidity','_rawCustomAssets','fa_active_user_id'].forEach(k=>localStorage.removeItem(k));
+      ['tf_positions','tf_custom_assets','tf_last_sync','fa_liquidity','_rawCustomAssets','fa_active_user_id','fa_token','fa_user'].forEach(k=>localStorage.removeItem(k));
       await _sb.auth.signOut();
       closeSettings();
       renderAccountSection();
@@ -6136,8 +6143,9 @@ async function _submitAuth(){
   btn.textContent='…';btn.disabled=true;
   try{
     if(_authMode==='login'){
-      const{error}=await _sb.auth.signInWithPassword({email,password:pass});
+      const{data,error}=await _sb.auth.signInWithPassword({email,password:pass});
       if(error)throw error;
+      if(data?.session?.access_token)localStorage.setItem('fa_token',data.session.access_token);
       closeAuthModal();
       enterMainApp();
     }else{
@@ -6635,8 +6643,6 @@ function checkAlertsTrigger(){
   });
   if(changed){saveAlerts(alerts);_renderAlertsListScreen();}
 }
-setInterval(checkAlertsTrigger,60000);
-
 // Check alerts every 60 seconds when app is open
 _alertCheckInterval = setInterval(checkAlertsTrigger, 60000);
 
