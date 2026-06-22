@@ -5356,7 +5356,7 @@ async function boot(){
     showCover('cs-auth');
     return;
   }
-  fetchGlobalFxRates();
+  await fetchGlobalFxRates();
   const _ovMig=getOverrides();let _ovChanged=false;
   Object.keys(_ovMig).forEach(k=>{if(_ovMig[k]&&!_ovMig[k].costCurrency){_ovMig[k].costCurrency='EUR';_ovChanged=true;}});
   if(_ovChanged)saveOverrides(_ovMig);
@@ -5429,7 +5429,8 @@ async function boot(){
           getJson('/api/portfolio/coverage?isin='+encodeURIComponent(isinList),9500),
         ]);
         seed=freshSeed;
-        try{localStorage.setItem(_COV_CK,JSON.stringify({data:coverage,ts:Date.now()}));}catch(_){}
+        // Only cache coverage if we got real results (don't cache timeouts/failures)
+        if(coverage?.results?.length>0){try{localStorage.setItem(_COV_CK,JSON.stringify({data:coverage,ts:Date.now()}));}catch(_){}}
         const cvMap=Object.fromEntries((coverage.results||[]).map(e=>[e.isin,e]));
         _rawSeedAssets=buildAssets(cvMap);
         assets=applyOverridesToAssets(_rawSeedAssets);

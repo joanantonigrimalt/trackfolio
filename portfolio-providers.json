@@ -57,10 +57,10 @@
       "name": "iShares Physical Gold ETC",
       "type": "etc",
       "status": "mapped",
-      "recommendedProvider": "eodhd",
+      "recommendedProvider": "yahoo",
       "providerSymbol": "IGLN.L",
       "yahooSymbol": "IGLN.L",
-      "notes": "Yahoo and EODHD both support IGLN.L (London). Yahoo ISIN direct may also work."
+      "notes": "Yahoo returns IGLN.L with correct USD currency; EODHD was missing the currency field causing wrong EUR conversion."
     },
     {
       "isin": "ES0112611001",
@@ -115,12 +115,12 @@
     {
       "isin": "IE000QAZP7L2",
       "name": "iShares Core MSCI EM IMI UCITS ETF USD (Dist)",
-      "type": "etf",
+      "type": "fund",
       "status": "mapped",
-      "recommendedProvider": "eodhd",
-      "providerSymbol": "EIMI.L",
-      "yahooSymbol": "EIMI.L",
-      "notes": "EIMI.L on LSE. Yahoo ISIN direct may also resolve."
+      "recommendedProvider": "yahoo",
+      "providerSymbol": null,
+      "yahooSymbol": "0P0001XF3Z.F",
+      "notes": "0P0001XF3Z.F (Morningstar Frankfurt) returns EUR price ~14.60 with 196+ daily history points. EIMI.L was USD ~$57 (wrong class/currency)."
     },
     {
       "isin": "ES0159259011",
