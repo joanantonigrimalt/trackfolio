@@ -1,7 +1,8 @@
 // GET /api/etf/profile?isin=DE000A0F5UH1[,IE00B9CQXS71,...]
+// Also handles /api/fund/profile (rewritten by vercel.json) — falls back to Morningstar.
 //
-// Returns normalized ETF profile (overview + top holdings) from extraETF.
-// Cache chain: L1 memory (24h) → L2 Supabase etf_profiles (7d) → live extraETF API
+// Returns normalized ETF or fund profile (overview + top holdings).
+// Cache chain: L1 memory (24h) → L2 Supabase etf_profiles (7d) → live extraETF / Morningstar
 //
 // Response:
 //   { results: [{ isin, overview, holdings, source, fetchedAt, error? }] }
@@ -9,6 +10,7 @@
 const { setupApi, validateIsins } = require('../../lib/security');
 const portfolioSeed = require('../../portfolio-seed.json');
 const { fetchETFProfile } = require('../../lib/extraetf');
+const { fetchFundProfile } = require('../../lib/fundProfile');
 
 module.exports = async (req, res) => {
   if (!setupApi(req, res, { maxRequests: 30 })) return;
@@ -25,13 +27,20 @@ module.exports = async (req, res) => {
     isins = portfolioSeed.positions.map(p => p.isin);
   }
 
-  // Run in parallel — extraETF API is fast and we have L1/L2 cache
+  // Run in parallel — try extraETF first; fall back to Morningstar for funds
   const results = await Promise.all(
     isins.map(async isin => {
       try {
-        return await fetchETFProfile(isin, { force });
-      } catch (e) {
-        return { isin, overview: null, holdings: [], source: 'error', error: 'fetch_failed', fetchedAt: new Date().toISOString() };
+        const r = await fetchETFProfile(isin, { force });
+        // If extraETF returned no meaningful data, fall back to fund profile
+        if (!r || r.error || !r.overview) {
+          try { return await fetchFundProfile(isin); } catch (_) {}
+        }
+        return r;
+      } catch (_) {
+        try { return await fetchFundProfile(isin); } catch (e) {
+          return { isin, overview: null, holdings: [], source: 'error', error: 'fetch_failed', fetchedAt: new Date().toISOString() };
+        }
       }
     })
   );

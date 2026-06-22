@@ -8,11 +8,13 @@
 // Pay months + amounts derived 100% from actual historical payment dates.
 // GBp (pence) → GBP → EUR via live GBPEUR=X from Yahoo.
 
+// Also handles /api/dividends/detail (rewritten by vercel.json via ?mode=detail)
 const { setupApi, validateIsins } = require('../../lib/security');
 const ISIN_RE = /^[A-Z]{2}[A-Z0-9]{10}$/;
 const portfolioSeed = require('../../portfolio-seed.json');
 const { fetchDividendHistory } = require('../../lib/dividends');
 const { getGbpEur, toEur } = require('../../lib/fx');
+const { fetchExtraETFAnnual, validateAnnual } = require('../../lib/extraetf');
 
 // ── ETF symbol map (only distributing assets) ─────────────────────────────
 const DIV_ASSETS = {
@@ -280,6 +282,76 @@ async function monthlyAvgCurrentYear(divs, gbpRate) {
   return total / months.size;
 }
 
+// ── Detail mode handler (replaces api/dividends/detail.js) ───────────────
+async function runThrottled(tasks, concurrency = 2) {
+  const results = [];
+  for (let i = 0; i < tasks.length; i += concurrency) {
+    const batch = tasks.slice(i, i + concurrency);
+    const batchResults = await Promise.all(batch.map(fn => fn()));
+    results.push(...batchResults);
+  }
+  return results;
+}
+
+async function handleDetail(req, res, isins, gbpRate) {
+  const force = req.query?.force === '1';
+  const tasks = isins.map(isin => async () => {
+    try {
+      const [hist, extraETF] = await Promise.all([
+        fetchDividendHistory(isin, { force }),
+        fetchExtraETFAnnual(isin),
+      ]);
+      const seed = portfolioSeed.positions.find(p => p.isin === isin);
+      const quantity = seed?.quantity ?? 0;
+      const name = seed?.name ?? hist.ticker ?? isin;
+      const paymentsEur = await Promise.all(
+        hist.payments.map(async p => ({
+          ...p,
+          amountEur: await toEur(p.amount, p.currency, gbpRate),
+        }))
+      );
+      const yearlyEur = {};
+      for (const p of paymentsEur) {
+        if (!yearlyEur[p.year]) yearlyEur[p.year] = { year: p.year, totalPerShare: 0, payments: [] };
+        yearlyEur[p.year].totalPerShare = Math.round((yearlyEur[p.year].totalPerShare + p.amountEur) * 10000) / 10000;
+        yearlyEur[p.year].payments.push({ exDate: p.exDate, amount: p.amountEur });
+      }
+      const yearly = Object.values(yearlyEur)
+        .sort((a, b) => a.year - b.year)
+        .map(y => {
+          const extraTotal = extraETF.annual[String(y.year)] ?? null;
+          const validation = validateAnnual(y.totalPerShare, extraTotal);
+          return {
+            ...y,
+            totalUser: quantity > 0 ? Math.round(y.totalPerShare * quantity * 100) / 100 : null,
+            extraEtfTotal: extraTotal,
+            validation: validation.status,
+            validationDiffPct: validation.diffPct,
+          };
+        });
+      const currentYear = new Date().getFullYear();
+      const recentYears = yearly.filter(y => y.year >= currentYear - 2 && y.year < currentYear);
+      const overallStatus = recentYears.some(y => y.validation === 'inconsistent') ? 'inconsistent'
+        : recentYears.some(y => y.validation === 'partially_validated') ? 'partially_validated'
+        : recentYears.some(y => y.validation === 'validated') ? 'validated' : 'unvalidated';
+      return {
+        isin, ticker: hist.ticker, source: hist.source, currency: 'EUR',
+        fetchedAt: hist.fetchedAt, isDelisted: hist.isDelisted, name, quantity,
+        payments: paymentsEur, yearly, validationStatus: overallStatus, validationSource: extraETF.source,
+      };
+    } catch (e) {
+      return {
+        isin, ticker: null, source: 'error', error: 'fetch_failed', currency: 'EUR',
+        fetchedAt: new Date().toISOString(), isDelisted: false, name: isin,
+        quantity: 0, payments: [], yearly: [],
+      };
+    }
+  });
+  const results = await runThrottled(tasks, 2);
+  res.statusCode = 200;
+  res.end(JSON.stringify({ results }, null, 2));
+}
+
 // ── Handler ───────────────────────────────────────────────────────────────
 module.exports = async (req, res) => {
   if (!setupApi(req, res, { maxRequests: 20 })) return;
@@ -309,6 +381,9 @@ module.exports = async (req, res) => {
   }
 
   const gbpRate = await getGbpEur();
+
+  // Dispatch to detail mode (handles /api/dividends/detail via vercel.json rewrite)
+  if (req.query?.mode === 'detail') return handleDetail(req, res, isins, gbpRate);
   const results = [];
 
   for (const isin of isins) {

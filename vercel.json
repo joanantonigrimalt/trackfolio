@@ -4,7 +4,10 @@
     { "source": "/mobile", "destination": "/mobile.html" },
     { "source": "/mobile/", "destination": "/mobile.html" },
     { "source": "/desktop", "destination": "/desktop.html" },
-    { "source": "/desktop/", "destination": "/desktop.html" }
+    { "source": "/desktop/", "destination": "/desktop.html" },
+    { "source": "/api/fund/profile", "destination": "/api/etf/profile" },
+    { "source": "/api/auth/lookup-username", "destination": "/api/auth/config" },
+    { "source": "/api/dividends/detail", "destination": "/api/dividends/history?mode=detail" }
   ],
   "headers": [
     {
@@ -136,10 +139,5 @@
       ]
     }
   ],
-  "crons": [
-    {
-      "path": "/api/cron/warmup",
-      "schedule": "0 7 * * *"
-    }
-  ]
+  "crons": []
 }
