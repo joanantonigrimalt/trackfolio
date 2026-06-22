@@ -2924,6 +2924,7 @@ const _rawCcy  = localStorage.getItem('tf_display_ccy') || 'EUR';
 let currentLang = _VALID_LANGS.has(_rawLang) ? _rawLang : 'es';
 let _displayCcy = _VALID_CCYS.has(_rawCcy)   ? _rawCcy  : 'EUR';
 let _fxRates = { EUR: 1, USD: 1.09, GBP: 0.86, CHF: 1.06 }; // EUR→X rates, refreshed at boot
+let _pricesLive = false; // true once fresh coverage (not cache) has been loaded
 const t = k => I18N[currentLang][k] || I18N.es[k] || k;
 
 function applyTranslations() {
@@ -3042,7 +3043,7 @@ function fd(n,fromCcy){ return fe(toDisplay(Number.isFinite(n)?n:0,fromCcy)); }
 async function fetchGlobalFxRates(){
   try{
     const _LS='fa_fx_rates',_stored=localStorage.getItem(_LS);
-    if(_stored){const _p=JSON.parse(_stored);if(_p?.rates&&(Date.now()-_p.ts)<3_600_000){_fxRates={EUR:1,..._p.rates};return;}}
+    if(_stored){const _p=JSON.parse(_stored);if(_p?.rates&&(Date.now()-_p.ts)<900_000){_fxRates={EUR:1,..._p.rates};return;}} // 15min TTL (was 1h)
     const r=await fetch('https://api.frankfurter.app/latest?from=EUR&to=USD,GBP,CHF');
     const d=await r.json();
     if(d.rates){_fxRates={EUR:1,...d.rates};localStorage.setItem(_LS,JSON.stringify({rates:d.rates,ts:Date.now()}));}
@@ -4171,8 +4172,8 @@ function _anRenderTrendVsWorld(){
   let cumPort=0,cumMsci=0;
   const portCum=[],msciCum=[];
   years.forEach((_,i)=>{
-    cumPort+=portAnnual[i];portCum.push(parseFloat(cumPort.toFixed(2)));
-    cumMsci+=msciAnnual[i];msciCum.push(parseFloat(cumMsci.toFixed(2)));
+    cumPort=(1+cumPort/100)*(1+portAnnual[i]/100)*100-100;portCum.push(parseFloat(cumPort.toFixed(2)));
+    cumMsci=(1+cumMsci/100)*(1+msciAnnual[i]/100)*100-100;msciCum.push(parseFloat(cumMsci.toFixed(2)));
   });
 
   if(chips){
@@ -4398,11 +4399,11 @@ async function renderDividends(){
       const qty=a.quantity;
       const annualIncome=toDisplay(d.annualPerShare*qty, assetCcy(a));
       // Use monthlyAvgEur from API if available (more accurate than dividing by payMonths)
-      const monthlyIncome = d.monthlyAvgEur ? d.monthlyAvgEur : annualIncome/12;
+      const monthlyIncome = d.monthlyAvgEur ? toDisplay(d.monthlyAvgEur,'EUR') : annualIncome/12;
       const pm=d.payMonths||[];
       const payFreq=pm.length>0?pm.length:4;
       // Use nextPaymentAmountEur from API if available
-      const nextPaymentAmount = d.nextPaymentAmountEur ? d.nextPaymentAmountEur : (payFreq>0?annualIncome/payFreq:0);
+      const nextPaymentAmount = d.nextPaymentAmountEur ? toDisplay(d.nextPaymentAmountEur,'EUR') : (payFreq>0?annualIncome/payFreq:0);
       const nextM=pm.length>0?(pm.find(m=>m>=cm)??pm[0]):null;
       const nextYear=today.getFullYear()+(nextM!=null&&nextM<cm?1:0);
       const _yPct=d.annualPerShare>0&&a.currentPrice>0?d.annualPerShare/a.currentPrice:(d.yieldPct||0);
@@ -4474,7 +4475,7 @@ async function renderDividends(){
           <div class="payIcon">${iconInitials(d)}</div>
           <div class="payInfo">
             <div class="payName">${escapeHtml(d.name)}</div>
-            <div class="payDate">${d.nextMonth!=null?months()[d.nextMonth]+' '+d.nextYear:'—'} · ${fe(nextPerShare)}/${currentLang==='es'?'acción':'share'}</div>
+            <div class="payDate">${d.nextMonth!=null?months()[d.nextMonth]+' '+d.nextYear:'—'} · ${fe(toDisplay(nextPerShare,'EUR'))}/${currentLang==='es'?'acción':'share'}</div>
             <div class="dateBadgeRow">
               ${exStr?`<span class="dateBadge ex">⊘ ${t('exDiv')} ~${exStr}</span>`:''}
               ${payStr?`<span class="dateBadge pay">$ ${t('payDate')} ~${payStr}</span>`:''}
@@ -4498,7 +4499,7 @@ async function renderDividends(){
   allRecent.sort((a,b)=>(b.date||'').localeCompare(a.date||''));
   const past8=allRecent.filter(p=>p.date<today.toISOString().slice(0,10)).slice(0,8);
   if(past8.length){
-    const pastTotal=past8.reduce((s,p)=>s+p.totalEur,0);
+    const pastTotal=past8.reduce((s,p)=>s+toDisplay(p.totalEur,'EUR'),0);
     document.getElementById('divPastCard').style.display='';
     document.getElementById('pastPaymentsList').innerHTML=past8.map(p=>{
       const a=p.asset;
@@ -4508,22 +4509,22 @@ async function renderDividends(){
         <div class="payIcon" style="background:linear-gradient(135deg,#475569,#64748b)">${iconInitials(a)}</div>
         <div class="payInfo">
           <div class="payName">${escapeHtml(a.name)}</div>
-          <div class="payDate">${new Date(p.date+'T12:00:00Z').toLocaleDateString(currentLang==='es'?'es-ES':'en-GB',{day:'2-digit',month:'short',year:'numeric'})} · ${fe(p.amountEur)}/${currentLang==='es'?'acción':'share'}</div>
+          <div class="payDate">${new Date(p.date+'T12:00:00Z').toLocaleDateString(currentLang==='es'?'es-ES':'en-GB',{day:'2-digit',month:'short',year:'numeric'})} · ${fe(toDisplay(p.amountEur,'EUR'))}/${currentLang==='es'?'acción':'share'}</div>
           <div class="dateBadgeRow">
             ${exStr?`<span class="dateBadge past">⊘ ${t('exDiv')} ${exStr}</span>`:''}
             ${payStr?`<span class="dateBadge past">$ ${t('payDate')} ${payStr}</span>`:''}
           </div>
         </div>
         <div class="payRight">
-          <div class="payAmt" style="color:#15803d">${fe(p.totalEur)}</div>
+          <div class="payAmt" style="color:#15803d">${fe(toDisplay(p.totalEur,'EUR'))}</div>
           <div class="payShares">${fn(p.qty)} ${t('shares').toLowerCase()}</div>
         </div>
       </div>`;
-    }).join('')+`<div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0 2px;margin-top:6px;border-top:1px solid rgba(20,32,24,.06)"><span style="font-size:11px;font-weight:700;color:#8fa090;text-transform:uppercase;letter-spacing:.07em">${currentLang==='es'?'Total recibido':'Total received'}</span><span style="font-size:15px;font-weight:800;color:#15803d">${fe(pastTotal)}</span></div>`;
+    }).join('')+`<div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0 2px;margin-top:6px;border-top:1px solid rgba(20,32,24,.06)"><span style="font-size:11px;font-weight:700;color:#8fa090;text-transform:uppercase;letter-spacing:.07em">${currentLang==='es'?'Total recibido':'Total received'}</span><span style="font-size:15px;font-weight:800;color:#15803d">${fe(pastTotal)}</span></div>`; // pastTotal already in display currency
     // Update hero total received cell
     const _ct=document.getElementById('divCalTotal');if(_ct)_ct.textContent=fe(pastTotal);
     const _tr=document.getElementById('divTotalReceived');
-    if(_tr){_tr.textContent='Recibido: '+fe(pastTotal);_tr.style.display='';}
+    if(_tr){_tr.textContent=(currentLang==='es'?'Recibido: ':'Received: ')+fe(pastTotal);_tr.style.display='';}
   }
 
   // Monthly totals — payMonths and paySchedule both 100% from live API data
@@ -4714,7 +4715,7 @@ function _renderDivCalInteractive(mt, divItems){
     const isActive=i===_divActiveCalMonth;
     return`<div class="div-cal-cell${h?' hasPay':''}${i===cm?' curMonth':''}${isActive?' active-cal':''}" onclick="_divCalClick(${i})" data-mi="${i}">
       <div class="cm">${m.slice(0,3)}</div>
-      <div class="ca">${h?fe(a):'—'}</div>
+      <div class="ca">${h?fe(toDisplay(a,'EUR')):'—'}</div>
     </div>`;
   }).join('');
   _divCalShowDetail(_divActiveCalMonth, mt, divItems);
@@ -4744,7 +4745,7 @@ function _divCalShowDetail(mi, mt, divItems){
   }
   detail.style.display='';
   titleEl.textContent=months()[mi];
-  amtEl.textContent=fe(total);
+  amtEl.textContent=fe(toDisplay(total,'EUR'));
   // Per-asset breakdown for this month
   const rows=divItems.filter(d=>{
     const pm=d.divData.payMonths||[];
@@ -4758,7 +4759,7 @@ function _divCalShowDetail(mi, mt, divItems){
   }).sort((a,b)=>b.amt-a.amt);
   rowsEl.innerHTML=rows.map(r=>`<div class="div-cal-row">
     <span class="div-cal-row-name">${escapeHtml(r.name)}</span>
-    <span class="div-cal-row-amt">${fe(r.amt)}</span>
+    <span class="div-cal-row-amt">${fe(toDisplay(r.amt,'EUR'))}</span>
   </div>`).join('');
 }
 
@@ -4942,7 +4943,7 @@ function _setDivYear(year, fallbackMt){
     data:{
       labels:months().map(m=>m.slice(0,3)),
       datasets:[{
-        data:mt,
+        data:mt.map(v=>toDisplay(v,'EUR')),
         backgroundColor:mt.map((v,i)=>(year===curYear&&i===cm)?(v>0?'rgba(21,128,61,.85)':'rgba(21,128,61,.2)'):(v>0?'rgba(234,179,8,.85)':'rgba(234,179,8,.15)')),
         borderRadius:5,
         borderSkipped:false,
@@ -5166,7 +5167,7 @@ function updateCalendarFromDetail(){
     _setDivYear(new Date().getFullYear(), mt);
   }
   // Update goal with refined annual
-  const refinedAnnual=mt.reduce((s,v)=>s+v,0);
+  const refinedAnnual=mt.reduce((s,v)=>s+toDisplay(v,'EUR'),0);
   if(refinedAnnual>0)_renderDivGoal(refinedAnnual);
 }
 
@@ -5354,10 +5355,18 @@ function render(){
 }
 function _doRender(){
   const total=assets.reduce((s,a)=>s+toDisplay(a.value,assetCcy(a)),0),invested=assets.reduce((s,a)=>s+toDisplay(a.invested,costCcy(a)),0),gain=total-invested,gainPct=invested>0?gain/invested*100:0,c=counts();
-  document.getElementById('total').textContent=fe(total);
+  const _totalEl=document.getElementById('total');
+  const ge=document.getElementById('totalGainPill');
+  if(!_pricesLive){
+    // Prices not yet live — show loading state to avoid flash of stale/wrong value
+    _totalEl.innerHTML='<span style="opacity:.4;font-size:26px;letter-spacing:0">'+(currentLang==='es'?'Actualizando…':'Updating…')+'</span>';
+    ge.textContent=currentLang==='es'?'Cargando precios…':'Loading prices…';ge.className='pill info';ge.style.opacity='0.5';
+  }else{
+    _totalEl.textContent=fe(total);_totalEl.removeAttribute('style');
+    ge.textContent=`${gain>=0?'+':''}${fe(gain)} · ${gainPct>=0?'+':''}${gainPct.toFixed(2)}%`;ge.className=`pill ${gain>=0?'pos':'neg'}`;ge.style.opacity='';
+  }
   document.getElementById('investedTotal').textContent=fe(invested);
   document.getElementById('profitPercent').textContent=`${gainPct>=0?'+':''}${gainPct.toFixed(2)}%`;
-  const ge=document.getElementById('totalGainPill');ge.textContent=`${gain>=0?'+':''}${fe(gain)} · ${gainPct>=0?'+':''}${gainPct.toFixed(2)}%`;ge.className=`pill ${gain>=0?'pos':'neg'}`;
   const _cp=document.getElementById('coveragePill');if(_cp)_cp.textContent=`${c.total} ${t('assets')}`;
   // coverageBadge replaced by FAB button — no-op
   document.getElementById('count').textContent=c.total;
@@ -5446,6 +5455,8 @@ async function boot(){
   const _COV_CK='fa_cov_v2_'+_strHash(isinList); // #8 fix: hash instead of truncating (no collision risk)
   let _cachedCov=null,_covStale=false;
   try{const _cc=localStorage.getItem(_COV_CK);if(_cc){const _p=JSON.parse(_cc);if(_p?.data){_cachedCov=_p.data;_covStale=(Date.now()-_p.ts)>=900_000;}}}catch(_){}
+  // Prices count as "live" only if cache is fresh (< 15min) — prevents flash of stale total
+  _pricesLive=_cachedCov&&!_covStale;
   const _initCvMap=_cachedCov?Object.fromEntries((_cachedCov.results||[]).map(e=>[e.isin,e])):{};
   _rawSeedAssets=buildAssets(_initCvMap);
 
@@ -5454,7 +5465,7 @@ async function boot(){
   loadCustomIntoAssets(_cachedCov?_initCvMap:undefined);
   dataReady=true;
   if(!assets.length){const _cn=document.getElementById('chartNote');if(_cn)_cn.innerHTML=currentLang==='es'?'&#128202; Tu cartera está vacía. Pulsa <strong>+ Nueva posición</strong> para añadir tu primer activo.':'&#128202; Your portfolio is empty. Click <strong>+ New position</strong> to add your first asset.';}
-  render(); // ← always instant, zero wait
+  render(); // ← shows positions instantly; total shows only if _pricesLive
 
   // Background: cloud sync — syncFromCloud renders internally when data changes (#10 fix: no extra render)
   if(_sbUser)syncFromCloud().catch(()=>{});
@@ -5467,6 +5478,7 @@ async function boot(){
         const[freshSeed,coverage]=await Promise.all([
           _seedStale?getJson('/api/portfolio/seed',10000).then(s=>{try{localStorage.setItem(_SEED_CK,JSON.stringify({data:s,ts:Date.now()}));}catch(_){}return s;}).catch(()=>seed):Promise.resolve(seed),
           getJson('/api/portfolio/coverage?isin='+encodeURIComponent(isinList),9500),
+          _fxPromise, // ensure live FX rates are loaded before computing values
         ]);
         seed=freshSeed;
         // Only cache coverage if we got real results (don't cache timeouts/failures)
@@ -5475,7 +5487,8 @@ async function boot(){
         _rawSeedAssets=buildAssets(cvMap);
         assets=applyOverridesToAssets(_rawSeedAssets);
         loadCustomIntoAssets(cvMap);
-        render(); // ← silent background update with fresh prices
+        _pricesLive=true; // live prices ready — unlock total display
+        render();
       }catch(e){console.warn('[boot] bg refresh:',e.message);}
     })();
   }
@@ -7598,19 +7611,21 @@ function _taxComputeGains(year){
     const asset = assets.find(a=>a.isin===isin)||{name:isin,shortName:isin};
     // Compute avg cost at time of sell by replaying buys
     const allTxs = [...(entry.transactions||[])].sort((a,b)=>String(a.date).localeCompare(String(b.date)));
+    const cc=entry.costCurrency||'EUR';
     let runQty = asset._rawQty||asset.quantity||0;
-    let runCost = asset._rawBuyPrice||asset.buyPrice||0;
-    // Replay transactions in order up to each sell
-    let i=0;
+    let runCost = toEur(asset._rawBuyPrice||asset.buyPrice||0, cc);
+    // Replay transactions in order up to each sell (all prices normalized to EUR)
     for(const tx of allTxs){
       if(tx.type==='buy'){
-        const totalCost = runCost*runQty + tx.price*tx.qty;
+        const txEur=toEur(tx.price,cc);
+        const totalCost = runCost*runQty + txEur*tx.qty;
         runQty += tx.qty;
-        runCost = runQty>0 ? totalCost/runQty : tx.price;
+        runCost = runQty>0 ? totalCost/runQty : txEur;
       } else if(tx.type==='sell'){
-        const gain = (tx.price - runCost) * tx.qty;
+        const txEur=toEur(tx.price,cc);
+        const gain = (txEur - runCost) * tx.qty;
         if(String(tx.date).startsWith(String(year))){
-          results.push({isin,name:asset.name||isin,shortName:asset.shortName||(asset.name||isin).split(' ').slice(0,2).join(' '),date:tx.date,qty:tx.qty,sellPrice:tx.price,avgCost:runCost,gain});
+          results.push({isin,name:asset.name||isin,shortName:asset.shortName||(asset.name||isin).split(' ').slice(0,2).join(' '),date:tx.date,qty:tx.qty,sellPrice:txEur,avgCost:runCost,gain});
         }
         runQty = Math.max(0, runQty - tx.qty);
       }
@@ -7634,8 +7649,8 @@ function _taxComputeInterest(){
   return liq.filter(l=>(Number(l.rate)||0)>0).map(l=>{
     const amt = Number(l.amount)||0;
     const rate = Number(l.rate)||0;
-    const gross = amt * rate / 100;
-    return {name: l.name||l.provider||'Cuenta remunerada', rate, amount:amt, gross, ret19:gross*0.19, net:gross*0.81};
+    const gross = toEur(amt, l.currency||'EUR') * rate / 100;
+    return {name: l.name||l.provider||'Cuenta remunerada', rate, amount:toEur(amt,l.currency||'EUR'), gross, ret19:gross*0.19, net:gross*0.81};
   });
 }
 
