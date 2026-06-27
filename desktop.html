@@ -3324,7 +3324,8 @@ function _drawChart(canvas,labels,values,note,meta,rv,noteText){
   const ctx=canvas.getContext('2d'),g=ctx.createLinearGradient(0,0,0,canvas.height||200);
   g.addColorStop(0,isUp?'rgba(74,222,128,.28)':'rgba(248,113,113,.22)');g.addColorStop(.6,isUp?'rgba(74,222,128,.08)':'rgba(248,113,113,.07)');g.addColorStop(1,'rgba(0,0,0,0)');
   chart=new Chart(canvas,{type:'line',data:{labels,datasets:[{data:values,borderColor:lc,backgroundColor:g,borderWidth:2.5,pointRadius:0,pointHoverRadius:4,pointHoverBackgroundColor:lc,pointHoverBorderColor:'#fff',pointHoverBorderWidth:2,fill:true,tension:.3}]},options:{responsive:true,maintainAspectRatio:false,interaction:{intersect:false,mode:'index'},plugins:{legend:{display:false},tooltip:{displayColors:false,backgroundColor:'rgba(12,30,20,.94)',borderColor:'rgba(220,252,231,.1)',borderWidth:1,titleColor:'#f0fdf4',bodyColor:'#a7f3d0',padding:10,callbacks:{title:i=>i[0]?.label||'',label:c=>fe(c.parsed.y)}}},scales:{x:{grid:{display:false},border:{display:false},ticks:{color:'rgba(239,249,242,.5)',maxTicksLimit:6,font:{size:10,weight:'600'}}},y:{grid:{color:'rgba(220,252,231,.07)'},border:{display:false},ticks:{color:'rgba(239,249,242,.5)',maxTicksLimit:4,font:{size:10,weight:'600'},callback:v=>{const sym=_displayCcy==='USD'?'$':_displayCcy==='GBP'?'£':'€';return Math.abs(v)>=1000?sym+fn(v/1000)+'k':sym+fn(v);}}}}}});
-  rv.textContent=fe(last);meta.textContent=`${isUp?'+':''}${fe(delta)}  ${isUp?'+':''}${pct.toFixed(2)}%`;
+  if(_pricesLive){rv.textContent=fe(last);meta.textContent=`${isUp?'+':''}${fe(delta)}  ${isUp?'+':''}${pct.toFixed(2)}%`;}
+  else{rv.textContent='—';meta.textContent='';}
   note.textContent=noteText;
 }
 async function renderChart(){
@@ -3336,7 +3337,7 @@ async function renderChart(){
     const seq=++_intradayRenderSeq;
     canvas.style.display='none';fallback.style.display='none';
     note.textContent=currentLang==='es'?'Cargando datos intradía…':'Loading intraday data…';
-    rv.textContent=fe(assets.reduce((s,a)=>s+toDisplay(a.value,assetCcy(a)),0));meta.textContent='';
+    rv.textContent=_pricesLive?fe(assets.reduce((s,a)=>s+toDisplay(a.value,assetCcy(a)),0)):'—';meta.textContent='';
     const series=await buildIntraday1D();
     if(seq!==_intradayRenderSeq)return; // superseded
     if(!series||series.length<2){
@@ -3355,7 +3356,7 @@ async function renderChart(){
 
   // ── Multi-day historical mode ─────────────────────────────────────────────
   const full=buildPortfolioTimeSeries();
-  if(!full){canvas.style.display='none';fallback.style.display='flex';meta.textContent='';rv.textContent=fe(assets.reduce((s,a)=>s+toDisplay(a.value,assetCcy(a)),0));return;}
+  if(!full){canvas.style.display='none';fallback.style.display='flex';meta.textContent='';rv.textContent=_pricesLive?fe(assets.reduce((s,a)=>s+toDisplay(a.value,assetCcy(a)),0)):'—';return;}
   const series=filterByRange(full,selectedRange),values=series.map(p=>p.totalValue);
   fallback.style.display='none';canvas.style.display='block';
   if(!series.length||!values.some(v=>Number.isFinite(v))){canvas.style.display='none';fallback.style.display='flex';meta.textContent='';return;}
@@ -5481,13 +5482,17 @@ function renderLists(){
   const html=[...assets].filter(a=>a.quantity>0&&(_activeBrokerFilter===null||a.broker===_activeBrokerFilter)).sort((a,b)=>{const d=toDisplay(b.value,assetCcy(b))-toDisplay(a.value,assetCcy(a));return isNaN(d)?0:d;}).map(a=>{
     const _av=toDisplay(a.value,assetCcy(a)),_ai=toDisplay(a.invested,costCcy(a)),_ag=_av-_ai,_agp=_ai>0?(_ag/_ai)*100:a.gainPct;
     const dp=getDayPct(a);
-    const dayHtml=dp!=null
+    const dayHtml=dp!=null&&_pricesLive
       ?`<span style="color:${dp>=0?'#15803d':'#b91c1c'}">${dp>=0?'+':''}${dp.toFixed(2)}%</span><span style="color:#b0c0b5;font-size:10px;margin-left:2px">${currentLang==='es'?'hoy':'1D'}</span>`
       :'';
     const totalColor=_agp>=0?'#15803d':'#b91c1c';
     const _ccy=assetCcy(a);const _csym=_ccy==='USD'?'$':_ccy==='GBP'?'£':_ccy==='CHF'?'Fr':'€';
     const _bp=`${_csym}${Number(a.buyPrice).toFixed(2)}`;
-    const _cp=`${_csym}${Number(a.currentPrice).toFixed(2)}`;
+    const _cp=_pricesLive?`${_csym}${Number(a.currentPrice).toFixed(2)}`:'—';
+    const _moneyHtml=_pricesLive?fe(_av):'<span style="opacity:.25">—</span>';
+    const _gainHtml=_pricesLive
+      ?`${dayHtml}<span style="color:${totalColor}">${_ag>=0?'+':''}${fe(_ag)}<span style="font-size:10px;margin-left:3px">(${_agp>=0?'+':''}${_agp.toFixed(2)}%)</span></span>`
+      :'';
     return`<div class="asset" data-isin="${a.isin}">
       <div class="icon ${assetType(a)}">${iconInitials(a)}</div>
       <div style="min-width:0;flex:1">
@@ -5496,10 +5501,9 @@ function renderLists(){
         <div class="meta" style="margin-top:1px;font-size:9.5px;color:#8fa090;white-space:nowrap">${currentLang==='es'?'Compra':'Buy'} <span style="color:#374151;font-weight:600">${_bp}</span> · ${currentLang==='es'?'Actual':'Now'} <span style="color:#374151;font-weight:600">${_cp}</span></div>
       </div>
       <div class="right">
-        <div class="money">${fe(_av)}</div>
+        <div class="money">${_moneyHtml}</div>
         <div class="pct" style="display:flex;gap:7px;justify-content:flex-end;align-items:baseline;flex-wrap:wrap">
-          ${dayHtml}
-          <span style="color:${totalColor}">${_ag>=0?'+':''}${fe(_ag)}<span style="font-size:10px;margin-left:3px">(${_agp>=0?'+':''}${_agp.toFixed(2)}%)</span></span>
+          ${_gainHtml}
         </div>
       </div>
     </div>`;
@@ -5531,6 +5535,8 @@ function render(){
 
 // ========== Boot ==========
 let _rawSeedAssets = [];
+let _pricesLive = false; // true once fresh coverage (not cache) has been loaded
+let _cvMap = {}; // global coverage map — shared between boot, sync, and loadCustomIntoAssets
 async function boot(){
   // Auth guard: if no authenticated user, redirect to login
   if(!_sbUser && !localStorage.getItem('fa_token')){
@@ -5566,39 +5572,60 @@ async function boot(){
   function buildAssets(cvMap){
     return seed.positions.map(pos=>{
       const entry=cvMap[pos.isin]||{},mapping=entry.mapping||null;
-      const currentPrice=Number(pos.currentPrice)||0,buyPrice=Number(pos.buyPrice)||0,quantity=Number(pos.quantity)||0;
+      const seedPrice=Number(pos.currentPrice)||0,buyPrice=Number(pos.buyPrice)||0,quantity=Number(pos.quantity)||0;
       const history=normalizeHistory(entry.data?.history||[]);
-      const priceCurrency=entry.data?.quote?.currency||null;
+      const isSupabaseCache=entry.data?.provider==='supabase_cache';
+      const quoteCurrency=entry.data?.quote?.currency||null;
+      const priceCurrency=quoteCurrency||(!isSupabaseCache?mapping?.nativeCurrency:null)||null;
       // GBp/GBX = pence: Yahoo returns LSE prices in pence (1/100 GBP). Normalize to GBP.
       const _isGBp=priceCurrency==='GBp'||priceCurrency==='GBX';
-      const adjPrice=_isGBp?currentPrice/100:currentPrice;
-      const adjBuyPrice=_isGBp?buyPrice/100:buyPrice;
       const adjCcy=_isGBp?'GBP':priceCurrency;
       const adjHistory=_isGBp&&history.length?history.map(p=>({...p,close:p.close/100})):history;
-      const gain=quantity*(adjPrice-adjBuyPrice);
-      return{isin:pos.isin,name:pos.shortName||pos.name||mapping?.name||pos.isin,fullName:pos.name||mapping?.name||pos.isin,quantity,buyPrice:adjBuyPrice,currentPrice:adjPrice,invested:quantity*adjBuyPrice,value:quantity*adjPrice,gain,gainPct:adjBuyPrice?((adjPrice-adjBuyPrice)/adjBuyPrice)*100:0,mapping,provider:entry.data?.provider||null,coverageStatus:entry.data?.coverage?.status||'MISSING',coverage:entry.data?.coverage||{status:'MISSING'},history:adjHistory,hasRealHistory:adjHistory.length>1,_rawQty:quantity,_rawBuyPrice:adjBuyPrice,customCurrency:adjCcy,costCurrency:_isGBp?'GBP':null};
+      const adjBuyPrice=_isGBp?buyPrice/100:buyPrice;
+      // Use live price from coverage API when we have a valid price AND known currency → convert to EUR.
+      // Fall back to seed price (always in EUR) when no trusted currency available.
+      const _rawLive=entry.data?.quote?.price??entry.data?.quote?.close;
+      let currentPrice;
+      if(_rawLive&&Number.isFinite(_rawLive)&&_rawLive>0&&priceCurrency){
+        const _pAdj=_isGBp?_rawLive/100:_rawLive;
+        currentPrice=adjCcy&&adjCcy!=='EUR'?toEur(_pAdj,adjCcy):_pAdj;
+      }else{
+        currentPrice=seedPrice; // seed prices are pre-converted EUR (authoritative fallback)
+      }
+      const gain=quantity*(currentPrice-adjBuyPrice);
+      // NOTE: currentPrice and value are always stored in EUR (converted by toEur above).
+      // customCurrency is therefore 'EUR' so toDisplay(value,'EUR')=value (no double-conversion).
+      return{isin:pos.isin,name:pos.shortName||pos.name||mapping?.name||pos.isin,fullName:pos.name||mapping?.name||pos.isin,quantity,buyPrice:adjBuyPrice,currentPrice,invested:quantity*adjBuyPrice,value:quantity*currentPrice,gain,gainPct:adjBuyPrice?((currentPrice-adjBuyPrice)/adjBuyPrice)*100:0,mapping,provider:entry.data?.provider||null,coverageStatus:entry.data?.coverage?.status||'MISSING',coverage:entry.data?.coverage||{status:'MISSING'},history:adjHistory,hasRealHistory:adjHistory.length>1,_rawQty:quantity,_rawBuyPrice:adjBuyPrice,customCurrency:'EUR',_nativeCurrency:adjCcy||'EUR',costCurrency:null};
     });
   }
+  // Phase 1: instant render with seed prices only (no coverage yet)
+  _pricesLive=false;
   _rawSeedAssets=buildAssets({});
-  // For logged-in users: pull latest overrides from cloud before first render
-  // so their saved positions are visible immediately (not filtered out)
-  if(_sbUser) await syncFromCloud().catch(()=>{});
   assets=applyOverridesToAssets(_rawSeedAssets);
   loadCustomIntoAssets();
   dataReady=true;
   if(!assets.length){const _cn=document.getElementById('chartNote');if(_cn)_cn.innerHTML=currentLang==='es'?'&#128202; Tu cartera está vacía. Pulsa <strong>+ Nueva posición</strong> para añadir tu primer activo.':'&#128202; Your portfolio is empty. Click <strong>+ New position</strong> to add your first asset.';}
-  render(); // ← Home visible immediately
+  render(); // ← Home visible immediately (totals show "—" until live prices arrive)
 
-  // Step 2: coverage (history) — runs AFTER first render, best-effort
-  let coverage={results:[]};
-  try{ coverage=await getJson('/api/portfolio/coverage?isin='+encodeURIComponent(isinList),9500); }
-  catch(e){ console.warn('[boot] coverage failed:',e.message); }
+  // Background: cloud sync (non-blocking — runs after first render)
+  if(_sbUser)syncFromCloud().catch(()=>{});
 
-  const cvMap=Object.fromEntries((coverage.results||[]).map(e=>[e.isin,e]));
-  _rawSeedAssets=buildAssets(cvMap);
-  assets=applyOverridesToAssets(_rawSeedAssets);
-  loadCustomIntoAssets(cvMap);
-  render(); // ← Second render with charts/history
+  // Phase 2: fetch live coverage + fresh seed in parallel — then re-render with live prices
+  (async()=>{
+    try{
+      const[freshSeed,coverage]=await Promise.all([
+        getJson('/api/portfolio/seed',10000).catch(()=>seed),
+        getJson('/api/portfolio/coverage?isin='+encodeURIComponent(isinList),9500),
+      ]);
+      seed=freshSeed;
+      _cvMap=Object.fromEntries((coverage.results||[]).map(e=>[e.isin,e]));
+      _rawSeedAssets=buildAssets(_cvMap);
+      assets=applyOverridesToAssets(_rawSeedAssets);
+      loadCustomIntoAssets(_cvMap);
+      _pricesLive=true; // live prices ready — show real totals
+      render();
+    }catch(e){console.warn('[boot] live prices fetch:',e.message);}
+  })();
 
   // Step 3: pre-fetch dividends in background so Dividends tab is instant
   _prefetchDividends();
@@ -5682,9 +5709,14 @@ function loadCustomIntoAssets(cvMap){
     const isin=info.isin||sym;
     const coverageCurrency=cvMap&&cvMap[isin]?.data?.quote?.currency;
     const coveragePrice=cvMap&&cvMap[isin]?.data?.quote?.price;
-    const enrichedInfo=(coverageCurrency&&coverageCurrency!==(info.currency||'USD'))
-      ? {...info, currency:coverageCurrency, ...(coveragePrice>0&&{currentPrice:coveragePrice})}
-      : info;
+    const coverageHistory=cvMap&&cvMap[isin]?.data?.history; // get full history from coverage API
+    // Enrich custom asset with coverage data: price, currency, AND history
+    const enrichedInfo={
+      ...info,
+      ...(coverageCurrency&&{currency:coverageCurrency}),
+      ...(coveragePrice>0&&{currentPrice:coveragePrice}),
+      ...(coverageHistory?.length>1&&{history:normalizeHistory(coverageHistory)}),
+    };
     return buildCustomAssetObj(enrichedInfo,pos);
   }).filter(a=>a.quantity>0);
   // Add to _rawSeedAssets and re-apply overrides (avoid duplicates with seed)
@@ -6134,20 +6166,33 @@ async function syncFromCloud(){
     const cloudTs=new Date(data.updated_at).getTime();
     const localTs=new Date(localStorage.getItem('tf_last_sync')||0).getTime();
     const localEmpty=!Object.keys(getOverrides()).length&&!Object.keys(getCustomAssets()).length;
+    // Defensive: handle both object (server-parsed) and string (raw TEXT) forms
+    const _ov = typeof data.overrides === 'string' ? JSON.parse(data.overrides || '{}') : (data.overrides || {});
+    const _ca = typeof data.custom_assets === 'string' ? JSON.parse(data.custom_assets || '{}') : (data.custom_assets || {});
+    // Custom assets: ALWAYS merge from cloud (additive). Cloud adds to local — never loses assets added on any device.
+    const _localCa=getCustomAssets();
+    const _mergedCa={..._localCa,..._ca};
+    const _caChanged=Object.keys(_mergedCa).length!==Object.keys(_localCa).length||JSON.stringify(_mergedCa)!==JSON.stringify(_localCa);
+    if(_caChanged)localStorage.setItem('tf_custom_assets',JSON.stringify(_mergedCa));
     if(cloudTs>localTs||localEmpty){
       // Write directly to localStorage without triggering _debouncedSync
-      // Defensive: handle both object (server-parsed) and string (raw TEXT) forms
-      const _ov = typeof data.overrides === 'string' ? JSON.parse(data.overrides || '{}') : (data.overrides || {});
-      const _ca = typeof data.custom_assets === 'string' ? JSON.parse(data.custom_assets || '{}') : (data.custom_assets || {});
       localStorage.setItem('tf_positions', JSON.stringify(_ov));
-      localStorage.setItem('tf_custom_assets', JSON.stringify(_ca));
       if(data.liquidity)localStorage.setItem('fa_liquidity',JSON.stringify(data.liquidity));
       // Auto-migrate: ensure costCurrency is set for all existing overrides
       const _ovMig=getOverrides();let _migrated=false;
       Object.keys(_ovMig).forEach(k=>{if(_ovMig[k]&&!_ovMig[k].costCurrency){_ovMig[k].costCurrency='EUR';_migrated=true;}});
       if(_migrated)localStorage.setItem('tf_positions',JSON.stringify(_ovMig));
+    }
+    if(cloudTs>localTs||localEmpty||_caChanged){
+      // Fetch coverage for any cloud asset ISINs not yet in _cvMap (added from cloud after boot)
+      const _allCustIsins=Object.values(_mergedCa).map(ca=>ca.isin||ca.symbol).filter(Boolean);
+      const _newIsins=_allCustIsins.filter(isin=>!_cvMap[isin]);
+      if(_newIsins.length>0&&_pricesLive){
+        try{const _nc=await getJson('/api/portfolio/coverage?isin='+encodeURIComponent(_newIsins.join(',')),9500);(_nc.results||[]).forEach(e=>{_cvMap[e.isin]=e;});}catch(_){}
+      }
       assets=applyOverridesToAssets(_rawSeedAssets);
-      loadCustomIntoAssets();render();renderLiquidity();
+      loadCustomIntoAssets(_cvMap); // pass global coverage map so custom assets keep prices+history
+      render();renderLiquidity();
     }
     localStorage.setItem('tf_last_sync',new Date().toISOString());
     renderAccountSection();
