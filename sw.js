@@ -2,7 +2,7 @@
 // Strategy: Cache-First for static assets, Network-First for API calls
 // Provides offline shell + background sync for critical data
 
-const CACHE_VERSION = 'finasset-v139';
+const CACHE_VERSION = 'finasset-v140';
 const STATIC_CACHE  = `${CACHE_VERSION}-static`;
 const DATA_CACHE    = `${CACHE_VERSION}-data`;
 
@@ -77,9 +77,35 @@ self.addEventListener('fetch', event => {
   // Skip non-GET requests
   if (request.method !== 'GET') return;
 
-  // Static assets & app shell: Cache-First
+  // HTML navigations & documents: Network-First so the user always gets the
+  // latest deploy when online (prevents stale cached app shell). Falls back to
+  // cache when offline.
+  if (request.mode === 'navigate' || request.destination === 'document') {
+    event.respondWith(networkFirstHTML(request, STATIC_CACHE));
+    return;
+  }
+
+  // Other static assets (icons, manifest, etc.): Cache-First
   event.respondWith(cacheFirst(request, STATIC_CACHE));
 });
+
+// ── Network-First for HTML (always fresh online, cache fallback offline) ──
+async function networkFirstHTML(request, cacheName) {
+  try {
+    const fresh = await fetch(request, { cache: 'no-store' });
+    if (fresh && fresh.ok) {
+      const cache = await caches.open(cacheName);
+      cache.put(request, fresh.clone());
+    }
+    return fresh;
+  } catch {
+    const cached = await caches.match(request);
+    if (cached) return cached;
+    const shell = await caches.match('/index.html');
+    if (shell) return shell;
+    return new Response('Offline', { status: 503, statusText: 'Service Unavailable' });
+  }
+}
 
 // ── Cache-First strategy ─────────────────────────────────────────────────
 async function cacheFirst(request, cacheName) {
