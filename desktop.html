@@ -1182,6 +1182,13 @@ html,body{height:100%;overflow:hidden;font-family:-apple-system,BlinkMacSystemFo
 
 /* CARDS */
 .card{background:var(--surf);border:1px solid var(--border);border-radius:14px;padding:18px;box-shadow:0 2px 8px rgba(0,0,0,.04)}
+/* Fix: the duplicate .card rule above overrode the dark hero background, making its light text invisible. Re-assert hero styling with higher specificity. */
+.card.hero{background:linear-gradient(160deg,#1a3f2c 0%,#0f2a1e 100%)!important;border:none!important;color:#f5fbf6;box-shadow:0 20px 48px rgba(12,36,22,.3);border-radius:26px}
+.card.hero .valueLarge{color:#f5fbf6}
+.card.hero .sectionEyebrow{color:rgba(239,249,242,.6)}
+.card.hero .chartValue{color:rgba(255,255,255,.95)}
+.card.hero .metricCard .n{color:rgba(255,255,255,.95)}
+.card.hero .metricCard .l{color:rgba(239,249,242,.58)}
 .card-sm{border-radius:11px;padding:14px}
 .kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:18px}
 .kpi{background:var(--surf);border:1px solid var(--border);border-radius:13px;padding:16px 18px;box-shadow:0 2px 8px rgba(0,0,0,.04)}

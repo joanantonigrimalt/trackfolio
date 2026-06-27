@@ -1119,6 +1119,13 @@ html,body{height:100%;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sy
 
 /* CARDS */
 .card{background:var(--surf);border:1px solid var(--border);border-radius:14px;padding:14px;margin:0 14px 10px;box-shadow:0 2px 8px rgba(0,0,0,.04)}
+/* Fix: the duplicate .card rule above overrode the dark hero background, making its light text invisible. Re-assert hero styling with higher specificity. */
+.card.hero{background:linear-gradient(160deg,#1a3f2c 0%,#0f2a1e 100%)!important;border:none!important;color:#f5fbf6;box-shadow:0 20px 48px rgba(12,36,22,.3)}
+.card.hero .valueLarge{color:#f5fbf6}
+.card.hero .sectionEyebrow{color:rgba(239,249,242,.6)}
+.card.hero .chartValue{color:rgba(255,255,255,.95)}
+.card.hero .metricCard .n{color:rgba(255,255,255,.95)}
+.card.hero .metricCard .l{color:rgba(239,249,242,.58)}
 .card-sm{border-radius:10px;padding:11px}
 
 /* MISC */
@@ -3077,13 +3084,12 @@ html,body{height:100%;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sy
   <div class="tab-row tab-row-extra" id="tabExtraRow">
     <div style="flex:1"></div>
     <div style="flex:1"></div>
-    <button data-screen="alerts" onclick="closeExtraTabRow()"><b>◉</b><span>Alertas</span></button>
+    <div style="flex:1"></div>
     <button data-screen="ia" onclick="closeExtraTabRow()"><b>✦</b><span data-i18n="tabIA">IA</span></button>
     <button data-screen="impuestos" onclick="closeExtraTabRow()"><b>◫</b><span>Impuestos</span></button>
   </div>
   <div class="tab-row tab-row-main">
     <button class="active" data-screen="home"><b>⌂</b><span data-i18n="tabHome">Inicio</span></button>
-    <button data-screen="comunidad"><b>⊞</b><span>Foro</span></button>
     <button data-screen="analysis"><b>◈</b><span data-i18n="tabAnalysis">Análisis</span></button>
     <button data-screen="dividends"><b>◎</b><span data-i18n="tabDividends">Dividendos</span></button>
     <button class="tab-more-btn" id="tabMoreBtn" onclick="toggleExtraTabRow(event)"><b>+</b><span>Más</span></button>
