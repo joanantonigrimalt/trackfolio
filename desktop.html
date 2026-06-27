@@ -1182,13 +1182,24 @@ html,body{height:100%;overflow:hidden;font-family:-apple-system,BlinkMacSystemFo
 
 /* CARDS */
 .card{background:var(--surf);border:1px solid var(--border);border-radius:14px;padding:18px;box-shadow:0 2px 8px rgba(0,0,0,.04)}
-/* Fix: the duplicate .card rule above overrode the dark hero background, making its light text invisible. Re-assert hero styling with higher specificity. */
-.card.hero{background:linear-gradient(160deg,#1a3f2c 0%,#0f2a1e 100%)!important;border:none!important;color:#f5fbf6;box-shadow:0 20px 48px rgba(12,36,22,.3);border-radius:26px}
-.card.hero .valueLarge{color:#f5fbf6}
-.card.hero .sectionEyebrow{color:rgba(239,249,242,.6)}
-.card.hero .chartValue{color:rgba(255,255,255,.95)}
-.card.hero .metricCard .n{color:rgba(255,255,255,.95)}
-.card.hero .metricCard .l{color:rgba(239,249,242,.58)}
+/* Light hero — matches the light mockup design (white card, dark readable text) */
+.card.hero{background:var(--surf)!important;border:1px solid var(--border)!important;color:var(--text);box-shadow:0 2px 8px rgba(0,0,0,.04);border-radius:14px}
+.card.hero .sectionEyebrow{color:var(--muted)}
+.card.hero .valueLarge{color:var(--text)}
+.card.hero .valueSub .pill.info{background:var(--surf2);color:var(--muted);border-color:var(--border)}
+.card.hero .valueSub .pill.pos{background:var(--ga);color:var(--green);border-color:rgba(26,122,66,.18)}
+.card.hero .valueSub .pill.neg{background:#fdecea;color:var(--red);border-color:rgba(192,57,43,.18)}
+.card.hero .heroMetrics .metricCard{background:var(--surf2);border:1px solid var(--border)}
+.card.hero .heroMetrics .metricCard .l{color:var(--muted)}
+.card.hero .heroMetrics .metricCard .n{color:var(--text)}
+.card.hero .chartShell{background:var(--surf2);border:1px solid var(--border)}
+.card.hero .chartShell .sectionEyebrow{color:var(--muted)!important}
+.card.hero .chartValue{color:var(--text)}
+.card.hero .chartMeta{color:var(--muted)}
+.card.hero .note{color:var(--muted2)}
+.card.hero .chartPlaceholder{color:var(--muted);background:var(--surf);border-color:var(--border)}
+.card.hero .tfBtn{background:var(--surf);color:var(--muted);border:1px solid var(--border)}
+.card.hero .tfBtn.active{background:var(--ga);color:var(--green);border-color:rgba(26,122,66,.2)}
 .card-sm{border-radius:11px;padding:14px}
 .kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:18px}
 .kpi{background:var(--surf);border:1px solid var(--border);border-radius:13px;padding:16px 18px;box-shadow:0 2px 8px rgba(0,0,0,.04)}
@@ -3506,7 +3517,7 @@ function _drawChart(canvas,labels,values,note,meta,rv,noteText){
   const lc=isUp?'#22c55e':'#f87171';
   const ctx=canvas.getContext('2d'),g=ctx.createLinearGradient(0,0,0,canvas.height||200);
   g.addColorStop(0,isUp?'rgba(74,222,128,.28)':'rgba(248,113,113,.22)');g.addColorStop(.6,isUp?'rgba(74,222,128,.08)':'rgba(248,113,113,.07)');g.addColorStop(1,'rgba(0,0,0,0)');
-  chart=new Chart(canvas,{type:'line',data:{labels,datasets:[{data:values,borderColor:lc,backgroundColor:g,borderWidth:2.5,pointRadius:0,pointHoverRadius:4,pointHoverBackgroundColor:lc,pointHoverBorderColor:'#fff',pointHoverBorderWidth:2,fill:true,tension:.3}]},options:{responsive:true,maintainAspectRatio:false,interaction:{intersect:false,mode:'index'},plugins:{legend:{display:false},tooltip:{displayColors:false,backgroundColor:'rgba(12,30,20,.94)',borderColor:'rgba(220,252,231,.1)',borderWidth:1,titleColor:'#f0fdf4',bodyColor:'#a7f3d0',padding:10,callbacks:{title:i=>i[0]?.label||'',label:c=>fe(c.parsed.y)}}},scales:{x:{grid:{display:false},border:{display:false},ticks:{color:'rgba(239,249,242,.5)',maxTicksLimit:6,font:{size:10,weight:'600'}}},y:{grid:{color:'rgba(220,252,231,.07)'},border:{display:false},ticks:{color:'rgba(239,249,242,.5)',maxTicksLimit:4,font:{size:10,weight:'600'},callback:v=>{const sym=_displayCcy==='USD'?'$':_displayCcy==='GBP'?'£':'€';return Math.abs(v)>=1000?sym+fn(v/1000)+'k':sym+fn(v);}}}}}});
+  chart=new Chart(canvas,{type:'line',data:{labels,datasets:[{data:values,borderColor:lc,backgroundColor:g,borderWidth:2.5,pointRadius:0,pointHoverRadius:4,pointHoverBackgroundColor:lc,pointHoverBorderColor:'#fff',pointHoverBorderWidth:2,fill:true,tension:.3}]},options:{responsive:true,maintainAspectRatio:false,interaction:{intersect:false,mode:'index'},plugins:{legend:{display:false},tooltip:{displayColors:false,backgroundColor:'rgba(12,30,20,.94)',borderColor:'rgba(220,252,231,.1)',borderWidth:1,titleColor:'#f0fdf4',bodyColor:'#a7f3d0',padding:10,callbacks:{title:i=>i[0]?.label||'',label:c=>fe(c.parsed.y)}}},scales:{x:{grid:{display:false},border:{display:false},ticks:{color:'rgba(13,30,21,.45)',maxTicksLimit:6,font:{size:10,weight:'600'}}},y:{grid:{color:'rgba(13,30,21,.06)'},border:{display:false},ticks:{color:'rgba(13,30,21,.45)',maxTicksLimit:4,font:{size:10,weight:'600'},callback:v=>{const sym=_displayCcy==='USD'?'$':_displayCcy==='GBP'?'£':'€';return Math.abs(v)>=1000?sym+fn(v/1000)+'k':sym+fn(v);}}}}}});
   if(_pricesLive){rv.textContent=fe(last);meta.textContent=`${isUp?'+':''}${fe(delta)}  ${isUp?'+':''}${pct.toFixed(2)}%`;}
   else{rv.textContent='—';meta.textContent='';}
   note.textContent=noteText;
