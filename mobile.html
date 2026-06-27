@@ -2925,6 +2925,7 @@ let currentLang = _VALID_LANGS.has(_rawLang) ? _rawLang : 'es';
 let _displayCcy = _VALID_CCYS.has(_rawCcy)   ? _rawCcy  : 'EUR';
 let _fxRates = { EUR: 1, USD: 1.09, GBP: 0.86, CHF: 1.06 }; // EUR→X rates, refreshed at boot
 let _pricesLive = false; // true once fresh coverage (not cache) has been loaded
+let _cvMap = {}; // global coverage map — shared between boot, sync, and loadCustomIntoAssets
 const t = k => I18N[currentLang][k] || I18N.es[k] || k;
 
 function applyTranslations() {
@@ -5596,10 +5597,10 @@ async function boot(){
       seed=freshSeed;
       // Cache coverage for fast initial position list on next load
       if(coverage?.results?.length>0){try{localStorage.setItem(_COV_CK,JSON.stringify({data:coverage,ts:Date.now()}));}catch(_){}}
-      const cvMap=Object.fromEntries((coverage.results||[]).map(e=>[e.isin,e]));
-      _rawSeedAssets=buildAssets(cvMap);
+      _cvMap=Object.fromEntries((coverage.results||[]).map(e=>[e.isin,e]));
+      _rawSeedAssets=buildAssets(_cvMap);
       assets=applyOverridesToAssets(_rawSeedAssets);
-      loadCustomIntoAssets(cvMap);
+      loadCustomIntoAssets(_cvMap);
       _pricesLive=true; // live prices ready — show real total
       render();
       _startLiveRefresh(); // start 60s ETF/ETC/stock live price refresh
@@ -5696,11 +5697,15 @@ function loadCustomIntoAssets(cvMap){
     const isin=info.isin||sym;
     const coverageCurrency=cvMap&&cvMap[isin]?.data?.quote?.currency;
     const coveragePrice=cvMap&&cvMap[isin]?.data?.quote?.price;
-    // If coverage returns a different currency (e.g. EUR from INGA.AS vs stored USD),
-    // update both currency AND currentPrice so the price shows in the correct currency
-    const enrichedInfo=coveragePrice>0
-      ? {...info, ...(coverageCurrency&&{currency:coverageCurrency}), currentPrice:coveragePrice}
-      : (coverageCurrency&&coverageCurrency!==(info.currency||'USD')?{...info,currency:coverageCurrency}:info);
+    const coverageHistory=cvMap&&cvMap[isin]?.data?.history; // ← get full history from coverage API
+    // Enrich custom asset with coverage data: price, currency, AND history
+    // This ensures custom/cloud assets show "con histórico" just like seed assets
+    const enrichedInfo={
+      ...info,
+      ...(coverageCurrency&&{currency:coverageCurrency}),
+      ...(coveragePrice>0&&{currentPrice:coveragePrice}),
+      ...(coverageHistory?.length>1&&{history:normalizeHistory(coverageHistory)}),
+    };
     return buildCustomAssetObj(enrichedInfo,pos);
   }).filter(a=>a.quantity>0);
   // Add to _rawSeedAssets and re-apply overrides (avoid duplicates with seed)
@@ -6204,8 +6209,15 @@ async function _syncWithToken(){
       if(data.liquidity)localStorage.setItem('fa_liquidity',JSON.stringify(data.liquidity));
     }
     if(_caChanged||cloudTs>localTs||_localEmpty){
+      // Fetch coverage for any new custom ISINs not yet in _cvMap
+      const _allCustIsins2=Object.values(_mergedCa).map(ca=>ca.isin||ca.symbol).filter(Boolean);
+      const _newIsins2=_allCustIsins2.filter(isin=>!_cvMap[isin]);
+      if(_newIsins2.length>0&&_pricesLive){
+        try{const _nc2=await getJson('/api/portfolio/coverage?isin='+encodeURIComponent(_newIsins2.join(',')),9500);(_nc2.results||[]).forEach(e=>{_cvMap[e.isin]=e;});}catch(_){}
+      }
       assets=applyOverridesToAssets(_rawSeedAssets);
-      loadCustomIntoAssets();render();renderLiquidity();
+      loadCustomIntoAssets(_cvMap); // pass coverage map
+      render();renderLiquidity();
     }
     localStorage.setItem('tf_last_sync',new Date().toISOString());
   }catch(e){console.warn('[token-sync]',e);}
@@ -6280,8 +6292,15 @@ async function syncFromCloud(){
       if(_migrated)localStorage.setItem('tf_positions',JSON.stringify(_ovMig));
     }
     if(cloudTs>localTs||localEmpty||_caChanged){
+      // Fetch coverage for any custom asset ISINs not yet in _cvMap (added from cloud after boot)
+      const _allCustIsins=Object.values(_mergedCa).map(ca=>ca.isin||ca.symbol).filter(Boolean);
+      const _newIsins=_allCustIsins.filter(isin=>!_cvMap[isin]);
+      if(_newIsins.length>0&&_pricesLive){
+        try{const _nc=await getJson('/api/portfolio/coverage?isin='+encodeURIComponent(_newIsins.join(',')),9500);(_nc.results||[]).forEach(e=>{_cvMap[e.isin]=e;});}catch(_){}
+      }
       assets=applyOverridesToAssets(_rawSeedAssets);
-      loadCustomIntoAssets();render();renderLiquidity();
+      loadCustomIntoAssets(_cvMap); // pass coverage map so custom assets keep prices+history
+      render();renderLiquidity();
     }
     localStorage.setItem('tf_last_sync',new Date().toISOString());
     renderAccountSection();
