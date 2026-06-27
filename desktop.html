@@ -1254,6 +1254,30 @@ html,body{height:100%;overflow:hidden;font-family:-apple-system,BlinkMacSystemFo
 .prem-card::before{display:none!important}
 .pf{background:var(--surf2)!important;border:1px solid var(--border)!important}
 .prem-btn{background:linear-gradient(135deg,#1a7a42,#15803d)!important;box-shadow:0 4px 16px rgba(26,122,66,.3)!important}
+/* Positions table (Inicio + Mi cartera) */
+.pf-tbl{width:100%;border-collapse:collapse;font-size:13px}
+.pf-tbl th{text-align:right;font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;padding:0 8px 11px;border-bottom:1px solid var(--border);white-space:nowrap}
+.pf-tbl th:first-child{text-align:left;padding-left:0}
+.pf-tbl td{padding:12px 8px;border-bottom:1px solid var(--border);text-align:right;color:var(--text);white-space:nowrap;vertical-align:middle}
+.pf-tbl td:first-child{text-align:left;padding-left:0}
+.pf-tbl tbody tr:last-child td{border-bottom:none}
+.pf-tbl tbody tr{cursor:pointer;transition:background .12s}
+.pf-tbl tbody tr:hover{background:var(--surf2)}
+.pf-asset{display:flex;align-items:center;gap:10px}
+.pf-asset .icon{width:34px;height:34px;border-radius:10px;font-size:12px}
+.pf-tk{font-weight:700;font-size:13px;color:var(--text)}
+.pf-nm{font-size:11px;color:var(--muted);overflow:hidden;text-overflow:ellipsis;max-width:220px;white-space:nowrap}
+.pf-pos{color:var(--green);font-weight:600}.pf-neg{color:var(--red);font-weight:600}
+/* KPI grid (Mi cartera) */
+.pfKpiGrid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:14px}
+@media(max-width:760px){.pfKpiGrid{grid-template-columns:1fr 1fr}}
+.pfKpi{background:var(--surf);border:1px solid var(--border);border-radius:14px;padding:16px 18px;box-shadow:0 2px 8px rgba(0,0,0,.04)}
+.pfKpi.green{background:var(--ga);border-color:rgba(26,122,66,.2)}
+.pfKpi .l{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px}
+.pfKpi.green .l{color:var(--green)}
+.pfKpi .v{font-size:22px;font-weight:900;letter-spacing:-.02em;color:var(--text)}
+.pfKpi.green .v{color:var(--green)}
+.pfKpi .s{font-size:11px;color:var(--muted);margin-top:3px}
 .card-sm{border-radius:11px;padding:14px}
 .kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:18px}
 .kpi{background:var(--surf);border:1px solid var(--border);border-radius:13px;padding:16px 18px;box-shadow:0 2px 8px rgba(0,0,0,.04)}
@@ -1672,10 +1696,20 @@ html,body{height:100%;overflow:hidden;font-family:-apple-system,BlinkMacSystemFo
 
 <!-- ============ CARTERA ============ -->
 <div id="screen-portfolio" class="screen">
-  <div class="top"><div>
-    <div class="title" data-i18n="tabPortfolio">Cartera</div>
-    <div class="sub" data-i18n="portfolioSub">Detalle completo de posiciones</div>
-  </div></div>
+  <div class="top" style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px">
+    <div>
+      <div class="title" data-i18n="tabPortfolio">Mi cartera</div>
+      <div class="sub" data-i18n="portfolioSub">Detalle completo de posiciones</div>
+    </div>
+    <button class="hHeadBtn main" onclick="openSearch()" style="font-size:12px;padding:8px 14px;border-radius:10px;background:#15803d;color:#fff;border:none;font-weight:700;cursor:pointer;white-space:nowrap">+ <span data-i18n="newPosition">Nueva posición</span></button>
+  </div>
+
+  <div class="pfKpiGrid">
+    <div class="pfKpi"><div class="l" data-i18n="sumValue">Valor total</div><div class="v" id="pfVal">—</div></div>
+    <div class="pfKpi"><div class="l" data-i18n="mInvested">Invertido</div><div class="v" id="pfInv">—</div><div class="s" data-i18n="costBasis">base coste</div></div>
+    <div class="pfKpi green"><div class="l" data-i18n="sumGain">Ganancia total</div><div class="v" id="pfGain">—</div></div>
+    <div class="pfKpi"><div class="l" data-i18n="mPositions">Posiciones</div><div class="v" id="pfCount">—</div></div>
+  </div>
 
 <div class="legal-disclaimer">
   <b>Aviso legal:</b> Finasset es una herramienta de seguimiento personal de carteras.<br>
@@ -5779,38 +5813,37 @@ function renderLists(){
     document.getElementById('portfolioList').innerHTML=emptyHtml;
     return;
   }
-  const html=[...assets].filter(a=>a.quantity>0&&(_activeBrokerFilter===null||a.broker===_activeBrokerFilter)).sort((a,b)=>{const d=toDisplay(b.value,assetCcy(b))-toDisplay(a.value,assetCcy(a));return isNaN(d)?0:d;}).map(a=>{
+  const visible=[...assets].filter(a=>a.quantity>0&&(_activeBrokerFilter===null||a.broker===_activeBrokerFilter)).sort((a,b)=>{const d=toDisplay(b.value,assetCcy(b))-toDisplay(a.value,assetCcy(a));return isNaN(d)?0:d;});
+  const _totVal=visible.reduce((s,a)=>s+(toDisplay(a.value,assetCcy(a))||0),0);
+  const isEs=currentLang==='es';
+  const rows=visible.map(a=>{
     const _av=toDisplay(a.value,assetCcy(a)),_ai=toDisplay(a.invested,costCcy(a)),_ag=_av-_ai,_agp=_ai>0?(_ag/_ai)*100:a.gainPct;
     const dp=getDayPct(a);
-    const dayHtml=dp!=null&&_pricesLive
-      ?`<span style="color:${dp>=0?'#15803d':'#b91c1c'}">${dp>=0?'+':''}${dp.toFixed(2)}%</span><span style="color:#b0c0b5;font-size:10px;margin-left:2px">${currentLang==='es'?'hoy':'1D'}</span>`
-      :'';
-    const totalColor=_agp>=0?'#15803d':'#b91c1c';
     const _ccy=assetCcy(a);const _csym=_ccy==='USD'?'$':_ccy==='GBP'?'£':_ccy==='CHF'?'Fr':'€';
     const _bp=`${_csym}${Number(a.buyPrice).toFixed(2)}`;
     const _cp=_pricesLive?`${_csym}${Number(a.currentPrice).toFixed(2)}`:'—';
-    const _moneyHtml=_pricesLive?fe(_av):'<span style="opacity:.25">—</span>';
-    const _gainHtml=_pricesLive
-      ?`${dayHtml}<span style="color:${totalColor}">${_ag>=0?'+':''}${fe(_ag)}<span style="font-size:10px;margin-left:3px">(${_agp>=0?'+':''}${_agp.toFixed(2)}%)</span></span>`
-      :'';
-    return`<div class="asset" data-isin="${a.isin}">
-      <div class="icon ${assetType(a)}">${iconInitials(a)}</div>
-      <div style="min-width:0;flex:1">
-        <div class="name" title="${a.fullName||a.name}">${a.name}</div>
-        <div class="meta">${fn(a.quantity)} ${t('shares').toLowerCase()}${a.broker?' · '+escapeHtml(a.broker):''}</div>
-        <div class="meta" style="margin-top:1px;font-size:9.5px;color:#8fa090;white-space:nowrap">${currentLang==='es'?'Compra':'Buy'} <span style="color:#374151;font-weight:600">${_bp}</span> · ${currentLang==='es'?'Actual':'Now'} <span style="color:#374151;font-weight:600">${_cp}</span></div>
-      </div>
-      <div class="right">
-        <div class="money">${_moneyHtml}</div>
-        <div class="pct" style="display:flex;gap:7px;justify-content:flex-end;align-items:baseline;flex-wrap:wrap">
-          ${_gainHtml}
-        </div>
-      </div>
-    </div>`;
+    const _val=_pricesLive?fe(_av):'—';
+    const peso=_totVal>0?(_av/_totVal*100):0;
+    const rcls=_agp>=0?'pf-pos':'pf-neg';
+    const dayCell=dp!=null&&_pricesLive?`<span class="${dp>=0?'pf-pos':'pf-neg'}">${dp>=0?'▲':'▼'} ${Math.abs(dp).toFixed(2)}%</span>`:'<span style="color:var(--muted2)">—</span>';
+    return `<tr data-isin="${a.isin}">
+      <td><div class="pf-asset"><div class="icon ${assetType(a)}">${iconInitials(a)}</div><div style="min-width:0"><div class="pf-tk">${escapeHtml(a.name)}</div><div class="pf-nm" title="${escapeHtml(a.fullName||a.name)}">${escapeHtml(a.fullName||'')}</div></div></div></td>
+      <td>${_cp}</td>
+      <td>${dayCell}</td>
+      <td>${fn(a.quantity)}</td>
+      <td style="font-weight:700">${_val}</td>
+      <td>${_bp}</td>
+      <td class="${rcls}">${_pricesLive?(_agp>=0?'+':'')+_agp.toFixed(2)+'%':'—'}</td>
+      <td>${peso.toFixed(1)}%</td>
+      <td style="color:var(--muted)">${a.broker?escapeHtml(a.broker):'—'}</td>
+    </tr>`;
   }).join('');
+  const html=`<div style="overflow-x:auto"><table class="pf-tbl"><thead><tr>
+    <th>${isEs?'Activo':'Asset'}</th><th>${isEs?'Precio':'Price'}</th><th>${isEs?'Hoy':'Today'}</th><th>${isEs?'Cant.':'Qty'}</th><th>${isEs?'Valor':'Value'}</th><th>${isEs?'P. medio':'Avg'}</th><th>${isEs?'Rentab.':'Return'}</th><th>${isEs?'Peso':'Weight'}</th><th>Broker</th>
+  </tr></thead><tbody>${rows}</tbody></table></div>`;
   document.getElementById('list').innerHTML=html;
   document.getElementById('portfolioList').innerHTML=html;
-  document.querySelectorAll('#list .asset, #portfolioList .asset').forEach(el=>{
+  document.querySelectorAll('#list tr[data-isin], #portfolioList tr[data-isin]').forEach(el=>{
     el.addEventListener('click',()=>{const a=assets.find(x=>x.isin===el.dataset.isin);if(a)showAssetDetail(a,document.querySelector('.tab button.active')?.dataset?.screen||'home');});
   });
 }
@@ -5836,6 +5869,10 @@ function render(){
   document.getElementById('summaryGainAbs').textContent=`${gain>=0?'+':''}${fe(gain)} ${currentLang==='es'?'ganancia':'gain'}`;
   document.getElementById('summaryGainPct').textContent=`${gainPct>=0?'+':''}${gainPct.toFixed(2)}%`;
   document.getElementById('summaryAssetCount').textContent=`${c.total} ${t('positions')} · ${c.ok} ${currentLang==='es'?'con histórico':'w/ history'}`;
+  // Mi cartera KPIs
+  (function(){const set=(id,v)=>{const e=document.getElementById(id);if(e)e.textContent=v;};
+    set('pfVal',_pricesLive?fe(total):'—');set('pfInv',fe(invested));
+    set('pfGain',`${gain>=0?'+':''}${fe(gain)}`);set('pfCount',c.total);})();
   renderLists();buildTfRow();renderChart();
   renderLiquidity();
   renderHomeExtras();
