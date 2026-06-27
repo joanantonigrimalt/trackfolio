@@ -1365,60 +1365,65 @@ html,body{height:100%;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sy
 <!-- ============ INICIO ============ -->
 <div id="screen-home" class="screen">
 
-  <div class="card hero">
+  <style>
+  /* Home (light mockup layout) */
+  .hChips{display:flex;gap:7px;margin:0 0 10px;overflow-x:auto;padding-bottom:2px}
+  .hChips::-webkit-scrollbar{display:none}
+  .hChip{background:var(--surf);border:1px solid var(--border);border-radius:20px;padding:6px 13px;cursor:pointer;display:flex;align-items:center;gap:6px;box-shadow:0 1px 3px rgba(0,0,0,.04);font-size:11px;font-weight:600;color:var(--muted);white-space:nowrap;flex-shrink:0}
+  .hChip.green{background:var(--ga);border-color:rgba(26,122,66,.2);color:var(--green);font-weight:700}
+  .hChartCard .chartMeta{color:var(--muted);font-size:11px;font-weight:600}
+  .hChartCard .note{color:var(--muted2);font-size:10px;line-height:1.5;margin-top:6px}
+  .hChartCard .chartPlaceholder{color:var(--muted);background:var(--surf2);border:1px dashed var(--border)}
+  .hChartCard .tfBtn{background:var(--surf2);color:var(--muted);border:1px solid var(--border)}
+  .hChartCard .tfBtn.active{background:var(--ga);color:var(--green);border-color:rgba(26,122,66,.2)}
+  </style>
+
+  <!-- Hero P&L block -->
+  <div class="card hero" style="padding:14px">
     <div class="sectionEyebrow" data-i18n="heroTitle">Valor total del portfolio</div>
-    <div class="valueLarge" id="total">—</div>
+    <div class="valueLarge" id="total" style="font-size:32px">—</div>
     <div class="valueSub">
       <div class="pill pos" id="totalGainPill">—</div>
-      <div class="pill info" id="coveragePill">loading...</div>
       <div class="pill info" id="heroDivPill" style="display:none"></div>
+      <div class="pill info" id="coveragePill">loading...</div>
     </div>
     <div class="heroMetrics">
       <div class="metricCard"><div class="l" data-i18n="mInvested">Invertido</div><div class="n" id="investedTotal">—</div></div>
       <div class="metricCard"><div class="l" data-i18n="mReturn">Rentabilidad</div><div class="n" id="profitPercent">—</div></div>
       <div class="metricCard"><div class="l" data-i18n="mPositions">Posiciones</div><div class="n" id="count">—</div></div>
     </div>
-    <div class="chartShell">
-      <div class="chartHeader">
-        <div>
-          <div class="sectionEyebrow" style="color:rgba(239,249,242,.55)" data-i18n="mEvolution">Evolución</div>
-          <div class="chartValue" id="chartRangeValue">—</div>
-        </div>
-        <div class="chartMeta" id="chartMeta"></div>
-      </div>
-      <div class="timeframes" id="tfRowHome"></div>
-      <div class="chartWrap">
-        <canvas id="chart"></canvas>
-        <div id="chartFallback" class="chartPlaceholder" style="display:none" data-i18n="chartNoData">Histórico insuficiente para construir una curva.</div>
-      </div>
-      <div id="chartNote" class="note"></div>
-    </div>
   </div>
 
-  <div class="summaryGrid">
-    <div class="summaryBox">
-      <div class="label" data-i18n="sumInvested">Capital invertido</div>
-      <div class="value" id="summaryInvested">—</div>
-      <div class="delta" id="summaryGainAbs"></div>
+  <!-- Chart card -->
+  <div class="card hChartCard" style="padding:14px">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;gap:8px">
+      <span style="font-size:12px;font-weight:700" data-i18n="mEvolution">Evolución</span>
+      <div class="chartMeta" id="chartMeta"></div>
     </div>
-    <div class="summaryBox">
-      <div class="label" data-i18n="sumGain">Ganancia acumulada</div>
-      <div class="value" id="summaryGainPct">—</div>
-      <div class="delta" id="summaryAssetCount"></div>
+    <div class="chartValue" id="chartRangeValue" style="display:none">—</div>
+    <div class="timeframes" id="tfRowHome" style="margin-bottom:8px"></div>
+    <div class="chartWrap" style="position:relative;height:180px">
+      <canvas id="chart"></canvas>
+      <div id="chartFallback" class="chartPlaceholder" style="display:none" data-i18n="chartNoData">Histórico insuficiente para construir una curva.</div>
     </div>
+    <div id="chartNote" class="note"></div>
   </div>
-  <div id="btnAddAll" style="display:flex;gap:1px;margin-bottom:12px;border-radius:16px;overflow:hidden;box-shadow:0 4px 16px rgba(21,128,61,.28)">
-    <button onclick="openSearch()" style="flex:1;display:flex;align-items:center;justify-content:center;gap:7px;padding:13px 12px;background:#15803d;border:none;font-family:inherit;font-size:13px;font-weight:700;color:#fff;cursor:pointer;transition:background .15s" onmouseover="this.style.background='#166534'" onmouseout="this.style.background='#15803d'">
-      <svg viewBox="0 0 16 16" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" width="14" height="14"><circle cx="6.5" cy="6.5" r="4.5"/><line x1="10" y1="10" x2="14" y2="14"/></svg>
-      Añadir Activos
-    </button>
-    <button onclick="openLiqModal(null)" style="flex:1;display:flex;align-items:center;justify-content:center;gap:7px;padding:13px 12px;background:#15803d;border:none;font-family:inherit;font-size:13px;font-weight:700;color:#fff;cursor:pointer;transition:background .15s" onmouseover="this.style.background='#166534'" onmouseout="this.style.background='#15803d'">
-      <svg viewBox="0 0 16 16" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" width="14" height="14"><circle cx="8" cy="8" r="6"/><path d="M8 5.5v5M5.5 8h5"/></svg>
-      Añadir Liquidez
-    </button>
+
+  <!-- Quick chips -->
+  <div class="hChips">
+    <div class="hChip" onclick="showScreen('dividends')"><span>◎</span> <span data-i18n="navDividends">Dividendos</span></div>
+    <div class="hChip green" onclick="showScreen('ia')"><span>✦</span> Vera IA</div>
+    <div class="hChip" onclick="openSearch()"><span>＋</span> <span data-i18n="add">Añadir</span></div>
+    <div class="hChip" onclick="showScreen('impuestos')"><span>◫</span> <span data-i18n="navTax">Fiscal</span></div>
+  </div>
+
+  <!-- Hidden mirrors to keep render() safe -->
+  <div style="display:none">
+    <span id="summaryInvested"></span><span id="summaryGainAbs"></span>
+    <span id="summaryGainPct"></span><span id="summaryAssetCount"></span>
   </div>
   <div id="brokerFilterBar"></div>
-  <div class="card"><div class="sectionTitle" data-i18n="myPortfolio">Mi cartera</div><div id="list"></div></div>
+  <div class="card"><div class="sectionTitle" data-i18n="positions">Posiciones</div><div id="list"></div></div>
   <div class="card" id="homeLiqCard" style="display:none">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
       <div class="sectionTitle" style="margin-bottom:0">💰 Liquidez</div>

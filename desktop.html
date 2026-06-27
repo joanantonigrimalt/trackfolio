@@ -1494,60 +1494,102 @@ html,body{height:100%;overflow:hidden;font-family:-apple-system,BlinkMacSystemFo
 <!-- ============ INICIO ============ -->
 <div id="screen-home" class="screen">
 
-  <div class="card hero">
+  <style>
+  /* Home (light mockup layout) */
+  .hHeader{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;gap:12px;flex-wrap:wrap}
+  .hHeader h1{font-size:20px;font-weight:800;letter-spacing:-.02em;color:var(--text)}
+  .hHeader .hSub{font-size:12px;color:var(--muted);margin-top:2px}
+  .hHeadBtns{display:flex;gap:8px}
+  .hHeadBtn{font-size:12px;padding:8px 14px;border-radius:10px;font-family:inherit;font-weight:700;cursor:pointer;border:1px solid var(--border);background:var(--surf);color:var(--text)}
+  .hHeadBtn.main{background:#15803d;border-color:#15803d;color:#fff}
+  .hChips{display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap}
+  .hChip{background:var(--surf);border:1px solid var(--border);border-radius:10px;padding:9px 14px;cursor:pointer;display:flex;align-items:center;gap:7px;box-shadow:0 1px 4px rgba(0,0,0,.04);font-size:12px;font-weight:600;color:var(--text)}
+  .hChip.green{background:var(--ga);border-color:rgba(26,122,66,.2);color:var(--green);font-weight:700}
+  .hSplit{display:grid;grid-template-columns:1.7fr 1fr;gap:12px;margin-bottom:12px}
+  @media(max-width:920px){.hSplit{grid-template-columns:1fr}}
+  .hChartTitle{font-size:14px;font-weight:700;color:var(--text)}
+  .hChartCard .chartMeta{color:var(--muted);font-size:12px;font-weight:600}
+  .hChartCard .note{color:var(--muted2);font-size:11px;line-height:1.5;margin-top:8px}
+  .hChartCard .chartPlaceholder{color:var(--muted);background:var(--surf2);border:1px dashed var(--border)}
+  .hChartCard .tfBtn{background:var(--surf2);color:var(--muted);border:1px solid var(--border)}
+  .hChartCard .tfBtn.active{background:var(--ga);color:var(--green);border-color:rgba(26,122,66,.2)}
+  .dl{display:flex;flex-direction:column;gap:8px}
+  .dl-r{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--text)}
+  .dl-d{width:9px;height:9px;border-radius:3px;flex-shrink:0}
+  .dl-p{margin-left:auto;font-weight:700;color:var(--muted)}
+  .hMiniKpis{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:14px}
+  .hMiniKpi{background:var(--surf2);border:1px solid var(--border);border-radius:9px;padding:9px;text-align:center}
+  .hMiniKpi.green{background:var(--ga);border-color:rgba(26,122,66,.2)}
+  .hMiniKpi .l{font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em}
+  .hMiniKpi.green .l{color:var(--green)}
+  .hMiniKpi .n{font-size:16px;font-weight:800;margin-top:2px;color:var(--text)}
+  .hMiniKpi.green .n{color:var(--green)}
+  </style>
+
+  <!-- Greeting header -->
+  <div class="hHeader">
+    <div>
+      <h1 id="homeGreeting">—</h1>
+      <p class="hSub" id="homeDate"></p>
+    </div>
+    <div class="hHeadBtns">
+      <button class="hHeadBtn" onclick="openSearch()">+ <span data-i18n="add">Añadir</span></button>
+      <button class="hHeadBtn main" onclick="showScreen('ia')">✦ Vera IA</button>
+    </div>
+  </div>
+
+  <!-- Hero P&L block -->
+  <div class="card hero" style="padding:18px 20px">
     <div class="sectionEyebrow" data-i18n="heroTitle">Valor total del portfolio</div>
-    <div class="valueLarge" id="total">—</div>
+    <div class="valueLarge" id="total" style="font-size:36px;margin-top:2px">—</div>
     <div class="valueSub">
       <div class="pill pos" id="totalGainPill">—</div>
-      <div class="pill info" id="coveragePill">loading...</div>
       <div class="pill info" id="heroDivPill" style="display:none"></div>
+      <div class="pill info" id="coveragePill">loading...</div>
     </div>
-    <div class="heroMetrics">
-      <div class="metricCard"><div class="l" data-i18n="mInvested">Invertido</div><div class="n" id="investedTotal">—</div></div>
-      <div class="metricCard"><div class="l" data-i18n="mReturn">Rentabilidad</div><div class="n" id="profitPercent">—</div></div>
-      <div class="metricCard"><div class="l" data-i18n="mPositions">Posiciones</div><div class="n" id="count">—</div></div>
-    </div>
-    <div class="chartShell">
-      <div class="chartHeader">
-        <div>
-          <div class="sectionEyebrow" style="color:rgba(239,249,242,.55)" data-i18n="mEvolution">Evolución</div>
-          <div class="chartValue" id="chartRangeValue">—</div>
-        </div>
+  </div>
+
+  <!-- Quick action chips -->
+  <div class="hChips">
+    <div class="hChip" onclick="showScreen('ia')"><span>📊</span> <span data-i18n="navIA">Analíticas IA</span></div>
+    <div class="hChip" onclick="showScreen('dividends')"><span>◎</span> <span data-i18n="navDividends">Dividendos</span></div>
+    <div class="hChip" onclick="showScreen('impuestos')"><span>◫</span> <span data-i18n="navTax">Fiscal</span></div>
+    <div class="hChip green" onclick="openSearch()"><span>＋</span> <span data-i18n="newPosition">Nueva posición</span></div>
+  </div>
+
+  <!-- Chart + Distribution -->
+  <div class="hSplit">
+    <div class="card hChartCard" style="padding:16px">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;gap:10px">
+        <span class="hChartTitle" data-i18n="mEvolution">Evolución del portfolio</span>
         <div class="chartMeta" id="chartMeta"></div>
       </div>
-      <div class="timeframes" id="tfRowHome"></div>
-      <div class="chartWrap">
+      <div class="chartValue" id="chartRangeValue" style="display:none">—</div>
+      <div class="timeframes" id="tfRowHome" style="margin-bottom:10px"></div>
+      <div class="chartWrap" style="position:relative;height:220px">
         <canvas id="chart"></canvas>
         <div id="chartFallback" class="chartPlaceholder" style="display:none" data-i18n="chartNoData">Histórico insuficiente para construir una curva.</div>
       </div>
       <div id="chartNote" class="note"></div>
     </div>
+    <div class="card hDonutCard" style="padding:16px">
+      <div class="hChartTitle" style="margin-bottom:14px" data-i18n="distribution">Distribución</div>
+      <div id="homeDonut" style="display:flex;justify-content:center;margin-bottom:14px"></div>
+      <div id="homeDonutLegend" class="dl"></div>
+      <div class="hMiniKpis">
+        <div class="hMiniKpi"><div class="l" data-i18n="mInvested">Invertido</div><div class="n" id="investedTotal">—</div></div>
+        <div class="hMiniKpi green"><div class="l" data-i18n="mReturn">Rentabilidad</div><div class="n" id="profitPercent">—</div></div>
+      </div>
+    </div>
   </div>
 
-  <div class="summaryGrid">
-    <div class="summaryBox">
-      <div class="label" data-i18n="sumInvested">Capital invertido</div>
-      <div class="value" id="summaryInvested">—</div>
-      <div class="delta" id="summaryGainAbs"></div>
-    </div>
-    <div class="summaryBox">
-      <div class="label" data-i18n="sumGain">Ganancia acumulada</div>
-      <div class="value" id="summaryGainPct">—</div>
-      <div class="delta" id="summaryAssetCount"></div>
-    </div>
-  </div>
-  <div id="btnAddAll" style="display:flex;gap:1px;margin-bottom:12px;border-radius:16px;overflow:hidden;box-shadow:0 4px 16px rgba(21,128,61,.28)">
-    <button onclick="openSearch()" style="flex:1;display:flex;align-items:center;justify-content:center;gap:7px;padding:13px 12px;background:#15803d;border:none;font-family:inherit;font-size:13px;font-weight:700;color:#fff;cursor:pointer;transition:background .15s" onmouseover="this.style.background='#166534'" onmouseout="this.style.background='#15803d'">
-      <svg viewBox="0 0 16 16" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" width="14" height="14"><circle cx="6.5" cy="6.5" r="4.5"/><line x1="10" y1="10" x2="14" y2="14"/></svg>
-      Añadir Activos
-    </button>
-    <button onclick="openLiqModal(null)" style="flex:1;display:flex;align-items:center;justify-content:center;gap:7px;padding:13px 12px;background:#15803d;border:none;font-family:inherit;font-size:13px;font-weight:700;color:#fff;cursor:pointer;transition:background .15s" onmouseover="this.style.background='#166534'" onmouseout="this.style.background='#15803d'">
-      <svg viewBox="0 0 16 16" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" width="14" height="14"><circle cx="8" cy="8" r="6"/><path d="M8 5.5v5M5.5 8h5"/></svg>
-      Añadir Liquidez
-    </button>
+  <!-- Hidden mirrors to keep render() safe (still populated, not shown) -->
+  <div style="display:none">
+    <span id="count"></span><span id="summaryInvested"></span><span id="summaryGainAbs"></span>
+    <span id="summaryGainPct"></span><span id="summaryAssetCount"></span>
   </div>
   <div id="brokerFilterBar"></div>
-  <div class="card"><div class="sectionTitle" data-i18n="myPortfolio">Mi cartera</div><div id="list"></div></div>
+  <div class="card"><div class="sectionTitle" data-i18n="positions">Posiciones</div><div id="list"></div></div>
   <div class="card" id="homeLiqCard" style="display:none">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
       <div class="sectionTitle" style="margin-bottom:0">💰 Liquidez</div>
@@ -5742,6 +5784,52 @@ function render(){
   document.getElementById('summaryAssetCount').textContent=`${c.total} ${t('positions')} · ${c.ok} ${currentLang==='es'?'con histórico':'w/ history'}`;
   renderLists();buildTfRow();renderChart();
   renderLiquidity();
+  renderHomeExtras();
+}
+
+// ── Home greeting + distribution donut (light mockup layout) ─────────────────
+function renderHomeExtras(){
+  const gEl=document.getElementById('homeGreeting');
+  if(gEl){
+    const email=(_sbUser&&_sbUser.email)||'';
+    let nm=(email.split('@')[0]||'').replace(/[._-]+/g,' ').trim();
+    nm=nm?nm.charAt(0).toUpperCase()+nm.slice(1):(currentLang==='es'?'inversor':'investor');
+    const h=new Date().getHours();
+    const greet=currentLang==='es'?(h<12?'Buenos días':h<20?'Buenas tardes':'Buenas noches'):(h<12?'Good morning':h<20?'Good afternoon':'Good evening');
+    gEl.textContent=`${greet}, ${nm} 👋`;
+  }
+  const dEl=document.getElementById('homeDate');
+  if(dEl){
+    try{ const d=new Date().toLocaleDateString(currentLang==='es'?'es-ES':'en-US',{weekday:'long',day:'numeric',month:'long'});
+      dEl.innerHTML=`${d} · <span style="color:var(--green);font-weight:600">● ${currentLang==='es'?'Mercados abiertos':'Markets open'}</span>`; }catch(_){}
+  }
+  const wrap=document.getElementById('homeDonut'), leg=document.getElementById('homeDonutLegend');
+  if(!wrap||!leg) return;
+  const CATCOL={'ETFs':'#2db564','Acciones':'#1a5fa8','Stocks':'#1a5fa8','Oro':'#9a6f00','Fondos':'#7c3aed'};
+  const sums={};
+  assets.filter(a=>a.quantity>0).forEach(a=>{ const cat=assetCategory(a); const v=toDisplay(a.value,assetCcy(a))||0; if(v>0)sums[cat]=(sums[cat]||0)+v; });
+  const liqTot=getLiquidity().reduce((s,l)=>s+toDisplay(Number(l.amount)||0,l.currency||'EUR'),0);
+  if(liqTot>0) sums[currentLang==='es'?'Liquidez':'Cash']=liqTot;
+  const entries=Object.entries(sums).filter(([,v])=>v>0).sort((a,b)=>b[1]-a[1]);
+  const total=entries.reduce((s,[,v])=>s+v,0);
+  if(!total){ wrap.innerHTML=''; leg.innerHTML=''; return; }
+  const C=2*Math.PI*40; let off=0; const segs=[];
+  entries.forEach(([cat,v])=>{
+    const frac=v/total, col=CATCOL[cat]||'#8aaa95', len=frac*C;
+    segs.push(`<circle cx="50" cy="50" r="40" fill="none" stroke="${col}" stroke-width="13" stroke-dasharray="${len.toFixed(1)} ${(C-len).toFixed(1)}" stroke-dashoffset="${(-off).toFixed(1)}" stroke-linecap="butt" transform="rotate(-90 50 50)"/>`);
+    off+=len;
+  });
+  const npos=assets.filter(a=>a.quantity>0).length;
+  wrap.innerHTML=`<svg width="100" height="100" viewBox="0 0 100 100">
+    <circle cx="50" cy="50" r="40" fill="none" stroke="var(--surf3)" stroke-width="13"/>
+    ${segs.join('')}
+    <text x="50" y="48" text-anchor="middle" font-size="13" fill="var(--text)" font-weight="800">${npos}</text>
+    <text x="50" y="61" text-anchor="middle" font-size="7.5" fill="var(--muted2)">${currentLang==='es'?'posiciones':'positions'}</text>
+  </svg>`;
+  leg.innerHTML=entries.map(([cat,v])=>{
+    const col=CATCOL[cat]||'#8aaa95', pct=(v/total*100);
+    return `<div class="dl-r"><div class="dl-d" style="background:${col}"></div><span>${cat}</span><span class="dl-p">${pct.toFixed(0)}%</span></div>`;
+  }).join('');
 }
 
 // ========== Boot ==========
