@@ -1602,13 +1602,13 @@ a.d-nav-item{text-decoration:none;color:inherit;}.d-nav-item.active{background:#
     <!-- Allocation Overview tabs -->
     <div class="card" style="padding:0;overflow:hidden">
       <div style="padding:16px 16px 0">
-        <div class="sectionTitle" style="margin-bottom:10px">Allocation Overview</div>
+        <div class="sectionTitle" style="margin-bottom:10px">Distribución de Cartera</div>
         <div class="an-alloc-tabbar">
-          <button onclick="_anAllocTab('type')" id="anAllocTab-type" class="an-alloc-tab an-alloc-tab-active">Asset Type</button>
-          <button onclick="_anAllocTab('country')" id="anAllocTab-country" class="an-alloc-tab">Country</button>
-          <button onclick="_anAllocTab('currency')" id="anAllocTab-currency" class="an-alloc-tab">Currency</button>
+          <button onclick="_anAllocTab('type')" id="anAllocTab-type" class="an-alloc-tab an-alloc-tab-active">Tipo</button>
+          <button onclick="_anAllocTab('country')" id="anAllocTab-country" class="an-alloc-tab">País</button>
+          <button onclick="_anAllocTab('currency')" id="anAllocTab-currency" class="an-alloc-tab">Divisa</button>
           <button onclick="_anAllocTab('sector')" id="anAllocTab-sector" class="an-alloc-tab">Sector</button>
-          <button onclick="_anAllocTab('broker')" id="anAllocTab-broker" class="an-alloc-tab">Broker</button>
+          <button onclick="_anAllocTab('broker')" id="anAllocTab-broker" class="an-alloc-tab">Bróker</button>
         </div>
       </div>
       <div style="padding:16px" id="anAllocContent"></div>
@@ -3294,7 +3294,7 @@ function showScreen(name,keepTab=false){
   if(name==='impuestos'&&dataReady)renderImpuestos();
   if(name==='topinvestors')_insLoad(_insCurrentSymbol);
 }
-function normalizeHistory(h){const _all=(Array.isArray(h)?h:[]).map(p=>({date:String(p.date).slice(0,10),close:Number(p.close)})).filter(p=>p.date&&Number.isFinite(p.close)&&p.close>0).sort((a,b)=>a.date.localeCompare(b.date));return _all.length>1260?_all.slice(-1260):_all;} // cap at 5Y (~1260 trading days)
+function normalizeHistory(h){const _all=(Array.isArray(h)?h:[]).map(p=>({date:String(p.date).slice(0,10),close:Number(p.close)})).filter(p=>p.date&&Number.isFinite(p.close)&&p.close>0).sort((a,b)=>a.date.localeCompare(b.date));if(_all.length>=4){const _s=[..._all].sort((a,b)=>a.close-b.close);const _m=_s[Math.floor(_s.length/2)].close;const _c=_all.filter(p=>p.close<=_m*10&&p.close>=_m/10);if(_c.length>=4){return _c.length>1260?_c.slice(-1260):_c;}}return _all.length>1260?_all.slice(-1260):_all;} // cap at 5Y; outlier filter removes bad data points >10x median
 function getPriceOnOrBefore(s,date){if(!s.length)return null;let lo=0,hi=s.length-1,best=-1;while(lo<=hi){const m=Math.floor((lo+hi)/2);if(s[m].date<=date){best=m;lo=m+1;}else hi=m-1;}return best>=0?s[best].close:null;}
 
 function buildPortfolioTimeSeries(){
@@ -3972,9 +3972,19 @@ function _anRenderAllocContent(tab) {
   } else if (tab === 'country') {
     const regionOf = a => {
       const isin = (a.isin||'').toUpperCase();
+      const n = (a.name||a.shortName||a.symbol||'').toLowerCase();
+      // By fund name/geographic exposure (more accurate than domicile country)
+      if (n.includes('gold')||n.includes('oro')||n.includes('silver')||n.includes('plata')||n.includes('igln')||n.includes('sgld')||(n.includes('physical')&&!n.includes('world'))) return 'Mat. Primas';
+      if (n.includes('world')||n.includes('msci world')||n.includes('acwi')||(n.includes('global')&&!n.includes('iberia'))) return 'Global';
+      if (n.includes('emerg')||n.includes('emergentes')||n.includes('em imi')) return 'Emergentes';
+      if (n.includes('asia')||n.includes('pacific')||n.includes('japan')||n.includes('china')||n.includes('korea')) return 'Asia/Pacífico';
+      if (n.includes('iberia')||n.includes('iberian')||n.includes('ibex')) return 'España';
+      if (n.includes('s&p 500')||n.includes('sp500')||n.includes('nasdaq')||n.includes('russell')||n.includes('nyse')||n.includes('american')||n.includes('us equity')) return 'EE.UU.';
+      if (n.includes('europe')||n.includes('europa')||n.includes('stoxx 600')||n.includes('eurostoxx')) return 'Europa';
+      if (n.includes('international')||n.includes('internacional')) return 'Internacional';
+      // Fall back to ISIN prefix
       if (isin.startsWith('ES')) return 'España';
-      if (isin.startsWith('US')) return 'USA';
-      if (isin.startsWith('IE')||isin.startsWith('LU')||isin.startsWith('DE')||isin.startsWith('NL')||isin.startsWith('FR')) return 'Europa/Int\'l';
+      if (isin.startsWith('US')) return 'EE.UU.';
       return 'Internacional';
     };
     assets.forEach(a => { const r = regionOf(a); groups[r]=(groups[r]||0)+toDisplay(a.value,assetCcy(a)); });
@@ -8523,9 +8533,17 @@ function _comRenderPost(p) {
   const badgeClass = p.post_type === 'transaccion' ? 'com-badge-transaccion' : 'com-badge-portfolio';
   const badgeLabel = p.post_type === 'portfolio' ? '📊 Portafolio' : p.post_type === 'transaccion' ? '💸 Transacción' : '💬 Análisis';
 
+  // Parse metadata from content JSON (new format) or fall back to DB columns (old format)
+  let _pfMeta=null,_txMeta=null,_displayContent=p.content||'',_displayTags='';
+  if(p.post_type==='portfolio'||p.post_type==='transaccion'){
+    try{const _j=JSON.parse(p.content||'{}');if(_j._pf){_pfMeta=_j;_displayContent=_j.d||'';_displayTags=_j.k||'';}else if(_j._tx){_txMeta=_j;_displayContent=_j.d||'';_displayTags=_j.k||'';}}catch(_){}
+    if(!_pfMeta&&p.pf_total!=null)_pfMeta={t:p.pf_total,i:p.pf_invested,g:p.pf_gain_pct,p:p.pf_positions,d:p.content,k:p.tags||''};
+    if(!_txMeta&&p.tx_asset)_txMeta={a:p.tx_asset,ty:p.tx_type,dt:p.tx_date,q:p.tx_qty,pr:p.tx_price,d:p.tx_comment||'',k:p.tags||''};
+  }
+
   let widget = '';
-  if (p.post_type === 'portfolio' && p.pf_total) {
-    const gain = Number(p.pf_gain_pct || 0);
+  if (p.post_type === 'portfolio' && _pfMeta) {
+    const gain = Number(_pfMeta.g || 0);
     const gainStr = (gain >= 0 ? '▲ +' : '▼ ') + Math.abs(gain).toFixed(2) + '%';
     const gainClass = gain >= 0 ? 'pos' : 'neg';
     widget = `
@@ -8533,23 +8551,23 @@ function _comRenderPost(p) {
         <div class="com-pf-hd">
           <div>
             <div style="font-size:9px;text-transform:uppercase;letter-spacing:.8px;color:#4a6b55;margin-bottom:4px">Valor total</div>
-            <div class="com-pf-total">${Number(p.pf_total).toLocaleString('es-ES', {minimumFractionDigits:2,maximumFractionDigits:2})} €</div>
+            <div class="com-pf-total">${Number(_pfMeta.t||0).toLocaleString('es-ES', {minimumFractionDigits:2,maximumFractionDigits:2})} €</div>
           </div>
           <div style="text-align:right">
             <div class="com-pf-gain ${gainClass}">${gainStr}</div>
-            <div style="font-size:11px;color:#4a6b55;margin-top:2px">${p.pf_positions || 0} posiciones</div>
+            <div style="font-size:11px;color:#4a6b55;margin-top:2px">${_pfMeta.p || 0} posiciones</div>
           </div>
         </div>
         <div class="com-pf-stats">
-          <div class="com-pf-stat"><div class="com-pf-stat-lbl">Invertido</div><div class="com-pf-stat-val">${Number(p.pf_invested||0).toLocaleString('es-ES',{maximumFractionDigits:0})} €</div></div>
-          <div class="com-pf-stat"><div class="com-pf-stat-lbl">Posiciones</div><div class="com-pf-stat-val">${p.pf_positions||0}</div></div>
+          <div class="com-pf-stat"><div class="com-pf-stat-lbl">Invertido</div><div class="com-pf-stat-val">${Number(_pfMeta.i||0).toLocaleString('es-ES',{maximumFractionDigits:0})} €</div></div>
+          <div class="com-pf-stat"><div class="com-pf-stat-lbl">Posiciones</div><div class="com-pf-stat-val">${_pfMeta.p||0}</div></div>
           <div class="com-pf-stat"><div class="com-pf-stat-lbl">Rentab.</div><div class="com-pf-stat-val" style="color:#2ecc71">${gain>=0?'+':''}${gain.toFixed(2)}%</div></div>
         </div>
       </div>`;
-  } else if (p.post_type === 'transaccion' && p.tx_asset) {
-    const isBuy = (p.tx_type || 'Compra') === 'Compra';
-    const total = (Number(p.tx_qty||0) * Number(p.tx_price||0)).toLocaleString('es-ES',{minimumFractionDigits:2,maximumFractionDigits:2});
-    const txDate = p.tx_date ? new Date(p.tx_date) : null;
+  } else if (p.post_type === 'transaccion' && _txMeta) {
+    const isBuy = (_txMeta.ty || 'Compra') === 'Compra';
+    const txTotal = (Number(_txMeta.q||0) * Number(_txMeta.pr||0)).toLocaleString('es-ES',{minimumFractionDigits:2,maximumFractionDigits:2});
+    const txDate = _txMeta.dt ? new Date(_txMeta.dt) : null;
     const day = txDate ? txDate.getDate() : '—';
     const mon = txDate ? txDate.toLocaleString('es-ES',{month:'short'}) : '';
     widget = `
@@ -8557,14 +8575,14 @@ function _comRenderPost(p) {
         <div class="com-tx-date-col"><strong>${day}</strong><span>${mon}</span><span style="font-size:10px;color:#4a6b55">${isBuy?'▼':'▲'}</span></div>
         <div class="com-tx-logo">📈</div>
         <div class="com-tx-info">
-          <div class="com-tx-asset">${_comEsc(p.tx_asset)}</div>
-          <div class="com-tx-detail">${p.tx_type} × ${p.tx_qty} acc · ${Number(p.tx_price||0).toFixed(2)} €/acc</div>
+          <div class="com-tx-asset">${_comEsc(_txMeta.a||'')}</div>
+          <div class="com-tx-detail">${isBuy?'Compra':'Venta'} × ${_txMeta.q||0} acc · ${Number(_txMeta.pr||0).toFixed(2)} €/acc</div>
         </div>
-        <div class="com-tx-amount ${isBuy?'buy':'sell'}">${isBuy?'+':'-'}€${total}</div>
+        <div class="com-tx-amount ${isBuy?'buy':'sell'}">${isBuy?'+':'-'}€${txTotal}</div>
       </div>`;
   }
 
-  const tags = (p.tags||'').split(/\s+/).filter(Boolean).map(t => `<span class="com-tag">${_comEsc(t)}</span>`).join(' ');
+  const tags = (_displayTags||'').split(/\s+/).filter(Boolean).map(t => `<span class="com-tag">${_comEsc(t)}</span>`).join(' ');
 
   return `<div class="com-post" data-id="${p.id}">
     <div class="com-post-hd">
@@ -8576,7 +8594,7 @@ function _comRenderPost(p) {
       <div class="com-post-time">${timeAgo}</div>
     </div>
     <span class="com-post-badge ${badgeClass}">${badgeLabel}</span>
-    ${p.content ? `<p class="com-post-text">${_comEsc(p.content)} ${tags}</p>` : `<p class="com-post-text">${tags}</p>`}
+    ${_displayContent ? `<p class="com-post-text">${_comEsc(_displayContent)}${tags?' '+tags:''}</p>` : (tags ? `<p class="com-post-text">${tags}</p>` : '')}
     ${widget}
     <div class="com-post-actions">
       <button class="com-action-btn${liked?' liked':''}" onclick="_comToggleLike('${p.id}',this)">
@@ -8711,6 +8729,7 @@ function _comSwitchTab(tab) {
     if (form) form.style.display = t === tab ? 'block' : 'none';
     if (btn) btn.classList.toggle('active', t === tab);
   });
+  if (tab === 'portfolio') _comAutofillPortfolio(); // auto-fill portfolio values on tab switch
 }
 
 function _comAutofillPortfolio() {
@@ -8739,27 +8758,29 @@ async function _comPublish() {
   if (_comModalTab === 'texto') {
     const content = document.getElementById('comTextContent')?.value.trim();
     if (!content) { msgEl.textContent = 'Escribe algo para publicar'; msgEl.style.display = ''; return; }
-    payload.content = content;
-    payload.tags = document.getElementById('comTextTags')?.value.trim() || null;
+    const _textTags = document.getElementById('comTextTags')?.value.trim() || '';
+    payload.content = _textTags ? content + '\n' + _textTags : content;
   } else if (_comModalTab === 'portfolio') {
     const content = document.getElementById('comPfContent')?.value.trim();
     const total = Number(document.getElementById('comPfTotal')?.value);
     if (!total) { msgEl.textContent = 'Introduce el valor total del portfolio'; msgEl.style.display = ''; return; }
-    payload.content = content || null;
-    payload.pf_total = total;
-    payload.pf_invested = Number(document.getElementById('comPfInvested')?.value) || null;
-    payload.pf_gain_pct = Number(document.getElementById('comPfGain')?.value) || null;
-    payload.pf_positions = Number(document.getElementById('comPfPositions')?.value) || null;
-    payload.tags = document.getElementById('comPfTags')?.value.trim() || null;
+    const _pfInvested = Number(document.getElementById('comPfInvested')?.value) || null;
+    const _pfGain = Number(document.getElementById('comPfGain')?.value) || null;
+    const _pfPositions = Number(document.getElementById('comPfPositions')?.value) || null;
+    const _pfTags = document.getElementById('comPfTags')?.value.trim() || '';
+    // Pack portfolio metadata into content JSON (community_posts table has no separate pf_* columns)
+    payload.content = JSON.stringify({_pf:1,d:content||'',t:total,i:_pfInvested,g:_pfGain,p:_pfPositions,k:_pfTags});
   } else if (_comModalTab === 'transaccion') {
     const asset = document.getElementById('comTxAsset')?.value.trim();
     if (!asset) { msgEl.textContent = 'Indica el activo de la transacción'; msgEl.style.display = ''; return; }
-    payload.tx_asset = asset;
-    payload.tx_type = document.getElementById('comTxType')?.value || 'Compra';
-    payload.tx_date = document.getElementById('comTxDate')?.value || null;
-    payload.tx_qty = Number(document.getElementById('comTxQty')?.value) || null;
-    payload.tx_price = Number(document.getElementById('comTxPrice')?.value) || null;
-    payload.content = document.getElementById('comTxComment')?.value.trim() || null;
+    const _txType = document.getElementById('comTxType')?.value || 'Compra';
+    const _txDate = document.getElementById('comTxDate')?.value || null;
+    const _txQty = Number(document.getElementById('comTxQty')?.value) || null;
+    const _txPrice = Number(document.getElementById('comTxPrice')?.value) || null;
+    const _txComment = document.getElementById('comTxComment')?.value.trim() || '';
+    const _txTags = document.getElementById('comTxTags')?.value.trim() || '';
+    // Pack tx metadata into content JSON (community_posts table has no separate tx_* columns)
+    payload.content = JSON.stringify({_tx:1,a:asset,ty:_txType,dt:_txDate,q:_txQty,pr:_txPrice,d:_txComment,k:_txTags});
   }
 
   btn.textContent = '…'; btn.disabled = true;
