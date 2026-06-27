@@ -2281,7 +2281,7 @@ table.an-corr-mtx{border-collapse:separate;border-spacing:4px}
     <button class="langBtn ccy-btn" data-ccy="GBP" id="btnCcyGbp" onclick="setDisplayCcy('GBP')">£ GBP</button>
   </div>
   <div class="sheetDivider"></div>
-  <div class="sheetTitle">Account</div>
+  <div class="sheetTitle" data-i18n="account">Cuenta</div>
   <div id="accountSection">
     <button class="accountLoginBtn" id="btnOpenAuth">Entrar o registrarse</button>
   </div>
@@ -2415,26 +2415,26 @@ table.an-corr-mtx{border-collapse:separate;border-spacing:4px}
 <div class="authSheet" id="authSheet">
   <div class="sheetHandle" style="margin-top:14px"></div>
   <div style="display:flex;justify-content:space-between;align-items:center;padding:14px 20px 0">
-    <div style="font-size:17px;font-weight:800;color:#142018">Account</div>
+    <div style="font-size:17px;font-weight:800;color:#142018" id="authModalTitle">Cuenta</div>
     <button class="modalIconBtn" id="btnCloseAuth">✕</button>
   </div>
   <div class="authTabs" id="authTabs">
-    <button class="authTabBtn active" id="authTabLogin">Sign in</button>
-    <button class="authTabBtn" id="authTabRegister">Register</button>
+    <button class="authTabBtn active" id="authTabLogin">Iniciar sesión</button>
+    <button class="authTabBtn" id="authTabRegister">Registrarse</button>
   </div>
   <div id="authFormWrap">
     <div class="authField" id="authNameField" style="display:none">
-      <div class="authFieldLabel">Name</div>
-      <div class="authFieldRow"><input type="text" id="authName" placeholder="Your name" autocomplete="name"></div>
+      <div class="authFieldLabel" id="authNameLabel">Nombre</div>
+      <div class="authFieldRow"><input type="text" id="authName" placeholder="Tu nombre" autocomplete="name"></div>
     </div>
     <div class="authField" id="authEmailField">
       <div class="authFieldLabel">Email</div>
       <div class="authFieldRow"><input type="email" id="authEmail" placeholder="you@email.com" autocomplete="email"></div>
     </div>
     <div class="authField" id="authPasswordField">
-      <div class="authFieldLabel">Password</div>
+      <div class="authFieldLabel" id="authPasswordLabel">Contraseña</div>
       <div class="authFieldRow" style="position:relative">
-        <input type="password" id="authPassword" placeholder="Min. 6 characters" autocomplete="current-password" style="padding-right:44px">
+        <input type="password" id="authPassword" placeholder="Mín. 6 caracteres" autocomplete="current-password" style="padding-right:44px">
         <button type="button" onclick="_togglePwd('authPassword',this)" tabindex="-1" style="position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;padding:4px;color:#888;font-size:18px;line-height:1">👁</button>
       </div>
     </div>
@@ -2453,20 +2453,20 @@ table.an-corr-mtx{border-collapse:separate;border-spacing:4px}
         <button type="button" onclick="_togglePwd('authConfirmPass',this)" tabindex="-1" style="position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;padding:4px;color:#888;font-size:18px;line-height:1">👁</button>
       </div>
     </div>
-    <button class="authSubmitBtn" id="authSubmitBtn">Sign in</button>
+    <button class="authSubmitBtn" id="authSubmitBtn">Entrar</button>
     <div class="authMsg" id="authMsg" style="display:none"></div>
   </div>
-  <div style="font-size:10.5px;color:#8fa090;text-align:center;padding:8px 20px 4px;line-height:1.55;">
-    Finasset is a personal portfolio tracker. Not financial advice.<br>
+  <div id="authModalFooter" style="font-size:10.5px;color:#8fa090;text-align:center;padding:8px 20px 4px;line-height:1.55;">
+    <span id="authModalFooterText">Finasset es un rastreador personal de cartera. No es asesoramiento financiero.</span><br>
     <button class="legal-footer-link" style="font-size:10.5px" onclick="closeAuthModal();showScreen('privacy')">Pol&iacute;tica de Privacidad</button>
     &middot;
     <button class="legal-footer-link" style="font-size:10.5px" onclick="closeAuthModal();showScreen('terms')">T&eacute;rminos de Uso</button>
   </div>
   <div id="authVerifyState" style="display:none;text-align:center;padding:24px 24px 8px">
     <div style="font-size:40px;margin-bottom:12px">📧</div>
-    <div style="font-size:17px;font-weight:800;color:#142018;margin-bottom:8px">Check your email</div>
+    <div style="font-size:17px;font-weight:800;color:#142018;margin-bottom:8px" id="authVerifyTitle">Revisa tu correo</div>
     <div style="font-size:13px;color:#6d7e72;line-height:1.6;margin:0 auto;max-width:260px" id="authVerifyMsg"></div>
-    <button style="margin-top:14px;background:none;border:none;color:#15803d;font:inherit;font-size:13px;font-weight:700;cursor:pointer" id="btnResendVerify">Resend email</button>
+    <button style="margin-top:14px;background:none;border:none;color:#15803d;font:inherit;font-size:13px;font-weight:700;cursor:pointer" id="btnResendVerify">Reenviar email</button>
   </div>
 </div>
 
@@ -7332,6 +7332,17 @@ function switchLang(lang) {
       ? 'Al crear una cuenta aceptas los <a href="/privacy.html" target="_blank" style="color:#15803d;font-weight:700">términos y condiciones</a>'
       : 'By creating an account you accept the <a href="/privacy.html" target="_blank" style="color:#15803d;font-weight:700">terms and conditions</a>';
   }
+  // Update auth modal strings
+  var _amt=document.getElementById('authModalTitle');if(_amt)_amt.textContent=isEs?'Cuenta':'Account';
+  var _atl=document.getElementById('authTabLogin');if(_atl)_atl.textContent=isEs?'Iniciar sesión':'Sign in';
+  var _atr=document.getElementById('authTabRegister');if(_atr)_atr.textContent=isEs?'Registrarse':'Register';
+  var _anl=document.getElementById('authNameLabel');if(_anl)_anl.textContent=isEs?'Nombre':'Name';
+  var _apl=document.getElementById('authPasswordLabel');if(_apl)_apl.textContent=isEs?'Contraseña':'Password';
+  var _ani=document.getElementById('authName');if(_ani)_ani.placeholder=isEs?'Tu nombre':'Your name';
+  var _api=document.getElementById('authPassword');if(_api)_api.placeholder=isEs?'Mín. 6 car.':'Min. 6 chars';
+  var _amf=document.getElementById('authModalFooterText');if(_amf)_amf.textContent=isEs?'Finasset es un rastreador personal de cartera. No es asesoramiento financiero.':'Finasset is a personal portfolio tracker. Not financial advice.';
+  var _avt=document.getElementById('authVerifyTitle');if(_avt)_avt.textContent=isEs?'Revisa tu correo':'Check your email';
+  var _brv=document.getElementById('btnResendVerify');if(_brv)_brv.textContent=isEs?'Reenviar email':'Resend email';
   // Refresh OB slide text if onboarding is visible
   if (document.getElementById('cs-ob')?.classList.contains('cs-active')) renderOb();
   if (dataReady) { render(); }
