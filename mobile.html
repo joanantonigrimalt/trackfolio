@@ -1592,7 +1592,7 @@ table.an-corr-mtx{border-collapse:separate;border-spacing:4px}
     <!-- Yield row -->
     <div class="div-yield-row">
       <div class="div-yield-chip"><div class="dl">Yield</div><div class="dn" id="divYield">—</div></div>
-      <div class="div-yield-chip"><div class="dl">Yield on Cost</div><div class="dn" id="divYieldCost">—</div></div>
+      <div class="div-yield-chip"><div class="dl" id="divYieldCostLabel">Rentabilidad s/coste</div><div class="dn" id="divYieldCost">—</div></div>
     </div>
   </div>
 
@@ -1658,8 +1658,8 @@ table.an-corr-mtx{border-collapse:separate;border-spacing:4px}
   <!-- Future Value -->
   <div class="card" id="divFVCard" style="display:none">
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
-      <div class="sectionTitle" style="margin:0">Future Value</div>
-      <button class="div-fv-set-btn" onclick="_openDivFVModal()">Set Values</button>
+      <div class="sectionTitle" id="divFVTitle" style="margin:0">Valor futuro</div>
+      <button class="div-fv-set-btn" id="divFVSetBtn" onclick="_openDivFVModal()">Ajustar</button>
     </div>
     <div class="div-fv-hdr">
       <div class="div-fv-big" id="divFVValue">—</div>
@@ -1751,7 +1751,7 @@ table.an-corr-mtx{border-collapse:separate;border-spacing:4px}
 <div id="screen-ia" class="screen">
   <div class="ia-page-header">
     <h1>Finasset AI</h1>
-    <p id="iaSubtitle">Your personal financial analyst</p>
+    <p id="iaSubtitle">Tu analista financiero personal</p>
   </div>
   <div class="ia-scroll">
 
@@ -1987,9 +1987,9 @@ table.an-corr-mtx{border-collapse:separate;border-spacing:4px}
       <div class="card-title">
         <div class="ctitle-left">
           <div class="ctitle-icon ci-amber"><svg viewBox="0 0 16 16" fill="none" stroke="#b45309" stroke-width="1.8" width="16" height="16"><path d="M8 2l1.5 3 3.5.5-2.5 2.5.6 3.5L8 10l-3.1 1.5.6-3.5L3 5.5l3.5-.5L8 2z"/></svg></div>
-          Vera's Insights
+          <span id="veraInsightsLabel">Vera's Insights</span>
         </div>
-        <span class="card-link">Ver todo</span>
+        <span class="card-link" id="veraViewAllBtn">Ver todo</span>
       </div>
       <div class="insight-list" id="iaInsightsList"></div>
     </div>
@@ -1999,7 +1999,7 @@ table.an-corr-mtx{border-collapse:separate;border-spacing:4px}
       <div class="card-title">
         <div class="ctitle-left">
           <div class="ctitle-icon ci-red"><svg viewBox="0 0 16 16" fill="none" width="16" height="16"><path d="M8 13.5S2 9.5 2 5.5A3.5 3.5 0 0 1 8 3.5 3.5 3.5 0 0 1 14 5.5C14 9.5 8 13.5 8 13.5z" fill="rgba(240,82,82,0.2)" stroke="#f05252" stroke-width="1.4"/></svg></div>
-          Health Score
+          <span id="hsCardTitle">Health Score</span>
         </div>
       </div>
       <div class="hs-row">
@@ -2018,9 +2018,9 @@ table.an-corr-mtx{border-collapse:separate;border-spacing:4px}
         <div class="plan-step"><div class="plan-step-num">2</div>Limitar peso máximo de un activo al 70%<span class="plan-pts">+8 pts</span></div>
       </div>
       <div style="margin:12px 0 14px;">
-        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;"><span style="font-size:.65rem;font-weight:700;color:var(--ia-muted);text-transform:uppercase;letter-spacing:.07em;">Score history · 6 months</span><span style="font-size:.65rem;font-weight:700;color:#1aab70;" id="hsHistLabel">↑ mejorando</span></div>
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;"><span id="hsHistTitle" style="font-size:.65rem;font-weight:700;color:var(--ia-muted);text-transform:uppercase;letter-spacing:.07em;">Historial de score · 6 meses</span><span style="font-size:.65rem;font-weight:700;color:#1aab70;" id="hsHistLabel">↑ mejorando</span></div>
         <div style="position:relative;height:52px;"><canvas id="scoreHistCanvas"></canvas></div>
-        <div style="display:flex;align-items:center;gap:8px;margin-top:10px;padding:9px 12px;background:#f0faf5;border-radius:10px;"><svg viewBox="0 0 16 16" fill="none" stroke="#1aab70" stroke-width="1.6" width="16" height="16"><circle cx="8" cy="8" r="6"/><path d="M5 8l2 2 4-4"/></svg><span style="font-size:.7rem;color:#166534;line-height:1.4;">Tu Health Score supera al <b id="hsPercentile">63%</b> de usuarios con portfolio similar.</span></div>
+        <div style="display:flex;align-items:center;gap:8px;margin-top:10px;padding:9px 12px;background:#f0faf5;border-radius:10px;"><svg viewBox="0 0 16 16" fill="none" stroke="#1aab70" stroke-width="1.6" width="16" height="16"><circle cx="8" cy="8" r="6"/><path d="M5 8l2 2 4-4"/></svg><span style="font-size:.7rem;color:#166534;line-height:1.4;"><span id="hsPercentilePrefix">Tu Health Score supera al </span><b id="hsPercentile">63%</b><span id="hsPercentileSuffix"> de usuarios con portfolio similar.</span></span></div>
       </div>
       <button class="improve-btn">
         <svg viewBox="0 0 16 16" fill="none" stroke="#fff" stroke-width="1.8" width="15" height="15"><path d="M8 2v3M8 11v3M2 8h3M11 8h3M4.2 4.2l2.1 2.1M9.7 9.7l2.1 2.1M4.2 11.8l2.1-2.1M9.7 6.3l2.1-2.1"/></svg>
@@ -2302,15 +2302,15 @@ table.an-corr-mtx{border-collapse:separate;border-spacing:4px}
     <button onclick="closeLiqModal()" style="background:rgba(20,32,24,.07);border:none;width:32px;height:32px;border-radius:10px;font-size:14px;cursor:pointer;color:#4a5f4e;margin-top:14px">✕</button>
   </div>
   <div class="liqField">
-    <div class="liqLabel">Nombre</div>
+    <div class="liqLabel" id="liqNameLblEl">Nombre</div>
     <input class="liqInp" id="liqName" placeholder="ej. Cuenta Ahorro ING" type="text">
   </div>
   <div class="liqField">
-    <div class="liqLabel">Broker / Entidad</div>
+    <div class="liqLabel" id="liqBrokerLblEl">Broker / Entidad</div>
     <input class="liqInp" id="liqBroker" placeholder="ej. MyInvestor, ING, Indexa..." type="text">
   </div>
   <div class="liqField">
-    <div class="liqLabel">Tipo</div>
+    <div class="liqLabel" id="liqTypeLblEl">Tipo</div>
     <div class="liqTypeRow" id="liqTypeRow">
       <button class="liqTypeBtn active" data-ltype="savings" onclick="setLiqType('savings')">🏦 Ahorro</button>
       <button class="liqTypeBtn" data-ltype="deposit" onclick="setLiqType('deposit')">🔒 Depósito</button>
@@ -2337,7 +2337,7 @@ table.an-corr-mtx{border-collapse:separate;border-spacing:4px}
       <input class="liqInp" id="liqAmount" placeholder="0.00" type="number" min="0" step="0.01">
     </div>
     <div class="liqField">
-      <div class="liqLabel">Divisa</div>
+      <div class="liqLabel" id="liqCurrencyLblEl">Divisa</div>
       <select class="liqInp" id="liqCurrency" style="appearance:none">
         <option value="EUR">€ EUR</option>
         <option value="USD">$ USD</option>
@@ -2351,10 +2351,10 @@ table.an-corr-mtx{border-collapse:separate;border-spacing:4px}
     <input class="liqInp" id="liqRate" placeholder="ej. 3.00" type="number" min="0" step="0.01" max="100">
   </div>
   <div class="liqField">
-    <div class="liqLabel">Desde (opcional)</div>
+    <div class="liqLabel" id="liqSinceLblEl">Desde (opcional)</div>
     <input class="liqInp" id="liqSince" type="date">
   </div>
-  <button class="liqSaveBtn" onclick="saveLiqItem()">Guardar</button>
+  <button class="liqSaveBtn" id="liqSaveBtnEl" onclick="saveLiqItem()">Guardar</button>
   <button class="liqDelBtn" id="liqDelBtn" style="display:none" onclick="deleteLiqItem()">Eliminar posición</button>
 </div>
 
@@ -7375,6 +7375,23 @@ function switchLang(lang) {
   var _ab2=document.getElementById('addBroker');if(_ab2)_ab2.placeholder=isEs?'ej. DEGIRO, MyInvestor, IB...':'e.g. DEGIRO, MyInvestor, IB...';
   var _plp=document.getElementById('perfLegendPos');if(_plp&&_plp.lastChild)_plp.lastChild.textContent=isEs?'Positivo':'Positive';
   var _pln=document.getElementById('perfLegendNeg');if(_pln&&_pln.lastChild)_pln.lastChild.textContent=isEs?'Negativo':'Negative';
+  var _ias=document.getElementById('iaSubtitle');if(_ias)_ias.textContent=isEs?'Tu analista financiero personal':'Your personal financial analyst';
+  var _vil=document.getElementById('veraInsightsLabel');if(_vil)_vil.textContent=isEs?'Insights de Vera':"Vera's Insights";
+  var _vva=document.getElementById('veraViewAllBtn');if(_vva)_vva.textContent=isEs?'Ver todo':'See all';
+  var _hct2=document.getElementById('hsCardTitle');if(_hct2)_hct2.textContent=isEs?'Score de salud':'Health Score';
+  var _hht=document.getElementById('hsHistTitle');if(_hht)_hht.textContent=isEs?'Historial de score · 6 meses':'Score history · 6 months';
+  var _hpp=document.getElementById('hsPercentilePrefix');if(_hpp)_hpp.textContent=isEs?'Tu Health Score supera al ':'Your Health Score beats ';
+  var _hps=document.getElementById('hsPercentileSuffix');if(_hps)_hps.textContent=isEs?' de usuarios con portfolio similar.':' of users with a similar portfolio.';
+  var _yoc=document.getElementById('divYieldCostLabel');if(_yoc)_yoc.textContent=isEs?'Rentabilidad s/coste':'Yield on Cost';
+  var _fvt=document.getElementById('divFVTitle');if(_fvt)_fvt.textContent=isEs?'Valor futuro':'Future Value';
+  var _fvs=document.getElementById('divFVSetBtn');if(_fvs)_fvs.textContent=isEs?'Ajustar':'Set Values';
+  var _lnl=document.getElementById('liqNameLblEl');if(_lnl)_lnl.textContent=isEs?'Nombre':'Name';
+  var _lbl2=document.getElementById('liqBrokerLblEl');if(_lbl2)_lbl2.textContent=isEs?'Broker / Entidad':'Broker / Entity';
+  var _ltl=document.getElementById('liqTypeLblEl');if(_ltl)_ltl.textContent=isEs?'Tipo':'Type';
+  var _lcl=document.getElementById('liqCurrencyLblEl');if(_lcl)_lcl.textContent=isEs?'Divisa':'Currency';
+  var _lsl=document.getElementById('liqSinceLblEl');if(_lsl)_lsl.textContent=isEs?'Desde (opcional)':'Since (optional)';
+  var _lsb2=document.getElementById('liqSaveBtnEl');if(_lsb2)_lsb2.textContent=isEs?'Guardar':'Save';
+  var _ldb2=document.getElementById('liqDelBtn');if(_ldb2)_ldb2.textContent=isEs?'Eliminar posición':'Remove position';
   // Refresh OB slide text if onboarding is visible
   if (document.getElementById('cs-ob')?.classList.contains('cs-active')) renderOb();
   if (dataReady) { render(); }
