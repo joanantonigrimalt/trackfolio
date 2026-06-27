@@ -1275,6 +1275,12 @@ html,body{height:100%;overflow:hidden;font-family:-apple-system,BlinkMacSystemFo
 .vera-strip{border-bottom-color:var(--border)!important}
 .vera-dot{border-color:var(--surf)!important}
 .vera-pro-pill{background:var(--ga)!important;border-color:rgba(26,122,66,.25)!important;color:var(--green)!important}
+/* Vera IA → 2 columnas (chat izquierda + panel derecho) como el mockup */
+@media(min-width:980px){
+  #screen-ia .ia-scroll{display:grid!important;grid-template-columns:1.7fr 1fr;gap:14px;align-items:start}
+  #screen-ia .ia-scroll > .chat-card{grid-column:1;grid-row:1 / span 99}
+  #screen-ia .ia-scroll > :not(.chat-card){grid-column:2}
+}
 /* KPI grid (Mi cartera) */
 .pfKpiGrid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:14px}
 @media(max-width:760px){.pfKpiGrid{grid-template-columns:1fr 1fr}}
