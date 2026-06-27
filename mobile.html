@@ -3176,7 +3176,7 @@ function showScreen(name,keepTab=false){
   if(name==='impuestos'&&dataReady)renderImpuestos();
   if(name==='topinvestors')_insLoad(_insCurrentSymbol);
 }
-function normalizeHistory(h){return(Array.isArray(h)?h:[]).map(p=>({date:String(p.date).slice(0,10),close:Number(p.close)})).filter(p=>p.date&&Number.isFinite(p.close)&&p.close>0).sort((a,b)=>a.date.localeCompare(b.date));}
+function normalizeHistory(h){const _all=(Array.isArray(h)?h:[]).map(p=>({date:String(p.date).slice(0,10),close:Number(p.close)})).filter(p=>p.date&&Number.isFinite(p.close)&&p.close>0).sort((a,b)=>a.date.localeCompare(b.date));return _all.length>1260?_all.slice(-1260):_all;} // cap at 5Y (~1260 trading days)
 function getPriceOnOrBefore(s,date){if(!s.length)return null;let lo=0,hi=s.length-1,best=-1;while(lo<=hi){const m=Math.floor((lo+hi)/2);if(s[m].date<=date){best=m;lo=m+1;}else hi=m-1;}return best>=0?s[best].close:null;}
 
 // Simple string hash for cache keys (djb2-style, base36 output)
@@ -5691,7 +5691,9 @@ function buildCustomAssetObj(ca,pos){
   const gain=qty*(cpEur-bpEur); // always EUR
   const gainPct=bpEur>0?((cpEur-bpEur)/bpEur)*100:0;
   const pts=ca.history?.length||0;
-  const covSt=pts>=1200?'OK':pts>=60?'PARTIAL':'MISSING';
+  // Use API coverage status if passed through enrichedInfo — avoids misclassifying assets with
+  // 1100-1199 pts as PARTIAL when the API already confirmed them as OK (e.g. Polar Capital 1186pts)
+  const covSt=ca._apiCoverageStatus||(pts>=1200?'OK':pts>=60?'PARTIAL':'MISSING');
   return{isin:ca.isin||ca.symbol,name:ca.name||ca.shortName||ca.symbol,fullName:ca.name||ca.symbol,symbol:ca.symbol,quantity:qty,buyPrice:bp,currentPrice:cp,invested:qty*bp,value:qty*cp,gain,gainPct,mapping:{type:ca.type||'stock'},provider:'yahoo',coverageStatus:covSt,history:ca.history||[],hasRealHistory:pts>1,_rawQty:qty,_rawBuyPrice:bp,isCustom:true,customCurrency:ca.currency};
 }
 
@@ -5704,13 +5706,14 @@ function loadCustomIntoAssets(cvMap){
     const coverageCurrency=cvMap&&cvMap[isin]?.data?.quote?.currency;
     const coveragePrice=cvMap&&cvMap[isin]?.data?.quote?.price;
     const coverageHistory=cvMap&&cvMap[isin]?.data?.history; // ← get full history from coverage API
-    // Enrich custom asset with coverage data: price, currency, AND history
-    // This ensures custom/cloud assets show "con histórico" just like seed assets
+    const coverageApiStatus=cvMap&&cvMap[isin]?.data?.coverage?.status; // ← trust API's OK/PARTIAL/MISSING
+    // Enrich custom asset with coverage data: price, currency, history, AND coverage status from API
     const enrichedInfo={
       ...info,
       ...(coverageCurrency&&{currency:coverageCurrency}),
       ...(coveragePrice>0&&{currentPrice:coveragePrice}),
       ...(coverageHistory?.length>1&&{history:normalizeHistory(coverageHistory)}),
+      ...(coverageApiStatus&&{_apiCoverageStatus:coverageApiStatus}),
     };
     return buildCustomAssetObj(enrichedInfo,pos);
   }).filter(a=>a.quantity>0);
@@ -7168,7 +7171,7 @@ function renderLiquidity() {
 
 function renderLiqHeroTotal() {
   // Include liquidity in the hero total value display
-  if(!dataReady) return;
+  if(!dataReady||!_pricesLive) return; // don't overwrite "Actualizando…" with stale value
   const liqTotal = getLiquidity().reduce((s,x)=>s+toDisplay(x.amount,x.currency||'EUR'),0);
   const assetsTotal = assets.reduce((s,a)=>s+toDisplay(a.value,assetCcy(a)),0);
   const grand = assetsTotal + liqTotal;
