@@ -3513,7 +3513,7 @@ function openModal(isin){
   const _typeLabel=TYPE_LABELS[a.mapping?.type||'']||a.mapping?.type||'';
   if(_hint)_hint.textContent=(_typeLabel?_typeLabel+' · ':'')+(_isEdit?(currentLang==='es'?'Editar posición':'Edit position'):(currentLang==='es'?'Nueva posición':'New position'));
   document.getElementById('simpleQty').value=String(Number(ov.quantity??a.quantity));
-  document.getElementById('simpleAvgCost').value=(ov.avgCost??a.buyPrice).toFixed(2);
+  document.getElementById('simpleAvgCost').value=Number(ov.avgCost??a.buyPrice??0).toFixed(2);
   const _scl=document.getElementById('simpleAvgCostCcy');if(_scl)_scl.textContent=costCcy(a)||'EUR';
   document.getElementById('simpleBroker').value=ov.broker||'';
   renderBrokerChips('simpleBroker','simpleBrokerChips');
@@ -3611,7 +3611,7 @@ function saveSimple(){
 
 function saveTransaction(){
   if(!currentModalIsin)return;
-  const qty=parseFloat(document.getElementById('txQty').value)||0;
+  const qty=parseNum('txQty');
   const price=parseNum('txPrice');
   const date=document.getElementById('txDate').value;
   if(qty<=0||price<=0||!date){const _fe=document.getElementById('txError');if(_fe){_fe.textContent=currentLang==='es'?'Completa cantidad, precio y fecha.':'Fill in quantity, price and date.';_fe.style.display='';}return;}
@@ -3916,7 +3916,7 @@ function _anRenderAllocContent(tab) {
   const entries = Object.entries(groups).filter(([,v])=>v>0).sort((a,b) => b[1]-a[1]);
   if(!entries.length){el.innerHTML='';return;}
   const cols = entries.map((_,i) => COLORS[i%COLORS.length]);
-  const pcts = entries.map(([,v]) => total>0?Math.round(v/total*100):0);
+  let pcts;if(total>0){const _raw=entries.map(([,v])=>v/total*100);const _fl=_raw.map(Math.floor);let _rem=100-_fl.reduce((s,v)=>s+v,0);const _ord=_raw.map((v,i)=>[v-Math.floor(v),i]).sort((a,b)=>b[0]-a[0]);for(let _k=0;_k<_rem&&_k<_ord.length;_k++)_fl[_ord[_k][1]]++;pcts=_fl;}else{pcts=entries.map(()=>0);}
   if (_anAllocChartInst) { try { _anAllocChartInst.destroy(); } catch(_) {} _anAllocChartInst = null; }
   const canvasId = 'anAllocDonut';
   const brokerBarsHtml = tab==='broker' ? `<div style="margin-top:12px;display:flex;flex-direction:column;gap:8px">${entries.map(([n,v],i)=>`<div><div style="display:flex;justify-content:space-between;font-size:11px;font-weight:700;margin-bottom:3px"><span style="display:flex;align-items:center;gap:5px"><span style="width:6px;height:6px;border-radius:50%;background:${cols[i]};display:inline-block"></span>${escapeHtml(n)}</span><span style="color:#142018">${fe(v)}</span></div><div style="height:5px;border-radius:3px;background:#f0f5f2;overflow:hidden"><div style="height:100%;border-radius:3px;background:${cols[i]};width:${pcts[i]}%;transition:width .5s"></div></div></div>`).join('')}</div>` : '';
@@ -5964,7 +5964,16 @@ function saveNewAsset(){
   const ov=getOverrides();
   const _txD=_addFormMode==='transactions'?document.getElementById('addTxDateInput')?.value:null;
   const _txEntry=_txD?[{type:'buy',qty,price:avgCost,date:_txD}]:[];
-  ov[sym]={quantity:qty,avgCost,costCurrency:avgCostCurrency,isCustom:true,...(_txD&&{transactions:_txEntry}),...(broker&&{broker})};
+  if(ov[sym]&&Number(ov[sym].quantity||0)>0){
+    // Existing position — merge quantities with weighted avg cost, preserving transaction history
+    const _eQty=Number(ov[sym].quantity)||0;const _eAvg=Number(ov[sym].avgCost)||0;
+    const _eCcy=ov[sym].costCurrency||'EUR';const _newTot=_eQty+qty;
+    const _newAvg=(_eCcy===avgCostCurrency&&_newTot>0)?(_eQty*_eAvg+qty*avgCost)/_newTot:_eAvg;
+    const _existTx=ov[sym].transactions||[];
+    ov[sym]={...ov[sym],quantity:_newTot,avgCost:_newAvg,...(_txEntry.length&&{transactions:[..._existTx,..._txEntry]}),...(broker&&{broker})};
+  }else{
+    ov[sym]={quantity:qty,avgCost,costCurrency:avgCostCurrency,isCustom:true,...(_txD&&{transactions:_txEntry}),...(broker&&{broker})};
+  }
   saveOverrides(ov);
 
   // Inject into assets immediately and rebuild
@@ -7398,7 +7407,15 @@ function switchLang(lang) {
 }
 
 // ── Numeric input helpers ────────────────────────────────────────────────
-const parseNum = id => parseFloat((document.getElementById(id)?.value||'').replace(',','.')) || 0;
+const parseNum = id => {
+  const raw=(document.getElementById(id)?.value||'').trim();
+  if(!raw)return 0;
+  const lastDot=raw.lastIndexOf('.');const lastComma=raw.lastIndexOf(',');
+  let s;
+  if(lastDot>-1&&lastComma>-1){s=lastComma>lastDot?raw.replace(/\./g,'').replace(',','.'):raw.replace(/,/g,'');}
+  else{s=raw.replace(',','.');}
+  return parseFloat(s)||0;
+};
 
 // ── Accept comma as decimal separator in all numeric inputs ─────────────
 document.addEventListener('keydown', e => {
