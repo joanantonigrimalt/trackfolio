@@ -6870,6 +6870,28 @@ function setAlertsCond(cond){
   document.getElementById('alertsCondAbove').classList.toggle('active',cond==='above');
   document.getElementById('alertsCondBelow').classList.toggle('active',cond==='below');
 }
+// setAlertCond / saveAlert — used by the legacy alertSheet (asset-detail bottom sheet)
+function setAlertCond(cond){
+  _alertsCond=cond;
+  document.getElementById('alertCondAbove').classList.toggle('active',cond==='above');
+  document.getElementById('alertCondBelow').classList.toggle('active',cond==='below');
+}
+function saveAlert(){
+  if(!_alertsAssetISIN){showToast(currentLang==='es'?'Selecciona un activo primero':'Select an asset first');return;}
+  const priceVal=parseFloat(document.getElementById('alertPrice').value)||0;
+  if(!priceVal||priceVal<=0){showToast(currentLang==='es'?'Introduce un precio válido':'Enter a valid price');return;}
+  const asset=assets.find(a=>a.isin===_alertsAssetISIN);if(!asset)return;
+  const alerts=getAlerts();
+  alerts.push({id:Date.now().toString(),isin:_alertsAssetISIN,name:asset.shortName||asset.name,targetPrice:priceVal,cond:_alertsCond,notif:document.getElementById('alertNotifToggle')?.checked??true,triggered:false,createdAt:new Date().toISOString()});
+  saveAlerts(alerts);
+  // Refresh active alerts list in sheet
+  const listEl=document.getElementById('alertActiveList'),emptyEl=document.getElementById('alertEmptyMsg');
+  const myAlerts=alerts.filter(a=>a.isin===_alertsAssetISIN);
+  if(listEl){listEl.innerHTML=myAlerts.map(a=>`<div style="display:flex;justify-content:space-between;align-items:center;font-size:12px;padding:6px 0;border-bottom:1px solid rgba(20,32,24,.06)"><span>${a.cond==='above'?'▲':'▼'} ${a.targetPrice.toFixed(2)} €</span><button onclick="saveAlerts(getAlerts().filter(x=>x.id!=='${a.id}'));saveAlert._refresh&&saveAlert._refresh()" style="background:none;border:none;color:#e03636;cursor:pointer;font-size:12px">✕</button></div>`).join('');}
+  if(emptyEl)emptyEl.style.display=myAlerts.length?'none':'';
+  document.getElementById('alertPrice').value='';
+  showToast(currentLang==='es'?'Alerta creada ✓':'Alert created ✓');
+}
 
 function saveAlertFromScreen(){
   if(!_alertsAssetISIN){showToast(currentLang==='es'?'Selecciona un activo':'Select an asset');return;}
