@@ -1044,7 +1044,7 @@ table.an-corr-mtx{border-collapse:separate;border-spacing:4px}
     <img src="/icons/icon-192.png" width="88" height="88" style="border-radius:22px;box-shadow:0 16px 48px rgba(20,32,24,.18)" alt="Finasset">
   </div>
   <div class="splash-title">Finasset</div>
-  <div class="splash-sub">Your investment portfolio</div>
+  <div class="splash-sub">Tu cartera de inversión</div>
   <div class="splash-spin"></div>
 </div>
 
@@ -1057,8 +1057,8 @@ table.an-corr-mtx{border-collapse:separate;border-spacing:4px}
   <div class="ob-body" id="ob-body"></div>
   <div class="ob-dots" id="ob-dots"></div>
   <div class="ob-footer">
-    <button class="ob-btn-main" id="ob-btn-main" onclick="obNext()">Continue</button>
-    <button class="ob-btn-sec" id="ob-btn-sec" onclick="showAuthScreen()">Already have an account</button>
+    <button class="ob-btn-main" id="ob-btn-main" onclick="obNext()">Continuar</button>
+    <button class="ob-btn-sec" id="ob-btn-sec" onclick="showAuthScreen()">Ya tengo cuenta</button>
   </div>
 </div>
 
@@ -1093,13 +1093,13 @@ table.an-corr-mtx{border-collapse:separate;border-spacing:4px}
 
     <!-- Primary CTA -->
     <button onclick="enterDemo()" style="width:100%;padding:16px;background:#142018;color:#f5fbf6;border:none;border-radius:16px;font:inherit;font-size:15px;font-weight:700;cursor:pointer;letter-spacing:-.01em;margin-bottom:10px;transition:opacity .15s">
-      <span id="auth-demo-label">Try the demo — no account needed</span>
+      <span id="auth-demo-label">Ver demo — sin cuenta necesaria</span>
     </button>
 
     <!-- Secondary CTAs -->
     <div style="display:flex;gap:8px;margin-bottom:20px">
-      <button onclick="_openAuthAs('login')" style="flex:1;padding:13px;background:#fff;border:1.5px solid rgba(20,32,24,.15);border-radius:14px;font:inherit;font-size:14px;font-weight:700;color:#142018;cursor:pointer"><span id="auth-signin-label">Sign in</span></button>
-      <button onclick="_openAuthAs('register')" style="flex:1;padding:13px;background:#fff;border:1.5px solid rgba(20,32,24,.15);border-radius:14px;font:inherit;font-size:14px;font-weight:700;color:#15803d;cursor:pointer"><span id="auth-register-label">Create account</span></button>
+      <button onclick="_openAuthAs('login')" style="flex:1;padding:13px;background:#fff;border:1.5px solid rgba(20,32,24,.15);border-radius:14px;font:inherit;font-size:14px;font-weight:700;color:#142018;cursor:pointer"><span id="auth-signin-label">Iniciar sesión</span></button>
+      <button onclick="_openAuthAs('register')" style="flex:1;padding:13px;background:#fff;border:1.5px solid rgba(20,32,24,.15);border-radius:14px;font:inherit;font-size:14px;font-weight:700;color:#15803d;cursor:pointer"><span id="auth-register-label">Crear cuenta</span></button>
     </div>
 
 
@@ -1112,7 +1112,7 @@ table.an-corr-mtx{border-collapse:separate;border-spacing:4px}
     </div>
     <!-- Trust note -->
     <div id="auth-privacy-note" style="text-align:center;font-size:10.5px;color:#a0b0a5;line-height:1.6;margin-top:auto;padding-top:8px">
-      By using Finasset you accept our <a href="/privacy.html" target="_blank" rel="noopener" style="color:#15803d;font-weight:600;text-decoration:none">Privacy Policy</a> and <a href="/privacy.html#terms" target="_blank" rel="noopener" style="color:#15803d;font-weight:600;text-decoration:none">Terms of Use</a>. Not financial advice.
+      Al usar Finasset aceptas nuestra <a href="/privacy.html" target="_blank" rel="noopener" style="color:#15803d;font-weight:600;text-decoration:none">Política de Privacidad</a> y los <a href="/privacy.html#terms" target="_blank" rel="noopener" style="color:#15803d;font-weight:600;text-decoration:none">Términos de Uso</a>. No es asesoramiento financiero.
     </div>
 
     <!-- Hidden legacy IDs for switchLang compat -->
@@ -1185,8 +1185,8 @@ table.an-corr-mtx{border-collapse:separate;border-spacing:4px}
   <div class="card"><div class="sectionTitle" data-i18n="myPortfolio">Mi cartera</div><div id="list"></div></div>
   <div class="card" id="homeLiqCard" style="display:none">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
-      <div class="sectionTitle" style="margin-bottom:0">💰 Liquidity</div>
-      <button onclick="openLiqModal()" style="background:none;border:none;font-size:12px;font-weight:700;color:#15803d;cursor:pointer;padding:4px 8px">+ Add</button>
+      <div class="sectionTitle" style="margin-bottom:0">💰 Liquidez</div>
+      <button onclick="openLiqModal()" style="background:none;border:none;font-size:12px;font-weight:700;color:#15803d;cursor:pointer;padding:4px 8px">+ Añadir</button>
     </div>
     <div id="homeLiqList"></div>
     <div id="homeLiqTotal" style="display:flex;justify-content:space-between;align-items:center;padding-top:10px;margin-top:6px;border-top:1px solid rgba(20,32,24,.06)">
@@ -1236,14 +1236,14 @@ table.an-corr-mtx{border-collapse:separate;border-spacing:4px}
   </div>
   <div class="liqTrigger" onclick="openLiqModal()">
     <span class="lt-icon">💰</span>
-    <span class="lt-text">Cash, savings accounts, deposits…</span>
-    <span class="lt-pill">+ Liquidity</span>
+    <span class="lt-text">Efectivo, cuentas de ahorro, depósitos…</span>
+    <span class="lt-pill">+ Liquidez</span>
   </div>
   <div class="card"><div class="sectionTitle" data-i18n="positions">Posiciones</div><div id="portfolioList"></div></div>
   <div class="card" id="portfolioLiqCard" style="display:none">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
-      <div class="sectionTitle" style="margin-bottom:0">💰 Liquidity</div>
-      <button onclick="openLiqModal()" style="background:none;border:none;font-size:12px;font-weight:700;color:#15803d;cursor:pointer;padding:4px 8px">+ Add</button>
+      <div class="sectionTitle" style="margin-bottom:0">💰 Liquidez</div>
+      <button onclick="openLiqModal()" style="background:none;border:none;font-size:12px;font-weight:700;color:#15803d;cursor:pointer;padding:4px 8px">+ Añadir</button>
     </div>
     <div id="portfolioLiqList"></div>
     <div style="display:flex;justify-content:space-between;align-items:center;padding-top:10px;margin-top:6px;border-top:1px solid rgba(20,32,24,.06)">
@@ -2283,7 +2283,7 @@ table.an-corr-mtx{border-collapse:separate;border-spacing:4px}
   <div class="sheetDivider"></div>
   <div class="sheetTitle">Account</div>
   <div id="accountSection">
-    <button class="accountLoginBtn" id="btnOpenAuth">Sign in or create account</button>
+    <button class="accountLoginBtn" id="btnOpenAuth">Entrar o registrarse</button>
   </div>
 </div>
 
@@ -6480,12 +6480,15 @@ async function _submitAuth(){
     }
   }catch(e){
     const _isEs9=currentLang==='es';
-    const m=e.message?.includes('Invalid login credentials')?(_isEs9?'Email o contraseña incorrectos.':'Invalid email or password.'):
-             e.message?.includes('not confirmed')?(_isEs9?'Confirma tu email antes de entrar.':'Please confirm your email first.'):
-             e.message?.includes('already registered')?(_isEs9?'Este correo ya está registrado.':'This email is already registered.'):
-             e.message||(_isEs9?'Error desconocido.':'Unknown error.');
+    const _em=e.message||'';
+    const _isRateLimit=_em.includes('rate limit')||_em.includes('email rate')||_em.includes('exceeded')||_em.includes('sending_limit')||_em.includes('smtp');
+    const m=_isRateLimit?(_isEs9?'Límite de registros alcanzado. Usa "Continuar con Google" o espera 1 hora e inténtalo de nuevo.':'Registration limit reached. Use "Continue with Google" or try again in 1 hour.'):
+             _em.includes('Invalid login credentials')?(_isEs9?'Email o contraseña incorrectos.':'Invalid email or password.'):
+             _em.includes('not confirmed')?(_isEs9?'Confirma tu email antes de entrar.':'Please confirm your email first.'):
+             _em.includes('already registered')||_em.includes('already been registered')||_em.includes('User already registered')?(_isEs9?'Este correo ya está registrado.':'This email is already registered.'):
+             _em||(_isEs9?'Error desconocido.':'Unknown error.');
     _showAuthMsg(m,'err');
-    if(e.message?.includes('already registered'))_setAuthMode('login');
+    if(_em.includes('already registered')||_em.includes('already been registered'))_setAuthMode('login');
   }finally{
     btn.disabled=false;
     btn.textContent=_authMode==='login'?(currentLang==='es'?'Entrar':'Sign in'):(currentLang==='es'?'Crear cuenta':'Create account');
