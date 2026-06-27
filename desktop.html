@@ -1457,7 +1457,7 @@ a.d-nav-item{text-decoration:none;color:inherit;}.d-nav-item.active{background:#
       <div class="liqLabel">Activo</div>
       <div id="alertsAssetPicker" style="display:flex;flex-direction:column;gap:5px;max-height:120px;overflow-y:auto;border:1.5px solid rgba(20,32,24,.1);border-radius:12px;padding:5px;background:#f7faf8"></div>
     </div>
-    <div id="alertsSelWrap" style="display:none;background:#e6faf3;border-radius:10px;padding:8px 12px;margin-bottom:12px;display:flex;align-items:center;justify-content:space-between">
+    <div id="alertsSelWrap" style="background:#e6faf3;border-radius:10px;padding:8px 12px;margin-bottom:12px;display:flex;align-items:center;justify-content:space-between">
       <span id="alertsSelName" style="font-size:13px;font-weight:700;color:#142018"></span>
       <span style="font-size:11px;color:#4a5f4e">Actual: <strong id="alertsSelPrice" style="color:#15803d"></strong></span>
     </div>
@@ -1635,11 +1635,11 @@ a.d-nav-item{text-decoration:none;color:inherit;}.d-nav-item.active{background:#
       <div style="padding:16px 18px 10px;display:flex;align-items:flex-start;justify-content:space-between">
         <div>
           <div style="font-size:15px;font-weight:800;color:#142018;letter-spacing:-.02em" data-i18n="performance">Performance by asset</div>
-          <div id="ytdYearLabel" style="font-size:11px;color:#8fa090;margin-top:2px">Rendimiento acumulado · YTD 2025</div>
+          <div id="ytdYearLabel" style="font-size:11px;color:#8fa090;margin-top:2px"></div>
         </div>
         <div style="display:flex;align-items:center;gap:10px;flex-shrink:0;margin-top:2px">
-          <div style="display:flex;align-items:center;gap:4px;font-size:10px;font-weight:600;color:#4a5f4e"><span style="width:8px;height:8px;border-radius:50%;background:#22c55e;display:inline-block"></span>Positivo</div>
-          <div style="display:flex;align-items:center;gap:4px;font-size:10px;font-weight:600;color:#4a5f4e"><span style="width:8px;height:8px;border-radius:50%;background:#f87171;display:inline-block"></span>Negativo</div>
+          <div id="perfLegendPos" style="display:flex;align-items:center;gap:4px;font-size:10px;font-weight:600;color:#4a5f4e"><span style="width:8px;height:8px;border-radius:50%;background:#22c55e;display:inline-block"></span>Positivo</div>
+          <div id="perfLegendNeg" style="display:flex;align-items:center;gap:4px;font-size:10px;font-weight:600;color:#4a5f4e"><span style="width:8px;height:8px;border-radius:50%;background:#f87171;display:inline-block"></span>Negativo</div>
         </div>
       </div>
       <div id="perfBarWrap" style="padding:0 18px 14px"></div>
@@ -1648,8 +1648,8 @@ a.d-nav-item{text-decoration:none;color:inherit;}.d-nav-item.active{background:#
     <!-- Costs & Fees -->
     <div class="card" id="anCostsCard">
       <div style="display:flex;align-items:baseline;justify-content:space-between;margin-bottom:14px">
-        <div class="sectionTitle" style="margin-bottom:0">Costs &amp; Fees</div>
-        <span style="font-size:11px;font-weight:500;color:#8fa090">Estimado anual</span>
+        <div class="sectionTitle" id="anCostsTitle" style="margin-bottom:0">Costes y comisiones</div>
+        <span id="anCostsSubLabel" style="font-size:11px;font-weight:500;color:#8fa090">Estimado anual</span>
       </div>
       <div id="anCostsContent"></div>
     </div>
@@ -2276,7 +2276,7 @@ a.d-nav-item{text-decoration:none;color:inherit;}.d-nav-item.active{background:#
   <div class="modalSheet" id="modalSheet">
     <div class="modalHandle"></div>
     <div class="modalHeader">
-      <div><div class="modalTitle" id="modalAssetName">Holdings</div><div id="modalEditHint" style="font-size:11px;color:#8fa090;font-weight:600;margin-top:2px"></div></div>
+      <div><div class="modalTitle" id="modalAssetName"></div><div id="modalEditHint" style="font-size:11px;color:#8fa090;font-weight:600;margin-top:2px"></div></div>
       <div class="modalHeaderBtns">
         <button class="modalIconBtn" id="btnCloseModal">✕</button>
       </div>
@@ -2304,7 +2304,7 @@ a.d-nav-item{text-decoration:none;color:inherit;}.d-nav-item.active{background:#
         </div>
         <div class="mFieldGroup">
           <div class="mLabel">Broker / Entidad <span style="font-weight:400;color:#8fa090">(opcional)</span></div>
-          <div class="mFieldRow"><input type="text" id="simpleBroker" placeholder="e.g. DEGIRO, MyInvestor, IB..."></div>
+          <div class="mFieldRow"><input type="text" id="simpleBroker" placeholder="ej. DEGIRO, MyInvestor, IB..."></div>
           <div id="simpleBrokerChips" class="brokerChips"></div>
         </div>
         <button class="mRemoveBtn" id="btnRemovePosition" data-i18n="removePos">Eliminar posición</button>
@@ -2403,13 +2403,13 @@ a.d-nav-item{text-decoration:none;color:inherit;}.d-nav-item.active{background:#
           <div class="mFieldRow"><input type="text" inputmode="decimal" id="addQty" placeholder="0"></div>
         </div>
         <div class="mFieldGroup">
-          <div class="mLabel" id="addAvgCostLabel">Avg cost per share</div>
+          <div class="mLabel" id="addAvgCostLabel">Coste medio por acción</div>
           <div class="mFieldRow">
             <input type="text" inputmode="decimal" id="addAvgCost" placeholder="0.00" oninput="updateFxHint()">
             <button class="mCurrencyBadge" id="addCurrencyBadge" onclick="toggleAddCurrency()" style="cursor:pointer;border:none;font:inherit">—</button>
           </div>
           <div id="addFxRow" style="display:none;margin-top:8px;padding:8px 10px;background:rgba(20,32,24,.04);border-radius:10px">
-            <div style="font-size:11px;color:#8fa090;margin-bottom:6px">Rate at purchase · 1 EUR =</div>
+            <div id="addFxRateLabel" style="font-size:11px;color:#8fa090;margin-bottom:6px">Tipo de cambio al comprar · 1 EUR =</div>
             <div class="mFieldRow">
               <input type="text" inputmode="decimal" id="addFxRate" placeholder="1.0000" style="flex:1" oninput="updateFxHint()">
               <div class="mCurrencyBadge" id="addFxAssetCcy" style="min-width:44px;text-align:center">—</div>
@@ -2420,7 +2420,7 @@ a.d-nav-item{text-decoration:none;color:inherit;}.d-nav-item.active{background:#
         </div>
         <div class="mFieldGroup">
           <div class="mLabel">Broker / Entidad <span style="font-weight:400;color:#8fa090">(opcional)</span></div>
-          <div class="mFieldRow"><input type="text" id="addBroker" placeholder="e.g. DEGIRO, MyInvestor, IB..."></div>
+          <div class="mFieldRow"><input type="text" id="addBroker" placeholder="ej. DEGIRO, MyInvestor, IB..."></div>
           <div id="addBrokerChips" class="brokerChips"></div>
         </div>
         <button class="mSaveBtn" id="btnSaveNewAsset">Añadir a cartera</button>
@@ -5840,7 +5840,7 @@ function showAddForm(result,price,currency,history){
   if(_afsB)_afsB.classList.add('active'); if(_aftB)_aftB.classList.remove('active');
   var _afdf=document.getElementById('addDateField'); if(_afdf)_afdf.style.display='none';
   var _afdi=document.getElementById('addTxDateInput'); if(_afdi)_afdi.value=new Date().toISOString().slice(0,10);
-  var _aflbl=document.getElementById('addAvgCostLabel'); if(_aflbl)_aflbl.textContent='Avg cost per share';
+  var _aflbl=document.getElementById('addAvgCostLabel'); if(_aflbl)_aflbl.textContent=currentLang==='es'?'Coste medio por acción':'Avg cost per share';
   document.getElementById('searchResultsList').style.display='none';
   document.getElementById('searchHint').style.display='none';
 
@@ -7186,6 +7186,13 @@ function switchLang(lang) {
   var _brv=document.getElementById('btnResendVerify');if(_brv)_brv.textContent=isEs?'Reenviar email':'Resend email';
   var _abgt=document.getElementById('authBtnGoogleText');if(_abgt)_abgt.textContent=isEs?'Continuar con Google':'Continue with Google';
   var _aol=document.getElementById('authOrLabel');if(_aol)_aol.textContent=isEs?'o':'or';
+  var _act=document.getElementById('anCostsTitle');if(_act)_act.textContent=isEs?'Costes y comisiones':'Costs & Fees';
+  var _acsl=document.getElementById('anCostsSubLabel');if(_acsl)_acsl.textContent=isEs?'Estimado anual':'Annual estimate';
+  var _afrl=document.getElementById('addFxRateLabel');if(_afrl)_afrl.textContent=isEs?'Tipo de cambio al comprar · 1 EUR =':'Rate at purchase · 1 EUR =';
+  var _sb2=document.getElementById('simpleBroker');if(_sb2)_sb2.placeholder=isEs?'ej. DEGIRO, MyInvestor, IB...':'e.g. DEGIRO, MyInvestor, IB...';
+  var _ab2=document.getElementById('addBroker');if(_ab2)_ab2.placeholder=isEs?'ej. DEGIRO, MyInvestor, IB...':'e.g. DEGIRO, MyInvestor, IB...';
+  var _plp=document.getElementById('perfLegendPos');if(_plp&&_plp.lastChild)_plp.lastChild.textContent=isEs?'Positivo':'Positive';
+  var _pln=document.getElementById('perfLegendNeg');if(_pln&&_pln.lastChild)_pln.lastChild.textContent=isEs?'Negativo':'Negative';
   // Refresh OB slide text if onboarding is visible
   if (document.getElementById('cs-ob')?.classList.contains('cs-active')) renderOb();
   if (dataReady) { render(); }
