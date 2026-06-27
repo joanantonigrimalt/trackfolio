@@ -1268,6 +1268,13 @@ html,body{height:100%;overflow:hidden;font-family:-apple-system,BlinkMacSystemFo
 .pf-tk{font-weight:700;font-size:13px;color:var(--text)}
 .pf-nm{font-size:11px;color:var(--muted);overflow:hidden;text-overflow:ellipsis;max-width:220px;white-space:nowrap}
 .pf-pos{color:var(--green);font-weight:600}.pf-neg{color:var(--red);font-weight:600}
+/* Vera IA header band → light */
+.vera-metrics .vm-label{color:var(--muted)!important}
+.vera-metrics .vm-val.neutral{color:var(--text)!important}
+.vera-metrics .vm-cell{border-left-color:var(--border)!important}
+.vera-strip{border-bottom-color:var(--border)!important}
+.vera-dot{border-color:var(--surf)!important}
+.vera-pro-pill{background:var(--ga)!important;border-color:rgba(26,122,66,.25)!important;color:var(--green)!important}
 /* KPI grid (Mi cartera) */
 .pfKpiGrid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:14px}
 @media(max-width:760px){.pfKpiGrid{grid-template-columns:1fr 1fr}}
@@ -2236,7 +2243,7 @@ html,body{height:100%;overflow:hidden;font-family:-apple-system,BlinkMacSystemFo
 
     <!-- VERA HERO + CHAT -->
     <div class="chat-card">
-      <div style="background:linear-gradient(150deg,var(--ia-dark) 0%,var(--ia-dark2) 100%);padding:16px 18px 14px;border-radius:18px 18px 0 0;">
+      <div style="background:var(--surf2);border-bottom:1px solid var(--border);padding:16px 18px 14px;border-radius:18px 18px 0 0;">
         <div class="vera-strip" style="padding:0 0 14px;margin-bottom:0;">
           <div class="vera-av">
             <svg viewBox="0 0 26 26" fill="none" width="24" height="24"><rect x="4" y="7" width="18" height="13" rx="3" fill="rgba(255,255,255,0.15)" stroke="rgba(255,255,255,0.3)" stroke-width="1.2"/><circle cx="10" cy="13" r="2" fill="#2dc98a"/><circle cx="16" cy="13" r="2" fill="#2dc98a"/><path d="M10 7V5" stroke="rgba(255,255,255,0.4)" stroke-width="1.2" stroke-linecap="round"/><path d="M16 7V5" stroke="rgba(255,255,255,0.4)" stroke-width="1.2" stroke-linecap="round"/></svg>
