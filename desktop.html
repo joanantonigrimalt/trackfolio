@@ -5710,9 +5710,10 @@ function showTgFab(){}
 document.getElementById('btnSettings').addEventListener('click',openSettings);
 document.getElementById('settingsOverlay').addEventListener('click',closeSettings);
 document.querySelectorAll('.langBtn').forEach(btn=>btn.addEventListener('click',()=>{
+  if(!btn.dataset.lang)return; // skip currency buttons sharing .langBtn class
   currentLang=btn.dataset.lang;
   localStorage.setItem('tf_lang',currentLang);
-  applyTranslations();
+  applyTranslations();switchLang(currentLang);
   if(dataReady){render();destroyAnalysisCharts();resetDividendDetailCache();const active=document.querySelector('.tab button.active')?.dataset?.screen;if(active==='analysis')renderAnalysisCharts();if(active==='dividends')renderDividends();if(active==='ia')renderIA();}
   closeSettings();
 }));

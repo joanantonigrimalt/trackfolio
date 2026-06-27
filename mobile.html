@@ -3750,7 +3750,7 @@ function _anRenderPeriodStrip(){
     if(full&&full.length>=2){const f=filterByRange(full,key);if(f&&f.length>=2){const b=f[0].totalValue,c=f[f.length-1].totalValue;if(b>0){pct=(c-b)/b*100;abs=c-b;}}}
     const cl=pct==null?'neu':pct>=0?'pos':'neg';
     const ps=pct==null?'—':`${pct>=0?'+':''}${pct.toFixed(1)}%`;
-    const as=abs==null?'—':(()=>{const _a=Math.abs(abs),_s=abs>=0?'+':'';if(_a>=1000)return _s+(abs/1000).toFixed(1)+'k €';return _s+Math.round(_a)+' €';})();
+    const as=abs==null?'—':(()=>{const _a=Math.abs(abs),_s=abs>=0?'+':'';const _sym={'EUR':'€','USD':'$','GBP':'£'}[_displayCcy]||'€';if(_a>=1000)return _s+(_a/1000).toFixed(1)+'k '+_sym;return _s+Math.round(_a)+' '+_sym;})();
     return`<div class="an-period-item"><span class="an-period-label">${label}</span><span class="an-period-pct ${cl}">${ps}</span><span class="an-period-abs ${cl}">${as}</span></div>`;
   }).join('');
 }
@@ -5691,9 +5691,10 @@ function showTgFab(){}
 document.getElementById('btnSettings').addEventListener('click',openSettings);
 document.getElementById('settingsOverlay').addEventListener('click',closeSettings);
 document.querySelectorAll('.langBtn').forEach(btn=>btn.addEventListener('click',()=>{
+  if(!btn.dataset.lang)return; // skip currency buttons sharing .langBtn class
   currentLang=btn.dataset.lang;
   localStorage.setItem('tf_lang',currentLang);
-  applyTranslations();
+  applyTranslations();switchLang(currentLang);
   if(dataReady){render();destroyAnalysisCharts();resetDividendDetailCache();const active=document.querySelector('.tab button.active')?.dataset?.screen;if(active==='analysis')renderAnalysisCharts();if(active==='dividends')renderDividends();if(active==='ia')renderIA();}
   closeSettings();
 }));
