@@ -6876,7 +6876,7 @@ _alertCheckInterval = setInterval(checkAlertsTrigger, 60000);
 // ══════════════════════════════════════════════════════════════════
 
 // ========== DEMO MODE ==========
-let _isDemo = false;
+var _isDemo = false;
 const _demoLiquidity = [];
 const DEMO_ASSETS_RAW = [];
 async function enterDemo(){
@@ -7397,7 +7397,7 @@ ${liqLines||'No liquidity entries'}`;
 
 // ========== IA v2 – chat + gauges + actions ==========
 
-const _iaActionData = {
+var _iaActionData = {
   full:          { title:'Análisis Completo del Portfolio', color:'#1aab70', text:'' },
   balance:       { title:'Balance de Portfolio', color:'#1aab70', text:'' },
   diversificacion:{ title:'Plan de Diversificación', color:'#1d4ed8', text:'Con alta concentración en renta variable, los próximos pasos son: <b>(1)</b> Vanguard FTSE EM (VWRD/EMIM) — mercados emergentes, correlación 0.47. <b>(2)</b> iShares MSCI Europe (IEUR) — mayor peso europeo. <b>(3)</b> AGGH bonos — reducción volatilidad. Asignación sugerida: 60% RV global · 25% Emergentes · 15% Bonos. Health Score estimado: 72/100.' },
