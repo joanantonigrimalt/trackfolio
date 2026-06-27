@@ -3215,7 +3215,9 @@ function _drawChart(canvas,labels,values,note,meta,rv,noteText){
   const ctx=canvas.getContext('2d'),g=ctx.createLinearGradient(0,0,0,canvas.height||200);
   g.addColorStop(0,isUp?'rgba(74,222,128,.28)':'rgba(248,113,113,.22)');g.addColorStop(.6,isUp?'rgba(74,222,128,.08)':'rgba(248,113,113,.07)');g.addColorStop(1,'rgba(0,0,0,0)');
   chart=new Chart(canvas,{type:'line',data:{labels,datasets:[{data:values,borderColor:lc,backgroundColor:g,borderWidth:2.5,pointRadius:0,pointHoverRadius:4,pointHoverBackgroundColor:lc,pointHoverBorderColor:'#fff',pointHoverBorderWidth:2,fill:true,tension:.3}]},options:{responsive:true,maintainAspectRatio:false,interaction:{intersect:false,mode:'index'},plugins:{legend:{display:false},tooltip:{displayColors:false,backgroundColor:'rgba(12,30,20,.94)',borderColor:'rgba(220,252,231,.1)',borderWidth:1,titleColor:'#f0fdf4',bodyColor:'#a7f3d0',padding:10,callbacks:{title:i=>i[0]?.label||'',label:c=>fe(c.parsed.y)}}},scales:{x:{grid:{display:false},border:{display:false},ticks:{color:'rgba(239,249,242,.5)',maxTicksLimit:6,font:{size:10,weight:'600'}}},y:{grid:{color:'rgba(220,252,231,.07)'},border:{display:false},ticks:{color:'rgba(239,249,242,.5)',maxTicksLimit:4,font:{size:10,weight:'600'},callback:v=>{const sym=_displayCcy==='USD'?'$':_displayCcy==='GBP'?'£':'€';return Math.abs(v)>=1000?sym+fn(v/1000)+'k':sym+fn(v);}}}}}});
-  rv.textContent=fe(last);meta.textContent=`${isUp?'+':''}${fe(delta)}  ${isUp?'+':''}${pct.toFixed(2)}%`;
+  // Only show monetary value once live prices are confirmed — prevents stale-cache flash
+  if(_pricesLive){rv.textContent=fe(last);meta.textContent=`${isUp?'+':''}${fe(delta)}  ${isUp?'+':''}${pct.toFixed(2)}%`;}
+  else{rv.textContent='—';meta.textContent='';}
   note.textContent=noteText;
 }
 async function renderChart(){
@@ -3227,7 +3229,7 @@ async function renderChart(){
     const seq=++_intradayRenderSeq;
     canvas.style.display='none';fallback.style.display='none';
     note.textContent=currentLang==='es'?'Cargando datos intradía…':'Loading intraday data…';
-    rv.textContent=fe(assets.reduce((s,a)=>s+toDisplay(a.value,assetCcy(a)),0));meta.textContent='';
+    rv.textContent=_pricesLive?fe(assets.reduce((s,a)=>s+toDisplay(a.value,assetCcy(a)),0)):'—';meta.textContent='';
     const series=await buildIntraday1D();
     if(seq!==_intradayRenderSeq)return; // superseded
     if(!series||series.length<2){
@@ -3246,7 +3248,7 @@ async function renderChart(){
 
   // ── Multi-day historical mode ─────────────────────────────────────────────
   const full=buildPortfolioTimeSeries();
-  if(!full){canvas.style.display='none';fallback.style.display='flex';meta.textContent='';rv.textContent=fe(assets.reduce((s,a)=>s+toDisplay(a.value,assetCcy(a)),0));return;}
+  if(!full){canvas.style.display='none';fallback.style.display='flex';meta.textContent='';rv.textContent=_pricesLive?fe(assets.reduce((s,a)=>s+toDisplay(a.value,assetCcy(a)),0)):'—';return;}
   const series=filterByRange(full,selectedRange),values=series.map(p=>p.totalValue);
   fallback.style.display='none';canvas.style.display='block';
   if(!series.length||!values.some(v=>Number.isFinite(v))){canvas.style.display='none';fallback.style.display='flex';meta.textContent='';return;}
@@ -5424,26 +5426,30 @@ function renderLists(){
   const html=[...assets].filter(a=>a.quantity>0&&(_activeBrokerFilter===null||a.broker===_activeBrokerFilter)).sort((a,b)=>{const d=toDisplay(b.value,assetCcy(b))-toDisplay(a.value,assetCcy(a));return isNaN(d)?0:d;}).map(a=>{
     const _av=toDisplay(a.value,assetCcy(a)),_ai=toDisplay(a.invested,costCcy(a)),_ag=_av-_ai,_agp=_ai>0?(_ag/_ai)*100:a.gainPct;
     const dp=getDayPct(a);
-    const dayHtml=dp!=null
+    const dayHtml=dp!=null&&_pricesLive
       ?`<span style="color:${dp>=0?'#15803d':'#b91c1c'}">${dp>=0?'+':''}${dp.toFixed(2)}%</span><span style="color:#b0c0b5;font-size:10px;margin-left:2px">${currentLang==='es'?'hoy':'1D'}</span>`
       :'';
     const totalColor=_agp>=0?'#15803d':'#b91c1c';
     // #7 fix: buy price shown in its native cost currency; current price in asset (EUR) currency
     const _ccySym=c=>c==='USD'?'$':c==='GBP'?'£':c==='CHF'?'Fr':'€';
     const _bp=`${_ccySym(costCcy(a))}${Number(a.buyPrice).toFixed(2)}`; // native cost ccy
-    const _cp=`${_ccySym(assetCcy(a))}${Number(a.currentPrice).toFixed(2)}`; // asset ccy (EUR)
+    const _cp=_pricesLive?`${_ccySym(assetCcy(a))}${Number(a.currentPrice).toFixed(2)}`:'—'; // only show live
+    // When prices not yet live, show "—" placeholders to prevent stale-cache flash
+    const _moneyHtml=_pricesLive?fe(_av):'<span style="opacity:.25">—</span>';
+    const _gainHtml=_pricesLive
+      ?`${dayHtml}<span style="color:${totalColor}">${_ag>=0?'+':''}${fe(_ag)}<span style="font-size:clamp(9px,2.5vw,10px);margin-left:2px;white-space:nowrap">(${_agp>=0?'+':''}${_agp.toFixed(2)}%)</span></span>`
+      :'';
     return`<div class="asset" data-isin="${a.isin}">
       <div class="icon ${assetType(a)}">${iconInitials(a)}</div>
       <div style="min-width:0;flex:1">
         <div class="name" title="${a.fullName||a.name}">${a.name}</div>
         <div class="meta">${fn(a.quantity)} ${t('shares').toLowerCase()}${a.broker?' · '+escapeHtml(a.broker):''}</div>
-        <div class="meta" style="margin-top:1px;font-size:9.5px;color:#8fa090;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${currentLang==='es'?'Compra':'Buy'} <span style="color:#374151;font-weight:600">${_bp}</span> · ${currentLang==='es'?'Actual':'Now'} <span style="color:#374151;font-weight:600">${_cp}</span></div>
+        <div class="meta" style="margin-top:1px;font-size:9.5px;color:#8fa090;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${currentLang==='es'?'Compra':'Buy'} <span style="color:#374151;font-weight:600">${_bp}</span>${_pricesLive?' · '+(currentLang==='es'?'Actual':'Now')+' <span style="color:#374151;font-weight:600">'+_cp+'</span>':''}</div>
       </div>
       <div class="right">
-        <div class="money">${fe(_av)}</div>
+        <div class="money">${_moneyHtml}</div>
         <div class="pct" style="display:flex;gap:clamp(2px,1.2vw,5px);justify-content:flex-end;align-items:baseline;flex-wrap:nowrap;overflow:hidden">
-          ${dayHtml}
-          <span style="color:${totalColor}">${_ag>=0?'+':''}${fe(_ag)}<span style="font-size:clamp(9px,2.5vw,10px);margin-left:2px;white-space:nowrap">(${_agp>=0?'+':''}${_agp.toFixed(2)}%)</span></span>
+          ${_gainHtml}
         </div>
       </div>
     </div>`;
