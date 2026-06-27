@@ -5654,7 +5654,27 @@ async function boot(){
       loadCustomIntoAssets(_cvMap);
       _pricesLive=true; // live prices ready — show real totals
       render();
-    }catch(e){console.warn('[boot] live prices fetch:',e.message);}
+    }catch(e){
+      console.warn('[boot] live prices fetch:',e.message);
+      // Coverage API failed (timeout / network error) — show seed/cached prices rather than spinning forever
+      _pricesLive=true;
+      render();
+      // Retry coverage once after 4s — helps when Yahoo had a transient timeout or Vercel cold start
+      setTimeout(async()=>{
+        try{
+          const coverage=await getJson('/api/portfolio/coverage?isin='+encodeURIComponent(isinList),12000);
+          if(coverage?.results?.length>0){
+            try{localStorage.setItem(_COV_CK,JSON.stringify({data:coverage,ts:Date.now()}));}catch(_){}
+            _cvMap=Object.fromEntries((coverage.results||[]).map(e=>[e.isin,e]));
+            _rawSeedAssets=buildAssets(_cvMap);
+            assets=applyOverridesToAssets(_rawSeedAssets);
+            loadCustomIntoAssets(_cvMap);
+            render();
+            _startLiveRefresh();
+          }
+        }catch(_){console.warn('[boot] coverage retry failed');}
+      },4000);
+    }
   })();
 
   // Step 3: pre-fetch dividends in background so Dividends tab is instant
