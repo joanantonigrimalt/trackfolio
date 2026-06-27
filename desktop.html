@@ -2056,38 +2056,18 @@ html,body{height:100%;overflow:hidden;font-family:-apple-system,BlinkMacSystemFo
     <button onclick="_divDataCache=null;_divDetailCache=null;renderDividends()" title="Actualizar" style="background:rgba(20,32,24,.07);border:1px solid rgba(20,32,24,.08);width:36px;height:36px;border-radius:12px;font-size:18px;cursor:pointer;color:#4a5f4e;display:flex;align-items:center;justify-content:center;flex-shrink:0">⟳</button>
   </div>
 
-  <!-- Hero card -->
-  <div class="card div-hero2">
-    <div class="div-h2-top">
-      <div>
-        <div class="div-h2-annual" id="divAnnual">—</div>
-        <div class="div-h2-sub" data-i18n="annualDividends">Dividendos anuales</div>
-      </div>
-      <div class="div-h2-badges">
-        <div id="divTrend" style="display:none" class="div-trend-badge"></div>
-        <div id="divTotalReceived" style="display:none;font-size:11px;font-weight:700;padding:4px 10px;border-radius:20px;color:rgba(239,249,242,.7);background:rgba(255,255,255,.08)"></div>
-      </div>
-    </div>
-    <!-- Next payment pill -->
-    <div id="divNextPayRow" style="display:none">
-      <div class="div-next-pill">
-        <span class="div-next-pill-lbl">Próx. cobro</span>
-        <span id="divNextPay" class="div-next-pill-val">—</span>
-        <span id="divNextPayName" class="div-next-pill-name"></span>
-      </div>
-    </div>
-    <!-- 4-cell grid -->
-    <div class="div-h2-grid">
-      <div class="div-h2-cell"><div class="dl" data-i18n="monthly">Mensual</div><div class="dn" id="divMonthly">—</div></div>
-      <div class="div-h2-cell"><div class="dl" data-i18n="daily">Diario</div><div class="dn" id="divDaily">—</div></div>
-      <div class="div-h2-cell"><div class="dl" data-i18n="hourly">Por hora</div><div class="dn" id="divHourly">—</div></div>
-      <div class="div-h2-cell"><div class="dl">Total recibido</div><div class="dn" id="divCalTotal">—</div></div>
-    </div>
-    <!-- Yield row -->
-    <div class="div-yield-row">
-      <div class="div-yield-chip"><div class="dl">Yield</div><div class="dn" id="divYield">—</div></div>
-      <div class="div-yield-chip"><div class="dl" id="divYieldCostLabel">Rentabilidad s/coste</div><div class="dn" id="divYieldCost">—</div></div>
-    </div>
+  <!-- Dividends KPIs (mockup layout) -->
+  <div class="pfKpiGrid" style="margin-bottom:14px">
+    <div class="pfKpi"><div class="l" data-i18n="annualDividends">Anuales estimados</div><div class="v" id="divAnnual" style="color:var(--gold)">—</div><div class="s">yield <span id="divYield">—</span></div></div>
+    <div class="pfKpi"><div class="l">Recibido YTD</div><div class="v" id="divCalTotal">—</div></div>
+    <div class="pfKpi"><div class="l" data-i18n="monthly">Mensual estimado</div><div class="v" id="divMonthly">—</div></div>
+    <div class="pfKpi green"><div class="l">Yield on Cost</div><div class="v" id="divYieldCost">—</div></div>
+  </div>
+  <!-- hidden mirrors required by renderDividends() -->
+  <div style="display:none">
+    <span id="divDaily"></span><span id="divHourly"></span><span id="divTrend"></span><span id="divTotalReceived"></span>
+    <div id="divNextPayRow"><span id="divNextPay"></span><span id="divNextPayName"></span></div>
+    <span id="divYieldCostLabel"></span>
   </div>
 
   <!-- Note / empty state -->
