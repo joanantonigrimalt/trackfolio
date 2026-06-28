@@ -6859,9 +6859,14 @@ let _sb=null,_sbUser=null,_syncTimer=null;
 let _sbInitErr='';
 async function initSupabase(){
   try{
+    if(window.__supabaseLoaded)await window.__supabaseLoaded;
     if(typeof supabase==='undefined'){throw new Error('finasset-auth shim not loaded');}
-    const _SU='';
-    const _SK='';
+    const cfgRes=await fetch('/api/auth/config');
+    if(!cfgRes.ok)throw new Error('Config error: '+cfgRes.status);
+    const cfg=await cfgRes.json();
+    const _SU=cfg.supabaseUrl||'';
+    const _SK=cfg.supabaseAnonKey||'';
+    if(!_SU||!_SK)throw new Error('Supabase credentials not configured');
     _sb=supabase.createClient(_SU,_SK);
     _sb.auth.onAuthStateChange(async(event,session)=>{
       _sbUser=session?.user||null;
