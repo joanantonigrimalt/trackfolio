@@ -2694,9 +2694,6 @@ html,body{height:100%;overflow:hidden;font-family:-apple-system,BlinkMacSystemFo
           <span class="mTag" data-i18n="deductCash">Descontar de Efectivo</span>
           <span class="mTag" data-i18n="dividend">Dividendo</span>
         </div>
-        <div class="mMoreOpts" id="moreOptsToggle">
-          <span data-i18n="moreOptions">Más opciones</span> ∨
-        </div>
         <button class="mSaveBtn" id="btnTxSave" data-i18n="save">Guardar</button>
         <button class="mCancelBtn" id="btnTxCancel" data-i18n="cancel">Cancelar</button>
       </div>
@@ -3945,10 +3942,10 @@ async function renderChart(){
 
   // ── Multi-day historical mode ─────────────────────────────────────────────
   const full=buildPortfolioTimeSeries();
-  if(!full){canvas.style.display='none';fallback.style.display='flex';meta.textContent='';rv.textContent=_pricesLive?fe(assets.reduce((s,a)=>s+toDisplay(a.value,assetCcy(a)),0)):'—';return;}
+  if(!full){canvas.style.display='none';fallback.style.display='flex';fallback.textContent=_pricesLive?t('chartNoData'):(currentLang==='es'?'Cargando histórico…':'Loading history…');meta.textContent='';rv.textContent=_pricesLive?fe(assets.reduce((s,a)=>s+toDisplay(a.value,assetCcy(a)),0)):'—';return;}
   const series=filterByRange(full,selectedRange),values=series.map(p=>p.totalValue);
   fallback.style.display='none';canvas.style.display='block';
-  if(!series.length||!values.some(v=>Number.isFinite(v))){canvas.style.display='none';fallback.style.display='flex';meta.textContent='';return;}
+  if(!series.length||!values.some(v=>Number.isFinite(v))){canvas.style.display='none';fallback.style.display='flex';fallback.textContent=t('chartNoData');meta.textContent='';return;}
   const lp=series[series.length-1];
   if(!lp){canvas.style.display='none';fallback.style.display='flex';return;}
   const aPct=lp.totalCurrent>0?lp.approximateCurrent/lp.totalCurrent*100:0;
@@ -4188,6 +4185,9 @@ function openModal(isin){
   currentModalIsin=isin;
   const a=assets.find(x=>x.isin===isin);
   if(!a)return;
+  // B6: funds/ETFs have "participaciones", only individual stocks have "acciones"
+  const _shLbl=a.mapping?.type==='stock'?(currentLang==='es'?'Acciones':'Shares'):(currentLang==='es'?'Participaciones':'Units');
+  document.querySelectorAll('.sharesLabel').forEach(e=>{e.textContent=_shLbl;e.removeAttribute('data-i18n');});
   const ov=getOverrides()[isin]||{};
   document.getElementById('modalAssetName').textContent=a.name;
   const _ov2=getOverrides()[isin]||{};
