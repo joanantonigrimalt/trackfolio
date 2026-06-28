@@ -733,6 +733,7 @@ async function loadAndRender(){
       sessionStorage.removeItem('fa_admin_tok');
       return;
     }
+    if(sR.status===503)throw new Error('Falta SUPABASE_SERVICE_ROLE_KEY en Vercel → Settings → Environment Variables');
     if(!sR.ok)throw new Error('Error del servidor: '+sR.status);
     _stats=await sR.json();
     _sdata=strR?.ok?await strR.json():null;

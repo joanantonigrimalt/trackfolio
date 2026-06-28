@@ -26,7 +26,11 @@ export default async (req) => {
   const anonKey = (process.env.SUPABASE_ANON_KEY || '').trim();
 
   if (!sbUrl || !svcKey) {
-    return new Response(JSON.stringify({ error: 'Not configured' }), { status: 503, headers: corsHeaders });
+    return new Response(JSON.stringify({
+      error: 'Not configured',
+      missing: !sbUrl ? 'SUPABASE_URL' : 'SUPABASE_SERVICE_ROLE_KEY',
+      hint: 'Add SUPABASE_SERVICE_ROLE_KEY in Vercel → Project Settings → Environment Variables'
+    }), { status: 503, headers: corsHeaders });
   }
 
   // Verify caller JWT
