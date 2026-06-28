@@ -10,7 +10,7 @@
   no-store headers are ignored (in-app webviews) because it is plain page JS.
   Source of truth = sw.js (always served no-cache, version-bumped each deploy). */
 (function(){try{
-  var FA_BUILD='200';
+  var FA_BUILD='201';
   var s=location.search;
   if(s.indexOf('vchk')>-1||s.indexOf('_v=')>-1){
     // Clean the ugly ?vchk= / ?_v= from the URL silently
@@ -595,8 +595,8 @@ table.an-corr-mtx{border-collapse:separate;border-spacing:4px}
 .liqOverlay{position:absolute;inset:0;background:rgba(20,32,24,.35);z-index:60;opacity:0;pointer-events:none;transition:opacity .25s}.liqOverlay.open{opacity:1;pointer-events:auto}
 .liqSheet{position:absolute;bottom:0;left:0;right:0;background:#f7faf8;border-radius:24px 24px 0 0;padding:0 20px 40px;z-index:61;transform:translateY(100%);transition:transform .3s cubic-bezier(.32,.72,0,1)}.liqSheet.open{transform:translateY(0)}
 /* Alert sheet */
-.alertOverlay{position:absolute;inset:0;background:rgba(20,32,24,.35);z-index:60;opacity:0;pointer-events:none;display:none;transition:opacity .25s}.alertOverlay.open{opacity:1;pointer-events:auto;display:block}
-.alertSheet{position:absolute;bottom:0;left:0;right:0;background:#f7faf8;border-radius:24px 24px 0 0;padding:0 20px 40px;z-index:61;transform:translateY(100%);display:none;transition:transform .3s cubic-bezier(.32,.72,0,1)}.alertSheet.open{transform:translateY(0);display:block}
+.alertOverlay{position:absolute;inset:0;background:rgba(20,32,24,.35);z-index:64;opacity:0;pointer-events:none;display:none;transition:opacity .25s}.alertOverlay.open{opacity:1;pointer-events:auto;display:block}
+.alertSheet{position:absolute;bottom:0;left:0;right:0;background:#f7faf8;border-radius:24px 24px 0 0;padding:0 20px 40px;z-index:65;transform:translateY(100%);display:none;transition:transform .3s cubic-bezier(.32,.72,0,1)}.alertSheet.open{transform:translateY(0);display:block}
 .alertAssetRow{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:10px;cursor:pointer;transition:background .12s;font-size:13px;font-weight:600;color:#142018}.alertAssetRow:hover,.alertAssetRow.sel{background:#e6faf3}.alertAssetRow.sel{font-weight:800}
 .alertCondBtn{display:flex;align-items:center;gap:6px;justify-content:center;padding:10px;border-radius:12px;border:1.5px solid rgba(20,32,24,.12);background:#fff;font:inherit;font-size:13px;font-weight:600;color:#4a5f4e;cursor:pointer;transition:all .15s}.alertCondBtn.active{border-color:#b45309;background:#fefce8;color:#b45309}
 .alertToggle{position:relative;display:inline-block;width:44px;height:26px;flex-shrink:0}.alertToggle input{opacity:0;width:0;height:0}.alertToggleSlider{position:absolute;cursor:pointer;inset:0;background:#dce5dc;border-radius:13px;transition:.3s}.alertToggleSlider:before{content:'';position:absolute;width:20px;height:20px;left:3px;top:3px;background:#fff;border-radius:50%;transition:.3s}.alertToggle input:checked + .alertToggleSlider{background:#15803d}.alertToggle input:checked + .alertToggleSlider:before{transform:translateX(18px)}
