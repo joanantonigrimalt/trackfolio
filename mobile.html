@@ -10,8 +10,13 @@
   no-store headers are ignored (in-app webviews) because it is plain page JS.
   Source of truth = sw.js (always served no-cache, version-bumped each deploy). */
 (function(){try{
-  var FA_BUILD='192';
-  if(location.search.indexOf('vchk')>-1)return; // already reloaded once — avoid loops
+  var FA_BUILD='194';
+  var s=location.search;
+  if(s.indexOf('vchk')>-1||s.indexOf('_v=')>-1){
+    // Clean the ugly ?vchk= / ?_v= from the URL silently
+    history.replaceState(null,'',location.pathname+(location.hash||''));
+    return;
+  }
   fetch('/sw.js?_='+Date.now(),{cache:'no-store'}).then(function(r){return r.text();}).then(function(t){
     var m=t.match(/finasset-v(\d+)/);
     if(m&&m[1]!==FA_BUILD){location.replace(location.pathname+'?vchk='+m[1]+(location.hash||''));}
@@ -6853,7 +6858,10 @@ function renderAccountSection(){
         <div style="width:40px;height:40px;border-radius:50%;background:#142018;color:#f5fbf6;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;flex-shrink:0">${av}</div>
         <div style="min-width:0;flex:1">
           <div style="font-size:13px;font-weight:600;color:#142018;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${_sbUser.email}</div>
-          <div class="js-plan-badge" style="font-size:11px;margin-top:1px">Plan Free</div>
+          <div style="display:flex;align-items:center;gap:6px;margin-top:1px">
+            <div class="js-plan-badge" style="font-size:11px">Plan Free</div>
+            <div style="font-size:10px;color:#8fa090;font-weight:700">· v194</div>
+          </div>
         </div>
       </div>
       <div style="background:linear-gradient(135deg,#142018 0%,#1e3a2a 100%);border-radius:14px;padding:16px;margin-bottom:10px">
@@ -9566,7 +9574,6 @@ function _comEsc(str) {
 }
 
 </script>
-<div id="faBuildTag" style="position:fixed;bottom:12px;right:12px;z-index:2147483647;font-size:11px;font-weight:800;color:#fff;background:rgba(20,32,24,.82);padding:3px 8px;border-radius:7px;pointer-events:none;letter-spacing:.04em;font-family:system-ui,sans-serif">v192</div>
 </body>
 </html>
 
