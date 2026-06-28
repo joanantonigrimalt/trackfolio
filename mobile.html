@@ -615,7 +615,30 @@ table.an-corr-mtx{border-collapse:separate;border-spacing:4px}
 .ob-btn-main:active{opacity:.8}
 .ob-btn-sec{width:100%;padding:14px;background:transparent;border:1.5px solid rgba(20,32,24,.1);border-radius:16px;font:inherit;font-size:14px;font-weight:600;color:#4a5f4e;cursor:pointer;transition:all .15s}
 /* Auth */
-#cs-auth{justify-content:flex-start}
+#cs-auth{flex-direction:column;background:#0f1e14!important}
+.csa-top{flex:1;display:flex;flex-direction:column;justify-content:flex-end;padding:56px 24px 18px;overflow:hidden;min-height:0}
+.csa-lang{position:absolute;top:14px;right:16px;z-index:3;display:flex;gap:6px}
+#cs-auth .auth-lang-btn{background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.18);color:rgba(255,255,255,.55)}
+#cs-auth .auth-lang-btn.active{background:rgba(255,255,255,.22);color:#fff;border-color:rgba(255,255,255,.3)}
+.csa-brand{display:flex;align-items:center;gap:10px;margin-bottom:14px}
+.csa-brand-logo{width:32px;height:32px;border-radius:9px;background:#fff;display:flex;align-items:center;justify-content:center;color:#0f1e14;font-size:16px;font-weight:900;flex-shrink:0}
+.csa-brand-name{font-size:16px;font-weight:800;color:#fff;letter-spacing:-.01em}
+.csa-headline{font-size:25px;font-weight:900;color:#fff;line-height:1.2;letter-spacing:-.025em;margin-bottom:8px}
+.csa-headline em{color:#2db564;font-style:normal}
+.csa-tagline{font-size:13px;color:rgba(255,255,255,.58);line-height:1.5;margin-bottom:14px}
+.csa-feats{list-style:none;display:flex;flex-direction:column;gap:7px;margin-bottom:4px}
+.csa-feats li{display:flex;align-items:flex-start;gap:9px;font-size:12.5px;color:rgba(255,255,255,.72);line-height:1.4}
+.csa-feat-ic{width:22px;height:22px;border-radius:6px;background:rgba(45,181,100,.15);border:1px solid rgba(45,181,100,.25);display:flex;align-items:center;justify-content:center;font-size:11px;flex-shrink:0;margin-top:1px}
+.csa-panel{background:#fff;border-radius:26px 26px 0 0;padding:20px 20px 16px;flex-shrink:0;box-shadow:0 -10px 40px rgba(0,0,0,.25)}
+.csa-google{display:flex;align-items:center;justify-content:center;gap:9px;width:100%;padding:14px;background:#fff;border:1.5px solid rgba(20,32,24,.14);border-radius:14px;font:inherit;font-size:14px;font-weight:700;color:#142018;cursor:pointer;margin-bottom:10px;box-shadow:0 1px 4px rgba(0,0,0,.07);transition:box-shadow .15s}
+.csa-google:hover{box-shadow:0 3px 10px rgba(0,0,0,.12)}
+.csa-btns{display:flex;gap:8px;margin-bottom:8px}
+.csa-btn-in{flex:1;padding:13px;background:#f7faf8;border:1.5px solid rgba(20,32,24,.12);border-radius:13px;font:inherit;font-size:14px;font-weight:700;color:#142018;cursor:pointer}
+.csa-btn-reg{flex:1;padding:13px;background:#142018;border:none;border-radius:13px;font:inherit;font-size:14px;font-weight:700;color:#fff;cursor:pointer}
+.csa-demo{display:flex;align-items:center;justify-content:center;gap:5px;padding:9px;font:inherit;font-size:12.5px;color:#8aaa95;cursor:pointer;width:100%;background:none;border:none}
+.csa-demo span{color:#15803d;font-weight:700}
+.csa-privacy{text-align:center;font-size:10px;color:#a0b0a5;line-height:1.6;padding-top:6px}
+.csa-privacy a{color:#15803d;font-weight:600;text-decoration:none}
 .auth-body{flex:1;padding:56px 24px 24px;display:flex;flex-direction:column}
 .auth-title{font-size:28px;font-weight:800;color:#142018;letter-spacing:-.03em;margin-bottom:4px}
 .auth-sub{font-size:14px;color:#8fa090;margin-bottom:32px}
@@ -1205,6 +1228,18 @@ html,body{height:100%;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sy
 #anV2 .anKpi3 .kl{font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:.04em}
 #anV2 .anKpi3 .kv{font-size:15px;font-weight:900;margin-top:3px;color:var(--text)}
 #anV2 .anKpi3 .k.green .kv{color:var(--green)}
+/* Mobile KPI grid (Dividendos/Fiscal mockup) */
+.mDivHero{padding:14px 14px 12px}
+.mDivBig{font-size:34px;font-weight:900;letter-spacing:-.03em;color:var(--gold);line-height:1}
+.mDivSub{font-size:11px;color:var(--muted);margin-top:6px}
+.mKpiGrid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:0 14px 10px}
+.mKpi{background:var(--surf);border:1px solid var(--border);border-radius:12px;padding:11px 13px;box-shadow:0 1px 4px rgba(0,0,0,.04)}
+.mKpi.green{background:var(--ga);border-color:rgba(26,122,66,.2)}
+.mKpi .l{font-size:10px;color:var(--muted)}
+.mKpi .v{font-size:16px;font-weight:800;margin-top:3px;color:var(--text)}
+.mKpi.gold .v{color:var(--gold)}
+.mKpi.green .v{color:var(--green)}
+.mKpi.red .v{color:var(--red)}
 /* Vera IA header band → light */
 .vera-metrics .vm-label{color:var(--muted)!important}
 .vera-metrics .vm-val.neutral{color:var(--text)!important}
@@ -1368,72 +1403,56 @@ html,body{height:100%;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sy
 </div>
 
 <!-- ============ AUTH ============ -->
-<div id="cs-auth" class="cover-screen cs-active" style="background:linear-gradient(170deg,#f2f5f3 0%,#e8f0ea 100%)">
+<div id="cs-auth" class="cover-screen cs-active">
 
   <!-- Language switcher -->
-  <div class="auth-lang-row" style="position:absolute;top:0;right:0;padding:16px 20px;z-index:2">
+  <div class="csa-lang">
     <button class="auth-lang-btn active" id="auth-lang-es" onclick="switchLang('es')">ES</button>
     <button class="auth-lang-btn" id="auth-lang-en" onclick="switchLang('en')">EN</button>
   </div>
 
-  <div style="flex:1;display:flex;flex-direction:column;padding:60px 24px 32px;overflow-y:auto">
-
-    <!-- Brand -->
-    <div style="display:flex;align-items:center;gap:12px;margin-bottom:32px">
-      <div style="width:46px;height:46px;background:#142018;border-radius:14px;display:flex;align-items:center;justify-content:center;color:#f5fbf6;font-size:22px;font-weight:900;flex-shrink:0">F</div>
-      <span style="font-size:21px;font-weight:800;color:#142018;letter-spacing:-.02em">Finasset</span>
+  <!-- Dark top section -->
+  <div class="csa-top">
+    <div class="csa-brand">
+      <div class="csa-brand-logo">F</div>
+      <span class="csa-brand-name">Finasset</span>
     </div>
+    <div id="auth-hero-title" class="csa-headline">Tu cartera,<br><em>analizada por IA.</em></div>
+    <div id="auth-hero-sub" class="csa-tagline">Seguimiento, dividendos y análisis inteligente para tu portfolio.</div>
+    <ul class="csa-feats">
+      <li><div class="csa-feat-ic">📈</div><span id="auth-b1">Precios reales e histórico de 5 años</span></li>
+      <li><div class="csa-feat-ic">◎</div><span id="auth-b2">Dividendos, DRIP y calendario de cobros</span></li>
+      <li><div class="csa-feat-ic">✦</div><span id="auth-b3">Vera IA analiza riesgo, fees y diversificación</span></li>
+      <li><div class="csa-feat-ic">🔔</div><span id="auth-b4">Alertas, benchmarks y resumen fiscal</span></li>
+    </ul>
+  </div>
 
-    <!-- Hero -->
-    <div id="auth-hero-title" style="font-size:27px;font-weight:800;color:#142018;letter-spacing:-.03em;line-height:1.2;margin-bottom:10px">Track your entire portfolio<br>in one place</div>
-    <div id="auth-hero-sub" style="font-size:15px;color:#5a6e5e;line-height:1.6;margin-bottom:24px">Stocks, ETFs, funds, cash &amp; dividends.<br>Spot risks and improve with AI.</div>
-
-    <!-- Benefits -->
-    <div style="display:flex;flex-direction:column;gap:9px;margin-bottom:28px">
-      <div style="display:flex;align-items:center;gap:10px"><div style="width:22px;height:22px;border-radius:6px;background:#e6faf3;display:flex;align-items:center;justify-content:center;flex-shrink:0"><svg viewBox="0 0 12 12" fill="none" stroke="#15803d" stroke-width="2" stroke-linecap="round" width="10" height="10"><polyline points="2,6 5,9 10,3"/></svg></div><span id="auth-b1" style="font-size:13px;color:#3d4f41;font-weight:600">Real prices &amp; 5-year history, auto-updated</span></div>
-      <div style="display:flex;align-items:center;gap:10px"><div style="width:22px;height:22px;border-radius:6px;background:#e6faf3;display:flex;align-items:center;justify-content:center;flex-shrink:0"><svg viewBox="0 0 12 12" fill="none" stroke="#15803d" stroke-width="2" stroke-linecap="round" width="10" height="10"><polyline points="2,6 5,9 10,3"/></svg></div><span id="auth-b2" style="font-size:13px;color:#3d4f41;font-weight:600">Dividends tracked &amp; upcoming payments</span></div>
-      <div style="display:flex;align-items:center;gap:10px"><div style="width:22px;height:22px;border-radius:6px;background:#e6faf3;display:flex;align-items:center;justify-content:center;flex-shrink:0"><svg viewBox="0 0 12 12" fill="none" stroke="#15803d" stroke-width="2" stroke-linecap="round" width="10" height="10"><polyline points="2,6 5,9 10,3"/></svg></div><span id="auth-b3" style="font-size:13px;color:#3d4f41;font-weight:600">AI analyses concentration, risk &amp; fees</span></div>
-      <div style="display:flex;align-items:center;gap:10px"><div style="width:22px;height:22px;border-radius:6px;background:#e6faf3;display:flex;align-items:center;justify-content:center;flex-shrink:0"><svg viewBox="0 0 12 12" fill="none" stroke="#15803d" stroke-width="2" stroke-linecap="round" width="10" height="10"><polyline points="2,6 5,9 10,3"/></svg></div><span id="auth-b4" style="font-size:13px;color:#3d4f41;font-weight:600">Alerts, benchmarks &amp; tax overview</span></div>
-    </div>
-
-    <!-- Primary CTA -->
-    <button onclick="enterDemo()" style="width:100%;padding:16px;background:#142018;color:#f5fbf6;border:none;border-radius:16px;font:inherit;font-size:15px;font-weight:700;cursor:pointer;letter-spacing:-.01em;margin-bottom:10px;transition:opacity .15s">
-      <span id="auth-demo-label">Ver demo — sin cuenta necesaria</span>
-    </button>
-
-    <!-- Secondary CTAs -->
-    <div style="display:flex;gap:8px;margin-bottom:20px">
-      <button onclick="_openAuthAs('login')" style="flex:1;padding:13px;background:#fff;border:1.5px solid rgba(20,32,24,.15);border-radius:14px;font:inherit;font-size:14px;font-weight:700;color:#142018;cursor:pointer"><span id="auth-signin-label">Iniciar sesión</span></button>
-      <button onclick="_openAuthAs('register')" style="flex:1;padding:13px;background:#fff;border:1.5px solid rgba(20,32,24,.15);border-radius:14px;font:inherit;font-size:14px;font-weight:700;color:#15803d;cursor:pointer"><span id="auth-register-label">Crear cuenta</span></button>
-    </div>
-
-
-    <!-- Google sign-in button (cover screen) -->
-    <button class="auth-btn-google" id="auth-btn-google" onclick="signInWithGoogle()" style="margin-bottom:10px">
+  <!-- White panel -->
+  <div class="csa-panel">
+    <!-- Google sign-in -->
+    <button class="csa-google auth-btn-google" id="auth-btn-google" onclick="signInWithGoogle()">
       <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M17.64 9.205c0-.639-.057-1.252-.164-1.841H9v3.481h4.844a4.14 4.14 0 0 1-1.796 2.716v2.259h2.908c1.702-1.567 2.684-3.875 2.684-6.615z" fill="#4285F4"/><path d="M9 18c2.43 0 4.467-.806 5.956-2.18l-2.908-2.259c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332A8.997 8.997 0 0 0 9 18z" fill="#34A853"/><path d="M3.964 10.71A5.41 5.41 0 0 1 3.682 9c0-.593.102-1.17.282-1.71V4.958H.957A8.996 8.996 0 0 0 0 9c0 1.452.348 2.827.957 4.042l3.007-2.332z" fill="#FBBC05"/><path d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 0 0 .957 4.958L3.964 6.29C4.672 4.163 6.656 3.58 9 3.58z" fill="#EA4335"/></svg>
       <span id="auth-btn-google-text">Continuar con Google</span>
     </button>
-
-    <!-- Telegram community button -->
-    <div style="margin-bottom:12px">
-      <a href="https://t.me/finassetes" target="_blank" rel="noopener noreferrer" style="display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:11px;background:rgba(0,136,204,.08);border:1.5px solid rgba(0,136,204,.2);border-radius:14px;font-family:inherit;font-size:13px;font-weight:700;color:#0088cc;cursor:pointer;text-decoration:none;transition:background .15s">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="#0088cc"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12L8.32 14.617l-2.96-.924c-.643-.204-.657-.643.136-.953l11.57-4.461c.537-.194 1.006.131.828.942z"/></svg>
-        <span id="auth-tg-label">Únete a la comunidad en Telegram</span>
-      </a>
+    <!-- Login / Register buttons -->
+    <div class="csa-btns">
+      <button class="csa-btn-in" onclick="_openAuthAs('login')"><span id="auth-signin-label">Iniciar sesión</span></button>
+      <button class="csa-btn-reg" onclick="_openAuthAs('register')"><span id="auth-register-label">Crear cuenta</span></button>
     </div>
-    <!-- Trust note -->
-    <div id="auth-privacy-note" style="text-align:center;font-size:10.5px;color:#a0b0a5;line-height:1.6;margin-top:auto;padding-top:8px">
-      Al usar Finasset aceptas nuestra <a href="/privacy.html" target="_blank" rel="noopener" style="color:#15803d;font-weight:600;text-decoration:none">Política de Privacidad</a> y los <a href="/privacy.html#terms" target="_blank" rel="noopener" style="color:#15803d;font-weight:600;text-decoration:none">Términos de Uso</a>. No es asesoramiento financiero.
+    <!-- Demo -->
+    <button class="csa-demo" onclick="enterDemo()">👁 <span id="auth-demo-label">Ver demo — sin cuenta necesaria</span></button>
+    <!-- Privacy note -->
+    <div id="auth-privacy-note" class="csa-privacy">
+      Al usar Finasset aceptas nuestra <a href="/privacy.html" target="_blank" rel="noopener">Política de Privacidad</a> y los <a href="/privacy.html#terms" target="_blank" rel="noopener">Términos de Uso</a>. No es asesoramiento financiero.
     </div>
-
     <!-- Hidden legacy IDs for switchLang compat -->
     <div style="display:none">
       <div id="auth-title"></div><div id="auth-sub"></div>
       <input id="auth-email" type="text"><input id="auth-name" type="text"><input id="auth-pass" type="password">
       <div id="auth-err"></div><button id="auth-btn-main"><span id="auth-btn-label"></span></button>
-      <div id="auth-mode-link"></div>
+      <div id="auth-mode-link"></div><span id="auth-tg-label"></span>
+      <div id="auth-terms-wrap"></div><label id="auth-pass-lbl"></label><label id="auth-name-lbl"></label>
     </div>
-
   </div>
 </div>
 
@@ -1875,38 +1894,21 @@ html,body{height:100%;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sy
     <button onclick="_divDataCache=null;_divDetailCache=null;renderDividends()" title="Actualizar" style="background:rgba(20,32,24,.07);border:1px solid rgba(20,32,24,.08);width:36px;height:36px;border-radius:12px;font-size:18px;cursor:pointer;color:#4a5f4e;display:flex;align-items:center;justify-content:center;flex-shrink:0">⟳</button>
   </div>
 
-  <!-- Hero card -->
-  <div class="card div-hero2">
-    <div class="div-h2-top">
-      <div>
-        <div class="div-h2-annual" id="divAnnual">—</div>
-        <div class="div-h2-sub" data-i18n="annualDividends">Dividendos anuales</div>
-      </div>
-      <div class="div-h2-badges">
-        <div id="divTrend" style="display:none" class="div-trend-badge"></div>
-        <div id="divTotalReceived" style="display:none;font-size:11px;font-weight:700;padding:4px 10px;border-radius:20px;color:rgba(239,249,242,.7);background:rgba(255,255,255,.08)"></div>
-      </div>
-    </div>
-    <!-- Next payment pill -->
-    <div id="divNextPayRow" style="display:none">
-      <div class="div-next-pill">
-        <span class="div-next-pill-lbl">Próx. cobro</span>
-        <span id="divNextPay" class="div-next-pill-val">—</span>
-        <span id="divNextPayName" class="div-next-pill-name"></span>
-      </div>
-    </div>
-    <!-- 4-cell grid -->
-    <div class="div-h2-grid">
-      <div class="div-h2-cell"><div class="dl" data-i18n="monthly">Mensual</div><div class="dn" id="divMonthly">—</div></div>
-      <div class="div-h2-cell"><div class="dl" data-i18n="daily">Diario</div><div class="dn" id="divDaily">—</div></div>
-      <div class="div-h2-cell"><div class="dl" data-i18n="hourly">Por hora</div><div class="dn" id="divHourly">—</div></div>
-      <div class="div-h2-cell"><div class="dl">Total recibido</div><div class="dn" id="divCalTotal">—</div></div>
-    </div>
-    <!-- Yield row -->
-    <div class="div-yield-row">
-      <div class="div-yield-chip"><div class="dl">Yield</div><div class="dn" id="divYield">—</div></div>
-      <div class="div-yield-chip"><div class="dl" id="divYieldCostLabel">Rentabilidad s/coste</div><div class="dn" id="divYieldCost">—</div></div>
-    </div>
+  <!-- Dividends (mockup layout) -->
+  <div class="mDivHero">
+    <div style="font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px" data-i18n="annualDividends">Dividendos anuales estimados</div>
+    <div class="mDivBig" id="divAnnual">—</div>
+    <div class="mDivSub" id="divNextPayRow" style="display:none">Próx. cobro: <span id="divNextPay">—</span> <span id="divNextPayName"></span></div>
+  </div>
+  <div class="mKpiGrid">
+    <div class="mKpi gold"><div class="l" data-i18n="monthly">Mensual</div><div class="v" id="divMonthly">—</div></div>
+    <div class="mKpi"><div class="l">Total recibido</div><div class="v" id="divCalTotal">—</div></div>
+    <div class="mKpi green"><div class="l">Yield</div><div class="v" id="divYield">—</div></div>
+    <div class="mKpi green"><div class="l">Yield on Cost</div><div class="v" id="divYieldCost">—</div></div>
+  </div>
+  <!-- hidden mirrors required by renderDividends() -->
+  <div style="display:none">
+    <span id="divDaily"></span><span id="divHourly"></span><span id="divTrend"></span><span id="divTotalReceived"></span><span id="divYieldCostLabel"></span>
   </div>
 
   <!-- Note / empty state -->
@@ -5856,6 +5858,16 @@ function renderAnalysisV2(){
   const invVal=live.reduce((s,a)=>s+(toDisplay(a.invested,costCcy(a))||0),0);
   const gain=totVal-invVal, gp=invVal>0?(gain/invVal*100):0;
   const f=v=>'€'+Math.round(v).toLocaleString('es-ES');
+  // Rendimiento por activo (return %)
+  const rendItems=live.map(a=>{const av=toDisplay(a.value,assetCcy(a))||0,ai=toDisplay(a.invested,costCcy(a))||0;const gpA=ai>0?((av-ai)/ai*100):(Number(a.gainPct)||0);return{name:a.name,gp:gpA};}).sort((x,y)=>y.gp-x.gp);
+  const maxAbs=Math.max(1,...rendItems.map(r=>Math.abs(r.gp)));
+  const rendBars=rendItems.map(r=>{const w=Math.min(100,Math.abs(r.gp)/maxAbs*100);const col=r.gp>=0?'#2db564':'#c0392b';return `<div style="display:flex;align-items:center;gap:10px;margin-bottom:9px"><span style="font-size:12px;font-weight:600;width:70px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${escapeHtml(r.name)}">${escapeHtml(r.name)}</span><div style="flex:1;height:8px;background:var(--surf3);border-radius:4px;overflow:hidden"><div style="width:${w.toFixed(0)}%;height:100%;background:${col};border-radius:4px"></div></div><span style="width:56px;text-align:right;font-size:12px;font-weight:700;color:${col}">${r.gp>=0?'+':''}${r.gp.toFixed(1)}%</span></div>`;}).join('');
+  // Costs & Fees (TER) — solo si hay datos
+  let terSum=0,terW=0;
+  live.forEach(a=>{const t=Number(a.mapping?.ter||a.ter||a.mapping?.expenseRatio||0);const v=toDisplay(a.value,assetCcy(a))||0;if(t>0&&v>0){terSum+=t*v;terW+=v;}});
+  const terAvg=terW>0?(terSum/terW):0;
+  const terAnnual=terAvg>0?(totVal*terAvg/100):0;
+  const costsCard=terAvg>0?`<div class="anv2-card"><div style="font-size:13px;font-weight:700;margin-bottom:10px">Costs &amp; Fees · TER ${terAvg.toFixed(2)}%</div><div style="display:flex;justify-content:space-between;align-items:flex-end"><div><div style="font-size:26px;font-weight:900;color:var(--text)">€ ${terAnnual.toFixed(1)}</div><div style="font-size:11px;color:var(--muted)">${isEs?'estimado anual':'annual estimate'}</div></div><div style="background:var(--ga);border:1px solid rgba(26,122,66,.2);border-radius:9px;padding:9px 12px;text-align:center"><div style="font-size:11px;font-weight:700;color:var(--green)">${terAvg<0.35?(isEs?'Muy eficiente ✓':'Very efficient ✓'):(isEs?'Coste medio':'Average')}</div><div style="font-size:9px;color:var(--muted)">${terAvg<0.35?(isEs?'mínimo indexados':'low-cost index'):''}</div></div></div></div>`:'';
   wrap.innerHTML=`
     <div class="anKpi3">
       <div class="k"><div class="kl">${isEs?'Valor':'Value'}</div><div class="kv">${f(totVal)}</div></div>
@@ -5863,7 +5875,9 @@ function renderAnalysisV2(){
       <div class="k green"><div class="kl">${isEs?'Ganancia':'Gain'}</div><div class="kv">${gain>=0?'+':''}${f(gain)}</div></div>
     </div>
     <div class="anv2-card"><div style="font-size:13px;font-weight:700;margin-bottom:12px">${isEs?'Composición del portfolio':'Composition'}</div><div style="display:flex;gap:14px;align-items:center"><div style="flex-shrink:0">${donut}</div><div class="dl" style="flex:1">${legend}</div></div></div>
-    <div class="anv2-card"><div style="font-size:13px;font-weight:700;margin-bottom:12px">${isEs?'Peso por activo':'Weight by asset'}</div>${bars}</div>`;
+    <div class="anv2-card"><div style="font-size:13px;font-weight:700;margin-bottom:12px">${isEs?'Peso por activo':'Weight by asset'}</div>${bars}</div>
+    <div class="anv2-card"><div style="font-size:13px;font-weight:700;margin-bottom:12px">${isEs?'Rendimiento · por activo':'Performance · by asset'}</div>${rendBars}</div>
+    ${costsCard}`;
 }
 
 // ========== Boot ==========
