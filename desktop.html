@@ -612,8 +612,37 @@ table.an-corr-mtx{border-collapse:separate;border-spacing:4px}
 .ob-btn-main{width:100%;padding:16px;background:#142018;color:#f5fbf6;border:none;border-radius:16px;font:inherit;font-size:15px;font-weight:700;cursor:pointer;letter-spacing:-.01em;transition:opacity .15s}
 .ob-btn-main:active{opacity:.8}
 .ob-btn-sec{width:100%;padding:14px;background:transparent;border:1.5px solid rgba(20,32,24,.1);border-radius:16px;font:inherit;font-size:14px;font-weight:600;color:#4a5f4e;cursor:pointer;transition:all .15s}
-/* Auth */
-#cs-auth{justify-content:flex-start}
+/* Auth — desktop split layout */
+#cs-auth{background:#0f1e14!important;flex-direction:row!important}
+.csa-left{flex:1;display:flex;flex-direction:column;justify-content:center;padding:60px 56px;overflow:hidden}
+.csa-right{width:clamp(340px,38%,440px);background:#fff;display:flex;flex-direction:column;justify-content:center;padding:40px 40px 36px;position:relative;box-shadow:-12px 0 60px rgba(0,0,0,.2)}
+.csa-lang{position:absolute;top:16px;right:16px;z-index:3;display:flex;gap:6px}
+#cs-auth .auth-lang-btn{background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.18);color:rgba(255,255,255,.55)}
+#cs-auth .auth-lang-btn.active{background:rgba(255,255,255,.22);color:#fff;border-color:rgba(255,255,255,.3)}
+.csa-right .auth-lang-btn{background:#f4f7f5;border-color:rgba(20,32,24,.12);color:#6d7e72}
+.csa-right .auth-lang-btn.active{background:#142018;color:#fff;border-color:#142018}
+.csa-brand{display:flex;align-items:center;gap:10px;margin-bottom:20px}
+.csa-brand-logo{width:38px;height:38px;border-radius:11px;background:#fff;display:flex;align-items:center;justify-content:center;color:#0f1e14;font-size:20px;font-weight:900;flex-shrink:0}
+.csa-brand-name{font-size:18px;font-weight:800;color:#fff;letter-spacing:-.01em}
+.csa-headline{font-size:36px;font-weight:900;color:#fff;line-height:1.15;letter-spacing:-.025em;margin-bottom:12px}
+.csa-headline em{color:#2db564;font-style:normal}
+.csa-tagline{font-size:15px;color:rgba(255,255,255,.6);line-height:1.55;margin-bottom:22px;max-width:380px}
+.csa-feats{list-style:none;display:flex;flex-direction:column;gap:10px}
+.csa-feats li{display:flex;align-items:flex-start;gap:10px;font-size:14px;color:rgba(255,255,255,.72);line-height:1.45}
+.csa-feat-ic{width:26px;height:26px;border-radius:7px;background:rgba(45,181,100,.15);border:1px solid rgba(45,181,100,.25);display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0;margin-top:1px}
+.csa-right-title{font-size:20px;font-weight:800;color:#0d1e15;letter-spacing:-.02em;margin-bottom:6px;margin-top:8px}
+.csa-right-sub{font-size:13px;color:#6b8a78;margin-bottom:22px;line-height:1.5}
+.csa-google{display:flex;align-items:center;justify-content:center;gap:9px;width:100%;padding:14px;background:#fff;border:1.5px solid rgba(20,32,24,.14);border-radius:13px;font:inherit;font-size:14px;font-weight:700;color:#142018;cursor:pointer;margin-bottom:12px;box-shadow:0 1px 4px rgba(0,0,0,.07);transition:box-shadow .15s}
+.csa-google:hover{box-shadow:0 3px 10px rgba(0,0,0,.12)}
+.csa-divider{display:flex;align-items:center;gap:10px;margin-bottom:12px;color:#b0c0b5;font-size:12px;font-weight:600}
+.csa-divider::before,.csa-divider::after{content:'';flex:1;height:1px;background:rgba(20,32,24,.08)}
+.csa-btns{display:flex;gap:8px;margin-bottom:10px}
+.csa-btn-in{flex:1;padding:13px;background:#f7faf8;border:1.5px solid rgba(20,32,24,.12);border-radius:12px;font:inherit;font-size:14px;font-weight:700;color:#142018;cursor:pointer}
+.csa-btn-reg{flex:1;padding:13px;background:#142018;border:none;border-radius:12px;font:inherit;font-size:14px;font-weight:700;color:#fff;cursor:pointer}
+.csa-demo{display:flex;align-items:center;justify-content:center;gap:5px;padding:10px;font:inherit;font-size:12.5px;color:#8aaa95;cursor:pointer;width:100%;background:none;border:none}
+.csa-demo span{color:#15803d;font-weight:700}
+.csa-privacy{text-align:center;font-size:10px;color:#a0b0a5;line-height:1.6;padding-top:8px;border-top:1px solid rgba(20,32,24,.06);margin-top:8px}
+.csa-privacy a{color:#15803d;font-weight:600;text-decoration:none}
 .auth-body{flex:1;padding:56px 24px 24px;display:flex;flex-direction:column}
 .auth-title{font-size:28px;font-weight:800;color:#142018;letter-spacing:-.03em;margin-bottom:4px}
 .auth-sub{font-size:14px;color:#8fa090;margin-bottom:32px}
@@ -1526,64 +1555,59 @@ html,body{height:100%;overflow:hidden;font-family:-apple-system,BlinkMacSystemFo
 </div>
 
 <!-- ============ AUTH ============ -->
-<div id="cs-auth" class="cover-screen cs-active" style="background:linear-gradient(170deg,#f2f5f3 0%,#e8f0ea 100%)">
+<div id="cs-auth" class="cover-screen cs-active">
 
-  <!-- Language switcher -->
-  <div class="auth-lang-row" style="position:absolute;top:0;right:0;padding:16px 20px;z-index:2">
+  <!-- Language switcher (right panel area) -->
+  <div class="csa-lang">
     <button class="auth-lang-btn" id="auth-lang-es" onclick="switchLang('es')">ES</button>
     <button class="auth-lang-btn active" id="auth-lang-en" onclick="switchLang('en')">EN</button>
   </div>
 
-  <div style="flex:1;display:flex;flex-direction:column;padding:60px 24px 32px;overflow-y:auto">
-
-    <!-- Brand -->
-    <div style="display:flex;align-items:center;gap:12px;margin-bottom:32px">
-      <div style="width:46px;height:46px;background:#142018;border-radius:14px;display:flex;align-items:center;justify-content:center;color:#f5fbf6;font-size:22px;font-weight:900;flex-shrink:0">F</div>
-      <span style="font-size:21px;font-weight:800;color:#142018;letter-spacing:-.02em">Finasset</span>
+  <!-- Left: dark info section -->
+  <div class="csa-left">
+    <div class="csa-brand">
+      <div class="csa-brand-logo">F</div>
+      <span class="csa-brand-name">Finasset</span>
     </div>
+    <div id="auth-hero-title" class="csa-headline">Tu cartera,<br><em>analizada por IA.</em></div>
+    <div id="auth-hero-sub" class="csa-tagline">Seguimiento de acciones, ETFs, dividendos y análisis inteligente para tu portfolio.</div>
+    <ul class="csa-feats">
+      <li><div class="csa-feat-ic">📈</div><span id="auth-b1">Precios reales e histórico de 5 años</span></li>
+      <li><div class="csa-feat-ic">◎</div><span id="auth-b2">Dividendos, DRIP y calendario de cobros</span></li>
+      <li><div class="csa-feat-ic">✦</div><span id="auth-b3">Vera IA analiza riesgo, fees y diversificación</span></li>
+      <li><div class="csa-feat-ic">🔔</div><span id="auth-b4">Alertas, benchmarks y resumen fiscal</span></li>
+    </ul>
+  </div>
 
-    <!-- Hero -->
-    <div id="auth-hero-title" style="font-size:27px;font-weight:800;color:#142018;letter-spacing:-.03em;line-height:1.2;margin-bottom:10px">Track your entire portfolio<br>in one place</div>
-    <div id="auth-hero-sub" style="font-size:15px;color:#5a6e5e;line-height:1.6;margin-bottom:24px">Stocks, ETFs, funds, cash &amp; dividends.<br>Spot risks and improve with AI.</div>
-
-    <!-- Benefits -->
-    <div style="display:flex;flex-direction:column;gap:9px;margin-bottom:28px">
-      <div style="display:flex;align-items:center;gap:10px"><div style="width:22px;height:22px;border-radius:6px;background:#e6faf3;display:flex;align-items:center;justify-content:center;flex-shrink:0"><svg viewBox="0 0 12 12" fill="none" stroke="#15803d" stroke-width="2" stroke-linecap="round" width="10" height="10"><polyline points="2,6 5,9 10,3"/></svg></div><span id="auth-b1" style="font-size:13px;color:#3d4f41;font-weight:600">Real prices &amp; 5-year history, auto-updated</span></div>
-      <div style="display:flex;align-items:center;gap:10px"><div style="width:22px;height:22px;border-radius:6px;background:#e6faf3;display:flex;align-items:center;justify-content:center;flex-shrink:0"><svg viewBox="0 0 12 12" fill="none" stroke="#15803d" stroke-width="2" stroke-linecap="round" width="10" height="10"><polyline points="2,6 5,9 10,3"/></svg></div><span id="auth-b2" style="font-size:13px;color:#3d4f41;font-weight:600">Dividends tracked &amp; upcoming payments</span></div>
-      <div style="display:flex;align-items:center;gap:10px"><div style="width:22px;height:22px;border-radius:6px;background:#e6faf3;display:flex;align-items:center;justify-content:center;flex-shrink:0"><svg viewBox="0 0 12 12" fill="none" stroke="#15803d" stroke-width="2" stroke-linecap="round" width="10" height="10"><polyline points="2,6 5,9 10,3"/></svg></div><span id="auth-b3" style="font-size:13px;color:#3d4f41;font-weight:600">AI analyses concentration, risk &amp; fees</span></div>
-      <div style="display:flex;align-items:center;gap:10px"><div style="width:22px;height:22px;border-radius:6px;background:#e6faf3;display:flex;align-items:center;justify-content:center;flex-shrink:0"><svg viewBox="0 0 12 12" fill="none" stroke="#15803d" stroke-width="2" stroke-linecap="round" width="10" height="10"><polyline points="2,6 5,9 10,3"/></svg></div><span id="auth-b4" style="font-size:13px;color:#3d4f41;font-weight:600">Alerts, benchmarks &amp; tax overview</span></div>
-    </div>
-
-    <!-- Primary CTA -->
-    <button onclick="enterDemo()" style="width:100%;padding:16px;background:#142018;color:#f5fbf6;border:none;border-radius:16px;font:inherit;font-size:15px;font-weight:700;cursor:pointer;letter-spacing:-.01em;margin-bottom:10px;transition:opacity .15s">
-      <span id="auth-demo-label">Ver demo — sin cuenta necesaria</span>
-    </button>
-
-    <!-- Secondary CTAs -->
-    <div style="display:flex;gap:8px;margin-bottom:20px">
-      <button onclick="_openAuthAs('login')" style="flex:1;padding:13px;background:#fff;border:1.5px solid rgba(20,32,24,.15);border-radius:14px;font:inherit;font-size:14px;font-weight:700;color:#142018;cursor:pointer"><span id="auth-signin-label">Iniciar sesión</span></button>
-      <button onclick="_openAuthAs('register')" style="flex:1;padding:13px;background:#fff;border:1.5px solid rgba(20,32,24,.15);border-radius:14px;font:inherit;font-size:14px;font-weight:700;color:#15803d;cursor:pointer"><span id="auth-register-label">Crear cuenta</span></button>
-    </div>
-
-    <!-- Google sign-in button (cover screen) -->
-    <button class="auth-btn-google" id="auth-btn-google" onclick="signInWithGoogle()" style="margin-bottom:12px">
+  <!-- Right: white action panel -->
+  <div class="csa-right">
+    <div class="csa-right-title">Accede a tu cuenta</div>
+    <div class="csa-right-sub">Gestiona tu portfolio desde cualquier dispositivo.</div>
+    <!-- Google sign-in -->
+    <button class="csa-google auth-btn-google" id="auth-btn-google" onclick="signInWithGoogle()">
       <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M17.64 9.205c0-.639-.057-1.252-.164-1.841H9v3.481h4.844a4.14 4.14 0 0 1-1.796 2.716v2.259h2.908c1.702-1.567 2.684-3.875 2.684-6.615z" fill="#4285F4"/><path d="M9 18c2.43 0 4.467-.806 5.956-2.18l-2.908-2.259c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332A8.997 8.997 0 0 0 9 18z" fill="#34A853"/><path d="M3.964 10.71A5.41 5.41 0 0 1 3.682 9c0-.593.102-1.17.282-1.71V4.958H.957A8.996 8.996 0 0 0 0 9c0 1.452.348 2.827.957 4.042l3.007-2.332z" fill="#FBBC05"/><path d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 0 0 .957 4.958L3.964 6.29C4.672 4.163 6.656 3.58 9 3.58z" fill="#EA4335"/></svg>
       <span id="auth-btn-google-text">Continuar con Google</span>
     </button>
-
-    <!-- Trust note -->
-    <div id="auth-privacy-note" style="text-align:center;font-size:10.5px;color:#a0b0a5;line-height:1.6;margin-top:auto;padding-top:8px">
-      Al usar Finasset aceptas nuestra <a href="/privacy.html" target="_blank" rel="noopener" style="color:#15803d;font-weight:600;text-decoration:none">Política de Privacidad</a> y los <a href="/privacy.html#terms" target="_blank" rel="noopener" style="color:#15803d;font-weight:600;text-decoration:none">Términos de Uso</a>. No es asesoramiento financiero.
+    <div class="csa-divider">o</div>
+    <!-- Login / Register -->
+    <div class="csa-btns">
+      <button class="csa-btn-in" onclick="_openAuthAs('login')"><span id="auth-signin-label">Iniciar sesión</span></button>
+      <button class="csa-btn-reg" onclick="_openAuthAs('register')"><span id="auth-register-label">Crear cuenta</span></button>
     </div>
-
+    <!-- Demo -->
+    <button class="csa-demo" onclick="enterDemo()">👁 <span id="auth-demo-label">Ver demo — sin cuenta necesaria</span></button>
+    <!-- Privacy note -->
+    <div id="auth-privacy-note" class="csa-privacy">
+      Al usar Finasset aceptas nuestra <a href="/privacy.html" target="_blank" rel="noopener">Política de Privacidad</a> y los <a href="/privacy.html#terms" target="_blank" rel="noopener">Términos de Uso</a>. No es asesoramiento financiero.
+    </div>
     <!-- Hidden legacy IDs for switchLang compat -->
     <div style="display:none">
       <div id="auth-title"></div><div id="auth-sub"></div>
       <input id="auth-email" type="text"><input id="auth-name" type="text"><input id="auth-pass" type="password">
       <div id="auth-err"></div><button id="auth-btn-main"><span id="auth-btn-label"></span></button>
-      <div id="auth-mode-link"></div>
+      <div id="auth-mode-link"></div><span id="auth-tg-label"></span>
+      <div id="auth-terms-wrap"></div><label id="auth-pass-lbl"></label><label id="auth-name-lbl"></label>
     </div>
-
   </div>
 </div>
 
@@ -6541,7 +6565,12 @@ async function initSupabase(){
     _sb.auth.onAuthStateChange(async(event,session)=>{
       _sbUser=session?.user||null;
       renderAccountSection();
-      if(event==='SIGNED_IN'){await syncFromCloud(); loadUserPlan().catch(()=>{}); }
+      if(event==='SIGNED_IN'){
+        if(session?.access_token)localStorage.setItem('fa_token',session.access_token);
+        // Returning from Google OAuth while a login/cover screen is showing → enter the app
+        if(document.querySelector('.cover-screen.cs-active')){try{localStorage.setItem('fa_ob_done','1');if(typeof closeAuthModal==='function')closeAuthModal();enterMainApp();}catch(_){}}
+        await syncFromCloud(); loadUserPlan().catch(()=>{});
+      }
       if(event==='SIGNED_OUT'){
         // If we're in the main app, redirect to login
         const home=document.getElementById('screen-home');
@@ -6940,7 +6969,7 @@ async function signInWithGoogle() {
   try {
     const { error } = await _sb.auth.signInWithOAuth({
       provider: 'google',
-      options: { redirectTo: 'https://finasset.app' }
+      options: { redirectTo: window.location.origin + '/desktop' }
     });
     if (error) throw error;
     // Browser will redirect to Google — no further action needed

@@ -6500,6 +6500,8 @@ async function initSupabase(){
       renderAccountSection();
       if(event==='SIGNED_IN'){
         if(session?.access_token)localStorage.setItem('fa_token',session.access_token);
+        // Returning from Google OAuth (or any sign-in) while a login/cover screen is showing → enter the app
+        if(document.querySelector('.cover-screen.cs-active')){try{localStorage.setItem('fa_ob_done','1');closeAuthModal&&closeAuthModal();enterMainApp();}catch(_){}}
         _syncDone=false; // reset on new sign-in so full sync runs
         await syncFromCloud(); loadUserPlan().catch(()=>{});
         _syncDone=true;
@@ -7042,7 +7044,7 @@ async function signInWithGoogle() {
   try {
     const { error } = await _sb.auth.signInWithOAuth({
       provider: 'google',
-      options: { redirectTo: 'https://finasset.app' }
+      options: { redirectTo: window.location.origin + '/mobile' }
     });
     if (error) throw error;
     // Browser will redirect to Google — no further action needed
