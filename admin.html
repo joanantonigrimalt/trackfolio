@@ -1,0 +1,847 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Finasset Admin</title>
+<meta name="robots" content="noindex,nofollow">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0d1117;--surface:#161b22;--surface2:#21262d;--surface3:#30363d;
+  --border:#30363d;--text:#e6edf3;--muted:#8b949e;--green:#3fb950;
+  --blue:#58a6ff;--purple:#bc8cff;--yellow:#e3b341;--red:#f85149;
+  --orange:#d29922;
+}
+body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-size:14px;min-height:100vh}
+
+/* ── Login ── */
+#login-screen{display:flex;align-items:center;justify-content:center;min-height:100vh;padding:20px}
+.login-box{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:40px;width:100%;max-width:380px;text-align:center}
+.login-box .logo{font-size:28px;font-weight:800;color:var(--green);margin-bottom:4px}
+.login-box .sub{color:var(--muted);font-size:13px;margin-bottom:28px}
+.login-box input{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:10px 14px;color:var(--text);font-size:14px;margin-bottom:12px;outline:none}
+.login-box input:focus{border-color:var(--blue)}
+.btn-primary{width:100%;background:var(--green);color:#0d1117;border:none;border-radius:8px;padding:11px;font-size:14px;font-weight:700;cursor:pointer;transition:opacity .15s}
+.btn-primary:hover{opacity:.88}
+.btn-primary:disabled{opacity:.5;cursor:not-allowed}
+#login-err{color:var(--red);font-size:12px;margin-top:10px;min-height:18px}
+
+/* ── App shell ── */
+#app{display:none;min-height:100vh}
+.topbar{background:var(--surface);border-bottom:1px solid var(--border);padding:0 24px;height:52px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100}
+.topbar-left{display:flex;align-items:center;gap:14px}
+.logo-text{font-size:16px;font-weight:800;color:var(--green)}
+.admin-badge{background:#1c2d1e;color:var(--green);font-size:11px;font-weight:700;padding:2px 8px;border-radius:20px;border:1px solid #2d4a2f}
+.topbar-right{display:flex;align-items:center;gap:16px}
+.admin-email{font-size:12px;color:var(--muted)}
+.btn-logout{background:transparent;border:1px solid var(--border);color:var(--muted);border-radius:6px;padding:5px 12px;font-size:12px;cursor:pointer}
+.btn-logout:hover{color:var(--text);border-color:var(--muted)}
+
+/* ── Nav tabs ── */
+.nav-tabs{background:var(--surface);border-bottom:1px solid var(--border);padding:0 24px;display:flex;gap:0;overflow-x:auto}
+.nav-tab{padding:12px 18px;cursor:pointer;font-size:13px;font-weight:500;color:var(--muted);border-bottom:2px solid transparent;white-space:nowrap;transition:color .15s}
+.nav-tab:hover{color:var(--text)}
+.nav-tab.active{color:var(--blue);border-bottom-color:var(--blue)}
+
+/* ── Content ── */
+.content{padding:24px;max-width:1300px;margin:0 auto}
+.tab-panel{display:none}
+.tab-panel.active{display:block}
+
+/* ── Cards ── */
+.cards-row{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:16px;margin-bottom:24px}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:20px}
+.card-label{font-size:11px;color:var(--muted);font-weight:600;letter-spacing:.05em;margin-bottom:8px}
+.card-val{font-size:28px;font-weight:700;color:var(--text)}
+.card-sub{font-size:12px;color:var(--muted);margin-top:4px}
+.card.green .card-val{color:var(--green)}
+.card.blue .card-val{color:var(--blue)}
+.card.purple .card-val{color:var(--purple)}
+.card.yellow .card-val{color:var(--yellow)}
+
+/* ── Tables ── */
+.table-wrap{background:var(--surface);border:1px solid var(--border);border-radius:10px;overflow:hidden}
+.table-header{padding:16px 20px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border)}
+.table-title{font-size:14px;font-weight:600}
+.search-input{background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:6px 12px;color:var(--text);font-size:13px;outline:none;width:220px}
+.search-input:focus{border-color:var(--blue)}
+table{width:100%;border-collapse:collapse}
+th{text-align:left;padding:10px 16px;font-size:11px;font-weight:600;color:var(--muted);letter-spacing:.05em;border-bottom:1px solid var(--border)}
+td{padding:10px 16px;border-bottom:1px solid var(--border);font-size:13px;vertical-align:middle}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:rgba(255,255,255,.02)}
+.badge{display:inline-flex;align-items:center;padding:2px 8px;border-radius:20px;font-size:11px;font-weight:600}
+.badge.free{background:#1c2224;color:var(--muted);border:1px solid var(--surface3)}
+.badge.starter{background:#1c2838;color:var(--blue);border:1px solid #1d3557}
+.badge.pro{background:#1c2238;color:var(--purple);border:1px solid #2d1f57}
+.badge.green{background:#1c2d1e;color:var(--green);border:1px solid #2d4a2f}
+.badge.red{background:#2d1c1c;color:var(--red);border:1px solid #4a2d2d}
+.badge.yellow{background:#2d2a1c;color:var(--yellow);border:1px solid #4a3f1c}
+.dot{width:8px;height:8px;border-radius:50%;display:inline-block;margin-right:6px}
+.dot.green{background:var(--green)}
+.dot.red{background:var(--red)}
+.dot.yellow{background:var(--yellow)}
+.dot.muted{background:var(--surface3)}
+
+/* ── Sections ── */
+.section-title{font-size:16px;font-weight:700;margin-bottom:16px}
+.section-sub{font-size:12px;color:var(--muted);margin-bottom:24px;margin-top:-10px}
+
+/* ── API cards ── */
+.api-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px;margin-bottom:24px}
+.api-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px}
+.api-card-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.api-card-name{font-weight:600;font-size:14px}
+.api-card-method{font-size:10px;font-weight:700;padding:2px 7px;border-radius:4px}
+.method-get{background:#1c2d1e;color:var(--green)}
+.method-post{background:#1c2238;color:var(--blue)}
+.api-card-path{font-family:monospace;font-size:12px;color:var(--muted);margin-bottom:8px}
+.api-card-desc{font-size:12px;color:var(--muted);line-height:1.5}
+
+/* ── Connections ── */
+.conn-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px}
+.conn-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:20px}
+.conn-top{display:flex;align-items:center;gap:12px;margin-bottom:14px}
+.conn-icon{width:40px;height:40px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:700;flex-shrink:0}
+.conn-name{font-size:15px;font-weight:700}
+.conn-type{font-size:11px;color:var(--muted)}
+.conn-row{display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--border);font-size:12px}
+.conn-row:last-child{border-bottom:none}
+.conn-row-key{color:var(--muted)}
+.conn-row-val{color:var(--text);font-family:monospace;font-size:11px;max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+
+/* ── Architecture ── */
+.arch-diagram{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:24px;margin-bottom:20px}
+.arch-row{display:flex;align-items:center;gap:0;margin-bottom:8px;flex-wrap:wrap}
+.arch-box{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:10px 16px;font-size:12px;font-weight:600;white-space:nowrap}
+.arch-box.user{border-color:#3fb950;color:#3fb950}
+.arch-box.server{border-color:#58a6ff;color:#58a6ff}
+.arch-box.db{border-color:#bc8cff;color:#bc8cff}
+.arch-box.ext{border-color:#e3b341;color:#e3b341}
+.arch-arrow{padding:0 8px;color:var(--muted);font-size:16px}
+.arch-label{font-size:11px;color:var(--muted);margin-bottom:6px;margin-top:14px;font-weight:600;letter-spacing:.05em}
+
+/* ── Security ── */
+.sec-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px}
+.sec-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:20px}
+.sec-card-title{font-size:14px;font-weight:700;margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.sec-item{display:flex;align-items:flex-start;gap:10px;padding:8px 0;border-bottom:1px solid var(--border);font-size:12px}
+.sec-item:last-child{border-bottom:none}
+.sec-icon{font-size:14px;flex-shrink:0;margin-top:1px}
+.sec-text{line-height:1.5}
+.sec-text b{color:var(--text);display:block;margin-bottom:2px}
+.sec-text span{color:var(--muted)}
+
+/* ── Chart bars ── */
+.bar-chart{margin:16px 0}
+.bar-row{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.bar-label{font-size:12px;color:var(--muted);width:80px;flex-shrink:0;text-align:right}
+.bar-track{flex:1;background:var(--surface2);border-radius:4px;height:8px;overflow:hidden}
+.bar-fill{height:100%;border-radius:4px;background:var(--green);transition:width .5s}
+.bar-val{font-size:12px;color:var(--text);width:30px;flex-shrink:0}
+
+/* ── Util ── */
+.text-muted{color:var(--muted)}
+.text-green{color:var(--green)}
+.text-red{color:var(--red)}
+.text-blue{color:var(--blue)}
+.tag{display:inline-flex;align-items:center;gap:5px;background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:3px 8px;font-size:11px;color:var(--muted);margin:2px}
+.spinner{display:inline-block;width:16px;height:16px;border:2px solid var(--border);border-top-color:var(--blue);border-radius:50%;animation:spin .7s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.loading-state{text-align:center;padding:60px;color:var(--muted)}
+.refresh-btn{background:var(--surface2);border:1px solid var(--border);color:var(--muted);border-radius:6px;padding:6px 14px;font-size:12px;cursor:pointer}
+.refresh-btn:hover{color:var(--text)}
+.last-updated{font-size:11px;color:var(--muted)}
+.reg-chart{display:flex;align-items:flex-end;gap:3px;height:60px;margin-top:12px}
+.reg-bar{flex:1;background:var(--green);border-radius:2px 2px 0 0;opacity:.7;min-width:4px;cursor:pointer;transition:opacity .15s}
+.reg-bar:hover{opacity:1}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+@media(max-width:700px){.two-col{grid-template-columns:1fr}.nav-tab{padding:10px 12px;font-size:12px}.cards-row{grid-template-columns:1fr 1fr}}
+</style>
+</head>
+<body>
+
+<!-- Login -->
+<div id="login-screen">
+  <div class="login-box">
+    <div class="logo">Finasset</div>
+    <div class="sub">Panel de Administración</div>
+    <input type="email" id="login-email" placeholder="Email" value="joantonigrimalt@gmail.com" autocomplete="username">
+    <input type="password" id="login-pass" placeholder="Contraseña" autocomplete="current-password">
+    <button class="btn-primary" id="login-btn" onclick="doLogin()">Entrar</button>
+    <div id="login-err"></div>
+  </div>
+</div>
+
+<!-- App -->
+<div id="app">
+  <div class="topbar">
+    <div class="topbar-left">
+      <span class="logo-text">Finasset</span>
+      <span class="admin-badge">ADMIN</span>
+    </div>
+    <div class="topbar-right">
+      <span class="admin-email" id="admin-email-display"></span>
+      <span class="last-updated" id="last-updated-txt"></span>
+      <button class="refresh-btn" onclick="loadData()">↻ Actualizar</button>
+      <button class="btn-logout" onclick="doLogout()">Salir</button>
+    </div>
+  </div>
+
+  <div class="nav-tabs">
+    <div class="nav-tab active" onclick="showTab('dashboard')">📊 Dashboard</div>
+    <div class="nav-tab" onclick="showTab('users')">👤 Usuarios</div>
+    <div class="nav-tab" onclick="showTab('planes')">💳 Planes</div>
+    <div class="nav-tab" onclick="showTab('apis')">⚡ APIs</div>
+    <div class="nav-tab" onclick="showTab('conexiones')">🔗 Conexiones</div>
+    <div class="nav-tab" onclick="showTab('estructura')">🏗️ Estructura</div>
+    <div class="nav-tab" onclick="showTab('seguridad')">🔒 Seguridad</div>
+  </div>
+
+  <div class="content">
+
+    <!-- DASHBOARD -->
+    <div class="tab-panel active" id="tab-dashboard">
+      <div id="dash-loading" class="loading-state"><div class="spinner"></div><p style="margin-top:12px">Cargando datos...</p></div>
+      <div id="dash-content" style="display:none">
+        <div class="cards-row" id="stat-cards"></div>
+        <div class="two-col">
+          <div>
+            <div class="table-wrap">
+              <div class="table-header"><span class="table-title">Registros — últimos 30 días</span></div>
+              <div style="padding:16px 20px">
+                <div id="reg-chart-wrap"></div>
+              </div>
+            </div>
+          </div>
+          <div>
+            <div class="table-wrap">
+              <div class="table-header"><span class="table-title">Distribución de planes</span></div>
+              <div style="padding:16px 20px" id="plan-bars"></div>
+            </div>
+          </div>
+        </div>
+        <div style="margin-top:20px">
+          <div class="table-wrap">
+            <div class="table-header"><span class="table-title">Últimos 10 registros</span></div>
+            <table><thead><tr>
+              <th>EMAIL</th><th>PLAN</th><th>PROVEEDOR</th><th>CARTERA</th><th>REGISTRADO</th>
+            </tr></thead>
+            <tbody id="recent-users"></tbody></table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- USERS -->
+    <div class="tab-panel" id="tab-users">
+      <div class="table-wrap">
+        <div class="table-header">
+          <span class="table-title">Todos los usuarios (<span id="user-count">—</span>)</span>
+          <input class="search-input" placeholder="Buscar por email o nombre..." id="user-search" oninput="filterUsers()">
+        </div>
+        <div style="overflow-x:auto">
+        <table>
+          <thead><tr>
+            <th>EMAIL</th><th>NOMBRE</th><th>PLAN</th><th>PROVEEDOR</th>
+            <th>ACTIVO</th><th>CARTERA</th><th>CONFIRMADO</th><th>REGISTRADO</th><th>ÚLTIMO LOGIN</th>
+          </tr></thead>
+          <tbody id="users-tbody"></tbody>
+        </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- PLANES -->
+    <div class="tab-panel" id="tab-planes">
+      <div id="planes-loading" class="loading-state"><div class="spinner"></div></div>
+      <div id="planes-content" style="display:none">
+        <div class="cards-row" id="plan-cards"></div>
+        <div class="table-wrap">
+          <div class="table-header"><span class="table-title">Usuarios de pago (Starter + Pro)</span></div>
+          <table>
+            <thead><tr>
+              <th>EMAIL</th><th>PLAN</th><th>CRÉDITOS USADOS</th><th>CRÉDITOS LÍMITE</th><th>REGISTRADO</th><th>ÚLTIMO LOGIN</th>
+            </tr></thead>
+            <tbody id="paid-users"></tbody>
+          </table>
+        </div>
+        <div style="margin-top:20px">
+          <div class="table-wrap">
+            <div class="table-header"><span class="table-title">Usuarios Free (sin pagar)</span></div>
+            <table>
+              <thead><tr>
+                <th>EMAIL</th><th>CRÉDITOS USADOS / LÍMITE</th><th>REGISTRADO</th><th>ACTIVO 7d</th>
+              </tr></thead>
+              <tbody id="free-users"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- APIs -->
+    <div class="tab-panel" id="tab-apis">
+      <div class="section-title">Endpoints internos</div>
+      <div class="section-sub">Serverless functions desplegadas en Vercel Edge/Node</div>
+      <div class="api-grid" id="api-list"></div>
+      <div class="section-title" style="margin-top:8px">Proveedores externos de datos</div>
+      <div class="section-sub">APIs de terceros usadas para precios, dividendos y FX</div>
+      <div class="api-grid" id="ext-api-list"></div>
+    </div>
+
+    <!-- CONEXIONES -->
+    <div class="tab-panel" id="tab-conexiones">
+      <div class="section-title">Servicios conectados</div>
+      <div class="section-sub">Estado de las conexiones con servicios externos</div>
+      <div class="conn-grid" id="conn-list"></div>
+    </div>
+
+    <!-- ESTRUCTURA -->
+    <div class="tab-panel" id="tab-estructura">
+      <div class="section-title">Arquitectura de Finasset</div>
+      <div class="section-sub">Flujo completo de datos desde el usuario hasta las APIs</div>
+
+      <div class="arch-diagram">
+        <div class="arch-label">CLIENTE</div>
+        <div class="arch-row">
+          <div class="arch-box user">📱 mobile.html (PWA)</div>
+          <div class="arch-arrow">│</div>
+        </div>
+        <div class="arch-row" style="margin-left:20px">
+          <div class="arch-box user">🖥️ desktop.html (PWA)</div>
+        </div>
+        <div class="arch-row" style="margin-left:20px">
+          <div class="arch-box user">🌐 index.html (Landing)</div>
+        </div>
+        <div style="margin:10px 0;padding-left:10px;color:var(--muted);font-size:18px">↓ HTTPS</div>
+
+        <div class="arch-label">VERCEL EDGE / SERVERLESS</div>
+        <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:10px">
+          <div class="arch-box server">/api/auth/config</div>
+          <div class="arch-box server">/api/auth/plan</div>
+          <div class="arch-box server">/api/portfolio/intraday</div>
+          <div class="arch-box server">/api/portfolio/seed</div>
+          <div class="arch-box server">/api/portfolio/coverage</div>
+          <div class="arch-box server">/api/dividends/history</div>
+          <div class="arch-box server">/api/dividends/detail</div>
+          <div class="arch-box server">/api/etf/profile</div>
+          <div class="arch-box server">/api/fx/rates</div>
+          <div class="arch-box server">/api/search/query</div>
+          <div class="arch-box server">/api/ai/chat</div>
+          <div class="arch-box server">/api/insiders</div>
+          <div class="arch-box server">/api/email/send</div>
+          <div class="arch-box server">/api/admin/stats</div>
+        </div>
+        <div style="margin:10px 0;padding-left:10px;color:var(--muted);font-size:18px">↓ API calls</div>
+
+        <div class="arch-label">SERVICIOS EXTERNOS</div>
+        <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:10px">
+          <div class="arch-box db">🗄️ Supabase (auth + DB)</div>
+          <div class="arch-box ext">Yahoo Finance</div>
+          <div class="arch-box ext">EODHD</div>
+          <div class="arch-box ext">TwelveData</div>
+          <div class="arch-box ext">FMP</div>
+          <div class="arch-box ext">JustETF</div>
+          <div class="arch-box ext">Frankfurter (FX)</div>
+          <div class="arch-box ext">🤖 Anthropic (AI)</div>
+          <div class="arch-box ext">Morningstar/Leeway</div>
+        </div>
+      </div>
+
+      <div class="two-col">
+        <div class="table-wrap">
+          <div class="table-header"><span class="table-title">Tablas Supabase</span></div>
+          <table>
+            <thead><tr><th>TABLA</th><th>USO</th></tr></thead>
+            <tbody>
+              <tr><td><code>user_positions</code></td><td class="text-muted">Cartera, overrides, custom assets, liquidez</td></tr>
+              <tr><td><code>price_history</code></td><td class="text-muted">Caché persistente de precios históricos (L2)</td></tr>
+              <tr><td><code>auth.users</code></td><td class="text-muted">Usuarios y metadatos (plan, créditos AI)</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="table-wrap">
+          <div class="table-header"><span class="table-title">Ficheros principales</span></div>
+          <table>
+            <thead><tr><th>ARCHIVO</th><th>ROL</th></tr></thead>
+            <tbody>
+              <tr><td><code>mobile.html</code></td><td class="text-muted">App móvil completa (~9000 líneas)</td></tr>
+              <tr><td><code>desktop.html</code></td><td class="text-muted">App escritorio completa</td></tr>
+              <tr><td><code>index.html</code></td><td class="text-muted">Landing + router device</td></tr>
+              <tr><td><code>sw.js</code></td><td class="text-muted">Service Worker — cache v196</td></tr>
+              <tr><td><code>admin.html</code></td><td class="text-muted">Panel admin (este archivo)</td></tr>
+              <tr><td><code>api/</code></td><td class="text-muted">Serverless functions (Vercel)</td></tr>
+              <tr><td><code>lib/</code></td><td class="text-muted">Providers, cache, seguridad</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div style="margin-top:20px" class="table-wrap">
+        <div class="table-header"><span class="table-title">Variables de entorno (Vercel)</span></div>
+        <table>
+          <thead><tr><th>VAR</th><th>DESCRIPCIÓN</th><th>ESTADO</th></tr></thead>
+          <tbody id="env-vars-table"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- SEGURIDAD -->
+    <div class="tab-panel" id="tab-seguridad">
+      <div class="section-title">Seguridad</div>
+      <div class="section-sub">Resumen de las medidas de seguridad implementadas</div>
+      <div class="sec-grid">
+
+        <div class="sec-card">
+          <div class="sec-card-title">🔑 Autenticación</div>
+          <div class="sec-item"><span class="sec-icon">✅</span><div class="sec-text"><b>Supabase Auth</b><span>JWT tokens con expiración automática. Soporte Google OAuth + email/password.</span></div></div>
+          <div class="sec-item"><span class="sec-icon">✅</span><div class="sec-text"><b>Service Role Key — solo servidor</b><span>La clave admin nunca se expone al cliente. Solo APIs en Vercel.</span></div></div>
+          <div class="sec-item"><span class="sec-icon">✅</span><div class="sec-text"><b>Token en localStorage</b><span>fa_token guardado localmente; se renueva con TOKEN_REFRESHED.</span></div></div>
+          <div class="sec-item"><span class="sec-icon">✅</span><div class="sec-text"><b>Admin panel protegido</b><span>Solo joantonigrimalt@gmail.com puede acceder. Verificado en servidor.</span></div></div>
+        </div>
+
+        <div class="sec-card">
+          <div class="sec-card-title">🛡️ CORS</div>
+          <div class="sec-item"><span class="sec-icon">✅</span><div class="sec-text"><b>Origins permitidos</b><span>https://finasset.app, https://www.finasset.app, https://trackfolio.vercel.app</span></div></div>
+          <div class="sec-item"><span class="sec-icon">✅</span><div class="sec-text"><b>Preview URLs</b><span>trackfolio-*-grigoms-projects.vercel.app permitidas en dev</span></div></div>
+          <div class="sec-item"><span class="sec-icon">✅</span><div class="sec-text"><b>Métodos</b><span>GET, POST, OPTIONS únicamente</span></div></div>
+          <div class="sec-item"><span class="sec-icon">✅</span><div class="sec-text"><b>Headers</b><span>Content-Type, X-API-Key, Authorization</span></div></div>
+        </div>
+
+        <div class="sec-card">
+          <div class="sec-card-title">⏱️ Rate Limiting</div>
+          <div class="sec-item"><span class="sec-icon">✅</span><div class="sec-text"><b>Por IP — en memoria</b><span>60 req/min endpoints generales, 30 req/min para auth, 15 req/min para AI</span></div></div>
+          <div class="sec-item"><span class="sec-icon">✅</span><div class="sec-text"><b>Protección AI</b><span>/api/ai/chat: 15 req/min por IP + límite de créditos por usuario</span></div></div>
+          <div class="sec-item"><span class="sec-icon">✅</span><div class="sec-text"><b>Headers estándar</b><span>X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Reset</span></div></div>
+          <div class="sec-item"><span class="sec-icon">⚠️</span><div class="sec-text"><b>Limitación</b><span>Rate limits son por instancia serverless, no globales. Suficiente para escala actual.</span></div></div>
+        </div>
+
+        <div class="sec-card">
+          <div class="sec-card-title">🔍 Validación</div>
+          <div class="sec-item"><span class="sec-icon">✅</span><div class="sec-text"><b>ISINs</b><span>Regex /^[A-Z]{2}[A-Z0-9]{10}$/ en todos los endpoints que los aceptan</span></div></div>
+          <div class="sec-item"><span class="sec-icon">✅</span><div class="sec-text"><b>Símbolos</b><span>/^[A-Z0-9.\-^=]{1,20}$/i</span></div></div>
+          <div class="sec-item"><span class="sec-icon">✅</span><div class="sec-text"><b>Queries saneadas</b><span>Strip de &lt;&gt;"'`;\ — máx 100 chars</span></div></div>
+          <div class="sec-item"><span class="sec-icon">✅</span><div class="sec-text"><b>Body máx 32 KB</b><span>Protección contra payloads grandes en POST</span></div></div>
+        </div>
+
+        <div class="sec-card">
+          <div class="sec-card-title">💾 Datos</div>
+          <div class="sec-item"><span class="sec-icon">✅</span><div class="sec-text"><b>RLS Supabase</b><span>user_positions usa user_id = auth.uid() — cada usuario solo ve sus datos</span></div></div>
+          <div class="sec-item"><span class="sec-icon">✅</span><div class="sec-text"><b>Sync guard</b><span>v196: no sobreescribe Supabase si localStorage está vacío (sync bug fix)</span></div></div>
+          <div class="sec-item"><span class="sec-icon">✅</span><div class="sec-text"><b>No logs de datos sensibles</b><span>Las APIs no loguean tokens ni credenciales</span></div></div>
+          <div class="sec-item"><span class="sec-icon">⚠️</span><div class="sec-text"><b>Sin 2FA</b><span>Supabase soporta MFA — no configurado aún</span></div></div>
+        </div>
+
+        <div class="sec-card">
+          <div class="sec-card-title">🌐 Infraestructura</div>
+          <div class="sec-item"><span class="sec-icon">✅</span><div class="sec-text"><b>HTTPS forzado</b><span>Vercel fuerza HTTPS en todos los dominios</span></div></div>
+          <div class="sec-item"><span class="sec-icon">✅</span><div class="sec-text"><b>Service Worker</b><span>Cache v196. Network-first para HTML, Cache-first para assets</span></div></div>
+          <div class="sec-item"><span class="sec-icon">✅</span><div class="sec-text"><b>noindex admin</b><span>admin.html tiene robots:noindex — no indexado por buscadores</span></div></div>
+          <div class="sec-item"><span class="sec-icon">⚠️</span><div class="sec-text"><b>Deploy Hooks expuestos</b><span>El hook URL de Vercel está en deploy.bat — no commitear a repos públicos</span></div></div>
+        </div>
+
+      </div>
+    </div>
+
+  </div><!-- /content -->
+</div><!-- /app -->
+
+<script>
+// ── State ──────────────────────────────────────────────────────────────────
+let _sb = null, _user = null, _data = null, _currentTab = 'dashboard';
+const ADMIN_EMAIL = 'joantonigrimalt@gmail.com';
+
+// ── Supabase init ──────────────────────────────────────────────────────────
+async function initSB() {
+  const s = document.createElement('script');
+  s.src = 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js';
+  s.crossOrigin = 'anonymous';
+  document.head.appendChild(s);
+  await new Promise((res, rej) => { s.onload = res; s.onerror = rej; });
+  const cfg = await fetch('/api/auth/config').then(r => r.json());
+  _sb = supabase.createClient(cfg.supabaseUrl, cfg.supabaseAnonKey);
+}
+
+// ── Login / Logout ─────────────────────────────────────────────────────────
+async function doLogin() {
+  const email = document.getElementById('login-email').value.trim();
+  const pass  = document.getElementById('login-pass').value;
+  const btn   = document.getElementById('login-btn');
+  const err   = document.getElementById('login-err');
+  err.textContent = '';
+  if (email !== ADMIN_EMAIL) { err.textContent = 'Acceso solo para admin.'; return; }
+  btn.disabled = true; btn.textContent = 'Entrando...';
+  try {
+    if (!_sb) await initSB();
+    const { data, error } = await _sb.auth.signInWithPassword({ email, password: pass });
+    if (error) throw error;
+    _user = data.user;
+    if (_user.email !== ADMIN_EMAIL) { await _sb.auth.signOut(); throw new Error('No autorizado'); }
+    document.getElementById('login-screen').style.display = 'none';
+    document.getElementById('app').style.display = 'block';
+    document.getElementById('admin-email-display').textContent = _user.email;
+    await loadData();
+  } catch(e) {
+    err.textContent = e.message || 'Error de autenticación';
+    btn.disabled = false; btn.textContent = 'Entrar';
+  }
+}
+
+async function doLogout() {
+  if (_sb) await _sb.auth.signOut();
+  location.reload();
+}
+
+// Enter on password field
+document.getElementById('login-pass').addEventListener('keydown', e => {
+  if (e.key === 'Enter') doLogin();
+});
+
+// ── Load data ──────────────────────────────────────────────────────────────
+async function loadData() {
+  const session = await _sb.auth.getSession();
+  const tok = session.data?.session?.access_token;
+  if (!tok) return;
+  try {
+    const r = await fetch('/api/admin/stats', {
+      headers: { Authorization: 'Bearer ' + tok }
+    });
+    if (!r.ok) throw new Error('HTTP ' + r.status);
+    _data = await r.json();
+    document.getElementById('last-updated-txt').textContent = 'Actualizado ' + new Date().toLocaleTimeString('es');
+    renderAll();
+  } catch(e) {
+    console.error(e);
+  }
+}
+
+function renderAll() {
+  renderDashboard();
+  renderUsers();
+  renderPlanes();
+  renderApis();
+  renderConexiones();
+  renderEnvVars();
+}
+
+// ── Nav tabs ───────────────────────────────────────────────────────────────
+function showTab(name) {
+  _currentTab = name;
+  document.querySelectorAll('.nav-tab').forEach((el, i) => {
+    const tabs = ['dashboard','users','planes','apis','conexiones','estructura','seguridad'];
+    el.classList.toggle('active', tabs[i] === name);
+  });
+  document.querySelectorAll('.tab-panel').forEach(el => el.classList.remove('active'));
+  document.getElementById('tab-' + name)?.classList.add('active');
+}
+
+// ── Helpers ────────────────────────────────────────────────────────────────
+function relDate(iso) {
+  if (!iso) return '—';
+  const d = new Date(iso), now = Date.now(), diff = now - d.getTime();
+  const min = Math.floor(diff/60000), hr = Math.floor(diff/3600000), dy = Math.floor(diff/86400000);
+  if (dy > 30) return d.toLocaleDateString('es');
+  if (dy > 0) return `hace ${dy}d`;
+  if (hr > 0) return `hace ${hr}h`;
+  return `hace ${min}m`;
+}
+function planBadge(p) {
+  const cl = {free:'free',starter:'starter',pro:'pro'}[p] || 'free';
+  return `<span class="badge ${cl}">${p.toUpperCase()}</span>`;
+}
+function checkBool(b) { return b ? '<span class="text-green">✓</span>' : '<span class="text-red">✗</span>'; }
+function activeDot(b) { return b ? '<span class="dot green"></span>' : '<span class="dot muted"></span>'; }
+
+// ── Dashboard ──────────────────────────────────────────────────────────────
+function renderDashboard() {
+  const { stats, users } = _data;
+  document.getElementById('dash-loading').style.display = 'none';
+  document.getElementById('dash-content').style.display = 'block';
+
+  document.getElementById('stat-cards').innerHTML = `
+    <div class="card green"><div class="card-label">TOTAL USUARIOS</div><div class="card-val">${stats.total}</div><div class="card-sub">${stats.confirmed} confirmados</div></div>
+    <div class="card blue"><div class="card-label">ACTIVOS 7 DÍAS</div><div class="card-val">${stats.active7d}</div><div class="card-sub">${stats.active30d} en 30 días</div></div>
+    <div class="card purple"><div class="card-label">CON CARTERA</div><div class="card-val">${stats.withPortfolio}</div><div class="card-sub">de ${stats.total} usuarios</div></div>
+    <div class="card yellow"><div class="card-label">DE PAGO</div><div class="card-val">${(stats.byPlan.starter||0)+(stats.byPlan.pro||0)}</div><div class="card-sub">${stats.byPlan.pro||0} Pro · ${stats.byPlan.starter||0} Starter</div></div>
+    <div class="card"><div class="card-label">PLAN FREE</div><div class="card-val">${stats.byPlan.free||0}</div><div class="card-sub">${Math.round((stats.byPlan.free||0)/Math.max(stats.total,1)*100)}% del total</div></div>
+    <div class="card"><div class="card-label">GOOGLE OAUTH</div><div class="card-val">${stats.byProvider.google||0}</div><div class="card-sub">${stats.byProvider.email||0} por email</div></div>
+  `;
+
+  // Registration chart
+  const days30 = [];
+  for (let i = 29; i >= 0; i--) {
+    const d = new Date(Date.now() - i * 86400000).toISOString().slice(0,10);
+    days30.push({ day: d, count: stats.regByDay[d] || 0 });
+  }
+  const maxReg = Math.max(...days30.map(d => d.count), 1);
+  document.getElementById('reg-chart-wrap').innerHTML = `
+    <div style="font-size:12px;color:var(--muted);margin-bottom:8px">Nuevos registros por día</div>
+    <div class="reg-chart">${days30.map(d => `<div class="reg-bar" style="height:${Math.max(4, Math.round(d.count/maxReg*60))}px" title="${d.day}: ${d.count} registros"></div>`).join('')}</div>
+    <div style="display:flex;justify-content:space-between;font-size:10px;color:var(--muted);margin-top:4px"><span>-30d</span><span>Hoy</span></div>
+  `;
+
+  // Plan distribution bars
+  const totalUsers = Math.max(stats.total, 1);
+  const plans = [
+    { name: 'Free', count: stats.byPlan.free||0, color: 'var(--muted)' },
+    { name: 'Starter', count: stats.byPlan.starter||0, color: 'var(--blue)' },
+    { name: 'Pro', count: stats.byPlan.pro||0, color: 'var(--purple)' },
+  ];
+  document.getElementById('plan-bars').innerHTML = plans.map(p => `
+    <div class="bar-row">
+      <div class="bar-label">${p.name}</div>
+      <div class="bar-track"><div class="bar-fill" style="width:${Math.round(p.count/totalUsers*100)}%;background:${p.color}"></div></div>
+      <div class="bar-val">${p.count}</div>
+    </div>
+  `).join('');
+
+  // Recent users
+  document.getElementById('recent-users').innerHTML = users.slice(0,10).map(u => `
+    <tr>
+      <td>${u.email}</td>
+      <td>${planBadge(u.plan)}</td>
+      <td><span class="tag">${u.provider}</span></td>
+      <td>${u.has_portfolio ? checkBool(true) : '<span class="text-muted">—</span>'}</td>
+      <td class="text-muted">${relDate(u.created_at)}</td>
+    </tr>
+  `).join('');
+}
+
+// ── Users ──────────────────────────────────────────────────────────────────
+let _allUsers = [];
+function renderUsers() {
+  _allUsers = _data.users;
+  document.getElementById('user-count').textContent = _allUsers.length;
+  renderUsersTable(_allUsers);
+}
+function renderUsersTable(list) {
+  document.getElementById('users-tbody').innerHTML = list.map(u => `
+    <tr>
+      <td style="max-width:200px;overflow:hidden;text-overflow:ellipsis">${u.email}</td>
+      <td class="text-muted">${u.name}</td>
+      <td>${planBadge(u.plan)}</td>
+      <td><span class="tag">${u.provider}</span></td>
+      <td>${u.active_7d ? '<span class="badge green">7d</span>' : u.active_30d ? '<span class="badge yellow">30d</span>' : '<span class="text-muted">inactivo</span>'}</td>
+      <td>${u.has_portfolio ? checkBool(true) : '<span class="text-muted">—</span>'}</td>
+      <td>${checkBool(u.confirmed)}</td>
+      <td class="text-muted">${relDate(u.created_at)}</td>
+      <td class="text-muted">${relDate(u.last_sign_in)}</td>
+    </tr>
+  `).join('') || '<tr><td colspan="9" class="text-muted" style="text-align:center;padding:20px">Sin resultados</td></tr>';
+}
+function filterUsers() {
+  const q = document.getElementById('user-search').value.toLowerCase();
+  renderUsersTable(q ? _allUsers.filter(u => u.email.toLowerCase().includes(q) || u.name.toLowerCase().includes(q)) : _allUsers);
+}
+
+// ── Planes ────────────────────────────────────────────────────────────────
+function renderPlanes() {
+  const { stats, users } = _data;
+  document.getElementById('planes-loading').style.display = 'none';
+  document.getElementById('planes-content').style.display = 'block';
+
+  const paid = users.filter(u => u.plan !== 'free');
+  const free = users.filter(u => u.plan === 'free');
+
+  document.getElementById('plan-cards').innerHTML = `
+    <div class="card"><div class="card-label">PLAN FREE</div><div class="card-val">${stats.byPlan.free||0}</div><div class="card-sub">10 créditos AI/mes</div></div>
+    <div class="card blue"><div class="card-label">PLAN STARTER</div><div class="card-val">${stats.byPlan.starter||0}</div><div class="card-sub">50 créditos AI/mes</div></div>
+    <div class="card purple"><div class="card-label">PLAN PRO</div><div class="card-val">${stats.byPlan.pro||0}</div><div class="card-sub">Créditos ilimitados</div></div>
+    <div class="card green"><div class="card-label">TASA CONVERSIÓN</div><div class="card-val">${Math.round(((stats.byPlan.starter||0)+(stats.byPlan.pro||0))/Math.max(stats.total,1)*100)}%</div><div class="card-sub">de free a de pago</div></div>
+  `;
+
+  document.getElementById('paid-users').innerHTML = paid.length
+    ? paid.map(u => `
+      <tr>
+        <td>${u.email}</td>
+        <td>${planBadge(u.plan)}</td>
+        <td>${u.credits_used}</td>
+        <td>${u.credits_limit < 0 ? '∞' : u.credits_limit}</td>
+        <td class="text-muted">${relDate(u.created_at)}</td>
+        <td class="text-muted">${relDate(u.last_sign_in)}</td>
+      </tr>`).join('')
+    : '<tr><td colspan="6" class="text-muted" style="text-align:center;padding:20px">Sin usuarios de pago aún</td></tr>';
+
+  document.getElementById('free-users').innerHTML = free.slice(0, 30).map(u => `
+    <tr>
+      <td>${u.email}</td>
+      <td>${u.credits_used} / ${u.credits_limit}</td>
+      <td class="text-muted">${relDate(u.created_at)}</td>
+      <td>${u.active_7d ? '<span class="badge green">Sí</span>' : '<span class="text-muted">No</span>'}</td>
+    </tr>
+  `).join('');
+}
+
+// ── APIs ──────────────────────────────────────────────────────────────────
+function renderApis() {
+  const internal = [
+    { name: 'Config Auth', method: 'GET', path: '/api/auth/config', desc: 'Devuelve Supabase URL y anon key al cliente. Rate limit 30 req/min/IP. Edge runtime.' },
+    { name: 'Plan usuario', method: 'GET', path: '/api/auth/plan', desc: 'Verifica JWT y devuelve plan (free/starter/pro) y créditos AI del usuario.' },
+    { name: 'Precios intraday', method: 'GET', path: '/api/portfolio/intraday', desc: 'Precios en tiempo real para los ISINs solicitados. Cache 5 min. Orquesta Yahoo→EODHD→TwelveData.' },
+    { name: 'Seed portfolio', method: 'GET', path: '/api/portfolio/seed', desc: 'Datos base estáticos: nombres, ISINs, tipos de activo para el portfolio demo.' },
+    { name: 'Cobertura', method: 'GET', path: '/api/portfolio/coverage', desc: 'Qué proveedores tienen datos para cada ISIN. OK / PARTIAL / MISSING.' },
+    { name: 'Dividendos', method: 'GET', path: '/api/dividends/history', desc: 'Historial de dividendos para una lista de ISINs. Fuente: EODHD + FMP.' },
+    { name: 'Dividendos detalle', method: 'GET', path: '/api/dividends/detail', desc: 'Detalle de próximos y pasados dividendos por ISIN.' },
+    { name: 'Perfil ETF', method: 'GET', path: '/api/etf/profile', desc: 'TER, categoría, benchmark, gestor. Fuente: JustETF / EODHD.' },
+    { name: 'FX Rates', method: 'GET', path: '/api/fx/rates', desc: 'Tipos de cambio actuales. Proxy server-side de Frankfurter (sin CORS).' },
+    { name: 'Búsqueda', method: 'GET', path: '/api/search/query', desc: 'Búsqueda de activos por nombre/símbolo/ISIN. Rate limit 60 req/min.' },
+    { name: 'AI Chat', method: 'POST', path: '/api/ai/chat', desc: 'Chat con Claude Haiku 3.5. SSE streaming. Requiere ANTHROPIC_API_KEY. 15 req/min/IP.' },
+    { name: 'Email', method: 'POST', path: '/api/email/send', desc: 'Envío de alertas y notificaciones por email.' },
+    { name: 'Insiders', method: 'GET', path: '/api/insiders', desc: 'Operaciones insider trading de directivos. Fuente: FMP.' },
+    { name: 'Admin Stats', method: 'GET', path: '/api/admin/stats', desc: 'Lista completa de usuarios, estadísticas y estado de env vars. Solo admin.' },
+  ];
+  const external = [
+    { name: 'Yahoo Finance', method: 'GET', path: 'query1.finance.yahoo.com', desc: 'Precios intraday para ETFs/ETC. Proveedor principal. Sin API key.' },
+    { name: 'EODHD', method: 'GET', path: 'eodhd.com/api', desc: 'Historial de precios, dividendos, fundamentales. Requiere EODHD_API_KEY.' },
+    { name: 'TwelveData', method: 'GET', path: 'api.twelvedata.com', desc: 'Precios y series temporales. Fallback cuando Yahoo y EODHD fallan.' },
+    { name: 'FMP', method: 'GET', path: 'financialmodelingprep.com', desc: 'Financial Modeling Prep — dividendos, insiders, fundamentales.' },
+    { name: 'JustETF', method: 'GET', path: 'justetf.com', desc: 'TER, categoría e info de ETFs europeos. Scraping controlado.' },
+    { name: 'Frankfurter', method: 'GET', path: 'api.frankfurter.app', desc: 'Tipos de cambio en tiempo real. Gratuito, sin key.' },
+    { name: 'Anthropic', method: 'POST', path: 'api.anthropic.com/v1/messages', desc: 'Claude Haiku 3.5 para el AI advisor. Requiere ANTHROPIC_API_KEY.' },
+    { name: 'Morningstar/Leeway', method: 'GET', path: 'morningstar.com / leeway.tech', desc: 'NAV de fondos de inversión. Para activos de tipo fund.' },
+  ];
+
+  document.getElementById('api-list').innerHTML = internal.map(a => `
+    <div class="api-card">
+      <div class="api-card-top">
+        <span class="api-card-name">${a.name}</span>
+        <span class="api-card-method method-${a.method.toLowerCase()}">${a.method}</span>
+      </div>
+      <div class="api-card-path">${a.path}</div>
+      <div class="api-card-desc">${a.desc}</div>
+    </div>
+  `).join('');
+
+  document.getElementById('ext-api-list').innerHTML = external.map(a => `
+    <div class="api-card">
+      <div class="api-card-top">
+        <span class="api-card-name">${a.name}</span>
+        <span class="api-card-method method-${a.method.toLowerCase()}">${a.method}</span>
+      </div>
+      <div class="api-card-path">${a.path}</div>
+      <div class="api-card-desc">${a.desc}</div>
+    </div>
+  `).join('');
+}
+
+// ── Conexiones ────────────────────────────────────────────────────────────
+function renderConexiones() {
+  const d = _data;
+  const sbShort = (d.supabaseUrl||'').replace('https://','').replace('.supabase.co','');
+
+  document.getElementById('conn-list').innerHTML = `
+    <div class="conn-card">
+      <div class="conn-top">
+        <div class="conn-icon" style="background:#1c2d1e;color:#3fb950">🗄️</div>
+        <div><div class="conn-name">Supabase</div><div class="conn-type">Auth + Base de datos PostgreSQL</div></div>
+      </div>
+      <div class="conn-row"><span class="conn-row-key">Proyecto</span><span class="conn-row-val">${sbShort}</span></div>
+      <div class="conn-row"><span class="conn-row-key">URL</span><span class="conn-row-val">${d.supabaseUrl||'—'}</span></div>
+      <div class="conn-row"><span class="conn-row-key">Anon key</span><span class="conn-row-val">${d.anonKeyPresent ? '✓ Configurada' : '✗ Falta'}</span></div>
+      <div class="conn-row"><span class="conn-row-key">Service role key</span><span class="conn-row-val">${d.svcKeyPresent ? '✓ Configurada' : '✗ Falta'}</span></div>
+      <div class="conn-row"><span class="conn-row-key">Tablas</span><span class="conn-row-val">user_positions, price_history</span></div>
+    </div>
+
+    <div class="conn-card">
+      <div class="conn-top">
+        <div class="conn-icon" style="background:#1c1c2d;color:#58a6ff">▲</div>
+        <div><div class="conn-name">Vercel</div><div class="conn-type">Hosting + Serverless Functions</div></div>
+      </div>
+      <div class="conn-row"><span class="conn-row-key">Proyecto</span><span class="conn-row-val">trackfolio</span></div>
+      <div class="conn-row"><span class="conn-row-key">Dominio</span><span class="conn-row-val">finasset.app</span></div>
+      <div class="conn-row"><span class="conn-row-key">Runtime</span><span class="conn-row-val">Edge + Node.js Serverless</span></div>
+      <div class="conn-row"><span class="conn-row-key">Git</span><span class="conn-row-val">joanantonigrimalt/trackfolio</span></div>
+      <div class="conn-row"><span class="conn-row-key">Deploy hook</span><span class="conn-row-val">master branch (manual trigger)</span></div>
+    </div>
+
+    <div class="conn-card">
+      <div class="conn-top">
+        <div class="conn-icon" style="background:#2d1c2d;color:#bc8cff">🤖</div>
+        <div><div class="conn-name">Anthropic</div><div class="conn-type">Claude Haiku 3.5 — AI Advisor</div></div>
+      </div>
+      <div class="conn-row"><span class="conn-row-key">API key</span><span class="conn-row-val">${d.anthropicKeyPresent ? '✓ Configurada' : '✗ Falta (tarea #7)'}</span></div>
+      <div class="conn-row"><span class="conn-row-key">Modelo</span><span class="conn-row-val">claude-haiku-3-5-20251001</span></div>
+      <div class="conn-row"><span class="conn-row-key">Max tokens</span><span class="conn-row-val">1500</span></div>
+      <div class="conn-row"><span class="conn-row-key">Rate limit</span><span class="conn-row-val">15 req/min/IP</span></div>
+      <div class="conn-row"><span class="conn-row-key">Endpoint</span><span class="conn-row-val">/api/ai/chat (SSE streaming)</span></div>
+    </div>
+
+    <div class="conn-card">
+      <div class="conn-top">
+        <div class="conn-icon" style="background:#2a1c1c;color:#e3b341">📈</div>
+        <div><div class="conn-name">Proveedores de precios</div><div class="conn-type">Yahoo · EODHD · TwelveData · FMP</div></div>
+      </div>
+      <div class="conn-row"><span class="conn-row-key">Yahoo Finance</span><span class="conn-row-val">✓ Sin key (principal)</span></div>
+      <div class="conn-row"><span class="conn-row-key">EODHD API key</span><span class="conn-row-val">${d.eodhdKeyPresent ? '✓ Configurada' : '✗ Falta'}</span></div>
+      <div class="conn-row"><span class="conn-row-key">TwelveData key</span><span class="conn-row-val">${d.twelvedataKeyPresent ? '✓ Configurada' : '✗ Falta'}</span></div>
+      <div class="conn-row"><span class="conn-row-key">FMP key</span><span class="conn-row-val">${d.fmpKeyPresent ? '✓ Configurada' : '✗ Falta'}</span></div>
+      <div class="conn-row"><span class="conn-row-key">Frankfurter</span><span class="conn-row-val">✓ Gratuito (FX)</span></div>
+    </div>
+
+    <div class="conn-card">
+      <div class="conn-top">
+        <div class="conn-icon" style="background:#1c2838;color:#58a6ff">🐙</div>
+        <div><div class="conn-name">GitHub</div><div class="conn-type">Control de versiones</div></div>
+      </div>
+      <div class="conn-row"><span class="conn-row-key">Repo</span><span class="conn-row-val">joanantonigrimalt/trackfolio</span></div>
+      <div class="conn-row"><span class="conn-row-key">Rama principal</span><span class="conn-row-val">master</span></div>
+      <div class="conn-row"><span class="conn-row-key">Version actual</span><span class="conn-row-val">v196</span></div>
+      <div class="conn-row"><span class="conn-row-key">Deploy</span><span class="conn-row-val">git push + webhook hook</span></div>
+    </div>
+
+    <div class="conn-card">
+      <div class="conn-top">
+        <div class="conn-icon" style="background:#2d2a1c;color:#e3b341">📊</div>
+        <div><div class="conn-name">Service Worker</div><div class="conn-type">PWA Cache — offline support</div></div>
+      </div>
+      <div class="conn-row"><span class="conn-row-key">Cache version</span><span class="conn-row-val">finasset-v196</span></div>
+      <div class="conn-row"><span class="conn-row-key">Estrategia HTML</span><span class="conn-row-val">Network-first → cache fallback</span></div>
+      <div class="conn-row"><span class="conn-row-key">Estrategia assets</span><span class="conn-row-val">Cache-first</span></div>
+      <div class="conn-row"><span class="conn-row-key">Estrategia APIs</span><span class="conn-row-val">Network-first 5s timeout</span></div>
+    </div>
+  `;
+}
+
+// ── Env vars table ─────────────────────────────────────────────────────────
+function renderEnvVars() {
+  const d = _data;
+  const vars = [
+    { name: 'SUPABASE_URL', present: !!d.supabaseUrl, desc: 'URL del proyecto Supabase', critical: true },
+    { name: 'SUPABASE_ANON_KEY', present: d.anonKeyPresent, desc: 'Clave pública para cliente', critical: true },
+    { name: 'SUPABASE_SERVICE_ROLE_KEY', present: d.svcKeyPresent, desc: 'Clave admin servidor — nunca al cliente', critical: true },
+    { name: 'ANTHROPIC_API_KEY', present: d.anthropicKeyPresent, desc: 'Clave para Claude AI (AI advisor)', critical: false },
+    { name: 'EODHD_API_KEY', present: d.eodhdKeyPresent, desc: 'Clave EODHD para precios históricos', critical: false },
+    { name: 'TWELVEDATA_API_KEY', present: d.twelvedataKeyPresent, desc: 'Clave TwelveData fallback precios', critical: false },
+    { name: 'FMP_API_KEY', present: d.fmpKeyPresent, desc: 'Financial Modeling Prep — dividendos, insiders', critical: false },
+  ];
+  document.getElementById('env-vars-table').innerHTML = vars.map(v => `
+    <tr>
+      <td><code>${v.name}</code>${v.critical ? ' <span class="badge red" style="margin-left:6px">Required</span>' : ''}</td>
+      <td class="text-muted">${v.desc}</td>
+      <td>${v.present ? '<span class="badge green">✓ OK</span>' : '<span class="badge red">✗ Falta</span>'}</td>
+    </tr>
+  `).join('');
+}
+
+// ── Init ───────────────────────────────────────────────────────────────────
+(async () => {
+  try {
+    await initSB();
+    // Check for existing session
+    const { data: { session } } = await _sb.auth.getSession();
+    if (session?.user?.email === ADMIN_EMAIL) {
+      _user = session.user;
+      document.getElementById('login-screen').style.display = 'none';
+      document.getElementById('app').style.display = 'block';
+      document.getElementById('admin-email-display').textContent = _user.email;
+      await loadData();
+    }
+  } catch(e) {
+    console.warn('Init error:', e);
+  }
+})();
+</script>
+</body>
+</html>
