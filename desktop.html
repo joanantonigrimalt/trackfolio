@@ -2,6 +2,18 @@
 <html lang="es">
 <head>
 <script>/* cache-bust v20260628-1 */(function(){var V='20260628-1',k='_fav';if(localStorage.getItem(k)!==V){localStorage.setItem(k,V);var u=location.pathname+'?_v='+V+(location.hash||'');window.location.replace(u);}}());</script>
+<script>/* Auto-update: hard-reload with a cache-busting query if this (possibly
+  cached) HTML is older than the deployed build. Source of truth = sw.js
+  (served no-cache, version-bumped each deploy). Works even where SW/no-store
+  are ignored, because it is plain page JS. */
+(function(){try{
+  var FA_BUILD='187';
+  if(location.search.indexOf('vchk')>-1)return;
+  fetch('/sw.js?_='+Date.now(),{cache:'no-store'}).then(function(r){return r.text();}).then(function(t){
+    var m=t.match(/finasset-v(\d+)/);
+    if(m&&m[1]!==FA_BUILD){location.replace(location.pathname+'?vchk='+m[1]+(location.hash||''));}
+  }).catch(function(){});
+}catch(e){}})();</script>
 <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-7ZMYSFJVEE"></script>
 <script>

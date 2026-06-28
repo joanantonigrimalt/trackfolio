@@ -6,6 +6,18 @@
   CSS media features (some in-app webviews wrongly report hover:hover + wide
   viewport, which framed the app into a narrow column). */
 (function(){try{if(navigator.maxTouchPoints>0||'ontouchstart' in window||(window.matchMedia&&window.matchMedia('(hover:none)').matches)){document.documentElement.classList.add('fa-touch');}}catch(e){}})();</script>
+<script>/* Auto-update: if this (possibly cached) HTML is older than the deployed
+  build, hard-reload with a cache-busting query. Works even where the SW and
+  no-store headers are ignored (in-app webviews) because it is plain page JS.
+  Source of truth = sw.js (always served no-cache, version-bumped each deploy). */
+(function(){try{
+  var FA_BUILD='187';
+  if(location.search.indexOf('vchk')>-1)return; // already reloaded once — avoid loops
+  fetch('/sw.js?_='+Date.now(),{cache:'no-store'}).then(function(r){return r.text();}).then(function(t){
+    var m=t.match(/finasset-v(\d+)/);
+    if(m&&m[1]!==FA_BUILD){location.replace(location.pathname+'?vchk='+m[1]+(location.hash||''));}
+  }).catch(function(){});
+}catch(e){}})();</script>
 <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-7ZMYSFJVEE"></script>
 <script>
@@ -1409,7 +1421,7 @@ html,body{height:100%;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sy
 
 <!-- ============ AUTH ============ -->
 <div id="cs-auth" class="cover-screen cs-active">
-  <div style="position:fixed;bottom:3px;left:50%;transform:translateX(-50%);z-index:99999;font-size:10px;font-weight:800;color:rgba(255,255,255,.55);pointer-events:none;letter-spacing:.05em">v186</div>
+  <div style="position:fixed;bottom:3px;left:50%;transform:translateX(-50%);z-index:99999;font-size:10px;font-weight:800;color:rgba(255,255,255,.55);pointer-events:none;letter-spacing:.05em">v187</div>
 
   <!-- Language switcher -->
   <div class="csa-lang">
