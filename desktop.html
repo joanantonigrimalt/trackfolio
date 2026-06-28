@@ -5170,8 +5170,8 @@ async function renderDividends(){
       const perPay=payFreq>0?annualIncome/payFreq:0;
       const nextM=pm.length>0?(pm.find(m=>m>=cm)??pm[0]):null;
       const nextYear=today.getFullYear()+(nextM!=null&&nextM<cm?1:0);
-      const _yPct=d.annualPerShare>0&&a.currentPrice>0?d.annualPerShare/a.currentPrice:(d.yieldPct||0);
-      const _yocPct=d.annualPerShare>0&&a.buyPrice>0?d.annualPerShare/a.buyPrice:(d.yieldOnCostPct||0);
+      const _yPct=d.annualPerShare>0&&a.currentPrice>0?d.annualPerShare/toEur(a.currentPrice,assetCcy(a)):(d.yieldPct||0);
+      const _yocPct=d.annualPerShare>0&&a.buyPrice>0?d.annualPerShare/toEur(a.buyPrice,costCcy(a)):(d.yieldOnCostPct||0);
       return{...a,divData:d,annualIncome,perPay,nextMonth:nextM,nextYear,payMonths:pm,yieldPct:_yPct,yieldOnCostPct:_yocPct};
     }).filter(Boolean);
   _divItems=divItems;
@@ -8399,7 +8399,7 @@ function _taxIRPF(base){
   // Escala del ahorro España 2025
   if(base<=0)return 0;
   let tax=0;
-  const brackets=[{limit:6000,rate:0.19},{limit:50000,rate:0.21},{limit:200000,rate:0.23},{limit:Infinity,rate:0.27}];
+  const brackets=[{limit:6000,rate:0.19},{limit:50000,rate:0.21},{limit:200000,rate:0.23},{limit:300000,rate:0.27},{limit:Infinity,rate:0.28}];
   let remaining=base,applied=0;
   for(const b of brackets){
     const tramo=Math.min(remaining, b.limit-applied);
@@ -8540,7 +8540,7 @@ function renderImpuestos(){
   });
 
   // Brackets
-  const BRACKETS=[{range:'Hasta 6.000 €',pct:'19%',bar:40,col:'#1db36a'},{range:'6.001 – 50.000 €',pct:'21%',bar:65,col:'#f5b731'},{range:'50.001 – 200.000 €',pct:'23%',bar:85,col:'#f97316'},{range:'Más de 200.000 €',pct:'27%',bar:100,col:'#e03636'}];
+  const BRACKETS=[{range:'Hasta 6.000 €',pct:'19%',bar:40,col:'#1db36a'},{range:'6.001 – 50.000 €',pct:'21%',bar:65,col:'#f5b731'},{range:'50.001 – 200.000 €',pct:'23%',bar:85,col:'#f97316'},{range:'200.001 – 300.000 €',pct:'27%',bar:95,col:'#e03636'},{range:'Más de 300.000 €',pct:'28%',bar:100,col:'#b3001b'}];
   const myBracket = base<=6000?0:base<=50000?1:base<=200000?2:3;
   document.getElementById('taxBrackets').innerHTML = '<div style="font-size:12px;font-weight:700;color:#0f1c15;margin-bottom:12px">Escala del ahorro · España 2025</div>'
     + BRACKETS.map((b,i)=>`
