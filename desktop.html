@@ -3902,6 +3902,7 @@ function _recordValueSnapshot(){
     else { snaps.push({date:today,value:valueEur}); }
     if(snaps.length>1850) snaps=snaps.slice(-1850);
     localStorage.setItem('fa_value_snapshots',JSON.stringify(snaps));
+    if(typeof syncSnapshotsToCloud==='function')syncSnapshotsToCloud();
   }catch(_){}
 }
 function _snapshotCount(){ try{ const s=JSON.parse(localStorage.getItem('fa_value_snapshots')||'[]'); return Array.isArray(s)?s.length:0; }catch(_){ return 0; } }
@@ -6905,7 +6906,7 @@ async function initSupabase(){
         if(session?.access_token)localStorage.setItem('fa_token',session.access_token);
         // Returning from Google OAuth while a login/cover screen is showing → enter the app
         if(document.querySelector('.cover-screen.cs-active')){try{localStorage.setItem('fa_ob_done','1');if(typeof closeAuthModal==='function')closeAuthModal();enterMainApp();}catch(_){}}
-        await syncFromCloud(); loadUserPlan().catch(()=>{});
+        await syncFromCloud(); loadUserPlan().catch(()=>{}); syncSnapshotsFromCloud();
       }
       if(event==='SIGNED_OUT'){
         // If we're in the main app, redirect to login
@@ -6926,7 +6927,7 @@ async function initSupabase(){
       const session=res?.data?.session||null;
       _sbUser=session?.user||null;
       renderAccountSection();
-      if(_sbUser)syncFromCloud();
+      if(_sbUser){syncFromCloud();syncSnapshotsFromCloud();}
     }).catch(e=>{_sbInitErr=e.message;console.warn('[auth getSession]',e.message);});
   }catch(e){_sb=null;_sbInitErr=e.message;console.warn('[auth]',e.message);}
 }
@@ -6974,12 +6975,40 @@ async function syncToCloud(){
   }
 }
 
+// ── Portfolio value snapshots: cloud sync (separate table, isolated & safe) ──
+function _getLocalSnapshots(){ try{ const s=JSON.parse(localStorage.getItem('fa_value_snapshots')||'[]'); return Array.isArray(s)?s:[]; }catch(_){ return []; } }
+function _mergeSnapshots(local,cloud){
+  const m=new Map();
+  (Array.isArray(cloud)?cloud:[]).forEach(s=>{ if(s&&s.date&&Number.isFinite(s.value)&&s.value>0) m.set(s.date,s.value); });
+  (Array.isArray(local)?local:[]).forEach(s=>{ if(s&&s.date&&Number.isFinite(s.value)&&s.value>0) m.set(s.date,s.value); });
+  return [...m.entries()].map(([date,value])=>({date,value})).sort((a,b)=>a.date.localeCompare(b.date)).slice(-1850);
+}
+async function syncSnapshotsToCloud(){
+  if(!_sb||!_sbUser)return;
+  try{
+    const snaps=_getLocalSnapshots(); if(!snaps.length)return;
+    await _sb.from('portfolio_snapshots').upsert({user_id:_sbUser.id,data:snaps,updated_at:new Date().toISOString()},{onConflict:'user_id'});
+  }catch(_){ /* table may not exist yet — snapshots stay local */ }
+}
+async function syncSnapshotsFromCloud(){
+  if(!_sb||!_sbUser)return;
+  try{
+    const{data,error}=await _sb.from('portfolio_snapshots').select('data').eq('user_id',_sbUser.id).single();
+    if(error&&error.code!=='PGRST116')return; // table missing / other error → keep local only
+    const cloud=data?(typeof data.data==='string'?JSON.parse(data.data||'[]'):(data.data||[])):[];
+    const merged=_mergeSnapshots(_getLocalSnapshots(),cloud);
+    localStorage.setItem('fa_value_snapshots',JSON.stringify(merged));
+    if(merged.length)await syncSnapshotsToCloud(); // converge both sides
+    if(typeof renderChart==='function'&&document.getElementById('screen-home')?.classList.contains('active'))renderChart();
+  }catch(_){}
+}
+
 async function syncFromCloud(){
   if(!_sb||!_sbUser)return;
   // ── USER ISOLATION: if a different user logged in, wipe all portfolio data ──
   const _prevUid = localStorage.getItem('fa_active_user_id');
   if(_prevUid && _prevUid !== _sbUser.id){
-    ['tf_positions','tf_custom_assets','tf_last_sync','fa_liquidity','_rawCustomAssets'].forEach(k=>localStorage.removeItem(k));
+    ['tf_positions','tf_custom_assets','tf_last_sync','fa_liquidity','_rawCustomAssets','fa_value_snapshots'].forEach(k=>localStorage.removeItem(k));
   }
   localStorage.setItem('fa_active_user_id', _sbUser.id);
   try{

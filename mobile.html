@@ -3744,6 +3744,7 @@ function _recordValueSnapshot(){
     else { snaps.push({date:today,value:valueEur}); }
     if(snaps.length>1850) snaps=snaps.slice(-1850);
     localStorage.setItem('fa_value_snapshots',JSON.stringify(snaps));
+    if(typeof syncSnapshotsToCloud==='function')syncSnapshotsToCloud();
   }catch(_){}
 }
 function _snapshotCount(){ try{ const s=JSON.parse(localStorage.getItem('fa_value_snapshots')||'[]'); return Array.isArray(s)?s.length:0; }catch(_){ return 0; } }
@@ -6197,7 +6198,7 @@ async function boot(){
     if (cn) cn.innerHTML = currentLang==='es'
       ? '&#128202; Tu cartera está vacía. Pulsa <strong>+ Nueva posición</strong> para añadir tu primer activo.'
       : '&#128202; Your portfolio is empty. Click <strong>+ New position</strong> to add your first asset.';
-    if(_sbUser)syncFromCloud().catch(()=>{});
+    if(_sbUser){syncFromCloud().catch(()=>{});syncSnapshotsFromCloud();}
     loadCustomIntoAssets(); dataReady=true; render();
     return;
   }
@@ -6258,7 +6259,7 @@ async function boot(){
   render(); // ← shows positions instantly; total shows "Actualizando…" until live prices arrive
 
   // Background: cloud sync — syncFromCloud renders internally when data changes (#10 fix: no extra render)
-  if(_sbUser)syncFromCloud().catch(()=>{});
+  if(_sbUser){syncFromCloud().catch(()=>{});syncSnapshotsFromCloud();}
   else _syncWithToken(); // fallback: direct REST sync via fa_token when Supabase session is null
 
   // Always fetch live coverage from API (cache used only for instant position list above)
@@ -6795,7 +6796,7 @@ async function initSupabase(){
         // Returning from Google OAuth (or any sign-in) while a login/cover screen is showing → enter the app
         if(document.querySelector('.cover-screen.cs-active')){try{localStorage.setItem('fa_ob_done','1');closeAuthModal&&closeAuthModal();enterMainApp();}catch(_){}}
         _syncDone=false; // reset on new sign-in so full sync runs
-        await syncFromCloud(); loadUserPlan().catch(()=>{});
+        await syncFromCloud(); loadUserPlan().catch(()=>{}); syncSnapshotsFromCloud();
         _syncDone=true;
       }
       // TOKEN_REFRESHED fires when Supabase wakes from pause (free tier) and restores the session.
@@ -6965,12 +6966,40 @@ async function syncToCloud(){
   }
 }
 
+// ── Portfolio value snapshots: cloud sync (separate table, isolated & safe) ──
+function _getLocalSnapshots(){ try{ const s=JSON.parse(localStorage.getItem('fa_value_snapshots')||'[]'); return Array.isArray(s)?s:[]; }catch(_){ return []; } }
+function _mergeSnapshots(local,cloud){
+  const m=new Map();
+  (Array.isArray(cloud)?cloud:[]).forEach(s=>{ if(s&&s.date&&Number.isFinite(s.value)&&s.value>0) m.set(s.date,s.value); });
+  (Array.isArray(local)?local:[]).forEach(s=>{ if(s&&s.date&&Number.isFinite(s.value)&&s.value>0) m.set(s.date,s.value); });
+  return [...m.entries()].map(([date,value])=>({date,value})).sort((a,b)=>a.date.localeCompare(b.date)).slice(-1850);
+}
+async function syncSnapshotsToCloud(){
+  if(!_sb||!_sbUser)return;
+  try{
+    const snaps=_getLocalSnapshots(); if(!snaps.length)return;
+    await _sb.from('portfolio_snapshots').upsert({user_id:_sbUser.id,data:snaps,updated_at:new Date().toISOString()},{onConflict:'user_id'});
+  }catch(_){ /* table may not exist yet — snapshots stay local */ }
+}
+async function syncSnapshotsFromCloud(){
+  if(!_sb||!_sbUser)return;
+  try{
+    const{data,error}=await _sb.from('portfolio_snapshots').select('data').eq('user_id',_sbUser.id).single();
+    if(error&&error.code!=='PGRST116')return; // table missing / other error → keep local only
+    const cloud=data?(typeof data.data==='string'?JSON.parse(data.data||'[]'):(data.data||[])):[];
+    const merged=_mergeSnapshots(_getLocalSnapshots(),cloud);
+    localStorage.setItem('fa_value_snapshots',JSON.stringify(merged));
+    if(merged.length)await syncSnapshotsToCloud(); // converge both sides
+    if(typeof renderChart==='function'&&document.getElementById('screen-home')?.classList.contains('active'))renderChart();
+  }catch(_){}
+}
+
 async function syncFromCloud(){
   if(!_sb||!_sbUser)return;
   // ── USER ISOLATION: if a different user logged in, wipe all portfolio data ──
   const _prevUid = localStorage.getItem('fa_active_user_id');
   if(_prevUid && _prevUid !== _sbUser.id){
-    ['tf_positions','tf_custom_assets','tf_last_sync','fa_liquidity','_rawCustomAssets'].forEach(k=>localStorage.removeItem(k));
+    ['tf_positions','tf_custom_assets','tf_last_sync','fa_liquidity','_rawCustomAssets','fa_value_snapshots'].forEach(k=>localStorage.removeItem(k));
   }
   localStorage.setItem('fa_active_user_id', _sbUser.id);
   try{
