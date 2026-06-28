@@ -205,7 +205,7 @@ footer a:hover{color:var(--green)}
 .fade-up{opacity:0;transform:translateY(24px);transition:opacity .6s,transform .6s}
 .fade-up.vis{opacity:1;transform:translateY(0)}
 .divider-line{height:1px;background:var(--border);max-width:1100px;margin:0 auto}
-@media(max-width:768px){.n-links{display:none}.split{flex-direction:column!important}}
+@media(max-width:768px){.n-links{display:none}.split{flex-direction:column!important}nav{padding:0 16px}.n-right{gap:8px}.n-right .btn-ghost{display:none}}
 </style>
 </head>
 <body>
@@ -233,7 +233,7 @@ footer a:hover{color:var(--green)}
   <p>Acciones, ETFs, fondos, dividendos y liquidez. Todo en tiempo real, con análisis de riesgo y asesor IA incluido.</p>
   <div class="hero-btns">
     <a class="btn-lg" href="/mobile">Empezar gratis →</a>
-    <a class="btn-lg-o" href="/desktop">Ver versión web</a>
+    <a class="btn-lg-o" href="/desktop" data-version-switch>Ver versión web</a>
   </div>
   <div class="hero-stats">
     <div><div class="hs-val">100%</div><div class="hs-lbl">Personal · Sin broker</div></div>
@@ -408,7 +408,9 @@ footer a:hover{color:var(--green)}
       </div>
       <div class="scats">
         <div class="sc-i"><div class="sc-n">Diversificación</div><div class="sc-v" style="color:var(--red)">4/10</div><div class="sc-bar"><div class="sc-f" style="width:40%;background:var(--red)"></div></div></div>
+        <div class="sc-i"><div class="sc-n">Riesgo</div><div class="sc-v" style="color:var(--gold)">6/10</div><div class="sc-bar"><div class="sc-f" style="width:60%;background:var(--gold)"></div></div></div>
         <div class="sc-i"><div class="sc-n">Fees</div><div class="sc-v" style="color:var(--green)">7/10 ✓</div><div class="sc-bar"><div class="sc-f" style="width:70%;background:var(--green)"></div></div></div>
+        <div class="sc-i"><div class="sc-n">Macro</div><div class="sc-v" style="color:var(--gold)">5/10</div><div class="sc-bar"><div class="sc-f" style="width:50%;background:var(--gold)"></div></div></div>
       </div>
       <div class="ai-insight"><p>Reduce concentración en VWCE al 70% máx. Añadir EMIM puede sumar <strong>+17 pts</strong> al score.</p></div>
     </div>
@@ -487,7 +489,7 @@ footer a:hover{color:var(--green)}
   <p>Únete a los inversores que ya usan Finasset para tomar mejores decisiones con datos reales.</p>
   <div class="hero-btns">
     <a class="btn-lg" href="/mobile">Empezar gratis →</a>
-    <a class="btn-lg-o" href="/desktop">Ver versión web</a>
+    <a class="btn-lg-o" href="/desktop" data-version-switch>Ver versión web</a>
   </div>
   <p class="cta-note">Sin tarjeta de crédito · Cancela cuando quieras</p>
 </section>
@@ -536,6 +538,19 @@ function showDev(id,btn){
 // Scroll fade
 const obs=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)e.target.classList.add('vis')}),{threshold:.1});
 document.querySelectorAll('.fade-up').forEach(el=>obs.observe(el));
+</script>
+<script>
+/* Device-based version routing: phones use /mobile only, computers use /desktop
+   only. We don't offer the other version from the landing. */
+(function(){
+  try{
+    var isMobile = window.matchMedia('(max-width:768px)').matches
+      || /Mobi|Android|iPhone|iPod|Windows Phone/i.test(navigator.userAgent||'');
+    var appURL = isMobile ? '/mobile' : '/desktop';
+    document.querySelectorAll('[data-version-switch]').forEach(function(el){ el.remove(); });
+    document.querySelectorAll('a[href="/mobile"],a[href="/desktop"]').forEach(function(a){ a.setAttribute('href', appURL); });
+  }catch(e){}
+})();
 </script>
 </body>
 </html>
