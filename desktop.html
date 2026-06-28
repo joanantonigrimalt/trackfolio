@@ -7,7 +7,7 @@
   (served no-cache, version-bumped each deploy). Works even where SW/no-store
   are ignored, because it is plain page JS. */
 (function(){try{
-  var FA_BUILD='187';
+  var FA_BUILD='188';
   if(location.search.indexOf('vchk')>-1)return;
   fetch('/sw.js?_='+Date.now(),{cache:'no-store'}).then(function(r){return r.text();}).then(function(t){
     var m=t.match(/finasset-v(\d+)/);
