@@ -616,17 +616,17 @@ table.an-corr-mtx{border-collapse:separate;border-spacing:4px}
 .ob-btn-sec{width:100%;padding:14px;background:transparent;border:1.5px solid rgba(20,32,24,.1);border-radius:16px;font:inherit;font-size:14px;font-weight:600;color:#4a5f4e;cursor:pointer;transition:all .15s}
 /* Auth */
 #cs-auth{flex-direction:column;background:#0f1e14!important}
-.csa-top{flex:1;display:flex;flex-direction:column;justify-content:flex-end;padding:56px 24px 18px;overflow:hidden;min-height:0}
+.csa-top{flex:1;display:flex;flex-direction:column;justify-content:flex-end;padding:52px 22px 14px;overflow:hidden;min-height:0}
 .csa-lang{position:absolute;top:14px;right:16px;z-index:3;display:flex;gap:6px}
 #cs-auth .auth-lang-btn{background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.18);color:rgba(255,255,255,.55)}
 #cs-auth .auth-lang-btn.active{background:rgba(255,255,255,.22);color:#fff;border-color:rgba(255,255,255,.3)}
 .csa-brand{display:flex;align-items:center;gap:10px;margin-bottom:14px}
 .csa-brand-logo{width:32px;height:32px;border-radius:9px;background:#fff;display:flex;align-items:center;justify-content:center;color:#0f1e14;font-size:16px;font-weight:900;flex-shrink:0}
 .csa-brand-name{font-size:16px;font-weight:800;color:#fff;letter-spacing:-.01em}
-.csa-headline{font-size:25px;font-weight:900;color:#fff;line-height:1.2;letter-spacing:-.025em;margin-bottom:8px}
+.csa-headline{font-size:23px;font-weight:900;color:#fff;line-height:1.2;letter-spacing:-.025em;margin-bottom:6px}
 .csa-headline em{color:#2db564;font-style:normal}
-.csa-tagline{font-size:13px;color:rgba(255,255,255,.58);line-height:1.5;margin-bottom:14px}
-.csa-feats{list-style:none;display:flex;flex-direction:column;gap:7px;margin-bottom:4px}
+.csa-tagline{font-size:12.5px;color:rgba(255,255,255,.58);line-height:1.45;margin-bottom:10px}
+.csa-feats{list-style:none;display:flex;flex-direction:column;gap:5px;margin-bottom:2px}
 .csa-feats li{display:flex;align-items:flex-start;gap:9px;font-size:12.5px;color:rgba(255,255,255,.72);line-height:1.4}
 .csa-feat-ic{width:22px;height:22px;border-radius:6px;background:rgba(45,181,100,.15);border:1px solid rgba(45,181,100,.25);display:flex;align-items:center;justify-content:center;font-size:11px;flex-shrink:0;margin-top:1px}
 .csa-panel{background:#fff;border-radius:26px 26px 0 0;padding:20px 20px 16px;flex-shrink:0;box-shadow:0 -10px 40px rgba(0,0,0,.25)}
@@ -1439,8 +1439,6 @@ html,body{height:100%;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sy
       <button class="csa-btn-in" onclick="_openAuthAs('login')"><span id="auth-signin-label">Iniciar sesión</span></button>
       <button class="csa-btn-reg" onclick="_openAuthAs('register')"><span id="auth-register-label">Crear cuenta</span></button>
     </div>
-    <!-- Demo -->
-    <button class="csa-demo" onclick="enterDemo()">👁 <span id="auth-demo-label">Ver demo — sin cuenta necesaria</span></button>
     <!-- Privacy note -->
     <div id="auth-privacy-note" class="csa-privacy">
       Al usar Finasset aceptas nuestra <a href="/privacy.html" target="_blank" rel="noopener">Política de Privacidad</a> y los <a href="/privacy.html#terms" target="_blank" rel="noopener">Términos de Uso</a>. No es asesoramiento financiero.
@@ -7145,12 +7143,12 @@ async function _submitAuth(){
   }catch(e){
     const _isEs9=currentLang==='es';
     const _em=e.message||'';
-    const _isRateLimit=_em.includes('rate limit')||_em.includes('email rate')||_em.includes('exceeded')||_em.includes('sending_limit')||_em.includes('smtp');
-    const m=_isRateLimit?(_isEs9?'Límite de registros alcanzado. Usa "Continuar con Google" o espera 1 hora e inténtalo de nuevo.':'Registration limit reached. Use "Continue with Google" or try again in 1 hour.'):
-             _em.includes('Invalid login credentials')?(_isEs9?'Email o contraseña incorrectos.':'Invalid email or password.'):
+    const _isRateLimit=e.status===429||_em==='{}'||!_em||_em.includes('rate limit')||_em.includes('email rate')||_em.includes('exceeded')||_em.includes('sending_limit')||_em.includes('smtp')||_em.includes('over_email_send_rate_limit');
+    const m=_isRateLimit?(_isEs9?'Límite de envíos alcanzado. Usa "Continuar con Google" o inténtalo en unos minutos.':'Send limit reached. Use "Continue with Google" or try again in a few minutes.'):
+             _em.includes('Invalid login credentials')||_em.includes('invalid_credentials')?(_isEs9?'Email o contraseña incorrectos.':'Invalid email or password.'):
              _em.includes('not confirmed')?(_isEs9?'Confirma tu email antes de entrar.':'Please confirm your email first.'):
-             _em.includes('already registered')||_em.includes('already been registered')||_em.includes('User already registered')?(_isEs9?'Este correo ya está registrado.':'This email is already registered.'):
-             _em||(_isEs9?'Error desconocido.':'Unknown error.');
+             _em.includes('already registered')||_em.includes('already been registered')||_em.includes('User already registered')?(_isEs9?'Este correo ya está registrado. Inicia sesión.':'This email is already registered. Sign in instead.'):
+             _em||(_isEs9?'Error al procesar. Prueba con "Continuar con Google".':'Error processing request. Try "Continue with Google".');
     _showAuthMsg(m,'err');
     if(_em.includes('already registered')||_em.includes('already been registered'))_setAuthMode('login');
   }finally{
@@ -7373,7 +7371,7 @@ async function authSubmit() {
     // Only flag as network error if Supabase did NOT return an HTTP status
     const isNet = !hasApiStatus && (isTimeout || e instanceof TypeError || msgL.includes('failed to fetch') || msgL.includes('load failed') || msgL.includes('network request failed') || msgL.includes('networkerror'));
     const isAlreadyReg = msg.includes('already registered') || msg.includes('already been registered') || msg.includes('already exists');
-    const isRateLimit = e.status === 429 || msgL.includes('rate limit') || msgL.includes('over_email_send_rate_limit') || msgL.includes('email rate');
+    const isRateLimit = e.status === 429 || msg === '{}' || !msg || msgL.includes('rate limit') || msgL.includes('over_email_send_rate_limit') || msgL.includes('email rate') || msgL.includes('sending_limit') || msgL.includes('smtp');
     const isInvalidCreds = msg.includes('Invalid login') || msg.includes('invalid_credentials') || msg.includes('Invalid credentials');
     const isNotConfirmed = msg.includes('not confirmed') || msg.includes('Email not confirmed');
 
