@@ -6,7 +6,7 @@
   (served no-cache, version-bumped each deploy). Works even where SW/no-store
   are ignored, because it is plain page JS. */
 (function(){try{
-  var FA_BUILD=window.FA_BUILD='216';
+  var FA_BUILD=window.FA_BUILD='217';
   var s=location.search;
   if(s.indexOf('vchk')>-1||s.indexOf('_v=')>-1){history.replaceState(null,'',location.pathname+(location.hash||''));return;}
   fetch('/sw.js?_='+Date.now(),{cache:'no-store'}).then(function(r){return r.text();}).then(function(t){
@@ -1756,6 +1756,7 @@ html,body{height:100%;overflow:hidden;font-family:-apple-system,BlinkMacSystemFo
     <div class="hChip" onclick="showScreen('dividends')"><span>◎</span> <span data-i18n="navDividends">Dividendos</span></div>
     <div class="hChip" onclick="showScreen('impuestos')"><span>◫</span> <span data-i18n="navTax">Fiscal</span></div>
     <div class="hChip green" onclick="openSearch()"><span>＋</span> <span data-i18n="newPosition">Nueva posición</span></div>
+    <div class="hChip" onclick="openLiqModal()" style="background:linear-gradient(135deg,#1a3f2c,#15803d);color:#fff;border-color:#15803d"><span>💰</span> <span data-i18n="addLiquidity">Añadir liquidez</span></div>
   </div>
 
   <!-- Chart + Distribution -->
