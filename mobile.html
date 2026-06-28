@@ -6042,6 +6042,16 @@ function renderLists(){
 // #4 fix: debounce render() — collapse rapid calls (cloud sync + coverage arriving close together)
 // into a single rAF update to avoid flash/double chart-destroy on mobile.
 let _renderRafId=null;
+// Re-render the active heavy screen when live prices arrive, so scores/values
+// converge to the final figure instead of showing stale partial-load numbers (B1).
+function _rerenderActive(){
+  try{
+    const as=document.querySelector('.screen.active'); const id=as&&as.id;
+    if(id==='screen-ia'){ if(typeof renderIA==='function')renderIA(); }
+    else if(id==='screen-analysis'){ if(typeof renderAnalysisCharts==='function')renderAnalysisCharts(); if(typeof renderAnalysisV2==='function')renderAnalysisV2(); }
+    else if(id==='screen-dividends'){ if(typeof renderDividends==='function')renderDividends(); }
+  }catch(_){}
+}
 function render(){
   if(_renderRafId)return; // already scheduled — skip duplicate
   _renderRafId=requestAnimationFrame(()=>{_renderRafId=null;_doRender();});
@@ -6239,13 +6249,13 @@ async function boot(){
       assets=applyOverridesToAssets(_rawSeedAssets);
       loadCustomIntoAssets(_cvMap);
       _pricesLive=true; // live prices ready — show real total
-      render();
+      render(); _rerenderActive();
       _startLiveRefresh(); // start 60s ETF/ETC/stock live price refresh
     }catch(e){
       console.warn('[boot] live prices fetch:',e.message);
       // Coverage API failed (timeout / network error) — show seed/cached prices rather than spinning forever
       _pricesLive=true;
-      render();
+      render(); _rerenderActive();
       // Retry coverage once after 4s — helps when Yahoo had a transient timeout or Vercel cold start
       setTimeout(async()=>{
         try{
@@ -9317,8 +9327,8 @@ function _comAutofillPortfolio() {
   try {
     const totalEl = document.getElementById('total') || document.getElementById('summaryTotal');
     const investedEl = document.getElementById('investedTotal') || document.getElementById('summaryInvested');
-    const total = typeof assets !== 'undefined' ? assets.reduce((s,a) => s + (a.value||0), 0) : 0;
-    const invested = typeof assets !== 'undefined' ? assets.reduce((s,a) => s + (a.invested||0), 0) : 0;
+    const total = typeof assets !== 'undefined' ? assets.reduce((s,a) => s + toDisplay(a.value, assetCcy(a)), 0) : 0;
+    const invested = typeof assets !== 'undefined' ? assets.reduce((s,a) => s + toDisplay(a.invested, costCcy(a)), 0) : 0;
     const positions = typeof assets !== 'undefined' ? assets.length : 0;
     const gainPct = invested > 0 ? ((total - invested) / invested * 100) : 0;
     if (document.getElementById('comPfTotal')) document.getElementById('comPfTotal').value = total.toFixed(2);

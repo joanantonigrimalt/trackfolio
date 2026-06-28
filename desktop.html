@@ -3955,8 +3955,8 @@ async function renderChart(){
   const noteText=aPct>0.5?`${series.length} pts · ${aPct.toFixed(0)}% ${currentLang==='es'?'estimado':'estimated'}`:currentLang==='es'?`${series.length} puntos históricos`:`${series.length} historical points`;
   _drawChart(canvas,series.map(p=>dateLabel(p.date,selectedRange)),values,note,meta,rv,noteText);
   // Override with actual invested return (back-projected chart gain is misleading)
-  const _tInv=assets.reduce((s,a)=>s+(a.invested||0),0);
-  const _tVal=assets.reduce((s,a)=>s+(a.value||0),0);
+  const _tInv=assets.reduce((s,a)=>s+toDisplay(a.invested,costCcy(a)),0);
+  const _tVal=assets.reduce((s,a)=>s+toDisplay(a.value,assetCcy(a)),0);
   if(_tInv>0){const _d=_tVal-_tInv,_p=(_d/_tInv)*100,_u=_d>=0;meta.textContent=(_u?'+':'') +fe(_d)+'  '+(_u?'+':'') +_p.toFixed(2)+'%';}
 }
 
@@ -6114,6 +6114,16 @@ function renderLists(){
 }
 
 // ========== Main Render ==========
+// Re-render the active heavy screen when live prices arrive so scores/values
+// converge to the final figure instead of stale partial-load numbers (B1).
+function _rerenderActive(){
+  try{
+    const as=document.querySelector('.screen.active'); const id=as&&as.id;
+    if(id==='screen-ia'){ if(typeof renderIA==='function')renderIA(); }
+    else if(id==='screen-analysis'){ if(typeof renderAnalysisCharts==='function')renderAnalysisCharts(); if(typeof renderAnalysisV2==='function')renderAnalysisV2(); }
+    else if(id==='screen-dividends'){ if(typeof renderDividends==='function')renderDividends(); }
+  }catch(_){}
+}
 function render(){
   const total=assets.reduce((s,a)=>s+toDisplay(a.value,assetCcy(a)),0),invested=assets.reduce((s,a)=>s+toDisplay(a.invested,costCcy(a)),0),gain=total-invested,gainPct=invested>0?gain/invested*100:0,c=counts();
   const _totalEl=document.getElementById('total');
@@ -6342,12 +6352,12 @@ async function boot(){
       assets=applyOverridesToAssets(_rawSeedAssets);
       loadCustomIntoAssets(_cvMap);
       _pricesLive=true; // live prices ready — show real totals
-      render();
+      render(); _rerenderActive();
     }catch(e){
       console.warn('[boot] live prices fetch:',e.message);
       // Coverage API failed (timeout / network error) — show seed/cached prices rather than spinning forever
       _pricesLive=true;
-      render();
+      render(); _rerenderActive();
       // Retry coverage once after 4s — helps when Yahoo had a transient timeout or Vercel cold start
       setTimeout(async()=>{
         try{
@@ -9551,8 +9561,8 @@ function _comAutofillPortfolio() {
   try {
     const totalEl = document.getElementById('total') || document.getElementById('summaryTotal');
     const investedEl = document.getElementById('investedTotal') || document.getElementById('summaryInvested');
-    const total = typeof assets !== 'undefined' ? assets.reduce((s,a) => s + (a.currentPrice||0)*(a.quantity||0), 0) : 0;
-    const invested = typeof assets !== 'undefined' ? assets.reduce((s,a) => s + (a.investedAmount||0), 0) : 0;
+    const total = typeof assets !== 'undefined' ? assets.reduce((s,a) => s + toDisplay(a.value, assetCcy(a)), 0) : 0;
+    const invested = typeof assets !== 'undefined' ? assets.reduce((s,a) => s + toDisplay(a.invested, costCcy(a)), 0) : 0;
     const positions = typeof assets !== 'undefined' ? assets.length : 0;
     const gainPct = invested > 0 ? ((total - invested) / invested * 100) : 0;
     if (document.getElementById('comPfTotal')) document.getElementById('comPfTotal').value = total.toFixed(2);
