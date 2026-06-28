@@ -9561,9 +9561,13 @@ function _comAutofillPortfolio() {
 }
 
 async function _comPublish() {
-  if (!_sb || !_sbUser) return;
   const btn = document.getElementById('comPublishBtn');
   const msgEl = document.getElementById('comPostMsg');
+  if (!_sb || !_sbUser) {
+    if (msgEl) { msgEl.textContent = currentLang==='es'?'Inicia sesión o crea una cuenta gratis para publicar en el foro.':'Sign in or create a free account to post in the forum.'; msgEl.style.display = ''; }
+    else { alert(currentLang==='es'?'Inicia sesión para publicar en el foro.':'Sign in to post in the forum.'); }
+    return;
+  }
   const displayName = _sbUser.user_metadata?.full_name || _sbUser.email?.split('@')[0] || 'Usuario';
 
   let payload = { user_id: _sbUser.id, display_name: displayName, post_type: _comModalTab };
