@@ -1452,6 +1452,7 @@ html,body{height:100%;overflow:hidden;font-family:-apple-system,BlinkMacSystemFo
     <button class="d-nav-item" data-screen="dividends"><span class="d-nav-ico">◎</span>Dividendos</button>
     <div class="d-nav-section">HERRAMIENTAS</div>
     <button class="d-nav-item" data-screen="ia"><span class="d-nav-ico">✦</span>IA — Vera</button>
+    <button class="d-nav-item" data-screen="prestamos"><span class="d-nav-ico">⏱</span>Préstamos</button>
     <button class="d-nav-item" data-screen="impuestos"><span class="d-nav-ico">◫</span>Fiscal</button>
     <a class="d-nav-item" href="/mobile" target="_blank" rel="noopener noreferrer"><span class="d-nav-ico">⊟</span>Versión móvil</a>
     <div class="d-nav-section">REFERIDOS</div>
@@ -3373,6 +3374,254 @@ html,body{height:100%;overflow:hidden;font-family:-apple-system,BlinkMacSystemFo
 </div>
 
 
+<!-- ============ PRÉSTAMOS ============ -->
+<div id="screen-prestamos" class="screen">
+  <style>
+  #screen-prestamos .ln-two{display:grid;grid-template-columns:2fr 1fr;gap:18px;align-items:start}
+  @media(max-width:980px){#screen-prestamos .ln-two{grid-template-columns:1fr}}
+  #screen-prestamos .ln-sec-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+  #screen-prestamos .ln-sec-hdr h2{font-size:13px;font-weight:800;color:var(--text)}
+  #screen-prestamos .ln-sec-hdr span{font-size:11px;color:var(--muted2)}
+  #screen-prestamos .loan-card{background:var(--surf);border:1px solid var(--border);border-radius:14px;padding:18px;margin-bottom:12px;box-shadow:0 2px 8px rgba(0,0,0,.04)}
+  #screen-prestamos .loan-card-hdr{display:flex;align-items:center;gap:10px;margin-bottom:14px}
+  #screen-prestamos .loan-icon{font-size:22px;width:40px;height:40px;background:var(--surf2);border:1px solid var(--border);border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+  #screen-prestamos .loan-card-hdr-info h3{font-size:14px;font-weight:800;margin-bottom:1px}
+  #screen-prestamos .loan-card-hdr-info p{font-size:11px;color:var(--muted)}
+  #screen-prestamos .loan-metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:12px}
+  #screen-prestamos .lm{background:var(--surf2);border-radius:9px;padding:9px 11px}
+  #screen-prestamos .lm-l{font-size:9px;color:var(--muted2);text-transform:uppercase;letter-spacing:.04em;margin-bottom:3px;font-weight:600}
+  #screen-prestamos .lm-v{font-size:13px;font-weight:800;color:var(--text)}
+  #screen-prestamos .cuota-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
+  #screen-prestamos .cuota-label{font-size:11px;color:var(--muted)}
+  #screen-prestamos .cuota-val{font-size:16px;font-weight:900;color:var(--green)}
+  #screen-prestamos .sbar{height:6px;background:var(--surf3);border-radius:3px;overflow:hidden;margin:6px 0 2px}
+  #screen-prestamos .sf{height:100%;border-radius:3px}
+  #screen-prestamos .prog-label{font-size:10px;color:var(--muted)}
+  #screen-prestamos .loan-footer{display:flex;align-items:center;justify-content:space-between;margin-top:14px;padding-top:12px;border-top:1px solid var(--border)}
+  #screen-prestamos .loan-footer-info{font-size:10px;color:var(--muted2)}
+  #screen-prestamos .btn-sm{background:var(--surf2);border:1px solid var(--border);border-radius:8px;padding:6px 14px;font-size:12px;font-weight:700;cursor:pointer;color:var(--muted)}
+  #screen-prestamos .alert-box{background:#fffbe6;border:1px solid #f5d76e;border-radius:9px;padding:10px 12px;margin:10px 0;font-size:11px;color:#7a5c00;line-height:1.5}
+  #screen-prestamos .calc-card{background:var(--surf);border:1px solid var(--border);border-radius:14px;padding:18px;box-shadow:0 2px 8px rgba(0,0,0,.04);position:sticky;top:0}
+  #screen-prestamos .calc-toggle{display:flex;background:var(--surf2);border:1px solid var(--border);border-radius:10px;padding:3px;gap:3px;margin-bottom:16px}
+  #screen-prestamos .calc-toggle button{flex:1;border:none;background:transparent;border-radius:8px;padding:7px;font-size:12px;font-weight:700;cursor:pointer;color:var(--muted)}
+  #screen-prestamos .calc-toggle button.active{background:var(--surf);color:var(--green);box-shadow:0 1px 4px rgba(0,0,0,.1)}
+  #screen-prestamos .calc-result{background:var(--ga);border:1px solid rgba(26,122,66,.2);border-radius:11px;padding:14px;margin:14px 0 12px}
+  #screen-prestamos .calc-result-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px}
+  #screen-prestamos .calc-result-row span{font-size:11px;color:var(--muted)}
+  #screen-prestamos .calc-result-row strong{font-size:13px;font-weight:800;color:var(--green)}
+  #screen-prestamos .calc-result-row.total strong{font-size:15px;color:var(--text)}
+  #screen-prestamos .ln-fg{margin-bottom:14px}
+  #screen-prestamos .ln-fl{font-size:10px;color:var(--muted);display:block;margin-bottom:5px;font-weight:600;text-transform:uppercase;letter-spacing:.04em}
+  #screen-prestamos .ln-fi{width:100%;background:var(--surf2);border:1px solid var(--border);border-radius:9px;padding:10px 12px;color:var(--text);font-size:14px;outline:none}
+  #screen-prestamos .ln-fi:focus{border-color:rgba(26,122,66,.4);background:var(--surf)}
+  #screen-prestamos .ln-frow{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  #screen-prestamos .ln-empty{background:var(--surf);border:1px dashed var(--border);border-radius:14px;padding:34px 18px;text-align:center;color:var(--muted);margin-bottom:12px}
+  .ln-modal-ov{position:fixed;inset:0;background:rgba(0,0,0,.25);z-index:200;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:.25s;backdrop-filter:blur(4px)}
+  .ln-modal-ov.on{opacity:1;pointer-events:all}
+  .ln-modal-box{background:var(--surf);border:1px solid var(--border);border-radius:18px;width:100%;max-width:560px;max-height:88vh;overflow-y:auto;padding:24px;box-shadow:0 8px 48px rgba(0,0,0,.12)}
+  .ln-mtype{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:20px}
+  .ln-mtype-btn{border:2px solid var(--border);background:var(--surf2);border-radius:11px;padding:12px;text-align:center;cursor:pointer;font-size:13px;font-weight:700;color:var(--muted)}
+  .ln-mtype-btn.active{border-color:var(--green);background:var(--ga);color:var(--green)}
+  .ln-amort-table{width:100%;border-collapse:collapse;font-size:12px;margin-top:12px}
+  .ln-amort-table th{color:var(--muted2);font-weight:700;font-size:9px;padding:8px 10px;border-bottom:1.5px solid var(--border);text-align:right;background:var(--surf2)}
+  .ln-amort-table th:first-child{text-align:left}
+  .ln-amort-table td{padding:8px 10px;border-bottom:1px solid var(--surf3);text-align:right;color:var(--muted)}
+  .ln-amort-table td:first-child{text-align:left;font-weight:700;color:var(--text)}
+  </style>
+
+  <div class="top" style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px">
+    <div>
+      <div class="title">Préstamos y créditos</div>
+      <div class="sub">Gestiona tus deudas, amortizaciones y líneas de crédito · Amortización francesa</div>
+    </div>
+    <button class="hHeadBtn main" onclick="LnOpenAdd()" style="font-size:12px;padding:8px 14px;border-radius:10px;background:#15803d;color:#fff;border:none;font-weight:700;cursor:pointer;white-space:nowrap">＋ Añadir</button>
+  </div>
+
+  <div class="pfKpiGrid">
+    <div class="pfKpi"><div class="l">Deuda total</div><div class="v" id="lnKpiDebt">€0</div></div>
+    <div class="pfKpi"><div class="l">Cuota mensual</div><div class="v" id="lnKpiMonthly">€0</div></div>
+    <div class="pfKpi"><div class="l">Intereses pendientes</div><div class="v" id="lnKpiInterest" style="color:var(--red)">€0</div></div>
+    <div class="pfKpi"><div class="l">TIN medio ponderado</div><div class="v" id="lnKpiTin">—</div></div>
+  </div>
+
+  <div class="ln-two">
+    <div>
+      <div class="ln-sec-hdr"><h2>Tus productos</h2><span>amortización francesa</span></div>
+      <div id="lnList"></div>
+    </div>
+    <div>
+      <div class="calc-card">
+        <div class="ln-sec-hdr" style="margin-bottom:14px"><h2 style="font-size:14px">Calculadora</h2></div>
+        <div class="calc-toggle">
+          <button id="lnCalcTabP" class="active" onclick="LnSetCalcMode('prestamo')">⏱ Préstamo</button>
+          <button id="lnCalcTabC" onclick="LnSetCalcMode('credito')">💳 Crédito</button>
+        </div>
+        <div id="lnCalcP">
+          <div class="ln-fg"><label class="ln-fl">Capital (€)</label><input class="ln-fi" type="number" id="lnc-cap" value="10000" oninput="LnUpdateCalc()"/></div>
+          <div class="ln-frow">
+            <div class="ln-fg"><label class="ln-fl">TIN (%)</label><input class="ln-fi" type="number" step="any" id="lnc-tin" value="5.9" oninput="LnUpdateCalc()"/></div>
+            <div class="ln-fg"><label class="ln-fl">Plazo (meses)</label><input class="ln-fi" type="number" id="lnc-meses" value="60" oninput="LnUpdateCalc()"/></div>
+          </div>
+          <div class="calc-result">
+            <div class="calc-result-row"><span>Cuota mensual</span><strong id="lnr-cuota">—</strong></div>
+            <div class="calc-result-row"><span>Total intereses</span><strong id="lnr-int" style="color:var(--red)">—</strong></div>
+            <div class="calc-result-row total"><span>Total a pagar</span><strong id="lnr-total">—</strong></div>
+            <div class="calc-result-row"><span>TAE</span><strong id="lnr-tae">—</strong></div>
+          </div>
+        </div>
+        <div id="lnCalcC" style="display:none">
+          <div class="ln-fg"><label class="ln-fl">Límite (€)</label><input class="ln-fi" type="number" id="lncc-lim" value="5000" oninput="LnUpdateCalcCredito()"/></div>
+          <div class="ln-fg"><label class="ln-fl">Dispuesto (€)</label><input class="ln-fi" type="number" id="lncc-disp" value="2000" oninput="LnUpdateCalcCredito()"/></div>
+          <div class="ln-fg"><label class="ln-fl">TIN (%)</label><input class="ln-fi" type="number" step="any" id="lncc-tin" value="18.9" oninput="LnUpdateCalcCredito()"/></div>
+          <div class="calc-result">
+            <div class="calc-result-row"><span>Intereses / mes</span><strong id="lncc-r-int" style="color:var(--red)">—</strong></div>
+            <div class="calc-result-row"><span>Cuota mínima (3%)</span><strong id="lncc-r-min">—</strong></div>
+            <div class="calc-result-row total"><span>Coste anual estimado</span><strong id="lncc-r-anual" style="color:var(--red)">—</strong></div>
+            <div class="calc-result-row"><span>Disponible</span><strong id="lncc-r-disp" style="color:var(--green)">—</strong></div>
+          </div>
+          <div class="alert-box" style="margin-top:0">⚠️ Los créditos revolving acumulan intereses compuestos. Cancela el saldo cuanto antes.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- LN Modal: Añadir -->
+<div class="ln-modal-ov" id="lnm-add" onclick="if(event.target===this)LnCloseM('lnm-add')">
+  <div class="ln-modal-box">
+    <div class="m-title" style="display:flex;align-items:center;justify-content:space-between;font-size:17px;font-weight:800;margin-bottom:20px"><span>＋ Añadir préstamo / crédito</span><div class="m-close" style="cursor:pointer;color:var(--muted)" onclick="LnCloseM('lnm-add')">✕</div></div>
+    <div class="ln-mtype">
+      <div class="ln-mtype-btn active" id="lnTypeP" onclick="LnSetTipo('prestamo')"><span style="display:block;font-size:18px;margin-bottom:4px">⏱</span>Préstamo</div>
+      <div class="ln-mtype-btn" id="lnTypeC" onclick="LnSetTipo('credito')"><span style="display:block;font-size:18px;margin-bottom:4px">💳</span>Crédito</div>
+    </div>
+    <div id="lnFormP">
+      <div class="ln-fg"><label class="ln-fl">Nombre</label><input class="ln-fi" type="text" id="lnf-nombre" placeholder="Hipoteca, coche, personal…"/></div>
+      <div class="ln-frow">
+        <div class="ln-fg"><label class="ln-fl">Capital (€)</label><input class="ln-fi" type="number" id="lnf-cap" oninput="LnUpdateModalPrev()"/></div>
+        <div class="ln-fg"><label class="ln-fl">TIN anual (%)</label><input class="ln-fi" type="number" step="any" id="lnf-tin" oninput="LnUpdateModalPrev()"/></div>
+      </div>
+      <div class="ln-frow">
+        <div class="ln-fg"><label class="ln-fl">Plazo (meses)</label><input class="ln-fi" type="number" id="lnf-plazo" oninput="LnUpdateModalPrev()"/></div>
+        <div class="ln-fg"><label class="ln-fl">Comisión apertura (€)</label><input class="ln-fi" type="number" id="lnf-com" placeholder="Opcional" oninput="LnUpdateModalPrev()"/></div>
+      </div>
+      <div class="ln-frow">
+        <div class="ln-fg"><label class="ln-fl">Entidad</label><input class="ln-fi" type="text" id="lnf-ent" placeholder="Banco, fintech…"/></div>
+        <div class="ln-fg"><label class="ln-fl">Fecha inicio</label><input class="ln-fi" type="date" id="lnf-fecha"/></div>
+      </div>
+      <div class="ln-fg"><label class="ln-fl">Tipo</label><select class="ln-fi" id="lnf-tipo"><option>Hipoteca</option><option>Personal</option><option>Coche</option><option>Estudios</option><option>Otro</option></select></div>
+      <div class="calc-result" id="lnModalPrev" style="display:none">
+        <div class="calc-result-row"><span>Cuota mensual</span><strong id="lnmp-cuota">—</strong></div>
+        <div class="calc-result-row"><span>Total intereses</span><strong id="lnmp-int" style="color:var(--red)">—</strong></div>
+        <div class="calc-result-row"><span>TAE</span><strong id="lnmp-tae">—</strong></div>
+      </div>
+    </div>
+    <div id="lnFormC" style="display:none">
+      <div class="ln-fg"><label class="ln-fl">Nombre</label><input class="ln-fi" type="text" id="lnfc-nombre" placeholder="Visa, línea crédito…"/></div>
+      <div class="ln-frow">
+        <div class="ln-fg"><label class="ln-fl">Límite (€)</label><input class="ln-fi" type="number" id="lnfc-lim" oninput="LnUpdateModalCredPrev()"/></div>
+        <div class="ln-fg"><label class="ln-fl">Dispuesto (€)</label><input class="ln-fi" type="number" id="lnfc-disp" oninput="LnUpdateModalCredPrev()"/></div>
+      </div>
+      <div class="ln-fg"><label class="ln-fl">TIN anual (%)</label><input class="ln-fi" type="number" step="any" id="lnfc-tin" oninput="LnUpdateModalCredPrev()"/></div>
+      <div class="ln-frow">
+        <div class="ln-fg"><label class="ln-fl">Tipo</label><select class="ln-fi" id="lnfc-tipo"><option>Revolving</option><option>Línea de crédito</option><option>Otro</option></select></div>
+        <div class="ln-fg"><label class="ln-fl">Entidad</label><input class="ln-fi" type="text" id="lnfc-ent" placeholder="Banco, fintech…"/></div>
+      </div>
+      <div class="calc-result" id="lnModalCredPrev" style="display:none">
+        <div class="calc-result-row"><span>Intereses mensuales</span><strong id="lnmcp-int" style="color:var(--red)">—</strong></div>
+        <div class="calc-result-row"><span>Cuota mínima (3%)</span><strong id="lnmcp-min">—</strong></div>
+        <div class="calc-result-row"><span>Disponible</span><strong id="lnmcp-disp" style="color:var(--green)">—</strong></div>
+      </div>
+    </div>
+    <div style="display:flex;gap:10px;margin-top:20px;padding-top:16px;border-top:1px solid var(--border)">
+      <button class="btn-out" style="flex:1;padding:11px;border:1.5px solid var(--border);background:var(--surf);border-radius:10px;font-weight:600;cursor:pointer" onclick="LnCloseM('lnm-add')">Cancelar</button>
+      <button class="btn-main" style="flex:2;padding:12px;background:#15803d;color:#fff;border:none;border-radius:10px;font-weight:700;cursor:pointer" onclick="LnSaveNew()">＋ Añadir</button>
+    </div>
+  </div>
+</div>
+
+<!-- LN Modal: Tabla amortización -->
+<div class="ln-modal-ov" id="lnm-amort" onclick="if(event.target===this)LnCloseM('lnm-amort')">
+  <div class="ln-modal-box" style="max-width:600px">
+    <div class="m-title" style="display:flex;align-items:center;justify-content:space-between;font-size:17px;font-weight:800;margin-bottom:20px"><span id="lnAmortTitle">Tabla de amortización</span><div class="m-close" style="cursor:pointer;color:var(--muted)" onclick="LnCloseM('lnm-amort')">✕</div></div>
+    <div id="lnAmortMeta" style="display:flex;gap:16px;margin-bottom:16px;flex-wrap:wrap"></div>
+    <table class="ln-amort-table"><thead><tr><th>Mes</th><th>Cuota</th><th>Capital</th><th>Intereses</th><th>Saldo</th></tr></thead><tbody id="lnAmortBody"></tbody></table>
+  </div>
+</div>
+
+<script>
+(function(){
+  function LnFmt(n){ if(isNaN(n)||n==null) return '—'; return '€'+Number(n).toLocaleString('es-ES',{minimumFractionDigits:2,maximumFractionDigits:2}); }
+  function LnFmtPct(n){ if(isNaN(n)||n==null) return '—'; return Number(n).toFixed(2)+'%'; }
+  function LnCalcCuota(c,t,m){ if(!c||!t||!m) return 0; const r=t/100/12; if(r===0) return c/m; return c*r*Math.pow(1+r,m)/(Math.pow(1+r,m)-1); }
+  function LnCalcTAE(t,fee,c,m){ const cn=c-(fee||0); if(!cn||!m) return t; const cuo=LnCalcCuota(c,t,m); let tae=t/100; for(let i=0;i<50;i++){ const r=tae/12; if(r===0) break; const pv=cuo*(1-Math.pow(1+r,-m))/r; const dpv=cuo*(m*Math.pow(1+r,-m-1)/r-(1-Math.pow(1+r,-m))/(r*r)); const nt=tae-(pv-cn)/dpv; if(Math.abs(nt-tae)<1e-6){tae=nt;break;} tae=nt; } return (Math.pow(1+tae/12,12)-1)*100; }
+  function LnBuildSchedule(c,t,m){ const r=t/100/12,cuo=LnCalcCuota(c,t,m); let s=c; const rows=[]; for(let i=1;i<=m;i++){ const intv=s*r,cap=cuo-intv; s=Math.max(0,s-cap); rows.push({mes:i,cuota:cuo,capital:cap,interes:intv,saldo:s}); } return rows; }
+  function LnMonthsElapsed(fecha){ if(!fecha) return 0; try{ const d=new Date(fecha+'T00:00:00'); const now=new Date(); let m=(now.getFullYear()-d.getFullYear())*12+(now.getMonth()-d.getMonth()); return Math.max(0,m); }catch(_){ return 0; } }
+
+  window.LnGetLoans=function(){ try{ const a=JSON.parse(localStorage.getItem('fa_loans')||'[]'); return Array.isArray(a)?a:[]; }catch(_){ return []; } };
+  function LnSave(arr){ localStorage.setItem('fa_loans',JSON.stringify(arr)); }
+  window.LnDelete=function(id){ if(!confirm('¿Eliminar este producto?')) return; LnSave(LnGetLoans().filter(x=>x.id!==id)); LnRenderPrestamos(); };
+
+  window.LnOpenM=function(id){ document.getElementById(id).classList.add('on'); };
+  window.LnCloseM=function(id){ document.getElementById(id).classList.remove('on'); };
+  window.LnOpenAdd=function(){ LnSetTipo('prestamo'); ['lnf-nombre','lnf-cap','lnf-tin','lnf-plazo','lnf-com','lnf-ent','lnf-fecha','lnfc-nombre','lnfc-lim','lnfc-disp','lnfc-tin','lnfc-ent'].forEach(i=>{const e=document.getElementById(i);if(e)e.value='';}); document.getElementById('lnModalPrev').style.display='none'; document.getElementById('lnModalCredPrev').style.display='none'; LnOpenM('lnm-add'); };
+
+  window.LnSetCalcMode=function(mode){ document.getElementById('lnCalcP').style.display=mode==='prestamo'?'':'none'; document.getElementById('lnCalcC').style.display=mode==='credito'?'':'none'; document.getElementById('lnCalcTabP').classList.toggle('active',mode==='prestamo'); document.getElementById('lnCalcTabC').classList.toggle('active',mode==='credito'); if(mode==='prestamo')LnUpdateCalc(); else LnUpdateCalcCredito(); };
+  window.LnUpdateCalc=function(){ const c=parseFloat(document.getElementById('lnc-cap').value)||0,t=parseFloat(document.getElementById('lnc-tin').value)||0,m=parseInt(document.getElementById('lnc-meses').value)||0; if(!c||!t||!m){['lnr-cuota','lnr-int','lnr-total','lnr-tae'].forEach(id=>document.getElementById(id).textContent='—');return;} const cuo=LnCalcCuota(c,t,m),tot=cuo*m,intt=tot-c,tae=LnCalcTAE(t,0,c,m); document.getElementById('lnr-cuota').textContent=LnFmt(cuo); document.getElementById('lnr-int').textContent=LnFmt(intt); document.getElementById('lnr-total').textContent=LnFmt(tot); document.getElementById('lnr-tae').textContent=LnFmtPct(tae); };
+  window.LnUpdateCalcCredito=function(){ const l=parseFloat(document.getElementById('lncc-lim').value)||0,d=parseFloat(document.getElementById('lncc-disp').value)||0,t=parseFloat(document.getElementById('lncc-tin').value)||0; if(!d||!t){['lncc-r-int','lncc-r-min','lncc-r-anual','lncc-r-disp'].forEach(id=>document.getElementById(id).textContent='—');return;} const im=d*(t/100/12),cm=Math.max(im,d*0.03),an=im*12,dp=Math.max(0,l-d); document.getElementById('lncc-r-int').textContent=LnFmt(im); document.getElementById('lncc-r-min').textContent=LnFmt(cm); document.getElementById('lncc-r-anual').textContent=LnFmt(an); document.getElementById('lncc-r-disp').textContent=LnFmt(dp); };
+
+  window.LnSetTipo=function(tipo){ document.getElementById('lnFormP').style.display=tipo==='prestamo'?'':'none'; document.getElementById('lnFormC').style.display=tipo==='credito'?'':'none'; document.getElementById('lnTypeP').classList.toggle('active',tipo==='prestamo'); document.getElementById('lnTypeC').classList.toggle('active',tipo==='credito'); window._lnAddTipo=tipo; };
+  window.LnUpdateModalPrev=function(){ const c=parseFloat(document.getElementById('lnf-cap').value)||0,t=parseFloat(document.getElementById('lnf-tin').value)||0,m=parseInt(document.getElementById('lnf-plazo').value)||0,fee=parseFloat(document.getElementById('lnf-com').value)||0; const p=document.getElementById('lnModalPrev'); if(!c||!t||!m){p.style.display='none';return;} p.style.display='block'; const cuo=LnCalcCuota(c,t,m),intt=cuo*m-c,tae=LnCalcTAE(t,fee,c,m); document.getElementById('lnmp-cuota').textContent=LnFmt(cuo); document.getElementById('lnmp-int').textContent=LnFmt(intt); document.getElementById('lnmp-tae').textContent=LnFmtPct(tae); };
+  window.LnUpdateModalCredPrev=function(){ const l=parseFloat(document.getElementById('lnfc-lim').value)||0,d=parseFloat(document.getElementById('lnfc-disp').value)||0,t=parseFloat(document.getElementById('lnfc-tin').value)||0; const p=document.getElementById('lnModalCredPrev'); if(!t||(!d&&!l)){p.style.display='none';return;} p.style.display='block'; const im=d*(t/100/12),cm=Math.max(im,d*0.03),dp=Math.max(0,l-d); document.getElementById('lnmcp-int').textContent=LnFmt(im); document.getElementById('lnmcp-min').textContent=LnFmt(cm); document.getElementById('lnmcp-disp').textContent=LnFmt(dp); };
+
+  window.LnSaveNew=function(){ const tipo=window._lnAddTipo||'prestamo'; const loans=LnGetLoans(); const id='ln'+Date.now(); if(tipo==='prestamo'){ const cap=parseFloat(document.getElementById('lnf-cap').value)||0,tin=parseFloat(document.getElementById('lnf-tin').value)||0,meses=parseInt(document.getElementById('lnf-plazo').value)||0; if(!cap||!tin||!meses){alert('Completa capital, TIN y plazo.');return;} loans.push({id,tipo:'prestamo',nombre:document.getElementById('lnf-nombre').value||'Préstamo',entidad:document.getElementById('lnf-ent').value||'',kind:document.getElementById('lnf-tipo').value,cap,tin,meses,com:parseFloat(document.getElementById('lnf-com').value)||0,fecha:document.getElementById('lnf-fecha').value||''}); } else { const lim=parseFloat(document.getElementById('lnfc-lim').value)||0,disp=parseFloat(document.getElementById('lnfc-disp').value)||0,tin=parseFloat(document.getElementById('lnfc-tin').value)||0; if(!tin||(!disp&&!lim)){alert('Completa límite/dispuesto y TIN.');return;} loans.push({id,tipo:'credito',nombre:document.getElementById('lnfc-nombre').value||'Crédito',entidad:document.getElementById('lnfc-ent').value||'',kind:document.getElementById('lnfc-tipo').value,lim,disp,tin}); } LnSave(loans); LnCloseM('lnm-add'); LnRenderPrestamos(); };
+
+  window.LnShowAmort=function(id){ const loan=LnGetLoans().find(x=>x.id===id); if(!loan||loan.tipo!=='prestamo') return; document.getElementById('lnAmortTitle').textContent='Tabla amortización · '+loan.nombre; const sched=LnBuildSchedule(loan.cap,loan.tin,loan.meses); const elapsed=Math.min(LnMonthsElapsed(loan.fecha),loan.meses); document.getElementById('lnAmortMeta').innerHTML=`<div class="lm" style="flex:1"><div class="lm-l">Capital</div><div class="lm-v">${LnFmt(loan.cap)}</div></div><div class="lm" style="flex:1"><div class="lm-l">TIN</div><div class="lm-v">${LnFmtPct(loan.tin)}</div></div><div class="lm" style="flex:1"><div class="lm-l">Plazo</div><div class="lm-v">${loan.meses} meses</div></div><div class="lm" style="flex:1"><div class="lm-l">Cuota</div><div class="lm-v">${LnFmt(LnCalcCuota(loan.cap,loan.tin,loan.meses))}</div></div>`; const slice=sched.slice(elapsed,elapsed+12); const body=document.getElementById('lnAmortBody'); body.innerHTML=slice.map(r=>`<tr><td>${r.mes}</td><td>${LnFmt(r.cuota)}</td><td style="color:var(--green)">${LnFmt(r.capital)}</td><td style="color:var(--red)">${LnFmt(r.interes)}</td><td>${LnFmt(r.saldo)}</td></tr>`).join(''); LnOpenM('lnm-amort'); };
+
+  window.LnRenderPrestamos=function(){
+    const loans=LnGetLoans();
+    const listEl=document.getElementById('lnList'); if(!listEl) return;
+    let debt=0,monthly=0,interest=0,tinW=0,tinB=0;
+    const cards=loans.map(l=>{
+      if(l.tipo==='prestamo'){
+        const sched=LnBuildSchedule(l.cap,l.tin,l.meses); const elapsed=Math.min(LnMonthsElapsed(l.fecha),l.meses);
+        const pending=elapsed>0?(sched[elapsed-1]?.saldo??l.cap):l.cap; const cuo=LnCalcCuota(l.cap,l.tin,l.meses);
+        const remInt=sched.slice(elapsed).reduce((s,r)=>s+r.interes,0); const amortPct=l.cap>0?((l.cap-pending)/l.cap*100):0;
+        const tae=LnCalcTAE(l.tin,l.com,l.cap,l.meses);
+        debt+=pending; monthly+=cuo; interest+=remInt; tinW+=l.tin*pending; tinB+=pending;
+        const ico=l.kind==='Hipoteca'?'🏠':l.kind==='Coche'?'🚗':l.kind==='Estudios'?'🎓':'⏱';
+        return `<div class="loan-card">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px"><span class="badge" style="background:var(--ga);color:var(--green);border:1px solid rgba(26,122,66,.2);font-size:9px;font-weight:700;padding:2px 7px;border-radius:5px">${(l.kind||'PRÉSTAMO').toUpperCase()}</span><button class="btn-sm" onclick="LnDelete('${l.id}')" style="color:var(--red)">Eliminar</button></div>
+          <div class="loan-card-hdr"><div class="loan-icon">${ico}</div><div class="loan-card-hdr-info"><h3>${l.nombre}</h3><p>${l.entidad||'—'}</p></div></div>
+          <div class="loan-metrics"><div class="lm"><div class="lm-l">Capital</div><div class="lm-v">${LnFmt(l.cap)}</div></div><div class="lm"><div class="lm-l">Pendiente</div><div class="lm-v">${LnFmt(pending)}</div></div><div class="lm"><div class="lm-l">TIN</div><div class="lm-v">${LnFmtPct(l.tin)}</div></div><div class="lm"><div class="lm-l">TAE</div><div class="lm-v">${LnFmtPct(tae)}</div></div></div>
+          <div class="cuota-row"><span class="cuota-label">Cuota mensual</span><span class="cuota-val">${LnFmt(cuo)} / mes</span></div>
+          <div class="prog-label">Amortizado ${amortPct.toFixed(1)}% · ${elapsed} de ${l.meses} meses · ${Math.max(0,l.meses-elapsed)} restantes</div>
+          <div class="sbar"><div class="sf" style="width:${Math.min(100,amortPct).toFixed(1)}%;background:var(--green)"></div></div>
+          <div class="loan-footer"><div class="loan-footer-info">${l.fecha?'📅 '+l.fecha+' · ':''}${l.entidad||''}</div><button class="btn-sm" onclick="LnShowAmort('${l.id}')">Ver tabla</button></div>
+        </div>`;
+      } else {
+        const im=l.disp*(l.tin/100/12),cm=Math.max(im,l.disp*0.03),disp=Math.max(0,l.lim-l.disp),util=l.lim>0?(l.disp/l.lim*100):0;
+        debt+=l.disp; monthly+=cm; interest+=im*12; tinW+=l.tin*l.disp; tinB+=l.disp;
+        const isRev=(l.kind||'').toLowerCase().includes('revolv');
+        return `<div class="loan-card">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px"><span class="badge" style="background:#fff8e1;color:var(--gold);border:1px solid rgba(154,111,0,.2);font-size:9px;font-weight:700;padding:2px 7px;border-radius:5px">${(l.kind||'CRÉDITO').toUpperCase()}</span><button class="btn-sm" onclick="LnDelete('${l.id}')" style="color:var(--red)">Eliminar</button></div>
+          <div class="loan-card-hdr"><div class="loan-icon">💳</div><div class="loan-card-hdr-info"><h3>${l.nombre}</h3><p>${l.entidad||'—'}</p></div></div>
+          <div class="loan-metrics"><div class="lm"><div class="lm-l">Límite</div><div class="lm-v">${LnFmt(l.lim)}</div></div><div class="lm"><div class="lm-l">Dispuesto</div><div class="lm-v" style="color:var(--red)">${LnFmt(l.disp)}</div></div><div class="lm"><div class="lm-l">Disponible</div><div class="lm-v" style="color:var(--green)">${LnFmt(disp)}</div></div><div class="lm"><div class="lm-l">TIN</div><div class="lm-v">${LnFmtPct(l.tin)}</div></div></div>
+          <div class="cuota-row"><span class="cuota-label">Cuota mínima</span><span class="cuota-val" style="color:var(--gold)">${LnFmt(cm)} / mes</span></div>
+          <div class="prog-label">Utilización: ${util.toFixed(1)}%</div>
+          <div class="sbar"><div class="sf" style="width:${Math.min(100,util).toFixed(1)}%;background:var(--gold)"></div></div>
+          ${isRev?'<div class="alert-box">⚠️ <strong>Crédito revolving</strong> · El capital no se amortiza solo. Cancela el saldo cuanto antes para evitar intereses compuestos.</div>':''}
+        </div>`;
+      }
+    }).join('');
+    listEl.innerHTML = loans.length ? cards : `<div class="ln-empty"><div style="font-size:30px;margin-bottom:10px">⏱</div><div style="font-size:14px;font-weight:700;color:var(--text);margin-bottom:6px">Sin préstamos ni créditos</div><div style="font-size:12px;margin-bottom:14px">Añade tu hipoteca, préstamo o tarjeta para verlos aquí con su tabla de amortización.</div><button class="btn-main" style="padding:11px 20px;background:#15803d;color:#fff;border:none;border-radius:10px;font-weight:700;cursor:pointer" onclick="LnOpenAdd()">＋ Añadir producto</button></div>`;
+    const set=(id,v)=>{const e=document.getElementById(id);if(e)e.textContent=v;};
+    set('lnKpiDebt',LnFmt(debt)); set('lnKpiMonthly',LnFmt(monthly)); set('lnKpiInterest',LnFmt(interest)); set('lnKpiTin',tinB>0?LnFmtPct(tinW/tinB):'—');
+  };
+  // init calculator defaults
+  try{ LnUpdateCalc(); LnUpdateCalcCredito(); }catch(_){}
+})();
+</script>
+
 <!-- TAB BAR -->
 <div class="tab" id="mainTabBar">
   <div class="tab-row tab-row-extra" id="tabExtraRow">
@@ -3629,6 +3878,7 @@ function showScreen(name,keepTab=false){
   if(name==='ia'&&dataReady)renderIA();
   if(name==='alerts')renderAlertsScreen();
   if(name==='impuestos'&&dataReady)renderImpuestos();
+  if(name==='prestamos')LnRenderPrestamos();
   if(name==='topinvestors')_insLoad(_insCurrentSymbol);
 }
 function normalizeHistory(h){const _all=(Array.isArray(h)?h:[]).map(p=>({date:String(p.date).slice(0,10),close:Number(p.close)})).filter(p=>p.date&&Number.isFinite(p.close)&&p.close>0).sort((a,b)=>a.date.localeCompare(b.date));if(_all.length>=4){const _s=[..._all].sort((a,b)=>a.close-b.close);const _m=_s[Math.floor(_s.length/2)].close;const _c=_all.filter(p=>p.close<=_m*10&&p.close>=_m/10);if(_c.length>=4){return _c.length>1260?_c.slice(-1260):_c;}}return _all.length>1260?_all.slice(-1260):_all;} // cap at 5Y; outlier filter removes bad data points >10x median
