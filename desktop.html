@@ -6,7 +6,7 @@
   (served no-cache, version-bumped each deploy). Works even where SW/no-store
   are ignored, because it is plain page JS. */
 (function(){try{
-  var FA_BUILD='208';
+  var FA_BUILD='209';
   var s=location.search;
   if(s.indexOf('vchk')>-1||s.indexOf('_v=')>-1){history.replaceState(null,'',location.pathname+(location.hash||''));return;}
   fetch('/sw.js?_='+Date.now(),{cache:'no-store'}).then(function(r){return r.text();}).then(function(t){
@@ -1557,7 +1557,7 @@ html,body{height:100%;overflow:hidden;font-family:-apple-system,BlinkMacSystemFo
       <div style="min-width:0;flex:1">
         <div class="d-user-name" id="deskUserName" style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">—</div>
         <div class="d-user-plan" id="deskUserPlan">Plan Free</div>
-        <div id="deskVersionBadge" style="font-size:10px;color:#9fb0a5;margin-top:2px;font-weight:700">v208</div>
+        <div id="deskVersionBadge" style="font-size:10px;color:#9fb0a5;margin-top:2px;font-weight:700">v209</div>
       </div>
       <span style="font-size:10px;color:#8fa090;flex-shrink:0;margin-left:4px" id="deskUserChevron">&#9650;</span>
     </div>
@@ -1645,7 +1645,7 @@ html,body{height:100%;overflow:hidden;font-family:-apple-system,BlinkMacSystemFo
     <div id="auth-privacy-note" class="csa-privacy">
       Al usar Finasset aceptas nuestra <a href="/privacy.html" target="_blank" rel="noopener">Política de Privacidad</a> y los <a href="/privacy.html#terms" target="_blank" rel="noopener">Términos de Uso</a>. No es asesoramiento financiero.
     </div>
-    <div id="deskVersionBadge2" style="text-align:center;font-size:10px;color:#b0c0b5;font-weight:700;letter-spacing:.05em;margin-top:8px">v208</div>
+    <div id="deskVersionBadge2" style="text-align:center;font-size:10px;color:#b0c0b5;font-weight:700;letter-spacing:.05em;margin-top:8px">v209</div>
     <!-- Hidden legacy IDs for switchLang compat -->
     <div style="display:none">
       <div id="auth-title"></div><div id="auth-sub"></div>
@@ -6999,11 +6999,58 @@ function _showUpgradeModal(reason) {
   document.body.appendChild(overlay);
 }
 
-function _goPricing(plan) {
+async function _goPricing(plan) {
   document.getElementById('upgradeModalOverlay')?.remove();
+  if (plan === 'pro') {
+    // Trigger Stripe Checkout for Pro 9.99€/month
+    const tok = localStorage.getItem('fa_token');
+    if (!tok) {
+      alert('Debes iniciar sesión para suscribirte.');
+      return;
+    }
+    const btn = event?.target;
+    if (btn) { btn.disabled = true; btn.textContent = 'Redirigiendo…'; }
+    try {
+      const r = await fetch('/api/stripe/checkout', {
+        method: 'POST',
+        headers: { 'Authorization': 'Bearer ' + tok, 'Content-Type': 'application/json' },
+      });
+      const d = await r.json();
+      if (d.url) {
+        window.location.href = d.url;
+      } else if (d.error === 'already_pro') {
+        alert('Ya tienes el plan Pro activo. 🎉');
+      } else {
+        alert('Error al iniciar pago: ' + (d.detail || d.error || 'Unknown'));
+        if (btn) { btn.disabled = false; btn.textContent = '⭐ Pro — 9,99€/mes'; }
+      }
+    } catch (e) {
+      alert('Error de conexión. Inténtalo de nuevo.');
+      if (btn) { btn.disabled = false; btn.textContent = '⭐ Pro — 9,99€/mes'; }
+    }
+    return;
+  }
+  // For starter / other plans — navigate to pricing screen
   if (typeof showScreen === 'function') showScreen('pricing');
   else if (typeof _deskShowScreen === 'function') _deskShowScreen('pricing');
 }
+
+// Handle return from Stripe checkout (?upgraded=1)
+(function _handleStripeReturn() {
+  const params = new URLSearchParams(location.search);
+  if (params.get('upgraded') === '1') {
+    history.replaceState({}, '', location.pathname);
+    // Show success toast + reload plan
+    setTimeout(() => {
+      const t = document.createElement('div');
+      t.style.cssText = 'position:fixed;bottom:90px;left:50%;transform:translateX(-50%);background:#15803d;color:#fff;padding:12px 20px;border-radius:14px;font-size:13px;font-weight:700;z-index:99999;box-shadow:0 4px 20px rgba(21,128,61,.35);animation:fadeIn .3s';
+      t.textContent = '🎉 ¡Plan Pro activado! Bienvenido/a.';
+      document.body.appendChild(t);
+      setTimeout(() => t.remove(), 5000);
+      loadUserPlan().catch(() => {});
+    }, 800);
+  }
+})();
 
 
 // ========== Supabase Auth ==========
