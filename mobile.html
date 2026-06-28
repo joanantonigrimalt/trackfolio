@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<script>/* cache-bust v20260628-3 */(function(){var V='20260628-3',k='_fav';if(localStorage.getItem(k)!==V){localStorage.setItem(k,V);var u=location.pathname+'?_v='+V+(location.hash||'');window.location.replace(u);}}());</script>
 <script>/* Touch detection: force full-screen on any touch device regardless of
   CSS media features (some in-app webviews wrongly report hover:hover + wide
   viewport, which framed the app into a narrow column). */
@@ -11,7 +10,7 @@
   no-store headers are ignored (in-app webviews) because it is plain page JS.
   Source of truth = sw.js (always served no-cache, version-bumped each deploy). */
 (function(){try{
-  var FA_BUILD='189';
+  var FA_BUILD='190';
   if(location.search.indexOf('vchk')>-1)return; // already reloaded once — avoid loops
   fetch('/sw.js?_='+Date.now(),{cache:'no-store'}).then(function(r){return r.text();}).then(function(t){
     var m=t.match(/finasset-v(\d+)/);
@@ -1423,7 +1422,6 @@ html,body{height:100%;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sy
 
 <!-- ============ AUTH ============ -->
 <div id="cs-auth" class="cover-screen cs-active">
-  <div style="position:fixed;bottom:3px;left:50%;transform:translateX(-50%);z-index:99999;font-size:10px;font-weight:800;color:rgba(255,255,255,.55);pointer-events:none;letter-spacing:.05em">v189</div>
 
   <!-- Language switcher -->
   <div class="csa-lang">
@@ -9568,6 +9566,7 @@ function _comEsc(str) {
 }
 
 </script>
+<div id="faBuildTag" style="position:fixed;bottom:12px;right:12px;z-index:2147483647;font-size:11px;font-weight:800;color:#fff;background:rgba(20,32,24,.82);padding:3px 8px;border-radius:7px;pointer-events:none;letter-spacing:.04em;font-family:system-ui,sans-serif">v190</div>
 </body>
 </html>
 

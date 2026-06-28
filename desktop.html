@@ -1,13 +1,12 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<script>/* cache-bust v20260628-1 */(function(){var V='20260628-1',k='_fav';if(localStorage.getItem(k)!==V){localStorage.setItem(k,V);var u=location.pathname+'?_v='+V+(location.hash||'');window.location.replace(u);}}());</script>
 <script>/* Auto-update: hard-reload with a cache-busting query if this (possibly
   cached) HTML is older than the deployed build. Source of truth = sw.js
   (served no-cache, version-bumped each deploy). Works even where SW/no-store
   are ignored, because it is plain page JS. */
 (function(){try{
-  var FA_BUILD='189';
+  var FA_BUILD='190';
   if(location.search.indexOf('vchk')>-1)return;
   fetch('/sw.js?_='+Date.now(),{cache:'no-store'}).then(function(r){return r.text();}).then(function(t){
     var m=t.match(/finasset-v(\d+)/);
@@ -1570,7 +1569,6 @@ html,body{height:100%;overflow:hidden;font-family:-apple-system,BlinkMacSystemFo
 
 <!-- ============ AUTH ============ -->
 <div id="cs-auth" class="cover-screen cs-active">
-  <div style="position:fixed;bottom:8px;right:10px;z-index:99999;font-size:11px;font-weight:800;color:rgba(120,120,120,.65);pointer-events:none;letter-spacing:.05em">v189</div>
 
   <!-- Language switcher (right panel area) -->
   <div class="csa-lang">
@@ -9823,6 +9821,7 @@ function _comEsc(str) {
 }
 
 </script>
+<div id="faBuildTag" style="position:fixed;bottom:12px;right:12px;z-index:2147483647;font-size:11px;font-weight:800;color:#fff;background:rgba(20,32,24,.82);padding:3px 8px;border-radius:7px;pointer-events:none;letter-spacing:.04em;font-family:system-ui,sans-serif">v190</div>
 </body>
 </html>
 
