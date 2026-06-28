@@ -1911,6 +1911,12 @@ html,body{height:100%;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sy
     <span id="divDaily"></span><span id="divHourly"></span><span id="divTrend"></span><span id="divTotalReceived"></span><span id="divYieldCostLabel"></span>
   </div>
 
+  <!-- Próximos pagos (mockup order: right under the KPIs) -->
+  <div class="card" id="divUpcomingCard" style="display:none">
+    <div class="sectionTitle" data-i18n="upcoming">Próximos pagos</div>
+    <div id="upcomingPayments"></div>
+  </div>
+
   <!-- Note / empty state -->
   <div id="divNote" style="display:none;font-size:13px;color:#8fa090;text-align:center;padding:20px 16px;background:rgba(20,32,24,.04);border-radius:16px;margin-bottom:12px"></div>
 
@@ -2018,12 +2024,6 @@ html,body{height:100%;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sy
       </div>
     </div>
     <div class="div-drip-note" id="divDripNote"></div>
-  </div>
-
-  <!-- Próximos pagos -->
-  <div class="card" id="divUpcomingCard" style="display:none">
-    <div class="sectionTitle" data-i18n="upcoming">Próximos pagos</div>
-    <div id="upcomingPayments"></div>
   </div>
 
   <!-- Pagos recibidos -->
@@ -3382,15 +3382,16 @@ html,body{height:100%;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sy
   <div class="tab-row tab-row-extra" id="tabExtraRow">
     <div style="flex:1"></div>
     <div style="flex:1"></div>
-    <button data-screen="ia" onclick="closeExtraTabRow()"><b>✦</b><span data-i18n="tabIA">IA</span></button>
+    <div style="flex:1"></div>
     <button data-screen="prestamos" onclick="closeExtraTabRow()"><b>⏱</b><span>Préstamos</span></button>
     <button data-screen="impuestos" onclick="closeExtraTabRow()"><b>◫</b><span>Impuestos</span></button>
   </div>
   <div class="tab-row tab-row-main">
     <button class="active" data-screen="home"><b>⌂</b><span data-i18n="tabHome">Inicio</span></button>
     <button data-screen="analysis"><b>◈</b><span data-i18n="tabAnalysis">Análisis</span></button>
-    <button data-screen="dividends"><b>◎</b><span data-i18n="tabDividends">Dividendos</span></button>
-    <button class="tab-more-btn" id="tabMoreBtn" onclick="toggleExtraTabRow(event)"><b>+</b><span>Más</span></button>
+    <button data-screen="dividends"><b>◎</b><span>Divid.</span></button>
+    <button data-screen="ia"><b>✦</b><span>Vera IA</span></button>
+    <button class="tab-more-btn" id="tabMoreBtn" onclick="toggleExtraTabRow(event)"><b>⊞</b><span>Más</span></button>
   </div>
 </div>
 
