@@ -3887,6 +3887,33 @@ function buildPortfolioTimeSeries(){
   const fr=full[0].realValue,approx=assets.filter(a=>!a.hasRealHistory),aC=approx.reduce((s,a)=>s+a.value,0),tC=assets.reduce((s,a)=>s+a.value,0);
   return full.map(p=>{const ratio=fr>0?p.realValue/fr:1;const av=approx.reduce((s,a)=>{const b=a.buyPrice>0?a.invested:a.value;const sc=b*ratio;return s+Math.min(Math.max(b,a.value),Math.max(Math.min(b,a.value),sc));},0);return{date:p.date,totalValue:p.realValue+av,realValue:p.realValue,approximatedValue:av,totalCurrent:tC,approximateCurrent:aC};});
 }
+// User-recorded daily snapshots of total portfolio value (stored in EUR base).
+// These let the evolution chart show a REAL curve even when the holdings (e.g.
+// Spanish mutual funds) expose no time-series from market-data APIs.
+function _recordValueSnapshot(){
+  try{
+    if(!_pricesLive) return;
+    const valueEur=assets.reduce((s,a)=>s+toEur(a.value,assetCcy(a)),0);
+    if(!(valueEur>0)) return;
+    const today=new Date().toISOString().slice(0,10);
+    let snaps=[]; try{ snaps=JSON.parse(localStorage.getItem('fa_value_snapshots')||'[]'); }catch(_){ snaps=[]; }
+    if(!Array.isArray(snaps)) snaps=[];
+    if(snaps.length&&snaps[snaps.length-1].date===today){ snaps[snaps.length-1].value=valueEur; }
+    else { snaps.push({date:today,value:valueEur}); }
+    if(snaps.length>1850) snaps=snaps.slice(-1850);
+    localStorage.setItem('fa_value_snapshots',JSON.stringify(snaps));
+  }catch(_){}
+}
+function _snapshotCount(){ try{ const s=JSON.parse(localStorage.getItem('fa_value_snapshots')||'[]'); return Array.isArray(s)?s.length:0; }catch(_){ return 0; } }
+function buildSnapshotTimeSeries(){
+  let snaps; try{ snaps=JSON.parse(localStorage.getItem('fa_value_snapshots')||'[]'); }catch(_){ return null; }
+  if(!Array.isArray(snaps)) return null;
+  const r=_fxRates[_displayCcy]||1;
+  const pts=snaps.filter(s=>s&&s.date&&Number.isFinite(s.value)&&s.value>0).map(s=>({date:s.date,value:s.value*r}));
+  if(pts.length<2) return null;
+  const tC=assets.reduce((s,a)=>s+toDisplay(a.value,assetCcy(a)),0);
+  return pts.map(p=>({date:p.date,totalValue:p.value,realValue:p.value,approximatedValue:0,totalCurrent:tC,approximateCurrent:0}));
+}
 function filterByRange(series,range){if(!Array.isArray(series)||!series.length)return[];if(!range)return series;let co;if(range==='YTD'){co=new Date(new Date().getFullYear(),0,1);}else{const days=RANGE_DAYS[range]||365;const ld=new Date(series[series.length-1].date+'T00:00:00');co=new Date(ld);co.setDate(co.getDate()-days);}let f=series.filter(p=>new Date(p.date+'T00:00:00')>=co);if(f.length<2)f=series.slice(Math.max(0,series.length-30));return f;}
 function dateLabel(date,range){const d=new Date(date+'T00:00:00');const loc=currentLang==='es'?'es-ES':'en-GB';if(range==='1W'||range==='1M')return d.toLocaleDateString(loc,{day:'2-digit',month:'short'});if(range==='5Y')return d.toLocaleDateString(loc,{month:'short',year:'2-digit'});if(range==='YTD')return d.toLocaleDateString(loc,{day:'2-digit',month:'short'});return d.toLocaleDateString(loc,{month:'short',year:'numeric'});}
 
@@ -3935,8 +3962,9 @@ async function renderChart(){
   }
 
   // ── Multi-day historical mode ─────────────────────────────────────────────
-  const full=buildPortfolioTimeSeries();
-  if(!full){canvas.style.display='none';fallback.style.display='flex';fallback.textContent=_pricesLive?t('chartNoData'):(currentLang==='es'?'Cargando histórico…':'Loading history…');meta.textContent='';rv.textContent=_pricesLive?fe(assets.reduce((s,a)=>s+toDisplay(a.value,assetCcy(a)),0)):'—';return;}
+  let full=buildPortfolioTimeSeries();
+  if(!full) full=buildSnapshotTimeSeries(); // fall back to the user's own daily value snapshots
+  if(!full){canvas.style.display='none';fallback.style.display='flex';fallback.textContent=_pricesLive?(_snapshotCount()>0?(currentLang==='es'?'Registrando el valor de tu cartera — la curva aparecerá en cuanto haya varios días de datos.':'Recording your portfolio value — the curve will appear once there are a few days of data.'):t('chartNoData')):(currentLang==='es'?'Cargando histórico…':'Loading history…');meta.textContent='';rv.textContent=_pricesLive?fe(assets.reduce((s,a)=>s+toDisplay(a.value,assetCcy(a)),0)):'—';return;}
   const series=filterByRange(full,selectedRange),values=series.map(p=>p.totalValue);
   fallback.style.display='none';canvas.style.display='block';
   if(!series.length||!values.some(v=>Number.isFinite(v))){canvas.style.display='none';fallback.style.display='flex';fallback.textContent=t('chartNoData');meta.textContent='';return;}
@@ -6374,11 +6402,13 @@ async function boot(){
       assets=applyOverridesToAssets(_rawSeedAssets);
       loadCustomIntoAssets(_cvMap);
       _pricesLive=true; // live prices ready — show real totals
+      _recordValueSnapshot();
       render(); _rerenderActive();
     }catch(e){
       console.warn('[boot] live prices fetch:',e.message);
       // Coverage API failed (timeout / network error) — show seed/cached prices rather than spinning forever
       _pricesLive=true;
+      _recordValueSnapshot();
       render(); _rerenderActive();
       // Retry coverage once after 4s — helps when Yahoo had a transient timeout or Vercel cold start
       setTimeout(async()=>{
