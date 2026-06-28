@@ -6,7 +6,7 @@
   (served no-cache, version-bumped each deploy). Works even where SW/no-store
   are ignored, because it is plain page JS. */
 (function(){try{
-  var FA_BUILD='202';
+  var FA_BUILD='203';
   var s=location.search;
   if(s.indexOf('vchk')>-1||s.indexOf('_v=')>-1){history.replaceState(null,'',location.pathname+(location.hash||''));return;}
   fetch('/sw.js?_='+Date.now(),{cache:'no-store'}).then(function(r){return r.text();}).then(function(t){
@@ -2879,8 +2879,8 @@ html,body{height:100%;overflow:hidden;font-family:-apple-system,BlinkMacSystemFo
 </div>
 
 <!-- ============ ALERT SHEET ============ -->
-<div class="alertOverlay" id="alertOverlay" onclick="closeAlertSheet()"></div>
-<div class="alertSheet" id="alertSheet">
+<div class="alertOverlay" id="alertOverlay" onclick="closeAlertSheet()" style="display:none"></div>
+<div class="alertSheet" id="alertSheet" style="display:none">
   <div class="sheetHandle" style="margin:14px auto 0;width:36px;height:4px;background:#dce5dc;border-radius:2px"></div>
   <div style="display:flex;justify-content:space-between;align-items:center">
     <div class="liqSheetTitle">🔔 Nueva Alerta</div>
@@ -9940,6 +9940,32 @@ function _comTimeAgo(ts) {
 
 function _comEsc(str) {
   return String(str||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// ── Alert sheet (legacy mobile sheet reused for asset-detail alerts) ──────────
+function openAlertSheet(isin) {
+  const sh = document.getElementById('alertSheet');
+  const ov = document.getElementById('alertOverlay');
+  if (!sh || !ov) return;
+  sh.style.display = '';
+  ov.style.display = '';
+  requestAnimationFrame(() => { sh.classList.add('open'); ov.classList.add('open'); });
+  if (isin) {
+    _alertsAssetISIN = isin;
+    const asset = assets && assets.find(a => (a.isin || a.symbol) === isin);
+    if (asset) {
+      const lbl = document.getElementById('alertSheetAssetLabel');
+      if (lbl) lbl.textContent = asset.shortName || asset.name;
+    }
+  }
+}
+function closeAlertSheet() {
+  const sh = document.getElementById('alertSheet');
+  const ov = document.getElementById('alertOverlay');
+  if (!sh || !ov) return;
+  sh.classList.remove('open');
+  ov.classList.remove('open');
+  setTimeout(() => { sh.style.display = 'none'; ov.style.display = 'none'; }, 320);
 }
 
 // ── Vera IA persistent panel toggle ──────────────────────────────────────────
