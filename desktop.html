@@ -6104,9 +6104,11 @@ function renderLists(){
       <td style="color:var(--muted)">${a.broker?escapeHtml(a.broker):'—'}</td>
     </tr>`;
   }).join('');
+  const _hasFx=assets.some(a=>(a.quantity>0)&&assetCcy(a)!=='EUR');
+  const _fxNote=_hasFx?`<div style="font-size:11px;color:var(--muted2);margin-top:8px;padding:0 2px;line-height:1.5">${isEs?'Los precios se muestran en su divisa nativa; «Valor» y «P. medio» se convierten a € al tipo de cambio actual.':'Prices are shown in their native currency; «Value» and «Avg» are converted to € at the current FX rate.'}</div>`:'';
   const html=`<div style="overflow-x:auto"><table class="pf-tbl"><thead><tr>
     <th>${isEs?'Activo':'Asset'}</th><th>${isEs?'Precio':'Price'}</th><th>${isEs?'Hoy':'Today'}</th><th>${isEs?'Cant.':'Qty'}</th><th>${isEs?'Valor':'Value'}</th><th>${isEs?'P. medio':'Avg'}</th><th>${isEs?'Rentab.':'Return'}</th><th>${isEs?'Peso':'Weight'}</th><th>Broker</th>
-  </tr></thead><tbody>${rows}</tbody></table></div>`;
+  </tr></thead><tbody>${rows}</tbody></table></div>${_fxNote}`;
   document.getElementById('list').innerHTML=html;
   document.getElementById('portfolioList').innerHTML=html;
   document.querySelectorAll('#list tr[data-isin], #portfolioList tr[data-isin]').forEach(el=>{
