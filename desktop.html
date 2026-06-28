@@ -6179,13 +6179,30 @@ function renderAnalysisV2(){
     [isEs?'Liquidez':'Cash',`${liqPct.toFixed(1)}%`,''],
   ];
   const metricRows=metrics.map(([l,v,c])=>`<div style="display:flex;justify-content:space-between"><span style="color:var(--muted)">${l}</span><strong${c?` style="color:${c}"`:''}>${v}</strong></div>`).join('');
+  // ── Costs & Fees (TER) — same source as _anRenderCosts: live TER, then ISIN map ──
+  const _terMap=(typeof AN_TER_MAP!=='undefined')?AN_TER_MAP:{};
+  const _terOf=a=>{ let t=a.ter; if(t==null)t=_terMap[a.isin]; if(t==null)t=(a.mapping&&(a.mapping.ter??a.mapping.expenseRatio)); return (t!=null&&Number.isFinite(Number(t))&&Number(t)>0)?Number(t):null; };
+  let _terCost=0,_terKnown=0;
+  live.forEach(a=>{const t=_terOf(a);const v=toDisplay(a.value,assetCcy(a))||0;if(t!=null&&v>0){_terCost+=v*t/100;_terKnown+=v;}});
+  const _terPct=totVal>0?(_terCost/totVal*100):0;
+  // Fetch any missing TERs in the background, then re-render so the card fills in
+  if(typeof _prefetchMissingTers==='function' && live.some(a=>a.ter==null&&_terMap[a.isin]==null)){ try{_prefetchMissingTers().then(u=>{if(u)renderAnalysisV2();});}catch(_){} }
+  const _terEff=_terPct<0.35;
+  const costsCard=totVal>0?`
+    <div class="card" style="margin-bottom:14px"><div style="font-size:14px;font-weight:700;margin-bottom:14px">${isEs?'Costes y comisiones':'Costs & Fees'} · TER ${_terPct.toFixed(2)}%</div>
+      <div style="display:flex;justify-content:space-between;align-items:flex-end">
+        <div><div style="font-size:28px;font-weight:900;color:var(--text)">€ ${_terCost.toFixed(1)}</div><div style="font-size:12px;color:var(--muted)">${isEs?'estimado anual':'annual estimate'}${_terKnown>0&&_terKnown<totVal?` · ${(_terKnown/totVal*100).toFixed(0)}% ${isEs?'con datos':'covered'}`:''}</div></div>
+        <div style="background:var(--ga);border:1px solid rgba(26,122,66,.2);border-radius:9px;padding:9px 12px;text-align:center"><div style="font-size:12px;font-weight:700;color:var(--green)">${_terEff?(isEs?'Muy eficiente ✓':'Very efficient ✓'):(isEs?'Coste medio':'Average')}</div><div style="font-size:10px;color:var(--muted)">${_terEff?(isEs?'mínimo indexados':'low-cost index'):''}</div></div>
+      </div>
+    </div>`:'';
   wrap.innerHTML=`
     <h1 style="font-size:20px;font-weight:800;margin-bottom:20px">${isEs?'Análisis de cartera':'Portfolio analysis'}</h1>
     <div class="anv2-two">
       <div class="card"><div style="font-size:14px;font-weight:700;margin-bottom:14px">${isEs?'Composición por clase':'Composition by class'}</div><div style="display:flex;gap:18px;align-items:center">${donut}<div class="dl" style="flex:1">${legend}</div></div></div>
       <div class="card"><div style="font-size:14px;font-weight:700;margin-bottom:14px">${isEs?'Métricas clave':'Key metrics'}</div><div style="display:flex;flex-direction:column;gap:10px">${metricRows}</div></div>
     </div>
-    <div class="card" style="margin-bottom:14px"><div style="font-size:14px;font-weight:700;margin-bottom:14px">${isEs?'Peso por activo':'Weight by asset'}</div><div style="display:flex;flex-direction:column;gap:10px">${bars}</div></div>`;
+    <div class="card" style="margin-bottom:14px"><div style="font-size:14px;font-weight:700;margin-bottom:14px">${isEs?'Peso por activo':'Weight by asset'}</div><div style="display:flex;flex-direction:column;gap:10px">${bars}</div></div>
+    ${costsCard}`;
 }
 
 // ── Home greeting + distribution donut (light mockup layout) ─────────────────

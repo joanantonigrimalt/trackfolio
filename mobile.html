@@ -6065,12 +6065,17 @@ function renderAnalysisV2(){
   const rendItems=live.map(a=>{const av=toDisplay(a.value,assetCcy(a))||0,ai=toDisplay(a.invested,costCcy(a))||0;const gpA=ai>0?((av-ai)/ai*100):(Number(a.gainPct)||0);return{name:a.name,gp:gpA};}).sort((x,y)=>y.gp-x.gp);
   const maxAbs=Math.max(1,...rendItems.map(r=>Math.abs(r.gp)));
   const rendBars=rendItems.map(r=>{const w=Math.min(100,Math.abs(r.gp)/maxAbs*100);const col=r.gp>=0?'#2db564':'#c0392b';return `<div style="display:flex;align-items:center;gap:10px;margin-bottom:9px"><span style="font-size:12px;font-weight:600;width:70px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${escapeHtml(r.name)}">${escapeHtml(r.name)}</span><div style="flex:1;height:8px;background:var(--surf3);border-radius:4px;overflow:hidden"><div style="width:${w.toFixed(0)}%;height:100%;background:${col};border-radius:4px"></div></div><span style="width:56px;text-align:right;font-size:12px;font-weight:700;color:${col}">${r.gp>=0?'+':''}${r.gp.toFixed(1)}%</span></div>`;}).join('');
-  // Costs & Fees (TER) — solo si hay datos
-  let terSum=0,terW=0;
-  live.forEach(a=>{const t=Number(a.mapping?.ter||a.ter||a.mapping?.expenseRatio||0);const v=toDisplay(a.value,assetCcy(a))||0;if(t>0&&v>0){terSum+=t*v;terW+=v;}});
-  const terAvg=terW>0?(terSum/terW):0;
-  const terAnnual=terAvg>0?(totVal*terAvg/100):0;
-  const costsCard=terAvg>0?`<div class="anv2-card"><div style="font-size:13px;font-weight:700;margin-bottom:10px">Costs &amp; Fees · TER ${terAvg.toFixed(2)}%</div><div style="display:flex;justify-content:space-between;align-items:flex-end"><div><div style="font-size:26px;font-weight:900;color:var(--text)">€ ${terAnnual.toFixed(1)}</div><div style="font-size:11px;color:var(--muted)">${isEs?'estimado anual':'annual estimate'}</div></div><div style="background:var(--ga);border:1px solid rgba(26,122,66,.2);border-radius:9px;padding:9px 12px;text-align:center"><div style="font-size:11px;font-weight:700;color:var(--green)">${terAvg<0.35?(isEs?'Muy eficiente ✓':'Very efficient ✓'):(isEs?'Coste medio':'Average')}</div><div style="font-size:9px;color:var(--muted)">${terAvg<0.35?(isEs?'mínimo indexados':'low-cost index'):''}</div></div></div></div>`:'';
+  // Costs & Fees (TER) — same source as the costs view: live TER, then ISIN map
+  const _terMap=(typeof AN_TER_MAP!=='undefined')?AN_TER_MAP:{};
+  const _terOf=a=>{ let t=a.ter; if(t==null)t=_terMap[a.isin]; if(t==null)t=(a.mapping&&(a.mapping.ter??a.mapping.expenseRatio)); return (t!=null&&Number.isFinite(Number(t))&&Number(t)>0)?Number(t):null; };
+  let _terCost=0,_terKnown=0;
+  live.forEach(a=>{const t=_terOf(a);const v=toDisplay(a.value,assetCcy(a))||0;if(t!=null&&v>0){_terCost+=v*t/100;_terKnown+=v;}});
+  const terAvg=totVal>0?(_terCost/totVal*100):0;
+  const terAnnual=_terCost;
+  if(typeof _prefetchMissingTers==='function' && live.some(a=>a.ter==null&&_terMap[a.isin]==null)){ try{_prefetchMissingTers().then(u=>{if(u)renderAnalysisV2();});}catch(_){} }
+  const _terEff=terAvg<0.35;
+  const _terCov=(_terKnown>0&&_terKnown<totVal)?` · ${(_terKnown/totVal*100).toFixed(0)}% ${isEs?'con datos':'covered'}`:'';
+  const costsCard=totVal>0?`<div class="anv2-card"><div style="font-size:13px;font-weight:700;margin-bottom:10px">${isEs?'Costes y comisiones':'Costs &amp; Fees'} · TER ${terAvg.toFixed(2)}%</div><div style="display:flex;justify-content:space-between;align-items:flex-end"><div><div style="font-size:26px;font-weight:900;color:var(--text)">€ ${terAnnual.toFixed(1)}</div><div style="font-size:11px;color:var(--muted)">${isEs?'estimado anual':'annual estimate'}${_terCov}</div></div><div style="background:var(--ga);border:1px solid rgba(26,122,66,.2);border-radius:9px;padding:9px 12px;text-align:center"><div style="font-size:11px;font-weight:700;color:var(--green)">${_terEff?(isEs?'Muy eficiente ✓':'Very efficient ✓'):(isEs?'Coste medio':'Average')}</div><div style="font-size:9px;color:var(--muted)">${_terEff?(isEs?'mínimo indexados':'low-cost index'):''}</div></div></div></div>`:'';
   wrap.innerHTML=`
     <div class="anKpi3">
       <div class="k"><div class="kl">${isEs?'Valor':'Value'}</div><div class="kv">${f(totVal)}</div></div>
