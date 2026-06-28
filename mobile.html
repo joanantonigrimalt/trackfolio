@@ -11,7 +11,7 @@
   no-store headers are ignored (in-app webviews) because it is plain page JS.
   Source of truth = sw.js (always served no-cache, version-bumped each deploy). */
 (function(){try{
-  var FA_BUILD='188';
+  var FA_BUILD='189';
   if(location.search.indexOf('vchk')>-1)return; // already reloaded once — avoid loops
   fetch('/sw.js?_='+Date.now(),{cache:'no-store'}).then(function(r){return r.text();}).then(function(t){
     var m=t.match(/finasset-v(\d+)/);
@@ -1423,7 +1423,7 @@ html,body{height:100%;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sy
 
 <!-- ============ AUTH ============ -->
 <div id="cs-auth" class="cover-screen cs-active">
-  <div style="position:fixed;bottom:3px;left:50%;transform:translateX(-50%);z-index:99999;font-size:10px;font-weight:800;color:rgba(255,255,255,.55);pointer-events:none;letter-spacing:.05em">v188</div>
+  <div style="position:fixed;bottom:3px;left:50%;transform:translateX(-50%);z-index:99999;font-size:10px;font-weight:800;color:rgba(255,255,255,.55);pointer-events:none;letter-spacing:.05em">v189</div>
 
   <!-- Language switcher -->
   <div class="csa-lang">
