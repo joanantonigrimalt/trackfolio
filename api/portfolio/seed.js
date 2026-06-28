@@ -69,6 +69,6 @@ module.exports = async (req, res) => {
     res.end(JSON.stringify(body, null, 2));
   } catch (error) {
     res.statusCode = 500;
-    res.end(JSON.stringify({ error: error.message }));
+    res.end(JSON.stringify({ error: 'Failed to load portfolio' }));
   }
 };
