@@ -3647,6 +3647,7 @@ const I18N = {
     chartNoData:'Histórico insuficiente para construir una curva.',
     sumInvested:'Capital invertido',sumGain:'Ganancia acumulada',myPortfolio:'Mi cartera',
     tabHome:'Inicio',tabPortfolio:'Cartera',tabAnalysis:'Análisis',tabDividends:'Dividendos',tabIA:'IA',
+    account:'Cuenta',add:'Añadir',costBasis:'base coste',navDividends:'Dividendos',navIA:'Analíticas IA',navTax:'Fiscal',newPosition:'Nueva posición',sumValue:'Valor total',
     portfolioSub:'Detalle completo de posiciones',positions:'Posiciones',
     analysisSub:'Salud, distribución y rendimiento',healthScore:'Score de salud',distribution:'Distribución por tipo',performance:'Rentabilidad por activo',vsWorld:'Portfolio vs MSCI World',
     dividendsSub:'Ingresos pasivos reales del portfolio',annualDividends:'al año',perYear:'al año',monthly:'Mensual',daily:'Diario',hourly:'Por hora',assets:'Activos',upcoming:'Próximos pagos',pastPayments:'Pagos recibidos',annualCalendar:'Calendario anual',loadingDiv:'Cargando dividendos reales…',divHoldings:'Holdings con dividendos',exDiv:'Ex-Dividendo',payDate:'Pago',divDetailTitle:'Historial detallado',loadingDivDetail:'Cargando historial…',divDetailSource:'Fuente',divDetailYear:'Año',divDetailPerShare:'€/acción',divDetailTotal:'Total',divDetailPayments:'Pagos',divNoDetail:'Sin historial disponible.',nextPay:'Próx. cobro',divAnnualChartTitle:'Total cobrado por año',divDelisted:'Sin pagos recientes — posiblemente liquidado o fusionado',verDetalle:'Ver detalle',validated:'Validado',partially_validated:'Parcial',inconsistent:'Inconsistente',
@@ -3667,6 +3668,7 @@ const I18N = {
     chartNoData:'Insufficient history to build a chart.',
     sumInvested:'Invested capital',sumGain:'Accumulated gain',myPortfolio:'My portfolio',
     tabHome:'Home',tabPortfolio:'Portfolio',tabAnalysis:'Analysis',tabDividends:'Dividends',tabIA:'AI',tabFinX:'FinX',
+    account:'Account',add:'Add',costBasis:'cost basis',navDividends:'Dividends',navIA:'AI Analytics',navTax:'Tax',newPosition:'New position',sumValue:'Total value',
     portfolioSub:'Full position details',positions:'Positions',
     analysisSub:'Health, distribution & performance',healthScore:'Health score',distribution:'Distribution by type',performance:'Performance by asset',vsWorld:'Portfolio vs MSCI World',
     dividendsSub:'Real passive income from portfolio',annualDividends:'per year',perYear:'per year',monthly:'Monthly',daily:'Daily',hourly:'Hourly',assets:'Assets',upcoming:'Upcoming payments',pastPayments:'Past payments',annualCalendar:'Annual calendar',loadingDiv:'Loading real dividends…',divHoldings:'Dividend holdings',exDiv:'Ex-Dividend',payDate:'Payment',divDetailTitle:'Detailed history',loadingDivDetail:'Loading history…',divDetailSource:'Source',divDetailYear:'Year',divDetailPerShare:'€/share',divDetailTotal:'Total',divDetailPayments:'Payments',divNoDetail:'No history available.',nextPay:'Next payment',divAnnualChartTitle:'Total received per year',divDelisted:'No recent payments — possibly delisted or merged',verDetalle:'See detail',validated:'Validated',partially_validated:'Partial',inconsistent:'Inconsistent',
@@ -8984,10 +8986,10 @@ function _insClearSearch() {
   document.addEventListener('click', _closeUserMenuIfOutside);
   function _highlightLang() {
     const lang = localStorage.getItem('tf_lang') || 'es';
-    const esBtn = document.getElementById('deskMenuLangEs');
-    const enBtn = document.getElementById('deskMenuLangEn');
-    if (esBtn) { esBtn.style.background = lang === 'es' ? '#142018' : '#f8faf8'; esBtn.style.color = lang === 'es' ? '#f5fbf6' : '#142018'; }
-    if (enBtn) { enBtn.style.background = lang === 'en' ? '#142018' : '#f8faf8'; enBtn.style.color = lang === 'en' ? '#f5fbf6' : '#142018'; }
+    // NOTE: deskMenuLangEs/En ids appear in more than one menu, so use
+    // querySelectorAll (getElementById would only update the first one).
+    document.querySelectorAll('[id="deskMenuLangEs"]').forEach(esBtn => { esBtn.style.background = lang === 'es' ? '#142018' : '#f8faf8'; esBtn.style.color = lang === 'es' ? '#f5fbf6' : '#142018'; });
+    document.querySelectorAll('[id="deskMenuLangEn"]').forEach(enBtn => { enBtn.style.background = lang === 'en' ? '#142018' : '#f8faf8'; enBtn.style.color = lang === 'en' ? '#f5fbf6' : '#142018'; });
   }
   async function _deskSaveProfile() {
     if (!_sb || !_sbUser) return;
