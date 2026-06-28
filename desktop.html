@@ -7956,7 +7956,7 @@ function openLiqModal(id) {
   document.getElementById('liqCapInv').value = item?.capitalInvertido || '';
   document.getElementById('liqDelBtn').style.display = item ? '' : 'none';
   setLiqType(_liqType);
-  document.const liqSh = document.getElementById('liqSheet');
+  const liqSh = document.getElementById('liqSheet');
   const liqOv = document.getElementById('liqOverlay');
   liqSh.style.display = '';
   liqOv.style.display = '';
