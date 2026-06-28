@@ -6,7 +6,7 @@
   (served no-cache, version-bumped each deploy). Works even where SW/no-store
   are ignored, because it is plain page JS. */
 (function(){try{
-  var FA_BUILD='196';
+  var FA_BUILD='198';
   var s=location.search;
   if(s.indexOf('vchk')>-1||s.indexOf('_v=')>-1){history.replaceState(null,'',location.pathname+(location.hash||''));return;}
   fetch('/sw.js?_='+Date.now(),{cache:'no-store'}).then(function(r){return r.text();}).then(function(t){
@@ -1519,7 +1519,7 @@ html,body{height:100%;overflow:hidden;font-family:-apple-system,BlinkMacSystemFo
       <div style="min-width:0;flex:1">
         <div class="d-user-name" id="deskUserName" style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">—</div>
         <div class="d-user-plan" id="deskUserPlan">Plan Free</div>
-        <div style="font-size:10px;color:#9fb0a5;margin-top:2px;font-weight:700">v196</div>
+        <div style="font-size:10px;color:#9fb0a5;margin-top:2px;font-weight:700">v198</div>
       </div>
       <span style="font-size:10px;color:#8fa090;flex-shrink:0;margin-left:4px" id="deskUserChevron">&#9650;</span>
     </div>
@@ -1607,7 +1607,7 @@ html,body{height:100%;overflow:hidden;font-family:-apple-system,BlinkMacSystemFo
     <div id="auth-privacy-note" class="csa-privacy">
       Al usar Finasset aceptas nuestra <a href="/privacy.html" target="_blank" rel="noopener">Política de Privacidad</a> y los <a href="/privacy.html#terms" target="_blank" rel="noopener">Términos de Uso</a>. No es asesoramiento financiero.
     </div>
-    <div style="text-align:center;font-size:10px;color:#b0c0b5;font-weight:700;letter-spacing:.05em;margin-top:8px">v196</div>
+    <div style="text-align:center;font-size:10px;color:#b0c0b5;font-weight:700;letter-spacing:.05em;margin-top:8px">v198</div>
     <!-- Hidden legacy IDs for switchLang compat -->
     <div style="display:none">
       <div id="auth-title"></div><div id="auth-sub"></div>
@@ -2718,6 +2718,14 @@ html,body{height:100%;overflow:hidden;font-family:-apple-system,BlinkMacSystemFo
       <button class="searchCloseBtn" id="btnSearchClose">✕</button>
     </div>
     <div class="searchBody" id="searchBody">
+      <div id="searchCashShortcut" style="display:flex;align-items:center;gap:10px;background:rgba(20,32,24,.04);border:1.5px solid rgba(20,32,24,.07);border-radius:16px;padding:13px 16px;margin-bottom:14px;cursor:pointer" onclick="closeSearch();setTimeout(openLiqModal,120)">
+        <div style="width:38px;height:38px;border-radius:12px;background:linear-gradient(135deg,#1a3f2c,#15803d);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0">💰</div>
+        <div style="flex:1;min-width:0">
+          <div style="font-size:14px;font-weight:700;color:#142018" data-i18n="addCash">Añadir efectivo</div>
+          <div style="font-size:11px;color:#8fa090;font-weight:500;margin-top:1px" data-i18n="addCashSub">Cuenta corriente, ahorro, depósito…</div>
+        </div>
+        <div style="font-size:18px;color:#8fa090">›</div>
+      </div>
       <div class="searchHint" id="searchHint">Busca por nombre, ticker o ISIN</div>
       <div id="searchResultsList"></div>
       <!-- Add asset form — hidden until a result is selected -->
@@ -6662,7 +6670,9 @@ function showAddForm(result,price,currency,history){
 async function onSearchInput(){
   clearTimeout(_searchTimer);
   const q=document.getElementById('searchInput').value.trim();
-  if(q.length<2){document.getElementById('searchResultsList').innerHTML='';document.getElementById('searchHint').style.display='';return;}
+  const _sc=document.getElementById('searchCashShortcut');
+  if(q.length<2){document.getElementById('searchResultsList').innerHTML='';document.getElementById('searchHint').style.display='';if(_sc)_sc.style.display='';return;}
+  if(_sc)_sc.style.display='none';
   document.getElementById('searchHint').style.display='none';
   document.getElementById('searchResultsList').innerHTML=`<div class="searchHint">Buscando…</div>`;
   const reqId=++_searchReqId;
@@ -6923,6 +6933,8 @@ async function initSupabase(){
         await syncFromCloud(); loadUserPlan().catch(()=>{}); syncSnapshotsFromCloud();
       }
       if(event==='SIGNED_OUT'){
+        // Clear ALL user-specific data on logout — prevents next user seeing stale portfolio
+        ['fa_token','fa_user','tf_positions','tf_custom_assets','tf_last_sync','fa_liquidity','_rawCustomAssets','fa_value_snapshots','fa_active_user_id'].forEach(k=>localStorage.removeItem(k));
         // If we're in the main app, redirect to login
         const home=document.getElementById('screen-home');
         const inApp=home&&home.classList.contains('active');
@@ -7926,6 +7938,12 @@ async function startApp() {
       const _pl = JSON.parse(atob(_ft.split('.')[1]));
       if (!_pl.exp || _pl.exp * 1000 > Date.now()) {
         // Valid token — show app immediately, sync in background
+        // SECURITY: check if the stored portfolio belongs to this token's user
+        const _tokenUid = _pl.sub;
+        const _storedUid = localStorage.getItem('fa_active_user_id');
+        if(_tokenUid && _storedUid && _tokenUid !== _storedUid){
+          ['tf_positions','tf_custom_assets','tf_last_sync','fa_liquidity','_rawCustomAssets','fa_value_snapshots','fa_active_user_id'].forEach(k=>localStorage.removeItem(k));
+        }
         // initSupabase() is synchronous — just wrap in try/catch
         try { initSupabase(); } catch(_) {}
         enterMainApp();
