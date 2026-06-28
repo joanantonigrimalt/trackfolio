@@ -3160,9 +3160,10 @@ html,body{height:100%;overflow:hidden;font-family:-apple-system,BlinkMacSystemFo
   </div>
 
   <!-- Export -->
-  <button class="tx-export-btn" onclick="exportTaxPDF()">
+  <button class="tx-export-btn" onclick="exportTaxPDF()" title="Función en preparación">
     <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
     Exportar resumen fiscal PDF
+    <span style="margin-left:8px;font-size:10px;font-weight:700;background:rgba(20,32,24,.08);color:#8fa090;padding:2px 8px;border-radius:6px;white-space:nowrap">Próximamente</span>
   </button>
 
   <div class="legal-footer" style="margin-bottom:0">
@@ -8559,7 +8560,9 @@ function renderImpuestos(){
   // Dividend rows
   const divEl = document.getElementById('taxDivRows');
   if(!divs.length){
-    divEl.innerHTML='<div class="tx-empty">No hay datos de dividendos disponibles.<br><small>Visita la pestaña Dividendos primero para cargar los datos.</small></div>';
+    divEl.innerHTML=(_divDataCache&&_divDataCache.length)
+      ? '<div class="tx-empty">Tu cartera no tiene activos que repartan dividendos.<br><small>Los fondos de acumulación reinvierten los dividendos automáticamente — no tributan hasta que vendes.</small></div>'
+      : '<div class="tx-empty">Aún no se han cargado los dividendos.<br><small>Abre la pestaña Dividendos para cargarlos y vuelve aquí.</small></div>';
   } else {
     divEl.innerHTML = divs.slice(0,6).map((d,i)=>{
       const initials=(d.shortName||'').slice(0,4).toUpperCase();
