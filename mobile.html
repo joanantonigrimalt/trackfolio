@@ -10,7 +10,7 @@
   no-store headers are ignored (in-app webviews) because it is plain page JS.
   Source of truth = sw.js (always served no-cache, version-bumped each deploy). */
 (function(){try{
-  var FA_BUILD='197';
+  var FA_BUILD='198';
   var s=location.search;
   if(s.indexOf('vchk')>-1||s.indexOf('_v=')>-1){
     // Clean the ugly ?vchk= / ?_v= from the URL silently
@@ -2517,6 +2517,15 @@ table.an-corr-mtx{border-collapse:separate;border-spacing:4px}
     </div>
     <div class="searchBody" id="searchBody">
       <div class="searchHint" id="searchHint">Busca por nombre, ticker o ISIN</div>
+      <!-- Quick-add cash shortcut -->
+      <div id="searchCashShortcut" style="display:flex;align-items:center;gap:10px;background:rgba(20,32,24,.04);border:1.5px solid rgba(20,32,24,.07);border-radius:16px;padding:13px 16px;margin-bottom:14px;cursor:pointer" onclick="closeSearch();setTimeout(openLiqModal,120)">
+        <div style="width:38px;height:38px;border-radius:12px;background:linear-gradient(135deg,#1a3f2c,#15803d);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0">💰</div>
+        <div style="flex:1;min-width:0">
+          <div style="font-size:14px;font-weight:700;color:#142018" data-i18n="addCash">Añadir efectivo</div>
+          <div style="font-size:11px;color:#8fa090;font-weight:500;margin-top:1px" data-i18n="addCashSub">Cuenta corriente, ahorro, depósito…</div>
+        </div>
+        <div style="font-size:18px;color:#8fa090">›</div>
+      </div>
       <div id="searchResultsList"></div>
       <!-- Add asset form — hidden until a result is selected -->
       <div id="addAssetForm" class="addAssetForm" style="display:none">
@@ -3423,7 +3432,7 @@ const I18N = {
     modeSimple:'Simple',modeTx:'Transacciones',shares:'Acciones',avgCost:'Precio medio (Avg Cost)',avgCostHint:'Precio medio por acción',txHistory:'Historial de transacciones',addTx:'Nueva transacción',
     removePos:'Eliminar posición',save:'Guardar',cancel:'Cancelar',
     buy:'Compra',sell:'Venta',date:'Fecha',pricePerShare:'Precio por acción',
-    deductCash:'Descontar de Efectivo',dividend:'Dividendo',moreOptions:'Más opciones',language:'Idioma',displayCurrency:'Divisa de visualización',
+    deductCash:'Descontar de Efectivo',dividend:'Dividendo',moreOptions:'Más opciones',language:'Idioma',displayCurrency:'Divisa de visualización',addCash:'Añadir efectivo',addCashSub:'Cuenta corriente, ahorro, depósito…',
     valPos:'Valor posición',totalInv:'Total invertido',parts:'Acciones',avgPrice:'Precio medio',gainEur:'Ganancia €',weight:'Peso cartera',
     txQuarterly:'pago trimestral',noDiv:'No hay activos distribuidores en cartera.',
     histPts:'puntos históricos',
@@ -3444,7 +3453,7 @@ const I18N = {
     modeSimple:'Simple',modeTx:'Transactions',shares:'Shares',avgCost:'Avg Cost per Share',avgCostHint:'Average cost per share',txHistory:'Transaction history',addTx:'New transaction',
     removePos:'Remove position',save:'Save',cancel:'Cancel',
     buy:'Buy',sell:'Sell',date:'Date',pricePerShare:'Price per share',
-    deductCash:'Deduct from Cash',dividend:'Dividend',moreOptions:'More Options',language:'Language',displayCurrency:'Display currency',
+    deductCash:'Deduct from Cash',dividend:'Dividend',moreOptions:'More Options',language:'Language',displayCurrency:'Display currency',addCash:'Add cash',addCashSub:'Current account, savings, deposit…',
     valPos:'Position value',totalInv:'Total invested',parts:'Shares',avgPrice:'Avg price',gainEur:'Gain €',weight:'Portfolio weight',
     txQuarterly:'quarterly payment',noDiv:'No distributing assets in portfolio.',
     histPts:'historical points',
@@ -6552,6 +6561,10 @@ function showSearchResults(){
   document.getElementById('searchResultsList').style.display='';
   document.getElementById('searchHint').style.display='';
   document.getElementById('searchTopBar').style.display='';
+  // Show cash shortcut if search box is empty
+  const _sc=document.getElementById('searchCashShortcut');
+  const _q=(document.getElementById('searchInput')||{}).value||'';
+  if(_sc)_sc.style.display=_q.length<2?'':'none';
 }
 function showAddForm(result,price,currency,history){
   _searchResult={...result,currentPrice:price,currency,history};
@@ -6564,6 +6577,7 @@ function showAddForm(result,price,currency,history){
   var _aflbl=document.getElementById('addAvgCostLabel'); if(_aflbl)_aflbl.textContent=currentLang==='es'?'Coste medio por acción':'Avg cost per share';
   document.getElementById('searchResultsList').style.display='none';
   document.getElementById('searchHint').style.display='none';
+  const _scsh=document.getElementById('searchCashShortcut');if(_scsh)_scsh.style.display='none';
 
   const icon=document.getElementById('addAssetIcon');
   icon.textContent=(result.shortName||result.symbol).slice(0,3).toUpperCase();
@@ -6596,8 +6610,9 @@ function showAddForm(result,price,currency,history){
 async function onSearchInput(){
   clearTimeout(_searchTimer);
   const q=document.getElementById('searchInput').value.trim();
-  if(q.length<2){document.getElementById('searchResultsList').innerHTML='';document.getElementById('searchHint').style.display='';return;}
+  if(q.length<2){document.getElementById('searchResultsList').innerHTML='';document.getElementById('searchHint').style.display='';const _sc2=document.getElementById('searchCashShortcut');if(_sc2)_sc2.style.display='';return;}
   document.getElementById('searchHint').style.display='none';
+  const _sc3=document.getElementById('searchCashShortcut');if(_sc3)_sc3.style.display='none';
   document.getElementById('searchResultsList').innerHTML=`<div class="searchHint">Buscando…</div>`;
   const reqId=++_searchReqId;
   // Check client cache first — avoids repeat API calls for same query
@@ -6870,7 +6885,8 @@ async function initSupabase(){
       }
       if(event==='PASSWORD_RECOVERY'){setTimeout(()=>{openAuthModal();_setAuthMode('resetpass');},300);}
       if(event==='SIGNED_OUT'){
-        localStorage.removeItem('fa_token');localStorage.removeItem('fa_user');
+        // Clear ALL user-specific data on logout — prevents next user seeing stale portfolio
+        ['fa_token','fa_user','tf_positions','tf_custom_assets','tf_last_sync','fa_liquidity','_rawCustomAssets','fa_value_snapshots','fa_active_user_id'].forEach(k=>localStorage.removeItem(k));
         _syncDone=false;
         // If we're in the main app, redirect to login
         const home=document.getElementById('screen-home');
@@ -6904,7 +6920,7 @@ function renderAccountSection(){
           <div style="font-size:13px;font-weight:600;color:#142018;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${_sbUser.email}</div>
           <div style="display:flex;align-items:center;gap:6px;margin-top:1px">
             <div class="js-plan-badge" style="font-size:11px">Plan Free</div>
-            <div style="font-size:10px;color:#8fa090;font-weight:700">· v197</div>
+            <div style="font-size:10px;color:#8fa090;font-weight:700">· v198</div>
           </div>
         </div>
       </div>
@@ -7544,7 +7560,11 @@ function enterMainApp() {
   document.querySelectorAll('.cover-screen').forEach(el => el.classList.remove('cs-active'));
   // Activate home screen
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-  document.getElementById('screen-home').classList.add('active');
+  const _sh = document.getElementById('screen-home');
+  _sh.classList.add('active');
+  // Reset scroll position so the top of the app is always visible
+  _sh.scrollTop = 0;
+  try { window.scrollTo(0, 0); document.documentElement.scrollTop = 0; } catch(_) {}
   const _db=document.getElementById('demoBanner');if(_db)_db.classList.toggle('show',!!_isDemo);
   if(!_isDemo){
     boot().catch(err => { const n = document.getElementById('chartNote'); if(n) n.textContent = 'Error: '+err.message; });
@@ -8044,6 +8064,14 @@ async function startApp() {
     if (_ft && _ft.split('.').length === 3) {
       const _pl = JSON.parse(atob(_ft.split('.')[1]));
       if (!_pl.exp || _pl.exp * 1000 > Date.now()) {
+        // SECURITY: check if the stored portfolio belongs to this token's user
+        // JWT 'sub' claim = Supabase user ID
+        const _tokenUid = _pl.sub;
+        const _storedUid = localStorage.getItem('fa_active_user_id');
+        if(_tokenUid && _storedUid && _tokenUid !== _storedUid){
+          // Different user's data in localStorage — wipe before entering app
+          ['tf_positions','tf_custom_assets','tf_last_sync','fa_liquidity','_rawCustomAssets','fa_value_snapshots','fa_active_user_id'].forEach(k=>localStorage.removeItem(k));
+        }
         // Valid token — show app immediately, sync in background
         // initSupabase() is synchronous — just wrap in try/catch
         try { initSupabase(); } catch(_) {}
