@@ -6,7 +6,7 @@
   (served no-cache, version-bumped each deploy). Works even where SW/no-store
   are ignored, because it is plain page JS. */
 (function(){try{
-  var FA_BUILD='213';
+  var FA_BUILD='214';
   var s=location.search;
   if(s.indexOf('vchk')>-1||s.indexOf('_v=')>-1){history.replaceState(null,'',location.pathname+(location.hash||''));return;}
   fetch('/sw.js?_='+Date.now(),{cache:'no-store'}).then(function(r){return r.text();}).then(function(t){
@@ -6504,7 +6504,8 @@ async function boot(){
 
   // ── Fast first render: show positions immediately with prices (no history yet)
   const _customIsins=Object.values(getCustomAssets()).map(ca=>ca.isin||ca.symbol).filter(Boolean);
-  const isinList=[...new Set([...seed.positions.map(p=>p.isin),..._customIsins])].join(',');
+  const _ISIN_RE=/^[A-Z]{2}[A-Z0-9]{10}$/;
+  const isinList=[...new Set([...seed.positions.map(p=>p.isin),..._customIsins])].filter(s=>s&&_ISIN_RE.test(s.trim().toUpperCase())).join(',');
   function buildAssets(cvMap){
     return seed.positions.map(pos=>{
       const entry=cvMap[pos.isin]||{},mapping=entry.mapping||null;
