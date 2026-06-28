@@ -1731,8 +1731,8 @@ html,body{height:100%;overflow:hidden;font-family:-apple-system,BlinkMacSystemFo
   <b>T&uacute; asumes toda la responsabilidad por tus decisiones.</b>
 </div>
 <div class="legal-footer">
-  <button class="legal-footer-link" onclick="showScreen('privacy')">Privacy Policy</button>
-  <button class="legal-footer-link" onclick="showScreen('terms')">Terms of Use</button>
+  <button class="legal-footer-link" onclick="showScreen('privacy')">Política de Privacidad</button>
+  <button class="legal-footer-link" onclick="showScreen('terms')">Términos de Uso</button>
   <a class="legal-footer-link" href="mailto:hola@finasset.app">hola@finasset.app</a>
   <div class="legal-footer-copy">&copy; 2026 Finasset &middot; Herramienta personal de tracking &middot; Datos EODHD</div>
 </div>
@@ -3112,7 +3112,7 @@ html,body{height:100%;overflow:hidden;font-family:-apple-system,BlinkMacSystemFo
   </div>
 
   <!-- Tramos IRPF -->
-  <div class="tx-sec"><span class="tx-sec-t">Tramos IRPF ahorro 2025</span><span class="tx-sec-lnk">Actualizado</span></div>
+  <div class="tx-sec"><span class="tx-sec-t">Tramos IRPF ahorro <span id="taxBracketsYear">2025</span></span><span class="tx-sec-lnk">Actualizado</span></div>
   <div class="tax-card">
     <div class="tax-card-inner" id="taxBrackets"></div>
   </div>
@@ -3565,11 +3565,11 @@ html,body{height:100%;overflow:hidden;font-family:-apple-system,BlinkMacSystemFo
   window.LnOpenAdd=function(){ LnSetTipo('prestamo'); ['lnf-nombre','lnf-cap','lnf-tin','lnf-plazo','lnf-com','lnf-ent','lnf-fecha','lnfc-nombre','lnfc-lim','lnfc-disp','lnfc-tin','lnfc-ent'].forEach(i=>{const e=document.getElementById(i);if(e)e.value='';}); document.getElementById('lnModalPrev').style.display='none'; document.getElementById('lnModalCredPrev').style.display='none'; LnOpenM('lnm-add'); };
 
   window.LnSetCalcMode=function(mode){ document.getElementById('lnCalcP').style.display=mode==='prestamo'?'':'none'; document.getElementById('lnCalcC').style.display=mode==='credito'?'':'none'; document.getElementById('lnCalcTabP').classList.toggle('active',mode==='prestamo'); document.getElementById('lnCalcTabC').classList.toggle('active',mode==='credito'); if(mode==='prestamo')LnUpdateCalc(); else LnUpdateCalcCredito(); };
-  window.LnUpdateCalc=function(){ const c=parseFloat(document.getElementById('lnc-cap').value)||0,t=parseFloat(document.getElementById('lnc-tin').value)||0,m=parseInt(document.getElementById('lnc-meses').value)||0; if(!c||!t||!m){['lnr-cuota','lnr-int','lnr-total','lnr-tae'].forEach(id=>document.getElementById(id).textContent='—');return;} const cuo=LnCalcCuota(c,t,m),tot=cuo*m,intt=tot-c,tae=LnCalcTAE(t,0,c,m); document.getElementById('lnr-cuota').textContent=LnFmt(cuo); document.getElementById('lnr-int').textContent=LnFmt(intt); document.getElementById('lnr-total').textContent=LnFmt(tot); document.getElementById('lnr-tae').textContent=LnFmtPct(tae); };
+  window.LnUpdateCalc=function(){ const c=parseFloat(document.getElementById('lnc-cap').value)||0,t=parseFloat(document.getElementById('lnc-tin').value)||0,m=parseInt(document.getElementById('lnc-meses').value)||0; if(!(c>0)||!(t>0)||!(m>0)){['lnr-cuota','lnr-int','lnr-total','lnr-tae'].forEach(id=>document.getElementById(id).textContent='—');return;} const cuo=LnCalcCuota(c,t,m),tot=cuo*m,intt=tot-c,tae=LnCalcTAE(t,0,c,m); document.getElementById('lnr-cuota').textContent=LnFmt(cuo); document.getElementById('lnr-int').textContent=LnFmt(intt); document.getElementById('lnr-total').textContent=LnFmt(tot); document.getElementById('lnr-tae').textContent=LnFmtPct(tae); };
   window.LnUpdateCalcCredito=function(){ const l=parseFloat(document.getElementById('lncc-lim').value)||0,d=parseFloat(document.getElementById('lncc-disp').value)||0,t=parseFloat(document.getElementById('lncc-tin').value)||0; if(!d||!t){['lncc-r-int','lncc-r-min','lncc-r-anual','lncc-r-disp'].forEach(id=>document.getElementById(id).textContent='—');return;} const im=d*(t/100/12),cm=Math.max(im,d*0.03),an=im*12,dp=Math.max(0,l-d); document.getElementById('lncc-r-int').textContent=LnFmt(im); document.getElementById('lncc-r-min').textContent=LnFmt(cm); document.getElementById('lncc-r-anual').textContent=LnFmt(an); document.getElementById('lncc-r-disp').textContent=LnFmt(dp); };
 
   window.LnSetTipo=function(tipo){ document.getElementById('lnFormP').style.display=tipo==='prestamo'?'':'none'; document.getElementById('lnFormC').style.display=tipo==='credito'?'':'none'; document.getElementById('lnTypeP').classList.toggle('active',tipo==='prestamo'); document.getElementById('lnTypeC').classList.toggle('active',tipo==='credito'); window._lnAddTipo=tipo; };
-  window.LnUpdateModalPrev=function(){ const c=parseFloat(document.getElementById('lnf-cap').value)||0,t=parseFloat(document.getElementById('lnf-tin').value)||0,m=parseInt(document.getElementById('lnf-plazo').value)||0,fee=parseFloat(document.getElementById('lnf-com').value)||0; const p=document.getElementById('lnModalPrev'); if(!c||!t||!m){p.style.display='none';return;} p.style.display='block'; const cuo=LnCalcCuota(c,t,m),intt=cuo*m-c,tae=LnCalcTAE(t,fee,c,m); document.getElementById('lnmp-cuota').textContent=LnFmt(cuo); document.getElementById('lnmp-int').textContent=LnFmt(intt); document.getElementById('lnmp-tae').textContent=LnFmtPct(tae); };
+  window.LnUpdateModalPrev=function(){ const c=parseFloat(document.getElementById('lnf-cap').value)||0,t=parseFloat(document.getElementById('lnf-tin').value)||0,m=parseInt(document.getElementById('lnf-plazo').value)||0,fee=parseFloat(document.getElementById('lnf-com').value)||0; const p=document.getElementById('lnModalPrev'); if(!(c>0)||!(t>0)||!(m>0)){p.style.display='none';return;} p.style.display='block'; const cuo=LnCalcCuota(c,t,m),intt=cuo*m-c,tae=LnCalcTAE(t,fee,c,m); document.getElementById('lnmp-cuota').textContent=LnFmt(cuo); document.getElementById('lnmp-int').textContent=LnFmt(intt); document.getElementById('lnmp-tae').textContent=LnFmtPct(tae); };
   window.LnUpdateModalCredPrev=function(){ const l=parseFloat(document.getElementById('lnfc-lim').value)||0,d=parseFloat(document.getElementById('lnfc-disp').value)||0,t=parseFloat(document.getElementById('lnfc-tin').value)||0; const p=document.getElementById('lnModalCredPrev'); if(!t||(!d&&!l)){p.style.display='none';return;} p.style.display='block'; const im=d*(t/100/12),cm=Math.max(im,d*0.03),dp=Math.max(0,l-d); document.getElementById('lnmcp-int').textContent=LnFmt(im); document.getElementById('lnmcp-min').textContent=LnFmt(cm); document.getElementById('lnmcp-disp').textContent=LnFmt(dp); };
 
   window.LnSaveNew=function(){ const tipo=window._lnAddTipo||'prestamo'; const loans=LnGetLoans(); const id='ln'+Date.now(); if(tipo==='prestamo'){ const cap=parseFloat(document.getElementById('lnf-cap').value)||0,tin=parseFloat(document.getElementById('lnf-tin').value)||0,meses=parseInt(document.getElementById('lnf-plazo').value)||0; if(!cap||!tin||!meses){alert('Completa capital, TIN y plazo.');return;} loans.push({id,tipo:'prestamo',nombre:document.getElementById('lnf-nombre').value||'Préstamo',entidad:document.getElementById('lnf-ent').value||'',kind:document.getElementById('lnf-tipo').value,cap,tin,meses,com:parseFloat(document.getElementById('lnf-com').value)||0,fecha:document.getElementById('lnf-fecha').value||''}); } else { const lim=parseFloat(document.getElementById('lnfc-lim').value)||0,disp=parseFloat(document.getElementById('lnfc-disp').value)||0,tin=parseFloat(document.getElementById('lnfc-tin').value)||0; if(!tin||(!disp&&!lim)){alert('Completa límite/dispuesto y TIN.');return;} loans.push({id,tipo:'credito',nombre:document.getElementById('lnfc-nombre').value||'Crédito',entidad:document.getElementById('lnfc-ent').value||'',kind:document.getElementById('lnfc-tipo').value,lim,disp,tin}); } LnSave(loans); LnCloseM('lnm-add'); LnRenderPrestamos(); };
@@ -6203,7 +6203,7 @@ function renderAnalysisV2(){
   const costsCard=totVal>0?`
     <div class="card" style="margin-bottom:14px"><div style="font-size:14px;font-weight:700;margin-bottom:14px">${isEs?'Costes y comisiones':'Costs & Fees'} · TER ${_terPct.toFixed(2)}%</div>
       <div style="display:flex;justify-content:space-between;align-items:flex-end">
-        <div><div style="font-size:28px;font-weight:900;color:var(--text)">€ ${_terCost.toFixed(1)}</div><div style="font-size:12px;color:var(--muted)">${isEs?'estimado anual':'annual estimate'}${_terKnown>0&&_terKnown<totVal?` · ${(_terKnown/totVal*100).toFixed(0)}% ${isEs?'con datos':'covered'}`:''}</div></div>
+        <div><div style="font-size:28px;font-weight:900;color:var(--text)">${fe(_terCost)}</div><div style="font-size:12px;color:var(--muted)">${isEs?'estimado anual':'annual estimate'}${_terKnown>0&&_terKnown<totVal?` · ${(_terKnown/totVal*100).toFixed(0)}% ${isEs?'con datos':'covered'}`:''}</div></div>
         <div style="background:var(--ga);border:1px solid rgba(26,122,66,.2);border-radius:9px;padding:9px 12px;text-align:center"><div style="font-size:12px;font-weight:700;color:var(--green)">${_terEff?(isEs?'Muy eficiente ✓':'Very efficient ✓'):(isEs?'Coste medio':'Average')}</div><div style="font-size:10px;color:var(--muted)">${_terEff?(isEs?'mínimo indexados':'low-cost index'):''}</div></div>
       </div>
     </div>`:'';
@@ -6231,7 +6231,8 @@ function renderHomeExtras(){
   const dEl=document.getElementById('homeDate');
   if(dEl){
     try{ const d=new Date().toLocaleDateString(currentLang==='es'?'es-ES':'en-US',{weekday:'long',day:'numeric',month:'long'});
-      dEl.innerHTML=`${d} · <span style="color:var(--green);font-weight:600">● ${currentLang==='es'?'Mercados abiertos':'Markets open'}</span>`; }catch(_){}
+      const _now=new Date(),_dy=_now.getDay(),_hr=_now.getHours();const _mOpen=_dy>=1&&_dy<=5&&_hr>=9&&_hr<22;
+      dEl.innerHTML=`${d} · <span style="color:${_mOpen?'var(--green)':'var(--muted2)'};font-weight:600">${_mOpen?'●':'○'} ${currentLang==='es'?(_mOpen?'Mercados abiertos':'Mercados cerrados'):(_mOpen?'Markets open':'Markets closed')}</span>`; }catch(_){}
   }
   const wrap=document.getElementById('homeDonut'), leg=document.getElementById('homeDonutLegend');
   if(!wrap||!leg) return;
@@ -8363,10 +8364,12 @@ let _taxYear = new Date().getFullYear() - 1; // default previous year
 let _taxCharts = {};
 
 function cycleImpuestosYear(){
-  const years = [2025, 2024, 2023, 2022];
+  const _cy=new Date().getFullYear();
+  const years = [_cy, _cy-1, _cy-2, _cy-3];
   const idx = years.indexOf(_taxYear);
   _taxYear = years[(idx + 1) % years.length];
   const _tyl=document.getElementById('taxYearLabel');if(_tyl)_tyl.textContent=_taxYear;
+  const _tby=document.getElementById('taxBracketsYear');if(_tby)_tby.textContent=_taxYear;
   renderImpuestos();
 }
 
@@ -8441,6 +8444,7 @@ function _taxComputeInterest(){
 
 function renderImpuestos(){
   const year = _taxYear;
+  const _tby1=document.getElementById('taxBracketsYear');if(_tby1)_tby1.textContent=year;
   document.getElementById('taxHeroSup').textContent = 'Estimación fiscal · Año '+year;
 
   // Compute all sources
