@@ -1142,7 +1142,7 @@ html,body{height:100%;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sy
 .bi-lb{font-size:9px;font-weight:600;letter-spacing:.02em}
 
 /* CARDS */
-.card{background:var(--surf);border:1px solid var(--border);border-radius:14px;padding:14px;margin:0 14px 10px;box-shadow:0 2px 8px rgba(0,0,0,.04)}
+.card{background:var(--surf);border:1px solid var(--border);border-radius:16px;padding:16px;margin:0 0 12px;box-shadow:0 2px 8px rgba(0,0,0,.04)}
 /* Light hero — matches the light mockup design (white card, dark readable text) */
 .card.hero{background:var(--surf)!important;border:1px solid var(--border)!important;color:var(--text);box-shadow:0 2px 8px rgba(0,0,0,.04)}
 .card.hero .sectionEyebrow{color:var(--muted)}
@@ -1233,7 +1233,7 @@ html,body{height:100%;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sy
 .mDivHero{padding:14px 14px 12px}
 .mDivBig{font-size:34px;font-weight:900;letter-spacing:-.03em;color:var(--gold);line-height:1}
 .mDivSub{font-size:11px;color:var(--muted);margin-top:6px}
-.mKpiGrid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:0 14px 10px}
+.mKpiGrid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:0 0 12px}
 .mKpi{background:var(--surf);border:1px solid var(--border);border-radius:12px;padding:11px 13px;box-shadow:0 1px 4px rgba(0,0,0,.04)}
 .mKpi.green{background:var(--ga);border-color:rgba(26,122,66,.2)}
 .mKpi .l{font-size:10px;color:var(--muted)}
@@ -1322,12 +1322,12 @@ html,body{height:100%;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sy
 .sc-f{height:100%;border-radius:2px}
 
 /* ALERT */
-.al-row{background:var(--surf);border:1px solid var(--border);border-radius:12px;padding:12px;margin:0 14px 9px;display:flex;align-items:center;gap:11px;box-shadow:0 1px 4px rgba(0,0,0,.04)}
+.al-row{background:var(--surf);border:1px solid var(--border);border-radius:12px;padding:12px;margin:0 0 9px;display:flex;align-items:center;gap:11px;box-shadow:0 1px 4px rgba(0,0,0,.04)}
 .al-st{font-size:10px;font-weight:700;padding:2px 8px;border-radius:6px}
 .al-on{background:var(--ga);color:var(--green)}.al-off{background:var(--surf3);color:var(--muted)}
 
 /* FORUM */
-.fp{background:var(--surf);border:1px solid var(--border);border-radius:12px;padding:13px;margin:0 14px 9px;box-shadow:0 1px 4px rgba(0,0,0,.04)}
+.fp{background:var(--surf);border:1px solid var(--border);border-radius:12px;padding:13px;margin:0 0 9px;box-shadow:0 1px 4px rgba(0,0,0,.04)}
 .fp-h{display:flex;align-items:center;gap:9px;margin-bottom:9px}
 .fp-av{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;flex-shrink:0}
 .fp-u{font-size:12px;font-weight:700}
@@ -1595,14 +1595,14 @@ html,body{height:100%;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sy
   </div>
 
   <!-- Notif permission banner -->
-  <div id="alertsNotifBanner" style="display:none;margin:0 16px 12px;background:#fefce8;border:1px solid #fde68a;border-radius:14px;padding:12px 14px;display:flex;align-items:center;gap:10px">
+  <div id="alertsNotifBanner" style="display:none;margin:0 0 12px;background:#fefce8;border:1px solid #fde68a;border-radius:14px;padding:12px 14px;display:flex;align-items:center;gap:10px">
     <svg viewBox="0 0 20 20" fill="#b45309" width="18" height="18"><path d="M10 2a6 6 0 0 0-6 6v2l-1.5 2.5A1 1 0 0 0 3.5 14h13a1 1 0 0 0 .86-1.5L16 10V8a6 6 0 0 0-6-6zm0 14a2 2 0 0 1-2-2h4a2 2 0 0 1-2 2z"/></svg>
     <div style="flex:1;font-size:12px;font-weight:600;color:#92400e">Activa las notificaciones para recibir alertas</div>
     <button onclick="requestAlertNotifPerms()" style="background:#b45309;border:none;border-radius:8px;padding:5px 10px;font-size:11px;font-weight:700;color:#fff;cursor:pointer">Activar</button>
   </div>
 
   <!-- New alert form (hidden by default) -->
-  <div id="alertFormCard" style="display:none;margin:0 16px 16px;background:#fff;border-radius:18px;padding:16px;border:1px solid rgba(20,32,24,.08);box-shadow:0 2px 12px rgba(20,32,24,.06)">
+  <div id="alertFormCard" style="display:none;margin:0 0 16px;background:#fff;border-radius:18px;padding:16px;border:1px solid rgba(20,32,24,.08);box-shadow:0 2px 12px rgba(20,32,24,.06)">
     <div style="font-size:14px;font-weight:800;color:#142018;margin-bottom:14px">Nueva Alerta</div>
     <!-- Asset selector -->
     <div style="margin-bottom:12px">
@@ -3166,7 +3166,7 @@ html,body{height:100%;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sy
 <div id="screen-prestamos" class="screen">
   <style>
   #screen-prestamos .ln-hero{padding:16px 14px 12px;background:var(--surf);border-bottom:1px solid var(--border);margin-bottom:12px}
-  #screen-prestamos .ln-loan{background:var(--surf);border:1px solid var(--border);border-radius:14px;padding:14px;margin:0 14px 10px;box-shadow:0 2px 8px rgba(0,0,0,.04)}
+  #screen-prestamos .ln-loan{background:var(--surf);border:1px solid var(--border);border-radius:16px;padding:16px;margin:0 0 12px;box-shadow:0 2px 8px rgba(0,0,0,.04)}
   #screen-prestamos .lm-row{display:flex;gap:14px;margin-bottom:8px}
   #screen-prestamos .lm-c{text-align:center}
   #screen-prestamos .lm-c .l{font-size:9px;color:var(--muted2);font-weight:600}
@@ -3184,7 +3184,7 @@ html,body{height:100%;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sy
   #screen-prestamos .calc-toggle{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:14px;background:var(--surf2);border-radius:12px;padding:4px}
   #screen-prestamos .calc-toggle button{padding:9px;border-radius:9px;font-size:13px;font-weight:700;border:none;cursor:pointer;background:transparent;color:var(--muted)}
   #screen-prestamos .calc-toggle button.active{background:var(--green);color:#fff}
-  #screen-prestamos .ln-empty{margin:0 14px 12px;background:var(--surf);border:1px dashed var(--border);border-radius:14px;padding:30px 18px;text-align:center;color:var(--muted)}
+  #screen-prestamos .ln-empty{margin:0 0 12px;background:var(--surf);border:1px dashed var(--border);border-radius:16px;padding:30px 18px;text-align:center;color:var(--muted)}
   #screen-prestamos .alert-box{background:#fffbea;border:1px solid #f0d060;border-radius:9px;padding:9px 11px;font-size:11px;color:#7a5c00;line-height:1.4;margin-top:8px}
   </style>
   <div class="top" style="padding:0"><div style="padding:calc(var(--st)+4px) 14px 4px"><div class="title" style="font-size:20px;font-weight:900">Préstamos</div></div></div>
