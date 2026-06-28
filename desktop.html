@@ -6,7 +6,7 @@
   (served no-cache, version-bumped each deploy). Works even where SW/no-store
   are ignored, because it is plain page JS. */
 (function(){try{
-  var FA_BUILD='209';
+  var FA_BUILD=window.FA_BUILD='216';
   var s=location.search;
   if(s.indexOf('vchk')>-1||s.indexOf('_v=')>-1){history.replaceState(null,'',location.pathname+(location.hash||''));return;}
   fetch('/sw.js?_='+Date.now(),{cache:'no-store'}).then(function(r){return r.text();}).then(function(t){
@@ -1056,117 +1056,148 @@ a.d-nav-item{text-decoration:none;color:inherit;}.d-nav-item.active{background:#
 .d-content{flex:1;overflow:hidden;display:flex;flex-direction:column}
 
 /* ═══════════════ FORO — LIGHT REDESIGN ═══════════════ */
-#screen-comunidad{background:#f2f5f3}
+#screen-comunidad{background:#f0f4f2;padding:0}
 
 /* Layout */
-.com-inner{padding:28px 24px 56px}
+.com-inner{max-width:1120px;margin:0 auto;padding:24px 28px 56px;gap:20px}
+@media(min-width:1200px){.com-inner{grid-template-columns:1fr 310px}}
 
 /* Compose card */
-.com-compose{background:#fff;border:1px solid #e2e9e4;border-radius:18px;padding:20px;margin-bottom:20px;box-shadow:0 1px 8px rgba(20,60,30,.05)}
-.com-compose-trigger{background:#f5f8f6;border:1.5px solid #dde8e0;color:#8aad96;border-radius:26px;padding:11px 20px;font-size:14px;transition:all .2s}
-.com-compose-trigger:hover{border-color:#16a34a;color:#16a34a;background:#f0fdf4}
-.com-type-btn{background:#f5f8f6;border:1.5px solid #dde8e0;color:#4a7a5a;border-radius:22px;font-size:12.5px;padding:7px 14px;transition:all .2s}
+.com-compose{background:#fff;border:1.5px solid #d1e8d8;border-radius:20px;padding:20px 22px;margin-bottom:16px;box-shadow:0 2px 12px rgba(20,60,30,.07)}
+.com-compose-row{gap:12px;margin-bottom:14px}
+.com-compose-trigger{flex:1;background:#f4faf6;border:1.5px solid #d1e8d8;color:#6aaa7a;border-radius:28px;padding:12px 20px;font-size:14px;text-align:left;transition:all .2s;cursor:pointer;font-family:inherit}
+.com-compose-trigger:hover{border-color:#16a34a;color:#15803d;background:#f0fdf4;box-shadow:0 0 0 3px rgba(22,163,74,.06)}
+.com-type-btn{background:#f4faf6;border:1.5px solid #d1e8d8;color:#3a7a50;border-radius:22px;font-size:12.5px;padding:8px 16px;transition:all .2s;display:flex;align-items:center;gap:5px;font-family:inherit;cursor:pointer}
 .com-type-btn:hover{background:#dcfce7;border-color:#16a34a;color:#15803d}
 
 /* Filter pills */
-.com-filters{margin-bottom:18px}
-.com-pill{background:#fff;border:1.5px solid #dde8e0;color:#4a7a5a;border-radius:22px;padding:6px 16px;font-size:12.5px;font-weight:600;transition:all .2s}
+.com-filters{margin-bottom:16px;display:flex;gap:8px;flex-wrap:wrap}
+.com-pill{background:#fff;border:1.5px solid #d1e8d8;color:#3a7a50;border-radius:22px;padding:7px 16px;font-size:12.5px;font-weight:600;transition:all .2s;cursor:pointer;font-family:inherit}
 .com-pill:hover{border-color:#16a34a;color:#15803d;background:#f0fdf4}
-.com-pill.active{background:#dcfce7;border-color:#16a34a;color:#15803d;box-shadow:0 0 0 3px rgba(22,163,74,.08)}
+.com-pill.active{background:#16a34a;border-color:#16a34a;color:#fff;box-shadow:0 2px 8px rgba(22,163,74,.25)}
 
 /* Posts */
-.com-post{background:#fff;border:1px solid #e2e9e4;border-radius:18px;padding:20px;margin-bottom:14px;box-shadow:0 1px 4px rgba(20,60,30,.04);transition:transform .15s,box-shadow .15s,border-color .15s}
-.com-post:hover{border-color:#b8d4bf;box-shadow:0 4px 16px rgba(20,60,30,.09);transform:translateY(-1px)}
-.com-post-name{color:#1a2e1e;font-weight:700}
+.com-post{background:#fff;border:1.5px solid #e4ede7;border-radius:20px;padding:22px;margin-bottom:12px;box-shadow:0 2px 8px rgba(20,60,30,.05);transition:transform .15s,box-shadow .2s,border-color .2s}
+.com-post:hover{border-color:#b0d4bb;box-shadow:0 6px 24px rgba(20,60,30,.1);transform:translateY(-2px)}
+.com-post-hd{margin-bottom:10px}
+.com-post-name{color:#1a2e1e;font-weight:700;font-size:14px}
 .com-post-name:hover{color:#16a34a}
-.com-post-handle{color:#94a89c}
-.com-post-time{color:#94a89c}
-.com-post-text{color:#374151;line-height:1.7}
-.com-post-text .com-tag{color:#16a34a}
-.com-post-av{border:2px solid #e2e9e4}
+.com-post-handle{color:#8aaa94;font-size:12px}
+.com-post-time{color:#8aaa94;font-size:11.5px}
+.com-post-av{width:42px;height:42px;border:2.5px solid #e4ede7;border-radius:50%;font-size:15px;font-weight:800}
+.com-post-text{color:#2d4a35;line-height:1.72;font-size:14.5px;margin-bottom:14px}
+.com-post-text .com-tag{color:#16a34a;font-weight:600}
 
 /* Action bar */
-.com-post-actions{border-top:1px solid #f0f4f2;padding-top:10px;margin-top:10px}
+.com-post-actions{border-top:1.5px solid #f0f5f2;padding-top:12px;margin-top:4px;gap:6px}
+.com-action-btn{display:flex;align-items:center;gap:6px;padding:6px 12px;border-radius:20px;border:none;background:transparent;color:#6aaa7a;font-size:13px;font-weight:600;cursor:pointer;transition:all .15s;font-family:inherit}
+.com-action-btn svg{width:15px;height:15px}
+.com-action-btn:hover{background:#f0fdf4;color:#16a34a}
+.com-action-btn.liked{color:#16a34a}
+.com-action-sep{flex:1}
 
 /* Comments */
-.com-comments-area{background:#f8faf9;border-top:1px solid #f0f4f2;border-radius:0 0 16px 16px;padding:14px 18px}
-.com-comment-field{background:#fff;border:1.5px solid #dde8e0;color:#1a2e1e;border-radius:22px}
+.com-comments.open{background:#f7faf8;border-radius:0 0 18px 18px;border-top:1.5px solid #f0f5f2;padding:14px 16px;margin-top:12px}
+.com-comment-item{display:flex;gap:10px;margin-bottom:12px}
+.com-comment-av{width:28px;height:28px;border-radius:50%;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.com-comment-body{flex:1;min-width:0}
+.com-comment-name{font-size:12px;font-weight:700;color:#1a2e1e;margin-bottom:2px}
+.com-comment-text{font-size:13px;color:#374151;line-height:1.5}
+.com-comment-input{display:flex;align-items:center;gap:8px;margin-top:10px}
+.com-comment-field{flex:1;background:#fff;border:1.5px solid #d1e8d8;color:#1a2e1e;border-radius:22px;padding:8px 14px;font-size:13px;font-family:inherit;outline:none}
 .com-comment-field:focus{border-color:#16a34a;box-shadow:0 0 0 3px rgba(22,163,74,.07)}
-.com-comment-field::placeholder{color:#94a89c}
-.com-comment-send{background:#16a34a;color:#fff;border-radius:22px;font-weight:700}
+.com-comment-field::placeholder{color:#8aaa94}
+.com-comment-send{background:#16a34a;color:#fff;border:none;border-radius:22px;padding:8px 16px;font-size:12.5px;font-weight:700;cursor:pointer;font-family:inherit;transition:background .15s}
 .com-comment-send:hover{background:#15803d}
 
 /* Portfolio widget */
-.com-pf-widget{background:linear-gradient(135deg,#f0fdf4,#e8f5ee);border:1px solid #bbf7d0;border-radius:14px}
-.com-pf-total{color:#1a2e1e}
-.com-pf-gain.pos{color:#16a34a}
-.com-pf-stat{background:rgba(255,255,255,.75);border-radius:9px}
-.com-pf-stat-lbl{color:#6b7280}
-.com-pf-stat-val{color:#1a2e1e}
+.com-pf-widget{background:linear-gradient(135deg,#f0fdf4,#e8f5ee);border:1.5px solid #bbf7d0;border-radius:16px;padding:16px;margin-bottom:14px}
+.com-pf-total{color:#1a2e1e;font-size:22px;font-weight:800}
+.com-pf-gain.pos{color:#16a34a;font-weight:700}
+.com-pf-stat{background:rgba(255,255,255,.8);border-radius:10px;padding:10px}
+.com-pf-stat-lbl{color:#6b7280;font-size:11px}
+.com-pf-stat-val{color:#1a2e1e;font-weight:700}
 
 /* Transaction widget */
-.com-tx-widget{background:#f8faf9;border:1px solid #e2e9e4;border-radius:14px}
-.com-tx-asset{color:#1a2e1e}
-.com-tx-detail{color:#6b7280}
-.com-tx-date-col{color:#6b7280}
+.com-tx-widget{background:#fff;border:1.5px solid #e4ede7;border-radius:16px;padding:14px 16px;margin-bottom:14px}
+.com-tx-asset{color:#1a2e1e;font-weight:700}
+.com-tx-detail{color:#6b7280;font-size:12.5px}
+.com-tx-date-col{color:#6b7280;font-size:12px}
 .com-tx-date-col strong{color:#1a2e1e}
 
-/* Sidebar — keep dark for contrast */
-.com-sb-card{background:#182b1f;border:1px solid #243b2b;border-radius:18px;box-shadow:0 2px 16px rgba(0,0,0,.14)}
-.com-sb-title{color:#e8f5ee;font-size:14px;font-weight:700;margin-bottom:14px}
-.com-market-row{border-bottom:1px solid #243b2b}
-.com-market-row:last-child{border-bottom:none}
-.com-market-name{color:#e8f5ee}
-.com-market-val{color:#7a9e88}
-.com-chg-pos{color:#4ade80}.com-chg-neg{color:#f87171}
-.com-top-user{border-bottom:1px solid #243b2b}
-.com-top-user:last-child{border-bottom:none}
-.com-top-user-name{color:#e8f5ee}
-.com-top-user-handle{color:#4a6b55}
-.com-trending-tag{background:#111f16;border:1px solid #2a4433;color:#7a9e88;border-radius:10px}
-.com-trending-tag:hover{border-color:#16a34a;color:#4ade80;background:rgba(74,222,128,.06)}
-.com-trending-tag .com-tc{color:#4a6b55}
+/* Sidebar — elegant dark */
+.com-sidebar-col{gap:14px}
+.com-sb-card{background:#14261a;border:1px solid #1f3826;border-radius:20px;padding:20px;box-shadow:0 4px 20px rgba(0,0,0,.18)}
+.com-sb-title{color:#e8f5ee;font-size:13px;font-weight:800;text-transform:uppercase;letter-spacing:.06em;margin-bottom:16px;opacity:.85}
+.com-market-row{display:flex;align-items:center;justify-content:space-between;padding:9px 0;border-bottom:1px solid rgba(255,255,255,.06)}
+.com-market-row:last-child{border-bottom:none;padding-bottom:0}
+.com-market-name{color:#c8e0ce;font-size:13px;font-weight:600}
+.com-market-val{color:#7aaf8a;font-size:12px;margin-top:1px}
+.com-market-chg{font-size:13px;font-weight:700;padding:3px 9px;border-radius:8px}
+.com-chg-pos{color:#4ade80;background:rgba(74,222,128,.08)}
+.com-chg-neg{color:#f87171;background:rgba(248,113,113,.08)}
+.com-top-user{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid rgba(255,255,255,.06);cursor:pointer}
+.com-top-user:last-child{border-bottom:none;padding-bottom:0}
+.com-top-user-av{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;color:#fff;flex-shrink:0}
+.com-top-user-name{color:#e8f5ee;font-size:13px;font-weight:700}
+.com-top-user-handle{color:#4a6b55;font-size:11px;margin-top:1px}
+.com-top-user-gain{margin-left:auto;font-size:12.5px;font-weight:700;color:#4ade80}
+.com-trending-tag{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);color:#a0c8ac;border-radius:10px;padding:5px 12px;font-size:12px;margin:3px 3px 3px 0;cursor:pointer;transition:all .15s}
+.com-trending-tag:hover{border-color:#4ade80;color:#4ade80;background:rgba(74,222,128,.08)}
+.com-trending-tag .com-tc{color:#4a6b55;font-size:11px}
 
 /* Badges */
+.com-post-badge{display:inline-flex;align-items:center;gap:4px;padding:4px 12px;border-radius:14px;font-size:11px;font-weight:700;margin-bottom:12px;letter-spacing:.3px}
 .com-badge-texto{background:#dcfce7;color:#15803d;border:1px solid #bbf7d0}
 .com-badge-portfolio{background:#dbeafe;color:#1d4ed8;border:1px solid #bfdbfe}
 .com-badge-transaccion{background:#fef3c7;color:#92400e;border:1px solid #fde68a}
 
 /* Avatars */
-.com-av{background:linear-gradient(135deg,#16a34a,#4ade80);color:#fff}
+.com-av{background:linear-gradient(135deg,#16a34a,#22c55e);color:#fff;font-weight:800}
 
 /* Empty / loading */
-.com-empty{color:#94a89c;background:#fff;border-radius:18px;border:1px dashed #dde8e0;margin:8px 0;box-shadow:none}
-.com-loading{color:#94a89c}
+.com-empty{color:#8aaa94;background:#fff;border-radius:18px;border:1.5px dashed #d1e8d8;margin:8px 0;padding:40px 24px;text-align:center}
+.com-loading{color:#8aaa94;text-align:center;padding:32px;font-size:14px}
 
 /* Modal */
-.com-modal{background:#fff;border:1px solid #e2e9e4;box-shadow:0 20px 60px rgba(0,0,0,.15)}
-.com-modal-hd{border-bottom:1px solid #f0f4f2}
-.com-modal-title{color:#1a2e1e}
-.com-modal-close{background:#f5f8f6;border:1px solid #e2e9e4;color:#4a7a5a}
-.com-modal-close:hover{color:#1a2e1e;border-color:#b8d4bf}
-.com-modal-tab{border:1.5px solid #dde8e0;color:#4a7a5a}
-.com-modal-tab.active{background:#dcfce7;border-color:#16a34a;color:#15803d}
-.com-modal-ft{border-top:1px solid #f0f4f2}
-.com-btn-cancel{background:#f5f8f6;border:1px solid #e2e9e4;color:#4a7a5a}
-.com-form-label{color:#5a7a5a;font-weight:700}
-.com-form-input,.com-form-textarea,.com-form-select{background:#f8faf9;border:1.5px solid #dde8e0;color:#1a2e1e;border-radius:11px}
-.com-form-input:focus,.com-form-textarea:focus,.com-form-select:focus{border-color:#16a34a;box-shadow:0 0 0 3px rgba(22,163,74,.07)}
-.com-form-input::placeholder,.com-form-textarea::placeholder{color:#94a89c}
+.com-modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:1000;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .2s}
+.com-modal-overlay.open{opacity:1;pointer-events:auto}
+.com-modal{background:#fff;border-radius:22px;width:92%;max-width:540px;max-height:88vh;overflow-y:auto;box-shadow:0 24px 80px rgba(0,0,0,.2);border:1px solid #e4ede7}
+.com-modal-hd{display:flex;align-items:center;justify-content:space-between;padding:20px 24px 16px;border-bottom:1.5px solid #f0f5f2;position:sticky;top:0;background:#fff;z-index:1;border-radius:22px 22px 0 0}
+.com-modal-title{color:#1a2e1e;font-size:17px;font-weight:800}
+.com-modal-close{width:32px;height:32px;border-radius:50%;background:#f4faf6;border:1px solid #d1e8d8;color:#4a7a5a;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s}
+.com-modal-close:hover{color:#1a2e1e;border-color:#b0d4bb;background:#e8f5ee}
+.com-modal-tabs{display:flex;gap:8px;padding:16px 24px 0}
+.com-modal-tab{flex:1;background:#f4faf6;border:1.5px solid #d1e8d8;border-radius:12px;color:#3a7a50;font-size:13px;font-weight:600;padding:9px 8px;cursor:pointer;transition:all .2s;font-family:inherit}
+.com-modal-tab.active{background:#16a34a;border-color:#16a34a;color:#fff;box-shadow:0 2px 8px rgba(22,163,74,.25)}
+.com-modal-body{padding:18px 24px}
+.com-modal-ft{display:flex;align-items:center;justify-content:flex-end;gap:10px;padding:16px 24px 20px;border-top:1.5px solid #f0f5f2;position:sticky;bottom:0;background:#fff;border-radius:0 0 22px 22px}
+.com-btn-cancel{background:#f4faf6;border:1.5px solid #d1e8d8;color:#4a7a5a;border-radius:11px;padding:10px 20px;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit;transition:all .15s}
+.com-btn-cancel:hover{border-color:#b0d4bb;color:#1a2e1e}
+.com-form-group{margin-bottom:14px}
+.com-form-label{display:block;color:#4a7a5a;font-weight:700;font-size:12px;text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px}
+.com-form-input,.com-form-textarea,.com-form-select{display:block;width:100%;background:#f4faf6;border:1.5px solid #d1e8d8;color:#1a2e1e;border-radius:12px;padding:11px 14px;font-size:14px;font-family:inherit;outline:none;box-sizing:border-box;transition:border-color .15s}
+.com-form-input:focus,.com-form-textarea:focus,.com-form-select:focus{border-color:#16a34a;background:#fff;box-shadow:0 0 0 3px rgba(22,163,74,.08)}
+.com-form-input::placeholder,.com-form-textarea::placeholder{color:#8aaa94}
+.com-form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 .com-form-select option{background:#fff;color:#1a2e1e}
-.com-pf-autofill{background:#f0fdf4;border:1px solid #bbf7d0;color:#4a7a5a}
-.com-pf-autofill-btn{background:#16a34a;color:#fff}
-.com-btn-publish{background:linear-gradient(135deg,#16a34a,#15803d);color:#fff;border-radius:11px;box-shadow:0 2px 8px rgba(22,163,74,.3)}
-.com-btn-publish:hover{opacity:.92;transform:translateY(-1px)}
+.com-pf-autofill{display:flex;align-items:center;justify-content:space-between;background:#f0fdf4;border:1.5px solid #bbf7d0;border-radius:12px;padding:10px 14px;margin-bottom:14px;color:#3a7a50;font-size:13px}
+.com-pf-autofill-btn{background:#16a34a;color:#fff;border:none;border-radius:9px;padding:7px 14px;font-size:12.5px;font-weight:700;cursor:pointer;font-family:inherit}
+.com-btn-publish{background:linear-gradient(135deg,#16a34a,#15803d);color:#fff;border:none;border-radius:12px;padding:10px 24px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;box-shadow:0 3px 10px rgba(22,163,74,.35);transition:all .2s}
+.com-btn-publish:hover{opacity:.92;transform:translateY(-1px);box-shadow:0 5px 16px rgba(22,163,74,.4)}
 
 /* Profile modal */
-.com-profile-modal{background:#fff;border:1px solid #e2e9e4}
-.com-profile-hd{background:linear-gradient(135deg,#f0fdf4,#fff);border-bottom:1px solid #f0f4f2}
-.com-profile-name{color:#1a2e1e}
-.com-profile-handle{color:#94a89c}
-.com-profile-stats{border-bottom:1px solid #f0f4f2}
-.com-profile-stat-val{color:#1a2e1e}
-.com-profile-stat-lbl{color:#94a89c}
+.com-profile-modal{position:fixed;inset:0;z-index:1001;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.45);opacity:0;pointer-events:none;transition:opacity .2s}
+.com-profile-modal.open{opacity:1;pointer-events:auto}
+.com-profile-modal>.com-modal,.com-profile-hd~*{border-radius:22px}
+.com-profile-hd{background:linear-gradient(135deg,#f0fdf4,#fff);border-bottom:1.5px solid #f0f5f2;padding:24px;text-align:center;border-radius:22px 22px 0 0}
+.com-profile-name{color:#1a2e1e;font-size:18px;font-weight:800;margin:10px 0 2px}
+.com-profile-handle{color:#8aaa94;font-size:13px}
+.com-profile-stats{border-bottom:1.5px solid #f0f5f2;display:flex;padding:16px 24px}
+.com-profile-stat{flex:1;text-align:center}
+.com-profile-stat-val{color:#1a2e1e;font-size:20px;font-weight:800}
+.com-profile-stat-lbl{color:#8aaa94;font-size:11px;margin-top:2px}
+.com-profile-posts{padding:16px 24px 20px}
 
 /* Header title */
 #screen-comunidad .d-content-header{background:#fff;border-bottom:1px solid #e2e9e4;box-shadow:0 1px 6px rgba(0,0,0,.04)}
@@ -1501,7 +1532,7 @@ html,body{height:100%;overflow:hidden;font-family:-apple-system,BlinkMacSystemFo
     <button class="d-nav-item active" data-screen="home"><span class="d-nav-ico">⌂</span>Inicio</button>
     <button class="d-nav-item" data-screen="analysis"><span class="d-nav-ico">◈</span>Análisis</button>
     <button class="d-nav-item" data-screen="dividends"><span class="d-nav-ico">◎</span>Dividendos</button>
-    <button class="d-nav-item" data-screen="foro"><span class="d-nav-ico">◻</span>Foro</button>
+    <button class="d-nav-item" data-screen="comunidad"><span class="d-nav-ico">◻</span>Foro</button>
     <div class="d-nav-section">HERRAMIENTAS</div>
     <button class="d-nav-item" id="navBtnIa" onclick="toggleIaPanel()"><span class="d-nav-ico">✦</span>IA — Vera</button>
     <button class="d-nav-item" data-screen="prestamos"><span class="d-nav-ico">⏱</span>Préstamos</button>
@@ -1574,9 +1605,13 @@ html,body{height:100%;overflow:hidden;font-family:-apple-system,BlinkMacSystemFo
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
         Buscar activo
       </button>
-      <button class="d-new-pos-btn" onclick="openSearch()">
+      <button class="d-new-pos-btn" id="dNewPosBtn" onclick="openSearch()">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
         Nueva posición
+      </button>
+      <button class="d-new-pos-btn" id="dForoPublicarBtn" onclick="_comOpenModal('texto')" style="display:none">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        + Publicar
       </button>
     </div>
   </div>
@@ -1756,15 +1791,8 @@ html,body{height:100%;overflow:hidden;font-family:-apple-system,BlinkMacSystemFo
   </div>
   <div id="brokerFilterBar"></div>
   <div class="card"><div class="sectionTitle" data-i18n="positions">Posiciones</div><div id="list"></div></div>
-  <div class="card" id="homeLiqCard" style="display:none">
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
-      <div class="sectionTitle" style="margin-bottom:0">💰 Liquidez</div>
-    </div>
-    <div id="homeLiqList"></div>
-    <div id="homeLiqTotal" style="display:flex;justify-content:space-between;align-items:center;padding-top:10px;margin-top:6px;border-top:1px solid rgba(20,32,24,.06)">
-      <span style="font-size:12px;font-weight:700;color:#8fa090;text-transform:uppercase;letter-spacing:.06em">Total</span>
-      <span id="homeLiqTotalAmt" style="font-size:16px;font-weight:800;color:#142018"></span>
-    </div>
+  <!-- homeLiqCard removed: liquidez only shown in screen-portfolio -->
+  <div style="display:none" id="homeLiqCard"><div id="homeLiqList"></div><span id="homeLiqTotalAmt"></span></div>
 
 <div class="legal-disclaimer">
   <b>Aviso legal:</b> Finasset es una herramienta de seguimiento personal de carteras.<br>
@@ -2818,8 +2846,8 @@ html,body{height:100%;overflow:hidden;font-family:-apple-system,BlinkMacSystemFo
 </div>
 
 <!-- ============ LIQUIDITY SHEET ============ -->
-<div class="liqOverlay" id="liqOverlay" onclick="closeLiqModal()"></div>
-<div class="liqSheet" id="liqSheet">
+<div class="liqOverlay" id="liqOverlay" onclick="closeLiqModal()" style="display:none"></div>
+<div class="liqSheet" id="liqSheet" style="display:none">
   <div class="sheetHandle" style="margin:14px auto 0;width:36px;height:4px;background:#dce5dc;border-radius:2px"></div>
   <div style="display:flex;justify-content:space-between;align-items:center">
     <div class="liqSheetTitle" id="liqSheetTitle">Añadir Liquidez</div>
@@ -3932,6 +3960,7 @@ function iconInitials(a){return(a.name||a.isin).replace(/^i([A-Z])/,'I$1').slice
 function assetCategory(a){if(['IE00B4ND3602','IE00B579F325'].includes(a.isin))return'Oro';if(a.mapping?.type==='etf')return'ETFs';if(a.mapping?.type==='etc')return'Oro';if(a.mapping?.type==='stock')return currentLang==='es'?'Acciones':'Stocks';return'Fondos';}
 
 function showScreen(name,keepTab=false){
+  if(name==='foro')name='comunidad';
   if(name==='comunidad')_comLoad();
   if(name==='referidos')_loadReferralScreen();
   if(name==='privacy'||name==='terms'){
@@ -4016,6 +4045,7 @@ function _drawChart(canvas,labels,values,note,meta,rv,noteText){
 async function renderChart(){
   const note=document.getElementById('chartNote'),fallback=document.getElementById('chartFallback'),canvas=document.getElementById('chart'),meta=document.getElementById('chartMeta'),rv=document.getElementById('chartRangeValue');
   if(chart){chart.destroy();chart=null;}
+  meta.style.color=''; // reset before each render; historical mode will set blue
 
   // ── 1D intraday mode ──────────────────────────────────────────────────────
   if(selectedRange==='1D'){
@@ -4049,12 +4079,13 @@ async function renderChart(){
   const lp=series[series.length-1];
   if(!lp){canvas.style.display='none';fallback.style.display='flex';return;}
   const aPct=lp.totalCurrent>0?lp.approximateCurrent/lp.totalCurrent*100:0;
-  const noteText=aPct>0.5?`${series.length} pts · ${aPct.toFixed(0)}% ${currentLang==='es'?'estimado':'estimated'}`:currentLang==='es'?`${series.length} puntos históricos`:`${series.length} historical points`;
+  const _withHist=assets.filter(a=>a.hasRealHistory&&a.history?.length>0).length;
+  const noteText=aPct>0.5?`${_withHist}/${assets.length} ${currentLang==='es'?'activos · '+aPct.toFixed(0)+'% estimado':'assets · '+aPct.toFixed(0)+'% estimated'}`:currentLang==='es'?`${_withHist}/${assets.length} activos con histórico`:`${_withHist}/${assets.length} assets with history`;
   _drawChart(canvas,series.map(p=>dateLabel(p.date,selectedRange)),values,note,meta,rv,noteText);
-  // Override with actual invested return (back-projected chart gain is misleading)
-  const _tInv=assets.reduce((s,a)=>s+toDisplay(a.invested,costCcy(a)),0);
-  const _tVal=assets.reduce((s,a)=>s+toDisplay(a.value,assetCcy(a)),0);
-  if(_tInv>0){const _d=_tVal-_tInv,_p=(_d/_tInv)*100,_u=_d>=0;meta.textContent=(_u?'+':'') +fe(_d)+'  '+(_u?'+':'') +_p.toFixed(2)+'%';}
+  // Period return for selected range — shown in blue
+  const _serFirst=series[0]?.totalValue||0,_serLast=series[series.length-1]?.totalValue||0;
+  const _dPer=_serLast-_serFirst,_pPer=_serFirst>0?(_dPer/_serFirst)*100:0,_uPer=_dPer>=0;
+  if(_pricesLive&&_serFirst>0){meta.textContent=(_uPer?'+':'')+fe(_dPer)+'  '+(_uPer?'+':'')+_pPer.toFixed(2)+'%';meta.style.color='#3b82f6';}
 }
 
 // ========== Asset Detail ==========
@@ -6468,7 +6499,8 @@ async function boot(){
 
   // ── Fast first render: show positions immediately with prices (no history yet)
   const _customIsins=Object.values(getCustomAssets()).map(ca=>ca.isin||ca.symbol).filter(Boolean);
-  const isinList=[...new Set([...seed.positions.map(p=>p.isin),..._customIsins])].join(',');
+  const _ISIN_RE=/^[A-Z]{2}[A-Z0-9]{10}$/;
+  const isinList=[...new Set([...seed.positions.map(p=>p.isin),..._customIsins])].filter(s=>s&&_ISIN_RE.test(s.trim().toUpperCase())).join(',');
   function buildAssets(cvMap){
     return seed.positions.map(pos=>{
       const entry=cvMap[pos.isin]||{},mapping=entry.mapping||null;
@@ -7076,8 +7108,10 @@ async function initSupabase(){
         // Returning from Google OAuth while a login/cover screen is showing → enter the app
         if(document.querySelector('.cover-screen.cs-active')){try{localStorage.setItem('fa_ob_done','1');if(typeof closeAuthModal==='function')closeAuthModal();enterMainApp();}catch(_){}}
         await syncFromCloud(); loadUserPlan().catch(()=>{}); syncSnapshotsFromCloud();
+        _startPriceRefreshLoop();
       }
       if(event==='SIGNED_OUT'){
+        _stopPriceRefreshLoop();
         // Clear ALL user-specific data on logout — prevents next user seeing stale portfolio
         ['fa_token','fa_user','tf_positions','tf_custom_assets','tf_last_sync','fa_liquidity','_rawCustomAssets','fa_value_snapshots','fa_active_user_id'].forEach(k=>localStorage.removeItem(k));
         // If we're in the main app, redirect to login
@@ -7172,6 +7206,33 @@ async function syncSnapshotsFromCloud(){
     if(merged.length)await syncSnapshotsToCloud(); // converge both sides
     if(typeof renderChart==='function'&&document.getElementById('screen-home')?.classList.contains('active'))renderChart();
   }catch(_){}
+}
+
+// ── Background price-cache refresh ──────────────────────────────────────────
+let _priceRefreshTimer=null;
+async function _bgRefreshPrices(){
+  if(!_sbUser||!_pricesLive)return;
+  try{
+    const isins=[...new Set(assets.filter(a=>a.isin&&a.isin.length>8).map(a=>a.isin))];
+    if(!isins.length)return;
+    const batchSize=5;
+    for(let i=0;i<isins.length;i+=batchSize){
+      const chunk=isins.slice(i,i+batchSize);
+      await fetch('/api/portfolio/coverage?isin='+encodeURIComponent(chunk.join(','))+'&refresh=1').catch(()=>{});
+    }
+    // Re-sync from cloud to pick up fresh cached prices
+    await syncFromCloud();
+  }catch(e){console.warn('[bgRefreshPrices]',e);}
+}
+function _startPriceRefreshLoop(){
+  if(_priceRefreshTimer)clearInterval(_priceRefreshTimer);
+  // First refresh after 15s (let app finish booting + initial sync)
+  setTimeout(()=>_bgRefreshPrices(),15000);
+  // Then every 30 minutes while session is active
+  _priceRefreshTimer=setInterval(()=>_bgRefreshPrices(),30*60*1000);
+}
+function _stopPriceRefreshLoop(){
+  if(_priceRefreshTimer){clearInterval(_priceRefreshTimer);_priceRefreshTimer=null;}
 }
 
 async function syncFromCloud(){
@@ -7920,8 +7981,11 @@ function openLiqModal(id) {
   document.getElementById('liqCapInv').value = item?.capitalInvertido || '';
   document.getElementById('liqDelBtn').style.display = item ? '' : 'none';
   setLiqType(_liqType);
-  document.getElementById('liqOverlay').classList.add('open');
-  document.getElementById('liqSheet').classList.add('open');
+  const liqSh = document.getElementById('liqSheet');
+  const liqOv = document.getElementById('liqOverlay');
+  liqSh.style.display = '';
+  liqOv.style.display = '';
+  requestAnimationFrame(() => { liqSh.classList.add('open'); liqOv.classList.add('open'); });
 }
 // ── Extra Tab Row ─────────────────────────────────────────────────────────
 function toggleExtraTabRow(e){
@@ -7947,8 +8011,12 @@ document.addEventListener('click',e=>{
 // ── Home FAB ──────────────────────────────────────────────────────────────
 
 function closeLiqModal() {
-  document.getElementById('liqOverlay').classList.remove('open');
-  document.getElementById('liqSheet').classList.remove('open');
+  const liqSh = document.getElementById('liqSheet');
+  const liqOv = document.getElementById('liqOverlay');
+  if (!liqSh || !liqOv) return;
+  liqSh.classList.remove('open');
+  liqOv.classList.remove('open');
+  setTimeout(() => { liqSh.style.display = 'none'; liqOv.style.display = 'none'; }, 320);
 }
 function setLiqType(type) {
   _liqType = type;
@@ -8003,7 +8071,7 @@ function renderLiquidity() {
   // Update total in home hero (add liquidity to portfolio total)
   const homeLiqCard = document.getElementById('homeLiqCard');
   const portLiqCard = document.getElementById('portfolioLiqCard');
-  if(homeLiqCard) homeLiqCard.style.display = hasLiq ? '' : 'none';
+  // homeLiqCard removed from home screen (v210 fix — was stuck/frozen)
   if(portLiqCard) portLiqCard.style.display = hasLiq ? '' : 'none';
 
   if(!hasLiq) {
@@ -9171,6 +9239,8 @@ function _insClearSearch() {
     asset:     { title:'Detalle de activo' },
     privacy:   { title:'Privacidad' },
     terms:     { title:'Términos' },
+    comunidad: { title:'Foro comunidad' },
+    foro:      { title:'Foro comunidad' },
   };
 
   // Wire sidebar buttons
@@ -9181,11 +9251,14 @@ function _insClearSearch() {
   // Patch showScreen to sync sidebar + topbar
   const _orig = showScreen;
   window.showScreen = function(name, keepTab=false) {
+    if(name==='foro') name='comunidad';
     _orig(name, keepTab);
     document.querySelectorAll('.d-nav-item').forEach(b => {
       // Skip IA panel toggle button — its active state is managed by toggleIaPanel()
       if (b.id === 'navBtnIa') return;
-      b.classList.toggle('active', b.dataset.screen === name);
+      // Match both 'comunidad' and 'foro' labels for the forum nav button
+      const bScreen = b.dataset.screen;
+      b.classList.toggle('active', bScreen === name || (name === 'comunidad' && bScreen === 'foro'));
     });
     const meta = SCREEN_META[name] || {};
     const titleEl = document.getElementById('dTopbarTitle');
@@ -9196,6 +9269,14 @@ function _insClearSearch() {
       if (name === 'home') subEl.textContent = t('homeSub');
       else subEl.textContent = '';
     }
+    // Toggle topbar buttons: foro shows Publicar, others show normal buttons
+    const isForo = name === 'comunidad';
+    const newPosBtn = document.getElementById('dNewPosBtn');
+    const dSearchBtn = document.querySelector('.d-search-btn');
+    const foroBtn = document.getElementById('dForoPublicarBtn');
+    if (newPosBtn) newPosBtn.style.display = isForo ? 'none' : '';
+    if (dSearchBtn) dSearchBtn.style.display = isForo ? 'none' : '';
+    if (foroBtn) foroBtn.style.display = isForo ? '' : 'none';
   };
 
   // Sync user info in sidebar from supabase session
