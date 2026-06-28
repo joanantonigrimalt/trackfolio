@@ -13,6 +13,23 @@ const ALLOWED_ROLES   = new Set(['user', 'assistant']);
 const MAX_CONTENT_LEN = 4000;
 const MAX_MESSAGES    = 20;
 
+// ── Lightweight in-edge rate limit (per IP) ──────────────────────────────
+// Best-effort backstop against cost abuse — each call bills Anthropic. Legit
+// chat is a few messages/min, well under the limit. (Per-instance, like
+// /api/auth/config; not a global counter, but strictly better than nothing.)
+const RL_MAX = 15;            // requests per IP per window
+const RL_WINDOW_MS = 60_000;  // 1 minute
+const _rlStore = new Map();
+function aiRateLimit(req) {
+  const ip = req.headers?.get('x-forwarded-for')?.split(',')[0]?.trim() || 'unknown';
+  const now = Date.now();
+  let e = _rlStore.get(ip);
+  if (!e || now > e.reset) { e = { count: 0, reset: now + RL_WINDOW_MS }; _rlStore.set(ip, e); }
+  e.count++;
+  if (_rlStore.size > 5000) _rlStore.clear(); // prevent unbounded growth
+  return e.count <= RL_MAX;
+}
+
 // Build system prompt — optionally enriched with live portfolio data
 function buildSystemPrompt(portfolioContext) {
   let prompt = `Eres FinAsset AI, el asistente financiero personal integrado en FinAsset (finasset.app), una aplicación de seguimiento de carteras de inversión.
@@ -117,6 +134,14 @@ export default async function handler(req) {
     return new Response(JSON.stringify({ error: 'Method not allowed' }), {
       status: 405,
       headers: { 'Content-Type': 'application/json', ...corsHeaders },
+    });
+  }
+
+  // ── Rate limit (cost-abuse backstop) ─────────────────────────────────────
+  if (!aiRateLimit(req)) {
+    return new Response(JSON.stringify({ error: 'Demasiadas peticiones. Espera un momento.' }), {
+      status: 429,
+      headers: { 'Content-Type': 'application/json', 'Retry-After': '60', ...corsHeaders },
     });
   }
 
