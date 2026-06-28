@@ -10,7 +10,7 @@
   no-store headers are ignored (in-app webviews) because it is plain page JS.
   Source of truth = sw.js (always served no-cache, version-bumped each deploy). */
 (function(){try{
-  var FA_BUILD='196';
+  var FA_BUILD='197';
   var s=location.search;
   if(s.indexOf('vchk')>-1||s.indexOf('_v=')>-1){
     // Clean the ugly ?vchk= / ?_v= from the URL silently
@@ -3757,7 +3757,21 @@ function buildSnapshotTimeSeries(){
   let snaps; try{ snaps=JSON.parse(localStorage.getItem('fa_value_snapshots')||'[]'); }catch(_){ return null; }
   if(!Array.isArray(snaps)) return null;
   const r=_fxRates[_displayCcy]||1;
-  const pts=snaps.filter(s=>s&&s.date&&Number.isFinite(s.value)&&s.value>0).map(s=>({date:s.date,value:s.value*r}));
+  let pts=snaps.filter(s=>s&&s.date&&Number.isFinite(s.value)&&s.value>0).map(s=>({date:s.date,value:s.value*r}));
+  // Inject today's live value as the most recent point (keeps chart fresh mid-day)
+  if(_pricesLive&&assets.length>0){
+    const cur=assets.reduce((s,a)=>s+toDisplay(a.value,assetCcy(a)),0);
+    if(cur>0){
+      const today=new Date().toISOString().slice(0,10);
+      if(pts.length&&pts[pts.length-1].date===today)pts[pts.length-1].value=cur;
+      else pts.push({date:today,value:cur});
+    }
+  }
+  // Need ≥2 points — if only 1, mirror to yesterday so we show a baseline flat line
+  if(pts.length===1){
+    const yest=new Date(new Date(pts[0].date+'T12:00:00').getTime()-86400000).toISOString().slice(0,10);
+    pts=[{date:yest,value:pts[0].value},...pts];
+  }
   if(pts.length<2) return null;
   const tC=assets.reduce((s,a)=>s+toDisplay(a.value,assetCcy(a)),0);
   return pts.map(p=>({date:p.date,totalValue:p.value,realValue:p.value,approximatedValue:0,totalCurrent:tC,approximateCurrent:0}));
@@ -4565,19 +4579,20 @@ const AN_TER_MAP = {
   // ── HANetf ───────────────────────────────────────────────────────────────
   'IE00BLRPQH31':0.29,'IE00BN4Q0601':0.30,'IE00BHBX3Z21':0.49,
 };
-// Fetch TER for all assets not in the hardcoded map via /api/ter/fetch
-// (scrapes FT Markets, caches in DB for 1 year)
+// Fetch TER for assets not in the hardcoded map via /api/etf/profile (extraETF, cached 24h)
 async function _prefetchMissingTers() {
   const missing = assets.filter(a => a.isin && a.quantity > 0 && a.ter == null && AN_TER_MAP[a.isin] == null);
   if (!missing.length) return false;
   const isins = missing.map(a => a.isin);
   try {
-    const data = await getJson(`/api/ter/fetch?isin=${encodeURIComponent(isins.join(','))}`, 25000);
+    const data = await getJson(`/api/etf/profile?isin=${encodeURIComponent(isins.join(','))}`, 20000);
     let updated = false;
-    Object.entries(data.results || {}).forEach(([isin, ter]) => {
-      if (ter != null) {
-        const a = assets.find(x => x.isin === isin);
-        if (a && a.ter == null) { a.ter = ter; updated = true; }
+    (data.results || []).forEach(r => {
+      if (!r?.isin) return;
+      const ter = r.overview?.ter ?? r.overview?.expenseRatio ?? null;
+      if (ter != null && Number.isFinite(Number(ter)) && Number(ter) > 0) {
+        const a = assets.find(x => x.isin === r.isin);
+        if (a && a.ter == null) { a.ter = Number(ter); updated = true; }
       }
     });
     return updated;
@@ -6155,8 +6170,50 @@ function renderAnalysisV2(){
   const terAnnual=_terCost;
   if(typeof _prefetchMissingTers==='function' && live.some(a=>a.ter==null&&_terMap[a.isin]==null)){ try{_prefetchMissingTers().then(u=>{if(u)renderAnalysisV2();});}catch(_){} }
   const _terEff=terAvg<0.35;
-  const _terCov=(_terKnown>0&&_terKnown<totVal)?` · ${(_terKnown/totVal*100).toFixed(0)}% ${isEs?'con datos':'covered'}`:'';
-  const costsCard=totVal>0?`<div class="anv2-card"><div style="font-size:13px;font-weight:700;margin-bottom:10px">${isEs?'Costes y comisiones':'Costs &amp; Fees'} · TER ${terAvg.toFixed(2)}%</div><div style="display:flex;justify-content:space-between;align-items:flex-end"><div><div style="font-size:26px;font-weight:900;color:var(--text)">${fe(terAnnual)}</div><div style="font-size:11px;color:var(--muted)">${isEs?'estimado anual':'annual estimate'}${_terCov}</div></div><div style="background:var(--ga);border:1px solid rgba(26,122,66,.2);border-radius:9px;padding:9px 12px;text-align:center"><div style="font-size:11px;font-weight:700;color:var(--green)">${_terEff?(isEs?'Muy eficiente ✓':'Very efficient ✓'):(isEs?'Coste medio':'Average')}</div><div style="font-size:9px;color:var(--muted)">${_terEff?(isEs?'mínimo indexados':'low-cost index'):''}</div></div></div></div>`:'';
+  // Build per-asset cost rows sorted by annual cost descending
+  const _terRows=live.filter(a=>_terOf(a)!=null).map(a=>{
+    const t=_terOf(a), v=toDisplay(a.value,assetCcy(a))||0, ac=v*t/100;
+    const nm=a.name&&a.name.length>22?a.name.slice(0,20)+'…':a.name||a.isin||'—';
+    return{name:nm,ter:t,val:v,ac};
+  }).sort((a,b)=>b.ac-a.ac);
+  const _maxAC=_terRows[0]?.ac||1;
+  const _terBreakdown=_terRows.map(r=>{
+    const barW=Math.min(100,r.ac/_maxAC*100);
+    const col=r.ter>0.50?'#f05252':r.ter>0.20?'#f5b731':'#2dc98a';
+    return `<div style="margin-bottom:8px">
+      <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:3px">
+        <span style="font-size:11px;font-weight:600;color:var(--text)">${escapeHtml(r.name)}</span>
+        <span style="font-size:11px;font-weight:700;color:${col};white-space:nowrap;margin-left:8px">${r.ter.toFixed(2)}% · ${fe(r.ac)}/${isEs?'año':'yr'}</span>
+      </div>
+      <div style="height:4px;background:var(--surf3);border-radius:2px;overflow:hidden"><div style="width:${barW.toFixed(1)}%;height:100%;background:${col};border-radius:2px"></div></div>
+    </div>`;
+  }).join('');
+  const _noTerNames=live.filter(a=>_terOf(a)==null).map(a=>a.name||a.isin||'—');
+  const _covPct=totVal>0?Math.round(_terKnown/totVal*100):0;
+  const costsCard=totVal>0?`<div class="anv2-card">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+      <div>
+        <div style="font-size:13px;font-weight:700">${isEs?'Costes y comisiones':'Costs &amp; Fees'}</div>
+        <div style="font-size:10px;color:var(--muted);margin-top:1px">TER ponderado · ${_covPct}% ${isEs?'de la cartera con datos':'of portfolio covered'}</div>
+      </div>
+      <div style="background:var(--ga);border:1px solid rgba(26,122,66,.2);border-radius:9px;padding:7px 10px;text-align:center;flex-shrink:0">
+        <div style="font-size:11px;font-weight:700;color:var(--green)">${_terEff?(isEs?'Muy eficiente ✓':'Very efficient ✓'):(isEs?'Coste moderado':'Average cost')}</div>
+        <div style="font-size:9px;color:var(--muted)">${isEs?'TER medio':'Avg TER'} ${terAvg.toFixed(2)}%</div>
+      </div>
+    </div>
+    <div style="display:flex;gap:12px;margin-bottom:14px">
+      <div style="flex:1;background:var(--surf2);border-radius:8px;padding:10px 12px">
+        <div style="font-size:10px;color:var(--muted);margin-bottom:3px">${isEs?'Coste anual estimado':'Est. annual cost'}</div>
+        <div style="font-size:20px;font-weight:800;color:var(--text)">${fe(terAnnual)}</div>
+      </div>
+      <div style="flex:1;background:var(--surf2);border-radius:8px;padding:10px 12px">
+        <div style="font-size:10px;color:var(--muted);margin-bottom:3px">TER ${isEs?'ponderado':'weighted'}</div>
+        <div style="font-size:20px;font-weight:800;color:${_terEff?'var(--green)':'#f5b731'}">${terAvg.toFixed(2)}%</div>
+      </div>
+    </div>
+    ${_terRows.length?`<div style="font-size:11px;font-weight:700;color:var(--muted);margin-bottom:8px;text-transform:uppercase;letter-spacing:.04em">${isEs?'Por activo — mayor coste primero':'By asset — highest cost first'}</div>${_terBreakdown}`:''}
+    ${_noTerNames.length?`<div style="font-size:10px;color:var(--muted);margin-top:8px;padding:6px 8px;background:var(--surf2);border-radius:6px">${isEs?'Sin datos TER':'No TER data'}: ${_noTerNames.slice(0,3).map(n=>escapeHtml(n)).join(', ')}${_noTerNames.length>3?'…':''}</div>`:''}
+  </div>`:'';
   wrap.innerHTML=`
     <div class="anKpi3">
       <div class="k"><div class="kl">${isEs?'Valor':'Value'}</div><div class="kv">${f(totVal)}</div></div>
@@ -6847,7 +6904,7 @@ function renderAccountSection(){
           <div style="font-size:13px;font-weight:600;color:#142018;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${_sbUser.email}</div>
           <div style="display:flex;align-items:center;gap:6px;margin-top:1px">
             <div class="js-plan-badge" style="font-size:11px">Plan Free</div>
-            <div style="font-size:10px;color:#8fa090;font-weight:700">· v196</div>
+            <div style="font-size:10px;color:#8fa090;font-weight:700">· v197</div>
           </div>
         </div>
       </div>
