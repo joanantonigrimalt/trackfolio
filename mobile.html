@@ -1191,6 +1191,20 @@ html,body{height:100%;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sy
 .prem-card::before{display:none!important}
 .pf{background:var(--surf2)!important;border:1px solid var(--border)!important}
 .prem-btn{background:linear-gradient(135deg,#1a7a42,#15803d)!important;box-shadow:0 4px 16px rgba(26,122,66,.3)!important}
+/* Análisis (mockup layout) — hide old blocks, use new */
+#screen-analysis .top, #screen-analysis .an-ps-wrap, #screen-analysis .an-cards-area{display:none!important}
+#anV2{padding-top:14px}
+#anV2 .anv2-card{background:var(--surf);border:1px solid var(--border);border-radius:14px;padding:14px;margin-bottom:10px;box-shadow:0 2px 8px rgba(0,0,0,.04)}
+#anV2 .dl{display:flex;flex-direction:column;gap:8px}
+#anV2 .dl-r{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--text)}
+#anV2 .dl-d{width:9px;height:9px;border-radius:50%;flex-shrink:0}
+#anV2 .dl-p{margin-left:auto;font-weight:700;color:var(--muted)}
+#anV2 .anKpi3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:10px}
+#anV2 .anKpi3 .k{background:var(--surf);border:1px solid var(--border);border-radius:12px;padding:11px 10px;box-shadow:0 1px 4px rgba(0,0,0,.04)}
+#anV2 .anKpi3 .k.green{background:var(--ga);border-color:rgba(26,122,66,.2)}
+#anV2 .anKpi3 .kl{font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:.04em}
+#anV2 .anKpi3 .kv{font-size:15px;font-weight:900;margin-top:3px;color:var(--text)}
+#anV2 .anKpi3 .k.green .kv{color:var(--green)}
 /* Vera IA header band → light */
 .vera-metrics .vm-label{color:var(--muted)!important}
 .vera-metrics .vm-val.neutral{color:var(--text)!important}
@@ -1680,6 +1694,9 @@ html,body{height:100%;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sy
     <div class="title" data-i18n="tabAnalysis">Análisis</div>
     <div class="sub" data-i18n="analysisSub">Salud, distribución y rendimiento</div>
   </div></div>
+
+  <!-- ── Mockup-style analysis (real data) ── -->
+  <div id="anV2" style="padding:0 14px"></div>
 
   <!-- ─── Portfolio Summary (dark card) ─── -->
   <div class="an-ps-wrap">
@@ -5810,6 +5827,43 @@ function _doRender(){
   document.getElementById('summaryAssetCount').textContent=`${c.total} ${t('positions')} · ${c.ok} ${currentLang==='es'?'con histórico':'w/ history'}`;
   renderLists();buildTfRow();renderChart();
   renderLiquidity();
+  renderAnalysisV2();
+}
+
+// ── Análisis (mockup layout, mobile) ──
+function renderAnalysisV2(){
+  const wrap=document.getElementById('anV2'); if(!wrap) return;
+  const isEs=currentLang==='es';
+  const live=assets.filter(a=>a.quantity>0);
+  const CATCOL={'ETFs':'#2db564','Acciones':'#1a5fa8','Stocks':'#1a5fa8','Oro':'#9a6f00','Plata':'#94a3b8','Fondos':'#7c3aed'};
+  const cashLbl=isEs?'Liquidez':'Cash';
+  const barCol=c=>c==='ETFs'?'#2db564':(c==='Acciones'||c==='Stocks')?'#1a5fa8':c==='Oro'?'#9a6f00':c==='Plata'?'#94a3b8':c==='Fondos'?'#7c3aed':'#8aaa95';
+  const sums={};
+  live.forEach(a=>{const c=assetCategory(a);const v=toDisplay(a.value,assetCcy(a))||0;if(v>0)sums[c]=(sums[c]||0)+v;});
+  const liqTot=getLiquidity().reduce((s,l)=>s+toDisplay(Number(l.amount)||0,l.currency||'EUR'),0);
+  if(liqTot>0) sums[cashLbl]=liqTot;
+  const ents=Object.entries(sums).filter(([,v])=>v>0).sort((a,b)=>b[1]-a[1]);
+  const grand=ents.reduce((s,[,v])=>s+v,0)||1;
+  const C=2*Math.PI*38; let off=0; const segs=[];
+  ents.forEach(([k,v])=>{const col=k===cashLbl?'#8aaa95':(CATCOL[k]||'#8aaa95');const len=v/grand*C;segs.push(`<circle cx="50" cy="50" r="38" fill="none" stroke="${col}" stroke-width="14" stroke-dasharray="${len.toFixed(1)} ${(C-len).toFixed(1)}" stroke-dashoffset="${(-off).toFixed(1)}" transform="rotate(-90 50 50)"/>`);off+=len;});
+  const npos=live.length;
+  const donut=`<svg width="92" height="92" viewBox="0 0 100 100"><circle cx="50" cy="50" r="38" fill="none" stroke="var(--surf3)" stroke-width="14"/>${segs.join('')}<text x="50" y="48" text-anchor="middle" font-size="11" fill="var(--text)" font-weight="800">${npos}</text><text x="50" y="61" text-anchor="middle" font-size="8" fill="var(--muted2)">pos</text></svg>`;
+  const legend=ents.map(([k,v])=>{const col=k===cashLbl?'#8aaa95':(CATCOL[k]||'#8aaa95');return `<div class="dl-r"><div class="dl-d" style="background:${col}"></div><span>${k}</span><span class="dl-p">${(v/grand*100).toFixed(0)}%</span></div>`;}).join('');
+  const items=live.map(a=>({name:a.name,v:toDisplay(a.value,assetCcy(a))||0,cat:assetCategory(a)})).filter(x=>x.v>0).sort((x,y)=>y.v-x.v);
+  if(liqTot>0) items.push({name:cashLbl,v:liqTot,cat:cashLbl});
+  const bars=items.map(it=>{const pct=grand>0?it.v/grand*100:0;return `<div style="display:flex;align-items:center;gap:10px;margin-bottom:9px"><span style="font-size:12px;font-weight:600;width:78px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${escapeHtml(it.name)}">${escapeHtml(it.name)}</span><div style="flex:1;height:8px;background:var(--surf3);border-radius:4px;overflow:hidden"><div style="width:${pct.toFixed(1)}%;height:100%;background:${barCol(it.cat)};border-radius:4px"></div></div><span style="width:44px;text-align:right;font-size:12px;font-weight:700;color:var(--muted)">${pct.toFixed(1)}%</span></div>`;}).join('');
+  const totVal=live.reduce((s,a)=>s+(toDisplay(a.value,assetCcy(a))||0),0);
+  const invVal=live.reduce((s,a)=>s+(toDisplay(a.invested,costCcy(a))||0),0);
+  const gain=totVal-invVal, gp=invVal>0?(gain/invVal*100):0;
+  const f=v=>'€'+Math.round(v).toLocaleString('es-ES');
+  wrap.innerHTML=`
+    <div class="anKpi3">
+      <div class="k"><div class="kl">${isEs?'Valor':'Value'}</div><div class="kv">${f(totVal)}</div></div>
+      <div class="k"><div class="kl">${isEs?'Invertido':'Invested'}</div><div class="kv">${f(invVal)}</div></div>
+      <div class="k green"><div class="kl">${isEs?'Ganancia':'Gain'}</div><div class="kv">${gain>=0?'+':''}${f(gain)}</div></div>
+    </div>
+    <div class="anv2-card"><div style="font-size:13px;font-weight:700;margin-bottom:12px">${isEs?'Composición del portfolio':'Composition'}</div><div style="display:flex;gap:14px;align-items:center"><div style="flex-shrink:0">${donut}</div><div class="dl" style="flex:1">${legend}</div></div></div>
+    <div class="anv2-card"><div style="font-size:13px;font-weight:700;margin-bottom:12px">${isEs?'Peso por activo':'Weight by asset'}</div>${bars}</div>`;
 }
 
 // ========== Boot ==========
