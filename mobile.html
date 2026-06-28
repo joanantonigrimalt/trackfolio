@@ -10,7 +10,7 @@
   no-store headers are ignored (in-app webviews) because it is plain page JS.
   Source of truth = sw.js (always served no-cache, version-bumped each deploy). */
 (function(){try{
-  var FA_BUILD='195';
+  var FA_BUILD='196';
   var s=location.search;
   if(s.indexOf('vchk')>-1||s.indexOf('_v=')>-1){
     // Clean the ugly ?vchk= / ?_v= from the URL silently
@@ -84,7 +84,7 @@
   crossorigin="anonymous"></script>
 <script src="/lib/finasset-auth.js?v=7"></script>
 <style>
-*{box-sizing:border-box;margin:0;padding:0}html,body{height:100%}body{font-family:'DM Sans',sans-serif;background:linear-gradient(180deg,#e8f2eb 0%,#f2f5f3 40%,#eaecef 100%);display:flex;justify-content:center;align-items:flex-start;color:#142018;overflow-x:hidden}.shell{width:100%;max-width:100%;display:flex;justify-content:center}.phone{width:100%;max-width:100%;height:100dvh;background:linear-gradient(180deg,#f7faf8 0%,#f2f5f3 100%);overflow:hidden;position:relative}.notch{display:none;position:absolute;top:0;left:50%;transform:translateX(-50%);width:120px;height:24px;background:#111;border-radius:0 0 16px 16px;z-index:3;opacity:.92}/* Phone mock-frame removed: mobile.html is ALWAYS full-screen on every device.
+*{box-sizing:border-box;margin:0;padding:0}html,body{height:100%}body{font-family:'DM Sans',sans-serif;background:linear-gradient(180deg,#e8f2eb 0%,#f2f5f3 40%,#eaecef 100%);display:flex;justify-content:center;align-items:flex-start;color:#142018;overflow-x:hidden}.shell{width:100vw;max-width:100vw;display:flex;justify-content:center}.phone{width:100vw;max-width:100vw;height:100dvh;background:linear-gradient(180deg,#f7faf8 0%,#f2f5f3 100%);overflow:hidden;position:relative}.notch{display:none;position:absolute;top:0;left:50%;transform:translateX(-50%);width:120px;height:24px;background:#111;border-radius:0 0 16px 16px;z-index:3;opacity:.92}/* Phone mock-frame removed: mobile.html is ALWAYS full-screen on every device.
    The decorative 390px desktop-preview frame repeatedly mis-rendered as a narrow
    framed column in various browsers/caches, so it is gone for good. */.status{display:flex;justify-content:space-between;align-items:center;padding:18px 20px 6px;font-size:12px;color:#688071;font-weight:500}.screen{display:none;padding:12px 16px 114px;height:100%;overflow-y:auto;-webkit-overflow-scrolling:touch}.screen.active{display:block}.screen::-webkit-scrollbar{width:0}#screen-asset{padding-bottom:134px}
 .top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:14px;gap:10px}.title{font-size:28px;font-weight:800;letter-spacing:-.03em;line-height:1.1}.sub{font-size:12px;color:#7d9080;margin-top:5px;line-height:1.4}.badge{padding:7px 12px;border-radius:999px;background:rgba(21,128,61,.09);color:#15803d;font-size:11px;font-weight:700;border:1px solid rgba(21,128,61,.13);white-space:nowrap}
@@ -1085,19 +1085,6 @@ table.an-corr-mtx{border-collapse:separate;border-spacing:4px}
   --st:env(safe-area-inset-top,0px);--sb:env(safe-area-inset-bottom,0px);
 }
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
-html,body{height:100%;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;background:#d8e6dc;color:var(--text);font-size:16px;display:flex;align-items:center;justify-content:center;overflow:hidden}
-
-/* SHELL */
-#app{
-  position:relative;
-  width:min(430px,100vw);
-  height:min(900px,100vh);
-  display:flex;flex-direction:column;overflow:hidden;
-  background:var(--bg);
-}
-@media(min-width:440px){
-  #app{border-radius:38px;box-shadow:0 28px 80px rgba(0,0,0,.28),0 0 0 1px rgba(0,0,0,.08)}
-}
 
 /* SCREENS */
 .scr{position:absolute;inset:0;display:flex;flex-direction:column;z-index:1;opacity:0;pointer-events:none;transition:opacity .3s;overflow:hidden}
@@ -6860,7 +6847,7 @@ function renderAccountSection(){
           <div style="font-size:13px;font-weight:600;color:#142018;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${_sbUser.email}</div>
           <div style="display:flex;align-items:center;gap:6px;margin-top:1px">
             <div class="js-plan-badge" style="font-size:11px">Plan Free</div>
-            <div style="font-size:10px;color:#8fa090;font-weight:700">· v194</div>
+            <div style="font-size:10px;color:#8fa090;font-weight:700">· v196</div>
           </div>
         </div>
       </div>
@@ -7032,7 +7019,12 @@ async function syncFromCloud(){
     // 404 / 406 (PGRST116 = no rows) means new user — push local data up
     if(!_r.ok&&_r.status!==406&&_r.status!==404){throw new Error('HTTP '+_r.status);}
     const data=(_r.ok&&_r.status!==204)?await _r.json().catch(()=>null):null;
-    if(!data){await syncToCloud();return;}
+    if(!data){
+      // No cloud row yet — only push if we have real local data (prevents empty device from overwriting Supabase)
+      const _hasLocal=Object.keys(getOverrides()).length>0||Object.keys(getCustomAssets()).length>0;
+      if(_hasLocal)await syncToCloud();
+      return;
+    }
     const cloudTs=new Date(data.updated_at).getTime();
     const localTs=new Date(localStorage.getItem('tf_last_sync')||0).getTime();
     const localEmpty=!Object.keys(getOverrides()).length&&!Object.keys(getCustomAssets()).length;
