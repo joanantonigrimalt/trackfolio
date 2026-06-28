@@ -6,7 +6,7 @@
   (served no-cache, version-bumped each deploy). Works even where SW/no-store
   are ignored, because it is plain page JS. */
 (function(){try{
-  var FA_BUILD=window.FA_BUILD='217';
+  var FA_BUILD=window.FA_BUILD='218';
   var s=location.search;
   if(s.indexOf('vchk')>-1||s.indexOf('_v=')>-1){history.replaceState(null,'',location.pathname+(location.hash||''));return;}
   fetch('/sw.js?_='+Date.now(),{cache:'no-store'}).then(function(r){return r.text();}).then(function(t){
@@ -1497,13 +1497,13 @@ html,body{height:100%;overflow:hidden;font-family:-apple-system,BlinkMacSystemFo
 /* ── Vera IA persistent panel ── */
 .d-ia-panel{width:320px;flex-shrink:0;background:#fff;border-left:1px solid rgba(20,32,24,.08);display:flex;flex-direction:column;height:100vh;overflow:hidden;transition:width .22s ease,border-color .22s ease}
 .d-ia-panel.ia-hidden{width:0;border-left-color:transparent;overflow:hidden}
-.d-ia-ph{display:flex;align-items:center;gap:10px;padding:13px 14px;border-bottom:1px solid rgba(255,255,255,.07);flex-shrink:0;background:linear-gradient(135deg,#0f1c13 0%,#1a3025 100%)}
-.d-ia-av{width:32px;height:32px;border-radius:50%;background:rgba(45,201,138,.12);border:1.5px solid rgba(45,201,138,.35);display:flex;align-items:center;justify-content:center;position:relative;flex-shrink:0}
-.d-ia-av .vera-dot{width:7px;height:7px;background:#2dc98a;border-radius:50%;border:1.5px solid #0f1c13;position:absolute;bottom:-1px;right:-1px}
-.d-ia-name{font-size:.78rem;font-weight:700;color:#f5fbf6;line-height:1.25}
-.d-ia-role{font-size:.6rem;color:rgba(245,251,246,.42);line-height:1.2}
-.d-ia-close-btn{margin-left:auto;background:rgba(255,255,255,.08);border:none;width:24px;height:24px;border-radius:6px;cursor:pointer;color:rgba(255,255,255,.5);font-size:13px;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:background .15s,color .15s;line-height:1}
-.d-ia-close-btn:hover{background:rgba(255,255,255,.18);color:#fff}
+.d-ia-ph{display:flex;align-items:center;gap:10px;padding:13px 14px;border-bottom:1px solid rgba(20,32,24,.07);flex-shrink:0;background:#fff}
+.d-ia-av{width:32px;height:32px;border-radius:10px;background:linear-gradient(135deg,#142018,#1a3f2c);display:flex;align-items:center;justify-content:center;position:relative;flex-shrink:0}
+.d-ia-av .vera-dot{width:7px;height:7px;background:#2dc98a;border-radius:50%;border:1.5px solid #fff;position:absolute;bottom:-1px;right:-1px}
+.d-ia-name{font-size:.78rem;font-weight:700;color:#142018;line-height:1.25}
+.d-ia-role{font-size:.6rem;color:#8fa090;line-height:1.2}
+.d-ia-close-btn{margin-left:auto;background:rgba(20,32,24,.06);border:none;width:24px;height:24px;border-radius:6px;cursor:pointer;color:#7a9080;font-size:13px;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:background .15s,color .15s;line-height:1}
+.d-ia-close-btn:hover{background:rgba(20,32,24,.12);color:#142018}
 .d-ia-mets{display:flex;padding:8px 10px;border-bottom:1px solid rgba(20,32,24,.06);flex-shrink:0;background:#f9fbf9}
 .d-ia-mets .vm-cell{flex:1;text-align:center;padding:1px 0}
 .d-ia-mets .vm-label{font-size:.58rem;color:#8a9e93;text-transform:uppercase;letter-spacing:.04em;font-weight:600}
@@ -6291,7 +6291,8 @@ function render(){
     _totalEl.innerHTML='<span style="opacity:.4;font-size:26px;letter-spacing:0">'+(currentLang==='es'?'Actualizando…':'Updating…')+'</span>';
     ge.textContent=currentLang==='es'?'Cargando precios…':'Loading prices…';ge.className='pill info';ge.style.opacity='0.5';
   }else{
-    _totalEl.textContent=fe(total);_totalEl.removeAttribute('style');
+    const _liqTot=typeof getLiquidity==='function'?getLiquidity().reduce((s,x)=>s+toDisplay(x.amount,x.currency||'EUR'),0):0;
+    _totalEl.textContent=fe(total+_liqTot);_totalEl.removeAttribute('style');
     ge.textContent=`${gain>=0?'+':''}${fe(gain)} · ${gainPct>=0?'+':''}${gainPct.toFixed(2)}%`;ge.className=`pill ${gain>=0?'pos':'neg'}`;ge.style.opacity='';
   }
   document.getElementById('investedTotal').textContent=fe(invested);
@@ -8055,6 +8056,7 @@ function saveLiqItem() {
   saveLiquidity(liq);
   closeLiqModal();
   renderLiquidity();
+  saveToCloud().catch(()=>{});
 }
 function deleteLiqItem() {
   if(!_liqEditId)return;
@@ -8062,6 +8064,7 @@ function deleteLiqItem() {
   saveLiquidity(liq);
   closeLiqModal();
   renderLiquidity();
+  saveToCloud().catch(()=>{});
 }
 
 function renderLiquidity() {
@@ -9979,16 +9982,24 @@ async function _comPublish() {
     payload.content = JSON.stringify({_tx:1,a:asset,ty:_txType,dt:_txDate,q:_txQty,pr:_txPrice,d:_txComment,k:_txTags});
   }
 
+  // Ensure all required columns have defaults
+  payload.likes_count = 0;
+  payload.comments_count = 0;
   btn.textContent = '…'; btn.disabled = true;
   try {
-    const { error } = await _sb.from('community_posts').insert(payload);
+    const insertPromise = _sb.from('community_posts').insert(payload);
+    const timeoutPromise = new Promise((_,reject)=>setTimeout(()=>reject(new Error('Tiempo de espera agotado — reintenta')),'8000'));
+    const { error } = await Promise.race([insertPromise, timeoutPromise]);
     if (error) throw error;
     _comCloseModal();
     // Reset form fields
     ['comTextContent','comTextTags','comPfContent','comPfTotal','comPfInvested','comPfGain','comPfPositions','comPfTags','comTxAsset','comTxQty','comTxPrice','comTxComment'].forEach(id => { const el=document.getElementById(id); if(el) el.value=''; });
     await _comLoadFeed();
   } catch(e) {
-    msgEl.textContent = e.message || 'Error al publicar'; msgEl.style.display = '';
+    const msg = e.message||'Error al publicar';
+    if(msgEl){ msgEl.textContent=msg; msgEl.style.display=''; }
+    else alert(msg);
+    console.error('[comPublish]', e);
   } finally {
     btn.textContent = '✦ Publicar'; btn.disabled = false;
   }

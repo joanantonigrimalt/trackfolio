@@ -3843,12 +3843,14 @@ async function renderChart(){
   const lp=series[series.length-1];
   if(!lp){canvas.style.display='none';fallback.style.display='flex';return;}
   const aPct=lp.totalCurrent>0?lp.approximateCurrent/lp.totalCurrent*100:0;
-  const noteText=aPct>0.5?(currentLang==='es'?`Histórico · ${aPct.toFixed(0)}% estimado`:`History · ${aPct.toFixed(0)}% estimated`):currentLang==='es'?`${series.length} puntos históricos`:`${series.length} historical points`;
+  const _withHist=assets.filter(a=>a.hasRealHistory&&a.history?.length>0).length;
+  const noteText=aPct>0.5?`${_withHist}/${assets.length} ${currentLang==='es'?'activos · '+aPct.toFixed(0)+'% estimado':'assets · '+aPct.toFixed(0)+'% estimated'}`:currentLang==='es'?`${_withHist}/${assets.length} activos con histórico`:`${_withHist}/${assets.length} assets with history`;
+  meta.style.color=''; // reset before draw
   _drawChart(canvas,series.map(p=>dateLabel(p.date,selectedRange)),values,note,meta,rv,noteText);
-  // Override with actual invested return — always convert to display currency (#2 fix: no EUR+USD mixing)
-  const _tInv=assets.reduce((s,a)=>s+toDisplay(a.invested,costCcy(a)),0);
-  const _tVal=assets.reduce((s,a)=>s+toDisplay(a.value,assetCcy(a)),0);
-  if(_tInv>0){const _d=_tVal-_tInv,_p=(_d/_tInv)*100,_u=_d>=0;meta.textContent=(_u?'+':'') +fe(_d)+'  '+(_u?'+':'') +_p.toFixed(2)+'%';}
+  // Period return for selected range — shown in blue
+  const _serFirst=series[0]?.totalValue||0,_serLast=series[series.length-1]?.totalValue||0;
+  const _dPer=_serLast-_serFirst,_pPer=_serFirst>0?(_dPer/_serFirst)*100:0,_uPer=_dPer>=0;
+  if(_pricesLive&&_serFirst>0){meta.textContent=(_uPer?'+':'')+fe(_dPer)+'  '+(_uPer?'+':'')+_pPer.toFixed(2)+'%';meta.style.color='#3b82f6';}
 }
 
 // ========== Asset Detail ==========
