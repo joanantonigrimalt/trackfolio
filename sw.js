@@ -2,7 +2,7 @@
 // Strategy: Cache-First for static assets, Network-First for API calls
 // Provides offline shell + background sync for critical data
 
-const CACHE_VERSION = 'finasset-v215';
+const CACHE_VERSION = 'finasset-v216';
 const STATIC_CACHE  = `${CACHE_VERSION}-static`;
 const DATA_CACHE    = `${CACHE_VERSION}-data`;
 
@@ -59,7 +59,8 @@ self.addEventListener('fetch', event => {
   const { request } = event;
   const url = new URL(request.url);
 
-  // Only handle same-origin requests
+  // Only handle same-origin requests — let all external CDN/font requests bypass the SW
+  // (external resources have their own HTTP cache; SW interference can break them)
   if (url.origin !== self.location.origin) {
     return;
   }
@@ -69,6 +70,7 @@ self.addEventListener('fetch', event => {
     if (API_CACHE_ROUTES.some(r => url.pathname.startsWith(r))) {
       event.respondWith(networkFirstWithCache(request, DATA_CACHE, 5000));
     }
+    // /api/auth/config and all other API routes go straight to network (no SW interference)
     return;
   }
 
@@ -76,7 +78,8 @@ self.addEventListener('fetch', event => {
   if (request.method !== 'GET') return;
 
   // HTML navigations & documents: Network-First so the user always gets the
-  // latest deploy when online. Falls back to cache when offline.
+  // latest deploy when online (prevents stale cached app shell). Falls back to
+  // cache when offline.
   if (request.mode === 'navigate' || request.destination === 'document') {
     event.respondWith(networkFirstHTML(request, STATIC_CACHE));
     return;
@@ -116,6 +119,7 @@ async function cacheFirst(request, cacheName) {
     }
     return response;
   } catch {
+    // Return offline fallback for navigation requests
     if (request.mode === 'navigate') {
       const cached = await caches.match('/index.html');
       if (cached) return cached;
@@ -137,11 +141,13 @@ async function networkFirstWithCache(request, cacheName, timeoutMs) {
     const response = await Promise.race([networkPromise, timeoutPromise]);
 
     if (response.ok) {
+      // Store fresh response (max-age: 5 minutes)
       const responseToCache = response.clone();
       cache.put(request, responseToCache);
     }
     return response;
   } catch {
+    // Network failed or timed out — return stale cache if available
     const cached = await cache.match(request);
     if (cached) return cached;
     return new Response(
@@ -166,7 +172,7 @@ async function syncPortfolio() {
   } catch (_) {}
 }
 
-// ── Push notifications ──────────────────────────────────────────────────
+// ── Push notifications (placeholder for future dividend alerts) ──────────
 self.addEventListener('push', event => {
   if (!event.data) return;
   let data = {};
