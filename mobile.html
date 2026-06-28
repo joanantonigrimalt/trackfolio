@@ -2899,29 +2899,22 @@ html,body{height:100%;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sy
   </div>
 
   <!-- Hero dark card -->
-  <div class="tx-hero" id="taxHero">
-    <div class="tx-h-sup" id="taxHeroSup">Estimaci&oacute;n fiscal &middot; A&ntilde;o 2025</div>
-    <div style="display:flex;align-items:center;gap:8px;margin-bottom:2px">
-      <div class="tx-h-status"><div class="tx-h-dot"></div>Estimado</div>
-    </div>
-    <div class="tx-h-albl">Total base de ahorro (IRPF)</div>
-    <div class="tx-h-amount" id="taxHeroAmount">—</div>
-    <div class="tx-h-sub" id="taxHeroSub">Cuota &iacute;ntegra estimada</div>
-    <div class="tx-h-grid" id="taxHeroGrid">
-      <div class="tx-h-box"><div class="tx-h-blbl">Dividendos</div><div class="tx-h-bval pos" id="taxHDiv">—</div></div>
-      <div class="tx-h-box"><div class="tx-h-blbl">Intereses</div><div class="tx-h-bval pos" id="taxHInt">—</div></div>
-      <div class="tx-h-box"><div class="tx-h-blbl">Ganancias</div><div class="tx-h-bval pos" id="taxHGain">—</div></div>
-    </div>
-    <div class="tx-h-grid" style="margin-top:6px">
-      <div class="tx-h-box"><div class="tx-h-blbl">Base ahorro</div><div class="tx-h-bval" id="taxHBase">—</div></div>
-      <div class="tx-h-box"><div class="tx-h-blbl">Tipo medio</div><div class="tx-h-bval warn" id="taxHRate">—</div></div>
-      <div class="tx-h-box"><div class="tx-h-blbl">Retenciones</div><div class="tx-h-bval" id="taxHRet">—</div></div>
-    </div>
-    <div style="margin-top:14px">
-      <div class="tx-h-row"><span class="tx-h-rlbl">Retenciones ya aplicadas</span><span class="tx-h-rpct" id="taxRetPct">—</span></div>
-      <div class="tx-h-track"><div class="tx-h-fill" id="taxRetBar" style="width:0%"></div></div>
-      <div class="tx-h-row" style="margin-top:8px"><span class="tx-h-rlbl">Cuota a pagar (estimada)</span><span class="tx-h-rpct" style="color:#fbbf24;font-weight:800" id="taxDue">—</span></div>
-    </div>
+  <!-- Fiscal (mockup layout) -->
+  <div class="mDivHero" style="padding-bottom:2px">
+    <div style="font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px">Total base de ahorro (IRPF)</div>
+    <div style="font-size:32px;font-weight:900;letter-spacing:-.03em;color:var(--text);line-height:1" id="taxHeroAmount">—</div>
+  </div>
+  <div class="mKpiGrid">
+    <div class="mKpi gold"><div class="l">Dividendos</div><div class="v" id="taxHDiv">—</div></div>
+    <div class="mKpi green"><div class="l">Ganancias</div><div class="v" id="taxHGain">—</div></div>
+    <div class="mKpi"><div class="l">Intereses</div><div class="v" id="taxHInt">—</div></div>
+    <div class="mKpi red"><div class="l">Estimación pago</div><div class="v" id="taxDue">—</div></div>
+  </div>
+  <!-- hidden mirrors required by renderImpuestos() -->
+  <div id="taxHero" style="display:none">
+    <span id="taxHeroSup"></span><span id="taxHeroSub"></span>
+    <span id="taxHBase"></span><span id="taxHRate"></span><span id="taxHRet"></span>
+    <span id="taxRetPct"></span><div id="taxRetBar"></div><div id="taxHeroGrid"></div>
   </div>
 
   <!-- Desglose por tipo -->
