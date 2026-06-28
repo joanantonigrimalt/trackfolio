@@ -6,7 +6,7 @@
   (served no-cache, version-bumped each deploy). Works even where SW/no-store
   are ignored, because it is plain page JS. */
 (function(){try{
-  var FA_BUILD='200';
+  var FA_BUILD='201';
   var s=location.search;
   if(s.indexOf('vchk')>-1||s.indexOf('_v=')>-1){history.replaceState(null,'',location.pathname+(location.hash||''));return;}
   fetch('/sw.js?_='+Date.now(),{cache:'no-store'}).then(function(r){return r.text();}).then(function(t){
@@ -1459,6 +1459,28 @@ html,body{height:100%;overflow:hidden;font-family:-apple-system,BlinkMacSystemFo
 .d-layout .alertSheet.open{transform:translate(-50%,-50%)!important}
 .d-layout #divFVModal{align-items:center!important;justify-content:center!important}
 .d-layout #divFVModal .div-fv-modal{border-radius:20px!important;max-width:500px!important;width:calc(100% - 48px)!important}
+/* ── Vera IA persistent panel ── */
+.d-ia-panel{width:320px;flex-shrink:0;background:#fff;border-left:1px solid rgba(20,32,24,.08);display:flex;flex-direction:column;height:100vh;overflow:hidden;transition:width .22s ease,border-color .22s ease}
+.d-ia-panel.ia-hidden{width:0;border-left-color:transparent;overflow:hidden}
+.d-ia-ph{display:flex;align-items:center;gap:10px;padding:13px 14px;border-bottom:1px solid rgba(255,255,255,.07);flex-shrink:0;background:linear-gradient(135deg,#0f1c13 0%,#1a3025 100%)}
+.d-ia-av{width:32px;height:32px;border-radius:50%;background:rgba(45,201,138,.12);border:1.5px solid rgba(45,201,138,.35);display:flex;align-items:center;justify-content:center;position:relative;flex-shrink:0}
+.d-ia-av .vera-dot{width:7px;height:7px;background:#2dc98a;border-radius:50%;border:1.5px solid #0f1c13;position:absolute;bottom:-1px;right:-1px}
+.d-ia-name{font-size:.78rem;font-weight:700;color:#f5fbf6;line-height:1.25}
+.d-ia-role{font-size:.6rem;color:rgba(245,251,246,.42);line-height:1.2}
+.d-ia-close-btn{margin-left:auto;background:rgba(255,255,255,.08);border:none;width:24px;height:24px;border-radius:6px;cursor:pointer;color:rgba(255,255,255,.5);font-size:13px;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:background .15s,color .15s;line-height:1}
+.d-ia-close-btn:hover{background:rgba(255,255,255,.18);color:#fff}
+.d-ia-mets{display:flex;padding:8px 10px;border-bottom:1px solid rgba(20,32,24,.06);flex-shrink:0;background:#f9fbf9}
+.d-ia-mets .vm-cell{flex:1;text-align:center;padding:1px 0}
+.d-ia-mets .vm-label{font-size:.58rem;color:#8a9e93;text-transform:uppercase;letter-spacing:.04em;font-weight:600}
+.d-ia-mets .vm-val{font-size:.72rem;font-weight:700;color:#142018;margin-top:1px}
+.d-ia-mets .vm-val.good{color:#1aab70}
+.d-ia-mets .vm-val.warn{color:#d97706}
+.d-ia-panel .chat-msgs{flex:1;overflow-y:auto;padding:10px 12px;min-height:0}
+.d-ia-panel .chat-chips{flex-shrink:0;padding:5px 10px 2px;display:flex;flex-wrap:wrap;gap:5px}
+.d-ia-panel .ia-chip{font-size:.66rem;padding:5px 9px}
+.d-ia-panel .ia-disclaimer{font-size:.6rem;color:#aab8b0;text-align:center;padding:2px 12px 0;flex-shrink:0}
+.d-ia-panel .chat-input-row{flex-shrink:0;padding:8px 10px 10px;border-top:1px solid rgba(20,32,24,.07)}
+.d-ia-panel .cinput{font-size:.77rem;padding:9px 12px}
 </style>
 </head>
 <body>
@@ -1477,7 +1499,7 @@ html,body{height:100%;overflow:hidden;font-family:-apple-system,BlinkMacSystemFo
     <button class="d-nav-item" data-screen="dividends"><span class="d-nav-ico">◎</span>Dividendos</button>
     <button class="d-nav-item" data-screen="foro"><span class="d-nav-ico">◻</span>Foro</button>
     <div class="d-nav-section">HERRAMIENTAS</div>
-    <button class="d-nav-item" data-screen="ia"><span class="d-nav-ico">✦</span>IA — Vera</button>
+    <button class="d-nav-item" id="navBtnIa" onclick="toggleIaPanel()"><span class="d-nav-ico">✦</span>IA — Vera</button>
     <button class="d-nav-item" data-screen="prestamos"><span class="d-nav-ico">⏱</span>Préstamos</button>
     <button class="d-nav-item" data-screen="impuestos"><span class="d-nav-ico">◫</span>Impuestos</button>
     <div class="d-nav-section">REFERIDOS</div>
@@ -1531,7 +1553,7 @@ html,body{height:100%;overflow:hidden;font-family:-apple-system,BlinkMacSystemFo
       <div style="min-width:0;flex:1">
         <div class="d-user-name" id="deskUserName" style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">—</div>
         <div class="d-user-plan" id="deskUserPlan">Plan Free</div>
-        <div style="font-size:10px;color:#9fb0a5;margin-top:2px;font-weight:700">v200</div>
+        <div style="font-size:10px;color:#9fb0a5;margin-top:2px;font-weight:700">v201</div>
       </div>
       <span style="font-size:10px;color:#8fa090;flex-shrink:0;margin-left:4px" id="deskUserChevron">&#9650;</span>
     </div>
@@ -1619,7 +1641,7 @@ html,body{height:100%;overflow:hidden;font-family:-apple-system,BlinkMacSystemFo
     <div id="auth-privacy-note" class="csa-privacy">
       Al usar Finasset aceptas nuestra <a href="/privacy.html" target="_blank" rel="noopener">Política de Privacidad</a> y los <a href="/privacy.html#terms" target="_blank" rel="noopener">Términos de Uso</a>. No es asesoramiento financiero.
     </div>
-    <div style="text-align:center;font-size:10px;color:#b0c0b5;font-weight:700;letter-spacing:.05em;margin-top:8px">v200</div>
+    <div style="text-align:center;font-size:10px;color:#b0c0b5;font-weight:700;letter-spacing:.05em;margin-top:8px">v201</div>
     <!-- Hidden legacy IDs for switchLang compat -->
     <div style="display:none">
       <div id="auth-title"></div><div id="auth-sub"></div>
@@ -1674,7 +1696,7 @@ html,body{height:100%;overflow:hidden;font-family:-apple-system,BlinkMacSystemFo
     </div>
     <div class="hHeadBtns">
       <button class="hHeadBtn" onclick="openSearch()">+ <span data-i18n="add">Añadir</span></button>
-      <button class="hHeadBtn main" onclick="showScreen('ia')">✦ Vera IA</button>
+      <button class="hHeadBtn main" onclick="toggleIaPanel()">✦ Vera IA</button>
     </div>
   </div>
 
@@ -1691,7 +1713,7 @@ html,body{height:100%;overflow:hidden;font-family:-apple-system,BlinkMacSystemFo
 
   <!-- Quick action chips -->
   <div class="hChips">
-    <div class="hChip" onclick="showScreen('ia')"><span>📊</span> <span data-i18n="navIA">Analíticas IA</span></div>
+    <div class="hChip" onclick="toggleIaPanel()"><span>📊</span> <span data-i18n="navIA">Analíticas IA</span></div>
     <div class="hChip" onclick="showScreen('dividends')"><span>◎</span> <span data-i18n="navDividends">Dividendos</span></div>
     <div class="hChip" onclick="showScreen('impuestos')"><span>◫</span> <span data-i18n="navTax">Fiscal</span></div>
     <div class="hChip green" onclick="openSearch()"><span>＋</span> <span data-i18n="newPosition">Nueva posición</span></div>
@@ -2279,47 +2301,12 @@ html,body{height:100%;overflow:hidden;font-family:-apple-system,BlinkMacSystemFo
   </div>
   <div class="ia-scroll">
 
-    <!-- VERA HERO + CHAT -->
-    <div class="chat-card">
-      <div style="background:var(--surf2);border-bottom:1px solid var(--border);padding:16px 18px 14px;border-radius:18px 18px 0 0;">
-        <div class="vera-strip" style="padding:0 0 14px;margin-bottom:0;">
-          <div class="vera-av">
-            <svg viewBox="0 0 26 26" fill="none" width="24" height="24"><rect x="4" y="7" width="18" height="13" rx="3" fill="rgba(255,255,255,0.15)" stroke="rgba(255,255,255,0.3)" stroke-width="1.2"/><circle cx="10" cy="13" r="2" fill="#2dc98a"/><circle cx="16" cy="13" r="2" fill="#2dc98a"/><path d="M10 7V5" stroke="rgba(255,255,255,0.4)" stroke-width="1.2" stroke-linecap="round"/><path d="M16 7V5" stroke="rgba(255,255,255,0.4)" stroke-width="1.2" stroke-linecap="round"/></svg>
-            <div class="vera-dot"></div>
-          </div>
-          <div style="flex:1;">
-            <div class="vera-name">Vera</div>
-            <div class="vera-role">Analista financiero · Finasset</div>
-          </div>
-          <span class="vera-pro-pill">PRO</span>
-        </div>
-        <div class="vera-metrics">
-          <div class="vm-cell"><div class="vm-label">Salud</div><div class="vm-val warn" id="iaVmHealth">—</div></div>
-          <div class="vm-cell"><div class="vm-label">Rentab.</div><div class="vm-val good" id="iaVmReturn">—</div></div>
-          <div class="vm-cell"><div class="vm-label">Riesgo</div><div class="vm-val warn" id="iaVmRisk">Moderado</div></div>
-        </div>
-      </div>
-
-      <div class="chat-msgs" id="iaChatMsgs" style="min-height:200px;">
-        <div class="ia-msg">
-          <div class="ia-msg-av av-vera2"><svg viewBox="0 0 16 16" fill="none"><rect x="2" y="4" width="12" height="8" rx="2" fill="rgba(255,255,255,0.15)" stroke="rgba(255,255,255,0.5)" stroke-width="1"/><circle cx="6" cy="8" r="1.3" fill="#2dc98a"/><circle cx="10" cy="8" r="1.3" fill="#2dc98a"/></svg></div>
-          <div class="ia-bubble vera" style="font-size:.8rem;padding:10px 14px;line-height:1.6;">Hola, tengo acceso completo a tu portfolio. ¿Qué quieres saber?</div>
-        </div>
-      </div>
-
-      <div class="chat-chips">
-        <div class="ia-chip" onclick="askChip(this)">¿Cómo diversificar?</div>
-        <div class="ia-chip" onclick="askChip(this)">¿Cuál es mi riesgo?</div>
-      </div>
-
-      <div id="iaCreditsBar" style="display:flex;align-items:center;gap:8px;padding:6px 14px 2px"></div>
-      <div class="ia-disclaimer">Respuestas orientativas &mdash; no asesoramiento financiero personalizado.</div>
-      <div class="chat-input-row">
-        <input class="cinput" id="iaChatInput" placeholder="Pregunta a Vera sobre tu portfolio…" onkeydown="if(event.key==='Enter')doSend()">
-        <button class="csend" onclick="doSend()">
-          <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" width="15" height="15"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
-        </button>
-      </div>
+    <!-- VERA CHAT → now in the persistent right panel -->
+    <div class="chat-card" style="background:linear-gradient(135deg,#f0faf5 0%,#e8f5ee 100%);border:1.5px solid rgba(45,201,138,.2);border-radius:16px;padding:20px 18px;text-align:center;cursor:pointer" onclick="toggleIaPanel()">
+      <div style="font-size:22px;margin-bottom:8px">✦</div>
+      <div style="font-size:.88rem;font-weight:700;color:#142018;margin-bottom:4px">Chat con Vera activo</div>
+      <div style="font-size:.75rem;color:#5a8f6a;margin-bottom:12px">La conversación está siempre disponible en el panel derecho</div>
+      <button style="background:#142018;color:#f5fbf6;border:none;border-radius:10px;padding:9px 20px;font-size:.78rem;font-weight:700;cursor:pointer" onclick="event.stopPropagation();toggleIaPanel()">Abrir panel Vera →</button>
     </div>
 
     <!-- PORTFOLIO SCORE -->
@@ -3671,7 +3658,55 @@ html,body{height:100%;overflow:hidden;font-family:-apple-system,BlinkMacSystemFo
   <span>👁 Modo Demo · Los datos son de ejemplo</span>
   <button onclick="exitDemo()" id="demoBannerExitBtn">Exit</button>
 </div>
-</div></div></div></div>
+</div></div></div>
+
+<!-- ============ VERA IA PERSISTENT PANEL ============ -->
+<div id="dIaPanel" class="d-ia-panel">
+  <!-- Header -->
+  <div class="d-ia-ph">
+    <div class="d-ia-av">
+      <svg viewBox="0 0 16 16" fill="none" width="15" height="15"><rect x="2" y="4" width="12" height="8" rx="2" fill="rgba(255,255,255,0.15)" stroke="rgba(255,255,255,0.5)" stroke-width="1"/><circle cx="6" cy="8" r="1.3" fill="#2dc98a"/><circle cx="10" cy="8" r="1.3" fill="#2dc98a"/></svg>
+      <div class="vera-dot"></div>
+    </div>
+    <div>
+      <div class="d-ia-name">Vera</div>
+      <div class="d-ia-role">IA Financiera · Finasset</div>
+    </div>
+    <span class="vera-pro-pill" style="font-size:.52rem;padding:2px 6px;margin-left:auto;margin-right:6px">PRO</span>
+    <button class="d-ia-close-btn" onclick="toggleIaPanel()" title="Cerrar panel">✕</button>
+  </div>
+  <!-- Portfolio metrics -->
+  <div class="d-ia-mets">
+    <div class="vm-cell"><div class="vm-label">Salud</div><div class="vm-val warn" id="iaVmHealth">—</div></div>
+    <div class="vm-cell"><div class="vm-label">Rentab.</div><div class="vm-val good" id="iaVmReturn">—</div></div>
+    <div class="vm-cell"><div class="vm-label">Riesgo</div><div class="vm-val warn" id="iaVmRisk">Moderado</div></div>
+  </div>
+  <!-- Messages -->
+  <div class="chat-msgs" id="iaChatMsgs">
+    <div class="ia-msg">
+      <div class="ia-msg-av av-vera2"><svg viewBox="0 0 16 16" fill="none"><rect x="2" y="4" width="12" height="8" rx="2" fill="rgba(255,255,255,0.15)" stroke="rgba(255,255,255,0.5)" stroke-width="1"/><circle cx="6" cy="8" r="1.3" fill="#2dc98a"/><circle cx="10" cy="8" r="1.3" fill="#2dc98a"/></svg></div>
+      <div class="ia-bubble vera" style="font-size:.78rem;line-height:1.55;">Hola, tengo acceso completo a tu portfolio. ¿Qué quieres saber?</div>
+    </div>
+  </div>
+  <!-- Quick chips -->
+  <div class="chat-chips">
+    <div class="ia-chip" onclick="askChip(this)">¿Cómo diversificar?</div>
+    <div class="ia-chip" onclick="askChip(this)">¿Cuál es mi riesgo?</div>
+    <div class="ia-chip" onclick="askChip(this)">Analiza mi cartera</div>
+  </div>
+  <!-- Credits bar -->
+  <div id="iaCreditsBar" style="display:flex;align-items:center;gap:8px;padding:4px 12px 0"></div>
+  <div class="ia-disclaimer">Orientativo · no asesoramiento financiero</div>
+  <!-- Input -->
+  <div class="chat-input-row">
+    <input class="cinput" id="iaChatInput" placeholder="Pregunta a Vera…" onkeydown="if(event.key==='Enter')doSend()">
+    <button class="csend" onclick="doSend()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" width="15" height="15"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+    </button>
+  </div>
+</div>
+
+</div>
 <script>
 // ========== i18n ==========
 const I18N = {
@@ -9085,6 +9120,8 @@ function _insClearSearch() {
   window.showScreen = function(name, keepTab=false) {
     _orig(name, keepTab);
     document.querySelectorAll('.d-nav-item').forEach(b => {
+      // Skip IA panel toggle button — its active state is managed by toggleIaPanel()
+      if (b.id === 'navBtnIa') return;
       b.classList.toggle('active', b.dataset.screen === name);
     });
     const meta = SCREEN_META[name] || {};
@@ -9900,6 +9937,28 @@ function _comTimeAgo(ts) {
 function _comEsc(str) {
   return String(str||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
+
+// ── Vera IA persistent panel toggle ──────────────────────────────────────────
+function toggleIaPanel() {
+  const panel = document.getElementById('dIaPanel');
+  const btn   = document.getElementById('navBtnIa');
+  if (!panel) return;
+  const isHidden = panel.classList.toggle('ia-hidden');
+  if (btn) btn.classList.toggle('active', !isHidden);
+  // Focus input when opening
+  if (!isHidden) {
+    setTimeout(() => {
+      const inp = document.getElementById('iaChatInput');
+      if (inp) inp.focus();
+    }, 250);
+  }
+}
+
+// Panel is open by default — mark nav button active on boot
+document.addEventListener('DOMContentLoaded', function() {
+  const btn = document.getElementById('navBtnIa');
+  if (btn) btn.classList.add('active');
+});
 
 </script>
 </body>
