@@ -2467,7 +2467,7 @@ html,body{height:100%;overflow:hidden;font-family:-apple-system,BlinkMacSystemFo
       <div class="card-title">
         <div class="ctitle-left">
           <div class="ctitle-icon ci-green"><svg viewBox="0 0 16 16" fill="none" stroke="#1aab70" stroke-width="1.8" width="15" height="15"><path d="M8 2v4M8 10v4M2 8h4M10 8h4M4.6 4.6l2.8 2.8M8.6 8.6l2.8 2.8M4.6 11.4l2.8-2.8M8.6 5.4l2.8-2.8"/></svg></div>
-          What Vera can do
+          Lo que Vera puede hacer
         </div>
       </div>
       <button class="ai-action-full" onclick="runAction(this,'full')">
@@ -5983,7 +5983,7 @@ function renderIA(){
     }
     const _retSign=gainPct>=0?'+':'';
     const _retCls=gainPct>=0?'brief-up':'brief-down';
-    _rows.push(`<div class="ins-row"><div class="ins-dot dot-yellow" style="margin-top:6px;"></div><div class="ins-body"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:3px;"><div class="ins-tag tag-yellow">${isEs?'Rendimiento · Watch':'Performance · Watch'}</div></div><div class="ins-text" id="iaInsightReturn">${isEs?'Tu portfolio lleva <b class="'+_retCls+'">'+_retSign+gainPct.toFixed(2)+'%</b> acumulado sobre '+fe(invested)+' invertido.':'Your portfolio is <b class="'+_retCls+'">'+_retSign+gainPct.toFixed(2)+'%</b> on '+fe(invested)+' invested.'}</div><div class="ins-cta">${isEs?'Ver comparativa →':'See comparison →'}</div></div></div>`);
+    _rows.push(`<div class="ins-row"><div class="ins-dot dot-yellow" style="margin-top:6px;"></div><div class="ins-body"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:3px;"><div class="ins-tag tag-yellow">${isEs?'Rendimiento · Vigilar':'Performance · Watch'}</div></div><div class="ins-text" id="iaInsightReturn">${isEs?'Tu portfolio lleva <b class="'+_retCls+'">'+_retSign+gainPct.toFixed(2)+'%</b> acumulado sobre '+fe(invested)+' invertido.':'Your portfolio is <b class="'+_retCls+'">'+_retSign+gainPct.toFixed(2)+'%</b> on '+fe(invested)+' invested.'}</div><div class="ins-cta">${isEs?'Ver comparativa →':'See comparison →'}</div></div></div>`);
     if(assets.length>0&&assets.length<5){
       const _projScore=Math.min(100,score+Math.round(15*(1-assets.length/5)));
       _rows.push(`<div class="ins-row"><div class="ins-dot dot-blue" style="margin-top:6px;"></div><div class="ins-body"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:3px;"><div class="ins-tag tag-blue">${isEs?'Oportunidad':'Opportunity'}</div></div><div class="ins-text">${isEs?'Añadir un ETF de mercados emergentes reduciría tu correlación y subiría tu Health Score a ~'+_projScore+'.':'Adding an emerging markets ETF would reduce correlation and raise your Health Score to ~'+_projScore+'.'}</div><div class="ins-badge b-blue" style="margin-top:6px;">+${_projScore-score} pts</div></div></div>`);
@@ -7751,8 +7751,8 @@ function renderLiquidity() {
     return `<div class="liqRow" onclick="openLiqModal('${escapeHtml(String(x.id||''))}')">
       <div class="liqIcon">${icon}</div>
       <div style="min-width:0;flex:1">
-        <div class="liqName">${x.name}</div>
-        <div class="liqMeta">${LIQ_LABELS[x.type]||x.type}${x.broker?' · '+x.broker:''}${x.rate>0?' · '+x.rate.toFixed(2)+'%/año':''}${metaExtra}</div>
+        <div class="liqName">${escapeHtml(x.name || (currentLang==='es'?'Efectivo':'Cash'))}</div>
+        <div class="liqMeta">${LIQ_LABELS[x.type]||x.type||(currentLang==='es'?'Efectivo':'Cash')}${x.broker?' · '+escapeHtml(x.broker):''}${x.rate>0?' · '+x.rate.toFixed(2)+'%/año':''}${metaExtra}</div>
         ${isFP&&x.capitalInvertido>0?`<div class="liqMeta">Invertido: ${fd(x.capitalInvertido,x.currency||'EUR')}</div>`:''}
       </div>
       <div class="liqRight">
