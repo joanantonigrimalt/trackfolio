@@ -6,7 +6,7 @@
   (served no-cache, version-bumped each deploy). Works even where SW/no-store
   are ignored, because it is plain page JS. */
 (function(){try{
-  var FA_BUILD=window.FA_BUILD='218';
+  var FA_BUILD=window.FA_BUILD='219';
   var s=location.search;
   if(s.indexOf('vchk')>-1||s.indexOf('_v=')>-1){history.replaceState(null,'',location.pathname+(location.hash||''));return;}
   fetch('/sw.js?_='+Date.now(),{cache:'no-store'}).then(function(r){return r.text();}).then(function(t){
@@ -4081,7 +4081,8 @@ async function renderChart(){
   if(!lp){canvas.style.display='none';fallback.style.display='flex';return;}
   const aPct=lp.totalCurrent>0?lp.approximateCurrent/lp.totalCurrent*100:0;
   const _withHist=assets.filter(a=>a.hasRealHistory&&a.history?.length>0).length;
-  const noteText=aPct>0.5?`${_withHist}/${assets.length} ${currentLang==='es'?'activos · '+aPct.toFixed(0)+'% estimado':'assets · '+aPct.toFixed(0)+'% estimated'}`:currentLang==='es'?`${_withHist}/${assets.length} activos con histórico`:`${_withHist}/${assets.length} assets with history`;
+  const _activeCount=assets.filter(a=>a.quantity>0).length||assets.length;
+  const noteText=aPct>0.5?`${_withHist}/${_activeCount} ${currentLang==='es'?'activos · '+aPct.toFixed(0)+'% estimado':'assets · '+aPct.toFixed(0)+'% estimated'}`:currentLang==='es'?`${_withHist}/${_activeCount} activos con histórico`:`${_withHist}/${_activeCount} assets with history`;
   _drawChart(canvas,series.map(p=>dateLabel(p.date,selectedRange)),values,note,meta,rv,noteText);
   // Period return for selected range — shown in blue
   const _serFirst=series[0]?.totalValue||0,_serLast=series[series.length-1]?.totalValue||0;
@@ -7222,8 +7223,16 @@ async function _bgRefreshPrices(){
       const chunk=isins.slice(i,i+batchSize);
       await fetch('/api/portfolio/coverage?isin='+encodeURIComponent(chunk.join(','))+'&refresh=1').catch(()=>{});
     }
-    // Re-sync from cloud to pick up fresh cached prices
-    await syncFromCloud();
+    // Re-fetch coverage to update client-side prices (not just server cache)
+    const freshCov=await getJson('/api/portfolio/coverage?isin='+encodeURIComponent(isins.join(',')),9500).catch(()=>null);
+    if(freshCov?.results?.length>0){
+      _cvMap=Object.fromEntries(freshCov.results.map(e=>[e.isin,e]));
+      _rawSeedAssets=buildAssets(_cvMap);
+      assets=applyOverridesToAssets(_rawSeedAssets);
+      loadCustomIntoAssets(_cvMap);
+      _recordValueSnapshot();
+      render();_rerenderActive();
+    }
   }catch(e){console.warn('[bgRefreshPrices]',e);}
 }
 function _startPriceRefreshLoop(){
@@ -9988,7 +9997,7 @@ async function _comPublish() {
   btn.textContent = '…'; btn.disabled = true;
   try {
     const insertPromise = _sb.from('community_posts').insert(payload);
-    const timeoutPromise = new Promise((_,reject)=>setTimeout(()=>reject(new Error('Tiempo de espera agotado — reintenta')),'8000'));
+    const timeoutPromise = new Promise((_,reject)=>setTimeout(()=>reject(new Error('Tiempo de espera agotado — reintenta')),8000));
     const { error } = await Promise.race([insertPromise, timeoutPromise]);
     if (error) throw error;
     _comCloseModal();
@@ -10091,7 +10100,7 @@ function _comTimeAgo(ts) {
 }
 
 function _comEsc(str) {
-  return String(str||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  return String(str||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
 }
 
 // ── Alert sheet (legacy mobile sheet reused for asset-detail alerts) ──────────
