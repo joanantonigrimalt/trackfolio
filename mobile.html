@@ -10,7 +10,7 @@
   no-store headers are ignored (in-app webviews) because it is plain page JS.
   Source of truth = sw.js (always served no-cache, version-bumped each deploy). */
 (function(){try{
-  var FA_BUILD='194';
+  var FA_BUILD='195';
   var s=location.search;
   if(s.indexOf('vchk')>-1||s.indexOf('_v=')>-1){
     // Clean the ugly ?vchk= / ?_v= from the URL silently
@@ -6880,9 +6880,9 @@ function renderAccountSection(){
       </div>
       <button id="btnLogout" style="width:100%;padding:9px;background:none;border:1.5px solid rgba(20,32,24,.12);border-radius:9px;font-size:13px;color:#5a8f6a;font-weight:600;cursor:pointer;font-family:inherit">${currentLang==='es'?'Cerrar sesión':'Sign out'}</button>`;
     document.getElementById('btnUpgradePlan').onclick=()=>{ closeSettings(); _showUpgradeModal('assets'); };
-    document.getElementById('btnLogout').onclick=async()=>{
+    document.getElementById('btnLogout').onclick=()=>{
       ['tf_positions','tf_custom_assets','tf_last_sync','fa_liquidity','_rawCustomAssets','fa_active_user_id','fa_token','fa_user'].forEach(k=>localStorage.removeItem(k));
-      await _sb.auth.signOut();
+      _sb.auth.signOut().catch(()=>{}); // fire-and-forget: no esperar red
       closeSettings();
       renderAccountSection();
       showAuthScreen();
