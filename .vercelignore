@@ -1,0 +1,24 @@
+# Exclude dev-only artifacts from the Vercel deployment so they are NOT
+# served publicly at finasset.app/<file>. These are local build/patch scripts,
+# backups, DB schema and internal docs — none are required at runtime.
+# They stay in git; this only controls what gets uploaded/served.
+
+# One-off build & patch scripts (run locally, never by Vercel)
+/fix-*.js
+/add-*.js
+/apply-legal.js
+/inject-banner-seo.js
+/mk-desktop.js
+/patch-hero-banner.js
+/redesign-auth.js
+/remove-demo.js
+/tmp-*.js
+/icons/generate-icons.js
+
+# Backups & DB schema (info disclosure if served)
+/*.bak
+/*.sql
+
+# Internal docs & config (reconnaissance surface if served)
+/*.md
+/.env.example
