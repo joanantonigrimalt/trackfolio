@@ -6,7 +6,7 @@
   (served no-cache, version-bumped each deploy). Works even where SW/no-store
   are ignored, because it is plain page JS. */
 (function(){try{
-  var FA_BUILD='191';
+  var FA_BUILD='192';
   if(location.search.indexOf('vchk')>-1)return;
   fetch('/sw.js?_='+Date.now(),{cache:'no-store'}).then(function(r){return r.text();}).then(function(t){
     var m=t.match(/finasset-v(\d+)/);
@@ -1518,7 +1518,7 @@ html,body{height:100%;overflow:hidden;font-family:-apple-system,BlinkMacSystemFo
       <div style="min-width:0;flex:1">
         <div class="d-user-name" id="deskUserName" style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">—</div>
         <div class="d-user-plan" id="deskUserPlan">Plan Free</div>
-        <div style="font-size:9px;color:#9fb0a5;margin-top:1px;font-weight:700;letter-spacing:.04em">v191</div>
+        <div style="font-size:9px;color:#9fb0a5;margin-top:1px;font-weight:700;letter-spacing:.04em">v192</div>
       </div>
       <span style="font-size:10px;color:#8fa090;flex-shrink:0;margin-left:4px" id="deskUserChevron">&#9650;</span>
     </div>
@@ -1606,6 +1606,7 @@ html,body{height:100%;overflow:hidden;font-family:-apple-system,BlinkMacSystemFo
     <div id="auth-privacy-note" class="csa-privacy">
       Al usar Finasset aceptas nuestra <a href="/privacy.html" target="_blank" rel="noopener">Política de Privacidad</a> y los <a href="/privacy.html#terms" target="_blank" rel="noopener">Términos de Uso</a>. No es asesoramiento financiero.
     </div>
+    <div style="text-align:center;font-size:10px;color:#b0c0b5;font-weight:700;letter-spacing:.05em;margin-top:10px">v192</div>
     <!-- Hidden legacy IDs for switchLang compat -->
     <div style="display:none">
       <div id="auth-title"></div><div id="auth-sub"></div>
