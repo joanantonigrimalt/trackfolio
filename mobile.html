@@ -2130,42 +2130,31 @@ html,body{height:100%;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sy
           Actualizar
         </button>
       </div>
-      <div class="ps-gauge-wrap">
-        <canvas id="psMainGauge" class="ps-gauge-canvas" width="220" height="120"></canvas>
-        <div class="ps-gauge-center"><div class="ps-gauge-num" id="psScoreNum">0</div><div class="ps-gauge-den">/100</div></div>
+      <div style="display:flex;align-items:center;gap:14px;margin:8px 0 12px">
+        <div style="position:relative;width:80px;height:80px;flex-shrink:0">
+          <svg viewBox="0 0 80 80" style="position:absolute;inset:0;transform:rotate(-90deg)"><circle cx="40" cy="40" r="32" fill="none" stroke="#e8ebe9" stroke-width="10"/><circle id="veraRing" cx="40" cy="40" r="32" fill="none" stroke="#2dc98a" stroke-width="10" stroke-dasharray="201" stroke-dashoffset="201" stroke-linecap="round" style="transition:stroke-dashoffset .6s ease"/></svg>
+          <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:900;color:var(--ia-text)" id="psScoreNum">0</div>
+        </div>
+        <div>
+          <div style="font-size:.62rem;color:var(--ia-muted);margin-bottom:2px">Health Score</div>
+          <div style="font-size:.95rem;font-weight:800;color:var(--ia-text)" id="veraScoreLabel">—</div>
+          <div style="font-size:.68rem;color:var(--ia-muted)">Supera al <b style="color:#1aab70" id="psPctile">—</b></div>
+        </div>
       </div>
-      <div class="ps-gauge-label" id="psGaugeLabel" style="margin-top:-6px;font-weight:600;color:var(--ia-text);font-size:.75rem;">Score de cartera</div>
-      <div class="ps-gauge-sub">Tu portfolio supera al <b id="psPctile" style="color:var(--ia-text);">—</b> de los usuarios</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:7px">
+        <div style="background:#f4f7f5;border:1px solid #e8ebe9;border-radius:9px;padding:9px"><div style="font-size:.55rem;color:var(--ia-muted);margin-bottom:2px">Diversif.</div><div style="font-size:.85rem;font-weight:800" id="veraCatDiv">—</div><div style="height:3px;background:#e8ebe9;border-radius:2px;margin-top:4px;overflow:hidden"><div id="veraBarDiv" style="height:100%;border-radius:2px;width:0"></div></div></div>
+        <div style="background:#f4f7f5;border:1px solid #e8ebe9;border-radius:9px;padding:9px"><div style="font-size:.55rem;color:var(--ia-muted);margin-bottom:2px">Riesgo</div><div style="font-size:.85rem;font-weight:800" id="veraCatRisk">—</div><div style="height:3px;background:#e8ebe9;border-radius:2px;margin-top:4px;overflow:hidden"><div id="veraBarRisk" style="height:100%;border-radius:2px;width:0"></div></div></div>
+        <div style="background:#f4f7f5;border:1px solid #e8ebe9;border-radius:9px;padding:9px"><div style="font-size:.55rem;color:var(--ia-muted);margin-bottom:2px">Fees</div><div style="font-size:.85rem;font-weight:800" id="veraCatFees">—</div><div style="height:3px;background:#e8ebe9;border-radius:2px;margin-top:4px;overflow:hidden"><div id="veraBarFees" style="height:100%;border-radius:2px;width:0"></div></div></div>
+        <div style="background:#f4f7f5;border:1px solid #e8ebe9;border-radius:9px;padding:9px"><div style="font-size:.55rem;color:var(--ia-muted);margin-bottom:2px">Macro</div><div style="font-size:.85rem;font-weight:800" id="veraCatMacro">—</div><div style="height:3px;background:#e8ebe9;border-radius:2px;margin-top:4px;overflow:hidden"><div id="veraBarMacro" style="height:100%;border-radius:2px;width:0"></div></div></div>
+      </div>
+      <div style="background:#e6faf3;border:1px solid #a7f3d0;border-radius:9px;padding:11px;margin-top:11px">
+        <div style="font-size:.58rem;font-weight:700;color:#1aab70;margin-bottom:4px">✦ Vera · Recomendación</div>
+        <p style="font-size:.72rem;line-height:1.6;color:#0f1c15" id="veraRecText">—</p>
+      </div>
 
-      <div class="ps-categories" style="margin-top:14px;">
-        <div class="ps-cat" id="cat-diversificacion" onclick="openCat('diversificacion')">
-          <canvas class="ps-mini-gauge" data-score="4" data-color="#f97316" width="50" height="30"></canvas>
-          <div style="display:flex;align-items:baseline;gap:1px;"><span class="ps-cat-score">4</span><span class="ps-cat-denom">/10</span></div>
-          <div class="ps-cat-pill pill-orange">Mejorar</div>
-          <div class="ps-cat-name">Diversific.</div>
-          <div class="ps-cat-arrow">›</div>
-        </div>
-        <div class="ps-cat" id="cat-riesgo" onclick="openCat('riesgo')">
-          <canvas class="ps-mini-gauge" data-score="4" data-color="#f97316" width="50" height="30"></canvas>
-          <div style="display:flex;align-items:baseline;gap:1px;"><span class="ps-cat-score">4</span><span class="ps-cat-denom">/10</span></div>
-          <div class="ps-cat-pill pill-orange">Medio</div>
-          <div class="ps-cat-name">Riesgo</div>
-          <div class="ps-cat-arrow">›</div>
-        </div>
-        <div class="ps-cat" id="cat-fees" onclick="openCat('fees')">
-          <canvas class="ps-mini-gauge" data-score="7" data-color="#2dc98a" width="50" height="30"></canvas>
-          <div style="display:flex;align-items:baseline;gap:1px;"><span class="ps-cat-score">7</span><span class="ps-cat-denom">/10</span></div>
-          <div class="ps-cat-pill pill-green">Bajo</div>
-          <div class="ps-cat-name">Fees</div>
-          <div class="ps-cat-arrow">›</div>
-        </div>
-        <div class="ps-cat" id="cat-macro" onclick="openCat('macro')">
-          <canvas class="ps-mini-gauge" data-score="5" data-color="#f97316" width="50" height="30"></canvas>
-          <div style="display:flex;align-items:baseline;gap:1px;"><span class="ps-cat-score">5</span><span class="ps-cat-denom">/10</span></div>
-          <div class="ps-cat-pill pill-orange">Medio</div>
-          <div class="ps-cat-name">Macro</div>
-          <div class="ps-cat-arrow">›</div>
-        </div>
+      <!-- categorías antiguas reemplazadas por el 2x2 del mockup arriba; detalles ocultos conservan IDs para renderIA -->
+      <div style="display:none">
+        <span id="cat-diversificacion"></span><span id="cat-riesgo"></span><span id="cat-fees"></span><span id="cat-macro"></span>
       </div>
 
       <!-- DIVERSIFICACIÓN detail -->
@@ -4194,6 +4183,41 @@ function computeHealthScore(){
   const rentab=Math.round(Math.max(0,Math.min(100,50+gp*2)));
   return{score:Math.round(diversif*.35+riesgo*.3+rentab*.35),diversif,riesgo,rentab};
 }
+// ── Vera score card (mockup look, real data) ─────────────────────────────────
+function renderVeraMockup(){
+  const {score,diversif,riesgo,rentab}=computeHealthScore();
+  const isEs=currentLang==='es';
+  const C=201; // 2π·32
+  const ring=document.getElementById('veraRing');
+  if(ring) ring.setAttribute('stroke-dashoffset',String(Math.max(0,Math.round(C*(1-score/100)))));
+  const numEl=document.getElementById('psScoreNum'); if(numEl) numEl.textContent=score;
+  const lbl=document.getElementById('veraScoreLabel');
+  if(lbl) lbl.textContent=score>=80?(isEs?'Excelente':'Excellent'):score>=65?(isEs?'Bueno':'Good'):score>=45?(isEs?'Mejorable':'Fair'):(isEs?'Bajo':'Low');
+  const pct=document.getElementById('psPctile'); if(pct) pct.textContent=Math.max(5,Math.min(96,Math.round(score*0.88)))+'%';
+  const col=v=>v>=70?'#2dc98a':v>=45?'#f59e0b':'#f05252';
+  const setCat=(idV,idB,v100)=>{const cv=document.getElementById(idV),cb=document.getElementById(idB);const s10=Math.max(0,Math.min(10,Math.round(v100/10)));if(cv){cv.textContent=s10+'/10';cv.style.color=col(v100);}if(cb){cb.style.width=Math.max(4,Math.min(100,v100))+'%';cb.style.background=col(v100);}};
+  setCat('veraCatDiv','veraBarDiv',diversif);
+  setCat('veraCatRisk','veraBarRisk',riesgo);
+  // Fees score from weighted average TER (lower TER → higher score)
+  const totV=assets.reduce((s,a)=>s+toDisplay(a.value,assetCcy(a)),0);
+  const tRows=assets.filter(a=>a.quantity>0&&(a.ter??(typeof AN_TER_MAP!=='undefined'?AN_TER_MAP[a.isin]:null))!=null);
+  let feesScore=70,avgTer=null;
+  if(tRows.length>0&&totV>0){const cost=tRows.reduce((s,a)=>{const t=a.ter??AN_TER_MAP[a.isin];return s+toDisplay(a.value,assetCcy(a))*t/100;},0);avgTer=cost/totV*100;feesScore=avgTer<0.15?92:avgTer<0.30?80:avgTer<0.50?62:avgTer<1?42:25;}
+  setCat('veraCatFees','veraBarFees',feesScore);
+  const macro=Math.round(Math.max(35,Math.min(68,42+diversif*0.18)));
+  setCat('veraCatMacro','veraBarMacro',macro);
+  const rec=document.getElementById('veraRecText');
+  if(rec){
+    if(assets.length===0){rec.textContent=isEs?'Añade tus posiciones para que Vera analice tu cartera y te dé recomendaciones.':'Add your positions so Vera can analyse your portfolio and give recommendations.';}
+    else{
+      const weak=[['diversif',diversif],['riesgo',riesgo],['fees',feesScore],['rentab',rentab]].sort((a,b)=>a[1]-b[1])[0][0];
+      rec.textContent=weak==='diversif'?(isEs?'Reduce la concentración: limita tu mayor posición y añade un ETF global o de emergentes para subir tu score.':'Reduce concentration: cap your largest holding and add a global/EM ETF to lift your score.')
+        :weak==='riesgo'?(isEs?'Tu riesgo es elevado. Considera un 10-15% en bonos como amortiguador de volatilidad.':'Risk is elevated. Consider 10-15% bonds as a volatility buffer.')
+        :weak==='fees'?(isEs?(avgTer!=null?'TER medio '+avgTer.toFixed(2)+'%. ':'')+'Cambia a ETFs indexados de menor comisión para mejorar el retorno neto.':(avgTer!=null?'Avg TER '+avgTer.toFixed(2)+'%. ':'')+'Switch to lower-TER index ETFs to improve net return.')
+        :(isEs?'Buen equilibrio. Mantén aportaciones periódicas y revisa el rebalanceo una vez al año.':'Good balance. Keep regular contributions and rebalance once a year.');
+    }
+  }
+}
 // ── Analysis helpers ────────────────────────────────────────────────────────
 function _anDrawSpark(canvas,pts,pos){
   if(!canvas||!pts||pts.length<2)return;
@@ -5891,6 +5915,7 @@ function renderIA(){
 
   // Gauges (draw once per session, or re-draw if score changed)
   iaDrawAllGauges(score);
+  try{renderVeraMockup();}catch(_){}
 
   // Percentile (rough estimate based on score)
   const pct=document.getElementById('psPctile');
