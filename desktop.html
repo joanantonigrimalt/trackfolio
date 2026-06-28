@@ -6,7 +6,7 @@
   (served no-cache, version-bumped each deploy). Works even where SW/no-store
   are ignored, because it is plain page JS. */
 (function(){try{
-  var FA_BUILD='211';
+  var FA_BUILD='212';
   var s=location.search;
   if(s.indexOf('vchk')>-1||s.indexOf('_v=')>-1){history.replaceState(null,'',location.pathname+(location.hash||''));return;}
   fetch('/sw.js?_='+Date.now(),{cache:'no-store'}).then(function(r){return r.text();}).then(function(t){
@@ -2818,8 +2818,8 @@ html,body{height:100%;overflow:hidden;font-family:-apple-system,BlinkMacSystemFo
 </div>
 
 <!-- ============ LIQUIDITY SHEET ============ -->
-<div class="liqOverlay" id="liqOverlay" onclick="closeLiqModal()"></div>
-<div class="liqSheet" id="liqSheet">
+<div class="liqOverlay" id="liqOverlay" onclick="closeLiqModal()" style="display:none"></div>
+<div class="liqSheet" id="liqSheet" style="display:none">
   <div class="sheetHandle" style="margin:14px auto 0;width:36px;height:4px;background:#dce5dc;border-radius:2px"></div>
   <div style="display:flex;justify-content:space-between;align-items:center">
     <div class="liqSheetTitle" id="liqSheetTitle">Añadir Liquidez</div>
@@ -7920,8 +7920,11 @@ function openLiqModal(id) {
   document.getElementById('liqCapInv').value = item?.capitalInvertido || '';
   document.getElementById('liqDelBtn').style.display = item ? '' : 'none';
   setLiqType(_liqType);
-  document.getElementById('liqOverlay').classList.add('open');
-  document.getElementById('liqSheet').classList.add('open');
+  document.const liqSh = document.getElementById('liqSheet');
+  const liqOv = document.getElementById('liqOverlay');
+  liqSh.style.display = '';
+  liqOv.style.display = '';
+  requestAnimationFrame(()=>{liqSh.classList.add('open');liqOv.classList.add('open');});
 }
 // ── Extra Tab Row ─────────────────────────────────────────────────────────
 function toggleExtraTabRow(e){
@@ -7947,8 +7950,12 @@ document.addEventListener('click',e=>{
 // ── Home FAB ──────────────────────────────────────────────────────────────
 
 function closeLiqModal() {
-  document.getElementById('liqOverlay').classList.remove('open');
-  document.getElementById('liqSheet').classList.remove('open');
+  const liqSh = document.getElementById('liqSheet');
+  const liqOv = document.getElementById('liqOverlay');
+  if (!liqSh || !liqOv) return;
+  liqSh.classList.remove('open');
+  liqOv.classList.remove('open');
+  setTimeout(() => { liqSh.style.display = 'none'; liqOv.style.display = 'none'; }, 320);
 }
 function setLiqType(type) {
   _liqType = type;
