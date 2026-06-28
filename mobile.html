@@ -4174,7 +4174,7 @@ function destroyAnalysisCharts(){Object.values(analysisCharts).forEach(c=>{try{c
 function resetDividendDetailCache(){_divDetailCache=null;document.getElementById('divDetailCard').style.display='none';document.getElementById('divAnnualChartWrap').style.display='none';const tr=document.getElementById('divTrend');if(tr)tr.style.display='none';if(analysisCharts._divAlloc){try{analysisCharts._divAlloc.destroy();}catch(_){}analysisCharts._divAlloc=null;}}
 function computeHealthScore(){
   const total=assets.reduce((s,a)=>s+toDisplay(a.value,assetCcy(a)),0);if(!total)return{score:0,diversif:0,riesgo:0,rentab:0};
-  const hhi=total>0?assets.reduce((s,a)=>{const w=toDisplay(a.value,assetCcy(a))/total;return s+Math.pow(Number.isFinite(w)?w*100:0,2);},0)/100:0,n=assets.length;
+  const hhi=total>0?assets.reduce((s,a)=>{const w=toDisplay(a.value,assetCcy(a))/total;return s+Math.pow(Number.isFinite(w)?w:0,2);},0):0,n=assets.length;
   const _divRaw=n>1?((1-(hhi-1/n)/(1-1/n))*100):0;
   const diversif=Math.round(Math.max(0,Math.min(100,Number.isFinite(_divRaw)?_divRaw:0)));
   const goldPct=assets.filter(a=>assetCategory(a)==='Oro').reduce((s,a)=>s+toDisplay(a.value,assetCcy(a)),0)/total;
