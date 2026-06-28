@@ -6,7 +6,7 @@
   (served no-cache, version-bumped each deploy). Works even where SW/no-store
   are ignored, because it is plain page JS. */
 (function(){try{
-  var FA_BUILD='199';
+  var FA_BUILD='200';
   var s=location.search;
   if(s.indexOf('vchk')>-1||s.indexOf('_v=')>-1){history.replaceState(null,'',location.pathname+(location.hash||''));return;}
   fetch('/sw.js?_='+Date.now(),{cache:'no-store'}).then(function(r){return r.text();}).then(function(t){
@@ -1448,6 +1448,17 @@ html,body{height:100%;overflow:hidden;font-family:-apple-system,BlinkMacSystemFo
 .fp-acts{display:flex;gap:14px}
 .fp-act{font-size:11px;color:var(--muted);cursor:pointer}
 .fp-act.lk{color:var(--green)}
+
+/* ── Desktop: center all bottom-sheet modals as dialogs ── */
+.d-layout .modalOverlay{position:fixed!important;align-items:center!important;justify-content:center!important}
+.d-layout .modalSheet{border-radius:20px!important;max-width:540px;width:calc(100% - 48px)!important;max-height:88vh!important}
+.d-layout .modalOverlay.open .modalSheet{transform:none!important}
+.d-layout .liqSheet{position:fixed!important;bottom:auto!important;left:50%!important;top:50%!important;right:auto!important;transform:translate(-50%,-60%)!important;max-width:500px;width:calc(100% - 48px)!important;border-radius:20px!important;max-height:90vh;overflow-y:auto!important;box-shadow:0 16px 60px rgba(0,0,0,.18)}
+.d-layout .liqSheet.open{transform:translate(-50%,-50%)!important}
+.d-layout .alertSheet{position:fixed!important;bottom:auto!important;left:50%!important;top:50%!important;right:auto!important;transform:translate(-50%,-60%)!important;max-width:500px;width:calc(100% - 48px)!important;border-radius:20px!important;max-height:90vh;overflow-y:auto!important}
+.d-layout .alertSheet.open{transform:translate(-50%,-50%)!important}
+.d-layout #divFVModal{align-items:center!important;justify-content:center!important}
+.d-layout #divFVModal .div-fv-modal{border-radius:20px!important;max-width:500px!important;width:calc(100% - 48px)!important}
 </style>
 </head>
 <body>
@@ -1464,10 +1475,11 @@ html,body{height:100%;overflow:hidden;font-family:-apple-system,BlinkMacSystemFo
     <button class="d-nav-item active" data-screen="home"><span class="d-nav-ico">⌂</span>Inicio</button>
     <button class="d-nav-item" data-screen="analysis"><span class="d-nav-ico">◈</span>Análisis</button>
     <button class="d-nav-item" data-screen="dividends"><span class="d-nav-ico">◎</span>Dividendos</button>
+    <button class="d-nav-item" data-screen="foro"><span class="d-nav-ico">◻</span>Foro</button>
     <div class="d-nav-section">HERRAMIENTAS</div>
     <button class="d-nav-item" data-screen="ia"><span class="d-nav-ico">✦</span>IA — Vera</button>
     <button class="d-nav-item" data-screen="prestamos"><span class="d-nav-ico">⏱</span>Préstamos</button>
-    <button class="d-nav-item" data-screen="impuestos"><span class="d-nav-ico">◫</span>Fiscal</button>
+    <button class="d-nav-item" data-screen="impuestos"><span class="d-nav-ico">◫</span>Impuestos</button>
     <div class="d-nav-section">REFERIDOS</div>
     <button class="d-nav-item" data-screen="referidos"><span class="d-nav-ico">◇</span>Referidos</button>
   </nav>
@@ -1519,7 +1531,7 @@ html,body{height:100%;overflow:hidden;font-family:-apple-system,BlinkMacSystemFo
       <div style="min-width:0;flex:1">
         <div class="d-user-name" id="deskUserName" style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">—</div>
         <div class="d-user-plan" id="deskUserPlan">Plan Free</div>
-        <div style="font-size:10px;color:#9fb0a5;margin-top:2px;font-weight:700">v199</div>
+        <div style="font-size:10px;color:#9fb0a5;margin-top:2px;font-weight:700">v200</div>
       </div>
       <span style="font-size:10px;color:#8fa090;flex-shrink:0;margin-left:4px" id="deskUserChevron">&#9650;</span>
     </div>
@@ -1607,7 +1619,7 @@ html,body{height:100%;overflow:hidden;font-family:-apple-system,BlinkMacSystemFo
     <div id="auth-privacy-note" class="csa-privacy">
       Al usar Finasset aceptas nuestra <a href="/privacy.html" target="_blank" rel="noopener">Política de Privacidad</a> y los <a href="/privacy.html#terms" target="_blank" rel="noopener">Términos de Uso</a>. No es asesoramiento financiero.
     </div>
-    <div style="text-align:center;font-size:10px;color:#b0c0b5;font-weight:700;letter-spacing:.05em;margin-top:8px">v199</div>
+    <div style="text-align:center;font-size:10px;color:#b0c0b5;font-weight:700;letter-spacing:.05em;margin-top:8px">v200</div>
     <!-- Hidden legacy IDs for switchLang compat -->
     <div style="display:none">
       <div id="auth-title"></div><div id="auth-sub"></div>
@@ -6263,6 +6275,42 @@ function renderAnalysisV2(){
     [isEs?'Liquidez':'Cash',`${liqPct.toFixed(1)}%`,''],
   ];
   const metricRows=metrics.map(([l,v,c])=>`<div style="display:flex;justify-content:space-between"><span style="color:var(--muted)">${l}</span><strong${c?` style="color:${c}"`:''}>${v}</strong></div>`).join('');
+  // ── Beneficio por activo (diverging bars) ──
+  const profitItems=live.map(a=>{
+    const val=toDisplay(a.value,assetCcy(a))||0;
+    const inv=toDisplay(a.invested,costCcy(a))||0;
+    const gain=val-inv;
+    const pct=inv>0?gain/inv*100:0;
+    return {name:a.name,gain,pct,inv,cat:assetCategory(a)};
+  }).filter(x=>x.inv>0).sort((a,b)=>b.pct-a.pct);
+  const maxAbsPct=Math.max(...profitItems.map(x=>Math.abs(x.pct)),1);
+  const profitBars=profitItems.map(it=>{
+    const pos=it.pct>=0;const pct=Math.abs(it.pct);const w=Math.min(100,pct/maxAbsPct*100);
+    const col=pos?'#22c55e':'#f87171';
+    const sign=pos?'+':'';
+    return `<div style="display:flex;align-items:center;gap:10px;padding:3px 0">
+      <span style="font-size:11px;font-weight:600;width:110px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--text)" title="${escapeHtml(it.name)}">${escapeHtml(it.name.length>18?it.name.slice(0,16)+'…':it.name)}</span>
+      <div style="flex:1;display:flex;align-items:center;gap:4px">
+        <div style="flex:1;height:7px;background:var(--surf3);border-radius:4px;overflow:hidden;position:relative">
+          <div style="position:absolute;${pos?'left':'right'}:0;width:${w}%;height:100%;background:${col};border-radius:4px;transition:width .4s"></div>
+        </div>
+      </div>
+      <span style="width:70px;text-align:right;font-size:12px;font-weight:700;color:${col};font-variant-numeric:tabular-nums">${sign}${it.pct.toFixed(2)}%</span>
+      <span style="width:70px;text-align:right;font-size:11px;color:var(--muted);font-variant-numeric:tabular-nums">${sign}${fe(it.gain)}</span>
+    </div>`;
+  }).join('');
+  const profitCard=profitItems.length?`
+    <div class="card" style="margin-bottom:14px">
+      <div style="display:flex;align-items:baseline;justify-content:space-between;margin-bottom:14px">
+        <div style="font-size:14px;font-weight:700">${isEs?'Beneficio por activo':'Profit by asset'}</div>
+        <div style="display:flex;gap:14px">
+          <span style="display:flex;align-items:center;gap:4px;font-size:10px;font-weight:600;color:#5a6e5e"><span style="width:8px;height:8px;border-radius:50%;background:#22c55e;display:inline-block"></span>${isEs?'Positivo':'Positive'}</span>
+          <span style="display:flex;align-items:center;gap:4px;font-size:10px;font-weight:600;color:#5a6e5e"><span style="width:8px;height:8px;border-radius:50%;background:#f87171;display:inline-block"></span>${isEs?'Negativo':'Negative'}</span>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:2px">${profitBars}</div>
+    </div>`:'';
+
   // ── Costs & Fees (TER) — same source as _anRenderCosts: live TER, then ISIN map ──
   const _terMap=(typeof AN_TER_MAP!=='undefined')?AN_TER_MAP:{};
   const _terOf=a=>{ let t=a.ter; if(t==null)t=_terMap[a.isin]; if(t==null)t=(a.mapping&&(a.mapping.ter??a.mapping.expenseRatio)); return (t!=null&&Number.isFinite(Number(t))&&Number(t)>0)?Number(t):null; };
@@ -6272,12 +6320,18 @@ function renderAnalysisV2(){
   // Fetch any missing TERs in the background, then re-render so the card fills in
   if(typeof _prefetchMissingTers==='function' && live.some(a=>a.ter==null&&_terMap[a.isin]==null)){ try{_prefetchMissingTers().then(u=>{if(u)renderAnalysisV2();});}catch(_){} }
   const _terEff=_terPct<0.35;
+  // Per-asset cost rows
+  const _terRows=live.map(a=>{const t=_terOf(a);const v=toDisplay(a.value,assetCcy(a))||0;return t!=null&&v>0?{name:a.name,ter:t,cost:v*t/100,val:v}:null;}).filter(Boolean).sort((a,b)=>b.cost-a.cost);
+  const _maxCost=_terRows[0]?.cost||1;
+  const _perAssetRows=_terRows.map(r=>{const bw=Math.min(100,r.cost/_maxCost*100);const short=r.name.length>22?r.name.slice(0,20)+'…':r.name;return `<div style="display:flex;align-items:center;gap:10px;padding:4px 0"><span style="font-size:11px;font-weight:600;width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--text)" title="${escapeHtml(r.name)}">${escapeHtml(short)}</span><div style="flex:1;height:6px;background:var(--surf3);border-radius:3px;overflow:hidden"><div style="width:${bw}%;height:100%;background:#f97316;border-radius:3px"></div></div><span style="width:48px;text-align:right;font-size:11px;font-weight:700;color:#b45309">${r.ter}%</span><span style="width:64px;text-align:right;font-size:11px;color:var(--muted);font-variant-numeric:tabular-nums">${fe(r.cost)}/${isEs?'año':'yr'}</span></div>`;}).join('');
   const costsCard=totVal>0?`
-    <div class="card" style="margin-bottom:14px"><div style="font-size:14px;font-weight:700;margin-bottom:14px">${isEs?'Costes y comisiones':'Costs & Fees'} · TER ${_terPct.toFixed(2)}%</div>
-      <div style="display:flex;justify-content:space-between;align-items:flex-end">
+    <div class="card" style="margin-bottom:14px">
+      <div style="font-size:14px;font-weight:700;margin-bottom:14px">${isEs?'Costes y comisiones':'Costs & Fees'} · TER ${_terPct.toFixed(2)}%</div>
+      <div style="display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:${_terRows.length?'16px':'0'}">
         <div><div style="font-size:28px;font-weight:900;color:var(--text)">${fe(_terCost)}</div><div style="font-size:12px;color:var(--muted)">${isEs?'estimado anual':'annual estimate'}${_terKnown>0&&_terKnown<totVal?` · ${(_terKnown/totVal*100).toFixed(0)}% ${isEs?'con datos':'covered'}`:''}</div></div>
         <div style="background:var(--ga);border:1px solid rgba(26,122,66,.2);border-radius:9px;padding:9px 12px;text-align:center"><div style="font-size:12px;font-weight:700;color:var(--green)">${_terEff?(isEs?'Muy eficiente ✓':'Very efficient ✓'):(isEs?'Coste medio':'Average')}</div><div style="font-size:10px;color:var(--muted)">${_terEff?(isEs?'mínimo indexados':'low-cost index'):''}</div></div>
       </div>
+      ${_perAssetRows?`<div style="border-top:1px solid var(--border);padding-top:12px"><div style="font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;margin-bottom:8px">${isEs?'Por activo':'Per asset'}</div><div style="display:flex;flex-direction:column">${_perAssetRows}</div></div>`:''}
     </div>`:'';
   wrap.innerHTML=`
     <h1 style="font-size:20px;font-weight:800;margin-bottom:20px">${isEs?'Análisis de cartera':'Portfolio analysis'}</h1>
@@ -6286,6 +6340,7 @@ function renderAnalysisV2(){
       <div class="card"><div style="font-size:14px;font-weight:700;margin-bottom:14px">${isEs?'Métricas clave':'Key metrics'}</div><div style="display:flex;flex-direction:column;gap:10px">${metricRows}</div></div>
     </div>
     <div class="card" style="margin-bottom:14px"><div style="font-size:14px;font-weight:700;margin-bottom:14px">${isEs?'Peso por activo':'Weight by asset'}</div><div style="display:flex;flex-direction:column;gap:10px">${bars}</div></div>
+    ${profitCard}
     ${costsCard}`;
 }
 
