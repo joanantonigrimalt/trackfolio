@@ -6,7 +6,7 @@
   (served no-cache, version-bumped each deploy). Works even where SW/no-store
   are ignored, because it is plain page JS. */
 (function(){try{
-  var FA_BUILD=window.FA_BUILD='251';
+  var FA_BUILD=window.FA_BUILD='253';
   var s=location.search;
   if(s.indexOf('vchk')>-1||s.indexOf('_v=')>-1){history.replaceState(null,'',location.pathname+(location.hash||''));return;}
   fetch('/sw.js?_='+Date.now(),{cache:'no-store'}).then(function(r){return r.text();}).then(function(t){
@@ -3511,6 +3511,36 @@ html,body{height:100%;overflow:hidden;font-family:-apple-system,BlinkMacSystemFo
   .ln-amort-table th:first-child{text-align:left}
   .ln-amort-table td{padding:8px 10px;border-bottom:1px solid var(--surf3);text-align:right;color:var(--muted)}
   .ln-amort-table td:first-child{text-align:left;font-weight:700;color:var(--text)}
+  /* ── Pignoración ─────────────────────────────────────────── */
+  .pign-toggle{display:flex;align-items:center;gap:10px;padding:11px 13px;background:var(--surf2);border:1.5px solid var(--border);border-radius:10px;cursor:pointer;user-select:none}
+  .pign-toggle.active{border-color:rgba(26,122,66,.5);background:var(--ga)}
+  .pign-chk{width:18px;height:18px;border:2px solid var(--border);border-radius:5px;display:flex;align-items:center;justify-content:center;font-size:11px;flex-shrink:0;background:var(--surf)}
+  .pign-toggle.active .pign-chk{background:#15803d;border-color:#15803d;color:#fff}
+  .pign-ratio-row{display:flex;gap:8px;margin:10px 0}
+  .pign-ratio-btn{flex:1;border:1.5px solid var(--border);background:var(--surf2);border-radius:8px;padding:8px 6px;text-align:center;cursor:pointer;font-size:11px;font-weight:700;color:var(--muted);line-height:1.5}
+  .pign-ratio-btn.active{border-color:var(--green);background:var(--ga);color:var(--green)}
+  .pign-asset-row{display:grid;grid-template-columns:1fr 85px 28px;gap:6px;align-items:center;margin-bottom:6px}
+  #screen-prestamos .pign-section{margin-top:24px}
+  #screen-prestamos .pign-section-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+  #screen-prestamos .pign-section-hdr h2{font-size:13px;font-weight:800;color:var(--text)}
+  #screen-prestamos .pign-card{background:var(--surf);border:1px solid var(--border);border-radius:14px;overflow:hidden;margin-bottom:14px;box-shadow:0 2px 8px rgba(0,0,0,.04)}
+  #screen-prestamos .pign-card-hdr{background:linear-gradient(135deg,rgba(26,122,66,.07),rgba(26,122,66,.02));border-bottom:1px solid var(--border);padding:14px 16px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+  #screen-prestamos .pign-badge{background:#dcfce7;color:#15803d;font-size:9px;font-weight:800;padding:2px 8px;border-radius:5px;letter-spacing:.04em}
+  #screen-prestamos .pign-tbl-wrap{overflow-x:auto}
+  #screen-prestamos .pign-tbl{width:100%;border-collapse:collapse;font-size:11px;min-width:620px}
+  #screen-prestamos .pign-tbl th{color:var(--muted2);font-weight:700;font-size:9px;padding:7px 10px;border-bottom:1.5px solid var(--border);text-align:right;background:var(--surf2);white-space:nowrap;text-transform:uppercase;letter-spacing:.04em}
+  #screen-prestamos .pign-tbl th:first-child{text-align:left}
+  #screen-prestamos .pign-tbl td{padding:7px 10px;border-bottom:1px solid var(--surf3);text-align:right;color:var(--muted);white-space:nowrap}
+  #screen-prestamos .pign-tbl td:first-child{text-align:left;color:var(--text);font-weight:600}
+  #screen-prestamos .pign-tbl tr.pign-total td{font-weight:800;color:var(--text);background:var(--surf2);border-top:2px solid var(--border)}
+  #screen-prestamos .pign-summary{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;padding:14px 16px}
+  #screen-prestamos .pign-cov-bar{height:5px;background:var(--surf3);border-radius:3px;overflow:hidden;margin:8px 16px 0}
+  #screen-prestamos .pign-cov-fill{height:100%;border-radius:3px}
+  #screen-prestamos .pign-status-row{display:flex;align-items:center;gap:8px;padding:8px 16px 14px}
+  .pign-status{font-size:9px;font-weight:800;display:inline-block;padding:2px 8px;border-radius:5px}
+  .pign-status.ok{background:#dcfce7;color:#15803d}
+  .pign-status.warn{background:#fef9c3;color:#a16207}
+  .pign-status.danger{background:#fee2e2;color:#b91c1c}
   </style>
 
   <div class="top" style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px">
@@ -3526,6 +3556,8 @@ html,body{height:100%;overflow:hidden;font-family:-apple-system,BlinkMacSystemFo
     <div class="pfKpi"><div class="l">Cuota mensual</div><div class="v" id="lnKpiMonthly">€0</div></div>
     <div class="pfKpi"><div class="l">Intereses pendientes</div><div class="v" id="lnKpiInterest" style="color:var(--red)">€0</div></div>
     <div class="pfKpi"><div class="l">TIN medio ponderado</div><div class="v" id="lnKpiTin">—</div></div>
+    <div class="pfKpi"><div class="l">Colateral pignorado</div><div class="v" id="lnKpiColat">—</div></div>
+    <div class="pfKpi"><div class="l">Cobertura media</div><div class="v" id="lnKpiCob">—</div></div>
   </div>
 
   <div class="ln-two">
@@ -3567,6 +3599,12 @@ html,body{height:100%;overflow:hidden;font-family:-apple-system,BlinkMacSystemFo
         </div>
       </div>
     </div>
+  </div>
+
+  <!-- PRODUCTOS PIGNORADOS -->
+  <div class="pign-section" id="lnPignSection" style="display:none">
+    <div class="ln-sec-hdr pign-section-hdr"><h2>🔒 Productos Pignorados</h2><span id="lnPignSubtitle" style="font-size:11px;color:var(--muted2)"></span></div>
+    <div id="lnPignCards"></div>
   </div>
 </div>
 
@@ -3634,6 +3672,32 @@ html,body{height:100%;overflow:hidden;font-family:-apple-system,BlinkMacSystemFo
         <div class="calc-result-row"><span>Disponible</span><strong id="lnmcp-disp" style="color:var(--green)">—</strong></div>
       </div>
     </div>
+    <!-- PIGNORACIÓN -->
+    <div style="margin-top:16px;padding-top:14px;border-top:1px solid var(--border)">
+      <div class="pign-toggle" id="lnPignToggle" onclick="LnTogglePign()">
+        <div class="pign-chk" id="lnPignChk">✓</div>
+        <div style="flex:1">
+          <div style="font-size:13px;font-weight:700;color:var(--text)">🔒 Deuda pignorada</div>
+          <div style="font-size:11px;color:var(--muted)">Activos de cartera como garantía</div>
+        </div>
+      </div>
+      <div id="lnPignBody" style="display:none;margin-top:12px">
+        <div style="font-size:10px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;margin-bottom:6px">Ratio de garantía</div>
+        <div class="pign-ratio-row">
+          <div class="pign-ratio-btn active" id="lnPignR2" onclick="LnSetPignRatio(2)">x2 · Préstamo<br><span style="font-size:10px;font-weight:400;color:var(--muted)">2€ garantía → 1€ deuda</span></div>
+          <div class="pign-ratio-btn" id="lnPignR1" onclick="LnSetPignRatio(1)">x1 · Crédito<br><span style="font-size:10px;font-weight:400;color:var(--muted)">1€ garantía → 1€ deuda</span></div>
+        </div>
+        <div style="font-size:10px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;margin-bottom:6px">Activos pignorados</div>
+        <div id="lnPignRows"></div>
+        <button onclick="LnAddPignRow()" style="width:100%;background:var(--surf2);border:1.5px dashed var(--border);border-radius:9px;padding:9px;font-size:12px;font-weight:700;color:var(--muted);cursor:pointer;margin-top:4px">＋ Añadir activo</button>
+        <div class="calc-result" id="lnPignCalc" style="display:none;margin-top:12px">
+          <div class="calc-result-row"><span>Valor colateral actual</span><strong id="lnPc-col">—</strong></div>
+          <div class="calc-result-row"><span>Garantía necesaria (deuda × ratio)</span><strong id="lnPc-gar">—</strong></div>
+          <div class="calc-result-row"><span>Margen de garantía</span><strong id="lnPc-margen">—</strong></div>
+          <div class="calc-result-row"><span>Cobertura</span><strong id="lnPc-cob">—</strong></div>
+        </div>
+      </div>
+    </div>
     <div style="display:flex;gap:10px;margin-top:20px;padding-top:16px;border-top:1px solid var(--border)">
       <button class="btn-out" style="flex:1;padding:11px;border:1.5px solid var(--border);background:var(--surf);border-radius:10px;font-weight:600;cursor:pointer" onclick="LnCloseM('lnm-add')">Cancelar</button>
       <button class="btn-main" style="flex:2;padding:12px;background:#15803d;color:#fff;border:none;border-radius:10px;font-weight:700;cursor:pointer" onclick="LnSaveNew()">＋ Añadir</button>
@@ -3653,62 +3717,254 @@ html,body{height:100%;overflow:hidden;font-family:-apple-system,BlinkMacSystemFo
 <script>
 (function(){
   function LnFmt(n){ if(isNaN(n)||n==null) return '—'; return '€'+Number(n).toLocaleString('es-ES',{minimumFractionDigits:2,maximumFractionDigits:2}); }
-  function LnFmtPct(n){ if(isNaN(n)||n==null) return '—'; return Number(n).toFixed(2)+'%'; }
+  function LnFmtPct(n){ if(isNaN(n)||n==null) return '—'; return (n>=0?'+':'')+Number(n).toFixed(2)+'%'; }
+  function LnFmtPctPlain(n){ if(isNaN(n)||n==null) return '—'; return Number(n).toFixed(2)+'%'; }
   function LnCalcCuota(c,t,m){ if(!c||!t||!m) return 0; const r=t/100/12; if(r===0) return c/m; return c*r*Math.pow(1+r,m)/(Math.pow(1+r,m)-1); }
   function LnCalcTAE(t,fee,c,m){ const cn=c-(fee||0); if(!cn||!m) return t; const cuo=LnCalcCuota(c,t,m); let tae=t/100; for(let i=0;i<50;i++){ const r=tae/12; if(r===0) break; const pv=cuo*(1-Math.pow(1+r,-m))/r; const dpv=cuo*(m*Math.pow(1+r,-m-1)/r-(1-Math.pow(1+r,-m))/(r*r)); const nt=tae-(pv-cn)/dpv; if(Math.abs(nt-tae)<1e-6){tae=nt;break;} tae=nt; } return (Math.pow(1+tae/12,12)-1)*100; }
   function LnBuildSchedule(c,t,m){ const r=t/100/12,cuo=LnCalcCuota(c,t,m); let s=c; const rows=[]; for(let i=1;i<=m;i++){ const intv=s*r,cap=cuo-intv; s=Math.max(0,s-cap); rows.push({mes:i,cuota:cuo,capital:cap,interes:intv,saldo:s}); } return rows; }
   function LnMonthsElapsed(fecha){ if(!fecha) return 0; try{ const d=new Date(fecha+'T00:00:00'); const now=new Date(); let m=(now.getFullYear()-d.getFullYear())*12+(now.getMonth()-d.getMonth()); return Math.max(0,m); }catch(_){ return 0; } }
+  function eh(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 
+  // ── Storage ───────────────────────────────────────────────
   window.LnGetLoans=function(){ try{ const a=JSON.parse(localStorage.getItem('fa_loans')||'[]'); return Array.isArray(a)?a:[]; }catch(_){ return []; } };
   function LnSave(arr){ localStorage.setItem('fa_loans',JSON.stringify(arr)); }
   window.LnDelete=function(id){ if(!confirm('¿Eliminar este producto?')) return; LnSave(LnGetLoans().filter(x=>x.id!==id)); LnRenderPrestamos(); };
 
+  // ── Modal helpers ─────────────────────────────────────────
   window.LnOpenM=function(id){ document.getElementById(id).classList.add('on'); };
   window.LnCloseM=function(id){ document.getElementById(id).classList.remove('on'); };
-  window.LnOpenAdd=function(){ LnSetTipo('prestamo'); ['lnf-nombre','lnf-cap','lnf-tin','lnf-plazo','lnf-ent','lnf-fecha','lnfh-nombre','lnfh-cap','lnfh-tin','lnfh-plazo','lnfh-ent','lnfh-fecha','lnfc-nombre','lnfc-lim','lnfc-disp','lnfc-tin','lnfc-ent'].forEach(i=>{const e=document.getElementById(i);if(e)e.value='';}); document.getElementById('lnModalPrev').style.display='none'; document.getElementById('lnModalHipPrev').style.display='none'; document.getElementById('lnModalCredPrev').style.display='none'; LnOpenM('lnm-add'); };
+  window.LnOpenAdd=function(){
+    LnSetTipo('prestamo');
+    ['lnf-nombre','lnf-cap','lnf-tin','lnf-plazo','lnf-ent','lnf-fecha',
+     'lnfh-nombre','lnfh-cap','lnfh-tin','lnfh-plazo','lnfh-ent','lnfh-fecha',
+     'lnfc-nombre','lnfc-lim','lnfc-disp','lnfc-tin','lnfc-ent'].forEach(i=>{const e=document.getElementById(i);if(e)e.value='';});
+    ['lnModalPrev','lnModalHipPrev','lnModalCredPrev'].forEach(i=>{const e=document.getElementById(i);if(e)e.style.display='none';});
+    // Reset pignoration
+    window._lnPignActive=false; window._lnPignRatio=2;
+    const tog=document.getElementById('lnPignToggle'); if(tog)tog.classList.remove('active');
+    const body=document.getElementById('lnPignBody'); if(body)body.style.display='none';
+    const rows=document.getElementById('lnPignRows'); if(rows)rows.innerHTML='';
+    const calc=document.getElementById('lnPignCalc'); if(calc)calc.style.display='none';
+    LnSetPignRatio(2);
+    LnOpenM('lnm-add');
+  };
 
+  // ── Calculator ────────────────────────────────────────────
   window.LnSetCalcMode=function(mode){ document.getElementById('lnCalcP').style.display=mode==='prestamo'?'':'none'; document.getElementById('lnCalcC').style.display=mode==='credito'?'':'none'; document.getElementById('lnCalcTabP').classList.toggle('active',mode==='prestamo'); document.getElementById('lnCalcTabC').classList.toggle('active',mode==='credito'); if(mode==='prestamo')LnUpdateCalc(); else LnUpdateCalcCredito(); };
-  window.LnUpdateCalc=function(){ const c=parseFloat(document.getElementById('lnc-cap').value)||0,t=parseFloat(document.getElementById('lnc-tin').value)||0,m=parseInt(document.getElementById('lnc-meses').value)||0; if(!(c>0)||!(t>0)||!(m>0)){['lnr-cuota','lnr-int','lnr-total','lnr-tae'].forEach(id=>document.getElementById(id).textContent='—');return;} const cuo=LnCalcCuota(c,t,m),tot=cuo*m,intt=tot-c,tae=LnCalcTAE(t,0,c,m); document.getElementById('lnr-cuota').textContent=LnFmt(cuo); document.getElementById('lnr-int').textContent=LnFmt(intt); document.getElementById('lnr-total').textContent=LnFmt(tot); document.getElementById('lnr-tae').textContent=LnFmtPct(tae); };
+  window.LnUpdateCalc=function(){ const c=parseFloat(document.getElementById('lnc-cap').value)||0,t=parseFloat(document.getElementById('lnc-tin').value)||0,m=parseInt(document.getElementById('lnc-meses').value)||0; if(!(c>0)||!(t>0)||!(m>0)){['lnr-cuota','lnr-int','lnr-total','lnr-tae'].forEach(id=>document.getElementById(id).textContent='—');return;} const cuo=LnCalcCuota(c,t,m),tot=cuo*m,intt=tot-c,tae=LnCalcTAE(t,0,c,m); document.getElementById('lnr-cuota').textContent=LnFmt(cuo); document.getElementById('lnr-int').textContent=LnFmt(intt); document.getElementById('lnr-total').textContent=LnFmt(tot); document.getElementById('lnr-tae').textContent=LnFmtPctPlain(tae); };
   window.LnUpdateCalcCredito=function(){ const l=parseFloat(document.getElementById('lncc-lim').value)||0,d=parseFloat(document.getElementById('lncc-disp').value)||0,t=parseFloat(document.getElementById('lncc-tin').value)||0; if(!d||!t){['lncc-r-int','lncc-r-min','lncc-r-anual','lncc-r-disp'].forEach(id=>document.getElementById(id).textContent='—');return;} const im=d*(t/100/12),cm=Math.max(im,d*0.03),an=im*12,dp=Math.max(0,l-d); document.getElementById('lncc-r-int').textContent=LnFmt(im); document.getElementById('lncc-r-min').textContent=LnFmt(cm); document.getElementById('lncc-r-anual').textContent=LnFmt(an); document.getElementById('lncc-r-disp').textContent=LnFmt(dp); };
 
-  window.LnSetTipo=function(tipo){ document.getElementById('lnFormP').style.display=tipo==='prestamo'?'':'none'; document.getElementById('lnFormH').style.display=tipo==='hipoteca'?'':'none'; document.getElementById('lnFormC').style.display=tipo==='credito'?'':'none'; document.getElementById('lnTypeP').classList.toggle('active',tipo==='prestamo'); document.getElementById('lnTypeH').classList.toggle('active',tipo==='hipoteca'); document.getElementById('lnTypeC').classList.toggle('active',tipo==='credito'); window._lnAddTipo=tipo; };
-  window.LnUpdateModalPrev=function(){ const c=parseFloat(document.getElementById('lnf-cap').value)||0,t=parseFloat(document.getElementById('lnf-tin').value)||0,m=parseInt(document.getElementById('lnf-plazo').value)||0; const p=document.getElementById('lnModalPrev'); if(!(c>0)||!(t>0)||!(m>0)){p.style.display='none';return;} p.style.display='block'; const cuo=LnCalcCuota(c,t,m),intt=cuo*m-c,tae=LnCalcTAE(t,0,c,m); document.getElementById('lnmp-cuota').textContent=LnFmt(cuo); document.getElementById('lnmp-int').textContent=LnFmt(intt); document.getElementById('lnmp-tae').textContent=LnFmtPct(tae); };
-  window.LnUpdateModalHipPrev=function(){ const c=parseFloat(document.getElementById('lnfh-cap').value)||0,t=parseFloat(document.getElementById('lnfh-tin').value)||0,a=parseInt(document.getElementById('lnfh-plazo').value)||0,m=a*12; const p=document.getElementById('lnModalHipPrev'); if(!(c>0)||!(t>0)||!(m>0)){p.style.display='none';return;} p.style.display='block'; const cuo=LnCalcCuota(c,t,m),intt=cuo*m-c; document.getElementById('lnmhp-cuota').textContent=LnFmt(cuo); document.getElementById('lnmhp-int').textContent=LnFmt(intt); document.getElementById('lnmhp-total').textContent=LnFmt(cuo*m); };
-  window.LnUpdateModalCredPrev=function(){ const l=parseFloat(document.getElementById('lnfc-lim').value)||0,d=parseFloat(document.getElementById('lnfc-disp').value)||0,t=parseFloat(document.getElementById('lnfc-tin').value)||0; const p=document.getElementById('lnModalCredPrev'); if(!t||(!d&&!l)){p.style.display='none';return;} p.style.display='block'; const im=d*(t/100/12),cm=Math.max(im,d*0.03),dp=Math.max(0,l-d); document.getElementById('lnmcp-int').textContent=LnFmt(im); document.getElementById('lnmcp-min').textContent=LnFmt(cm); document.getElementById('lnmcp-disp').textContent=LnFmt(dp); };
+  // ── Tipo selector ─────────────────────────────────────────
+  window.LnSetTipo=function(tipo){
+    document.getElementById('lnFormP').style.display=tipo==='prestamo'?'':'none';
+    document.getElementById('lnFormH').style.display=tipo==='hipoteca'?'':'none';
+    document.getElementById('lnFormC').style.display=tipo==='credito'?'':'none';
+    document.getElementById('lnTypeP').classList.toggle('active',tipo==='prestamo');
+    document.getElementById('lnTypeH').classList.toggle('active',tipo==='hipoteca');
+    document.getElementById('lnTypeC').classList.toggle('active',tipo==='credito');
+    window._lnAddTipo=tipo;
+    // Auto-set ratio: préstamo/hipoteca → x2, crédito → x1
+    LnSetPignRatio(tipo==='credito'?1:2);
+  };
+  window.LnUpdateModalPrev=function(){ const c=parseFloat(document.getElementById('lnf-cap').value)||0,t=parseFloat(document.getElementById('lnf-tin').value)||0,m=parseInt(document.getElementById('lnf-plazo').value)||0; const p=document.getElementById('lnModalPrev'); if(!(c>0)||!(t>0)||!(m>0)){p.style.display='none';return;} p.style.display='block'; const cuo=LnCalcCuota(c,t,m),intt=cuo*m-c,tae=LnCalcTAE(t,0,c,m); document.getElementById('lnmp-cuota').textContent=LnFmt(cuo); document.getElementById('lnmp-int').textContent=LnFmt(intt); document.getElementById('lnmp-tae').textContent=LnFmtPctPlain(tae); LnUpdatePignCalc(); };
+  window.LnUpdateModalHipPrev=function(){ const c=parseFloat(document.getElementById('lnfh-cap').value)||0,t=parseFloat(document.getElementById('lnfh-tin').value)||0,a=parseInt(document.getElementById('lnfh-plazo').value)||0,m=a*12; const p=document.getElementById('lnModalHipPrev'); if(!(c>0)||!(t>0)||!(m>0)){p.style.display='none';return;} p.style.display='block'; const cuo=LnCalcCuota(c,t,m),intt=cuo*m-c; document.getElementById('lnmhp-cuota').textContent=LnFmt(cuo); document.getElementById('lnmhp-int').textContent=LnFmt(intt); document.getElementById('lnmhp-total').textContent=LnFmt(cuo*m); LnUpdatePignCalc(); };
+  window.LnUpdateModalCredPrev=function(){ const l=parseFloat(document.getElementById('lnfc-lim').value)||0,d=parseFloat(document.getElementById('lnfc-disp').value)||0,t=parseFloat(document.getElementById('lnfc-tin').value)||0; const p=document.getElementById('lnModalCredPrev'); if(!t||(!d&&!l)){p.style.display='none';return;} p.style.display='block'; const im=d*(t/100/12),cm=Math.max(im,d*0.03),dp=Math.max(0,l-d); document.getElementById('lnmcp-int').textContent=LnFmt(im); document.getElementById('lnmcp-min').textContent=LnFmt(cm); document.getElementById('lnmcp-disp').textContent=LnFmt(dp); LnUpdatePignCalc(); };
 
-  window.LnSaveNew=function(){ const tipo=window._lnAddTipo||'prestamo'; const loans=LnGetLoans(); const id='ln'+Date.now(); if(tipo==='prestamo'){ const cap=parseFloat(document.getElementById('lnf-cap').value)||0,tin=parseFloat(document.getElementById('lnf-tin').value)||0,meses=parseInt(document.getElementById('lnf-plazo').value)||0; if(!cap||!tin||!meses){alert('Completa capital, TAE y plazo.');return;} loans.push({id,tipo:'prestamo',nombre:document.getElementById('lnf-nombre').value||'Préstamo',entidad:document.getElementById('lnf-ent').value||'',kind:document.getElementById('lnf-tipo').value,cap,tin,meses,fecha:document.getElementById('lnf-fecha').value||''}); } else if(tipo==='hipoteca'){ const cap=parseFloat(document.getElementById('lnfh-cap').value)||0,tin=parseFloat(document.getElementById('lnfh-tin').value)||0,anos=parseInt(document.getElementById('lnfh-plazo').value)||0,meses=anos*12; if(!cap||!tin||!meses){alert('Completa capital, TAE y plazo.');return;} loans.push({id,tipo:'prestamo',nombre:document.getElementById('lnfh-nombre').value||'Hipoteca',entidad:document.getElementById('lnfh-ent').value||'',kind:document.getElementById('lnfh-tipo').value+' · Hipoteca',cap,tin,meses,fecha:document.getElementById('lnfh-fecha').value||''}); } else { const lim=parseFloat(document.getElementById('lnfc-lim').value)||0,disp=parseFloat(document.getElementById('lnfc-disp').value)||0,tin=parseFloat(document.getElementById('lnfc-tin').value)||0; if(!tin||(!disp&&!lim)){alert('Completa límite/dispuesto y TAE.');return;} loans.push({id,tipo:'credito',nombre:document.getElementById('lnfc-nombre').value||'Crédito',entidad:document.getElementById('lnfc-ent').value||'',kind:document.getElementById('lnfc-tipo').value,lim,disp,tin}); } LnSave(loans); LnCloseM('lnm-add'); LnRenderPrestamos(); };
+  // ── Pignoration ───────────────────────────────────────────
+  window._lnPignActive=false; window._lnPignRatio=2;
 
-  window.LnShowAmort=function(id){ const loan=LnGetLoans().find(x=>x.id===id); if(!loan||loan.tipo!=='prestamo') return; document.getElementById('lnAmortTitle').textContent='Tabla amortización · '+loan.nombre; const sched=LnBuildSchedule(loan.cap,loan.tin,loan.meses); const elapsed=Math.min(LnMonthsElapsed(loan.fecha),loan.meses); document.getElementById('lnAmortMeta').innerHTML=`<div class="lm" style="flex:1"><div class="lm-l">Capital</div><div class="lm-v">${LnFmt(loan.cap)}</div></div><div class="lm" style="flex:1"><div class="lm-l">TIN</div><div class="lm-v">${LnFmtPct(loan.tin)}</div></div><div class="lm" style="flex:1"><div class="lm-l">Plazo</div><div class="lm-v">${loan.meses} meses</div></div><div class="lm" style="flex:1"><div class="lm-l">Cuota</div><div class="lm-v">${LnFmt(LnCalcCuota(loan.cap,loan.tin,loan.meses))}</div></div>`; const slice=sched.slice(elapsed,elapsed+12); const body=document.getElementById('lnAmortBody'); body.innerHTML=slice.map(r=>`<tr><td>${r.mes}</td><td>${LnFmt(r.cuota)}</td><td style="color:var(--green)">${LnFmt(r.capital)}</td><td style="color:var(--red)">${LnFmt(r.interes)}</td><td>${LnFmt(r.saldo)}</td></tr>`).join(''); LnOpenM('lnm-amort'); };
+  window.LnTogglePign=function(){
+    window._lnPignActive=!window._lnPignActive;
+    document.getElementById('lnPignToggle').classList.toggle('active',window._lnPignActive);
+    document.getElementById('lnPignBody').style.display=window._lnPignActive?'':'none';
+    LnUpdatePignCalc();
+  };
 
+  window.LnSetPignRatio=function(r){
+    window._lnPignRatio=r;
+    const r2=document.getElementById('lnPignR2'); if(r2)r2.classList.toggle('active',r===2);
+    const r1=document.getElementById('lnPignR1'); if(r1)r1.classList.toggle('active',r===1);
+    LnUpdatePignCalc();
+  };
+
+  window.LnAddPignRow=function(){
+    const container=document.getElementById('lnPignRows');
+    const idx=container.children.length;
+    const portAssets=(typeof assets!=='undefined')?assets.filter(a=>a.quantity>0):[];
+    const opts=portAssets.map(a=>`<option value="${eh(a.isin)}" data-price="${a.currentPrice}" data-buy="${a.buyPrice}" data-max="${a.quantity}" data-name="${eh(a.name)}">${eh(a.name)} (${a.isin})</option>`).join('');
+    const row=document.createElement('div');
+    row.className='pign-asset-row';
+    row.innerHTML=`<select class="ln-fi" style="font-size:12px;padding:8px 10px" onchange="LnAutoFillPignQty(this)"><option value="">— Activo —</option>${opts}</select><input class="ln-fi" type="number" min="0.001" step="any" placeholder="Títulos" style="font-size:12px;padding:8px 10px" oninput="LnUpdatePignCalc()"/><button onclick="this.parentElement.remove();LnUpdatePignCalc()" style="background:none;border:none;color:var(--red);cursor:pointer;font-size:18px;padding:0;line-height:1">✕</button>`;
+    container.appendChild(row);
+  };
+
+  window.LnAutoFillPignQty=function(sel){
+    const row=sel.closest('.pign-asset-row');
+    const opt=sel.selectedOptions[0];
+    if(opt&&opt.dataset.max){ row.querySelector('input[type="number"]').value=opt.dataset.max; }
+    LnUpdatePignCalc();
+  };
+
+  window.LnUpdatePignCalc=function(){
+    if(!window._lnPignActive) return;
+    const rows=document.querySelectorAll('#lnPignRows .pign-asset-row');
+    let valorCol=0;
+    rows.forEach(row=>{
+      const sel=row.querySelector('select'); const inp=row.querySelector('input[type="number"]');
+      const isin=sel?.value; const titulos=parseFloat(inp?.value)||0;
+      if(!isin||!titulos) return;
+      const a=(typeof assets!=='undefined')?assets.find(x=>x.isin===isin):null;
+      const precio=a?.currentPrice||parseFloat(sel.selectedOptions[0]?.dataset.price)||0;
+      valorCol+=titulos*precio;
+    });
+    const tipo=window._lnAddTipo||'prestamo';
+    let deuda=0;
+    if(tipo==='prestamo') deuda=parseFloat(document.getElementById('lnf-cap')?.value)||0;
+    else if(tipo==='hipoteca') deuda=parseFloat(document.getElementById('lnfh-cap')?.value)||0;
+    else deuda=parseFloat(document.getElementById('lnfc-disp')?.value)||0;
+    const garantia=deuda*(window._lnPignRatio||2);
+    const margen=valorCol-garantia;
+    const cob=garantia>0?(valorCol/garantia*100):0;
+    const calc=document.getElementById('lnPignCalc');
+    if(!calc) return;
+    if(rows.length===0||valorCol===0){calc.style.display='none';return;}
+    calc.style.display='';
+    document.getElementById('lnPc-col').textContent=LnFmt(valorCol);
+    document.getElementById('lnPc-gar').textContent=garantia>0?LnFmt(garantia):'—';
+    const me=document.getElementById('lnPc-margen'); me.textContent=LnFmt(margen); me.style.color=margen>=0?'var(--green)':'var(--red)';
+    const ce=document.getElementById('lnPc-cob'); ce.textContent=garantia>0?cob.toFixed(1)+'%':'—'; ce.style.color=cob>=110?'var(--green)':cob>=100?'#a16207':'var(--red)';
+  };
+
+  // ── Save new loan ─────────────────────────────────────────
+  window.LnSaveNew=function(){
+    const tipo=window._lnAddTipo||'prestamo';
+    const loans=LnGetLoans();
+    const id='ln'+Date.now();
+    // Collect pignoration data
+    let pignData={};
+    if(window._lnPignActive){
+      const pignRows=document.querySelectorAll('#lnPignRows .pign-asset-row');
+      const colateral=[];
+      pignRows.forEach(row=>{
+        const sel=row.querySelector('select'); const inp=row.querySelector('input[type="number"]');
+        const isin=sel?.value; const titulos=parseFloat(inp?.value)||0;
+        if(!isin||!titulos) return;
+        const a=(typeof assets!=='undefined')?assets.find(x=>x.isin===isin):null;
+        const opt=sel.selectedOptions[0];
+        colateral.push({isin,nombre:a?.name||opt?.dataset.name||isin,titulos,precioCompra:a?.buyPrice||parseFloat(opt?.dataset.buy)||0,precioRef:a?.currentPrice||parseFloat(opt?.dataset.price)||0});
+      });
+      pignData={pignorada:true,colateral,ratioGarantia:window._lnPignRatio||2};
+    }
+    if(tipo==='prestamo'){
+      const cap=parseFloat(document.getElementById('lnf-cap').value)||0,tin=parseFloat(document.getElementById('lnf-tin').value)||0,meses=parseInt(document.getElementById('lnf-plazo').value)||0;
+      if(!cap||!tin||!meses){alert('Completa capital, TAE y plazo.');return;}
+      loans.push({id,tipo:'prestamo',nombre:document.getElementById('lnf-nombre').value||'Préstamo',entidad:document.getElementById('lnf-ent').value||'',kind:document.getElementById('lnf-tipo').value,cap,tin,meses,fecha:document.getElementById('lnf-fecha').value||'',...pignData});
+    } else if(tipo==='hipoteca'){
+      const cap=parseFloat(document.getElementById('lnfh-cap').value)||0,tin=parseFloat(document.getElementById('lnfh-tin').value)||0,anos=parseInt(document.getElementById('lnfh-plazo').value)||0,meses=anos*12;
+      if(!cap||!tin||!meses){alert('Completa capital, TAE y plazo.');return;}
+      loans.push({id,tipo:'prestamo',nombre:document.getElementById('lnfh-nombre').value||'Hipoteca',entidad:document.getElementById('lnfh-ent').value||'',kind:document.getElementById('lnfh-tipo').value+' · Hipoteca',cap,tin,meses,fecha:document.getElementById('lnfh-fecha').value||'',...pignData});
+    } else {
+      const lim=parseFloat(document.getElementById('lnfc-lim').value)||0,disp=parseFloat(document.getElementById('lnfc-disp').value)||0,tin=parseFloat(document.getElementById('lnfc-tin').value)||0;
+      if(!tin||(!disp&&!lim)){alert('Completa límite/dispuesto y TAE.');return;}
+      loans.push({id,tipo:'credito',nombre:document.getElementById('lnfc-nombre').value||'Crédito',entidad:document.getElementById('lnfc-ent').value||'',kind:document.getElementById('lnfc-tipo').value,lim,disp,tin,...pignData});
+    }
+    LnSave(loans); LnCloseM('lnm-add'); LnRenderPrestamos();
+  };
+
+  // ── Amortización table ────────────────────────────────────
+  window.LnShowAmort=function(id){ const loan=LnGetLoans().find(x=>x.id===id); if(!loan||loan.tipo!=='prestamo') return; document.getElementById('lnAmortTitle').textContent='Tabla amortización · '+loan.nombre; const sched=LnBuildSchedule(loan.cap,loan.tin,loan.meses); const elapsed=Math.min(LnMonthsElapsed(loan.fecha),loan.meses); document.getElementById('lnAmortMeta').innerHTML=`<div class="lm" style="flex:1"><div class="lm-l">Capital</div><div class="lm-v">${LnFmt(loan.cap)}</div></div><div class="lm" style="flex:1"><div class="lm-l">TIN</div><div class="lm-v">${LnFmtPctPlain(loan.tin)}</div></div><div class="lm" style="flex:1"><div class="lm-l">Plazo</div><div class="lm-v">${loan.meses} meses</div></div><div class="lm" style="flex:1"><div class="lm-l">Cuota</div><div class="lm-v">${LnFmt(LnCalcCuota(loan.cap,loan.tin,loan.meses))}</div></div>`; const slice=sched.slice(elapsed,elapsed+12); const body=document.getElementById('lnAmortBody'); body.innerHTML=slice.map(r=>`<tr><td>${r.mes}</td><td>${LnFmt(r.cuota)}</td><td style="color:var(--green)">${LnFmt(r.capital)}</td><td style="color:var(--red)">${LnFmt(r.interes)}</td><td>${LnFmt(r.saldo)}</td></tr>`).join(''); LnOpenM('lnm-amort'); };
+
+  // ── Render pignoration section ────────────────────────────
+  function LnPignCards(loans){
+    const pigned=loans.filter(l=>l.pignorada&&l.colateral?.length);
+    const sec=document.getElementById('lnPignSection');
+    const cards=document.getElementById('lnPignCards');
+    const sub=document.getElementById('lnPignSubtitle');
+    if(!sec||!cards) return {totalColat:0,cobSum:0,cobCount:0};
+    if(!pigned.length){sec.style.display='none';return {totalColat:0,cobSum:0,cobCount:0};}
+    sec.style.display='';
+    let totalColat=0,cobSum=0,cobCount=0;
+    cards.innerHTML=pigned.map(l=>{
+      const isPrest=l.tipo==='prestamo';
+      const sched=isPrest?LnBuildSchedule(l.cap,l.tin,l.meses):null;
+      const elapsed=isPrest?Math.min(LnMonthsElapsed(l.fecha),l.meses):0;
+      const deuda=isPrest?(elapsed>0?(sched[elapsed-1]?.saldo??l.cap):l.cap):l.disp;
+      const ratio=l.ratioGarantia||2;
+      const garantia=deuda*ratio;
+      let valorIni=0,valorAct=0;
+      const rows=l.colateral.map(c=>{
+        const live=(typeof assets!=='undefined')?assets.find(a=>a.isin===c.isin):null;
+        const precioAct=live?.currentPrice??c.precioRef??0;
+        const precioComp=c.precioCompra||0;
+        const vIni=c.titulos*precioComp; const vAct=c.titulos*precioAct;
+        const diff=vAct-vIni; const pct=vIni>0?(diff/vIni*100):0;
+        valorIni+=vIni; valorAct+=vAct;
+        return `<tr><td>${eh(c.nombre||c.isin)}<div style="font-size:9px;color:var(--muted2)">${c.isin}</div></td><td style="text-align:right">${c.titulos.toLocaleString('es-ES',{maximumFractionDigits:4})}</td><td style="text-align:right">${precioComp>0?LnFmt(precioComp):'—'}</td><td style="text-align:right">${LnFmt(precioAct)}</td><td style="text-align:right">${precioComp>0?LnFmt(vIni):'—'}</td><td style="text-align:right">${LnFmt(vAct)}</td><td style="text-align:right;color:${diff>=0?'var(--green)':'var(--red)'}">${precioComp>0?LnFmt(diff):'—'}</td><td style="text-align:right;font-weight:800;color:${pct>=0?'var(--green)':'var(--red)'}">${precioComp>0?LnFmtPct(pct):'—'}</td></tr>`;
+      }).join('');
+      const diffTotal=valorAct-valorIni; const pctTotal=valorIni>0?(diffTotal/valorIni*100):0;
+      const margenGar=valorAct-garantia; const cob=garantia>0?(valorAct/garantia*100):0;
+      const fill=Math.min(100,cob).toFixed(1);
+      const fc=cob>=110?'var(--green)':cob>=100?'#ca8a04':'var(--red)';
+      const st=cob>=110?'ok':cob>=100?'warn':'danger';
+      const sl=cob>=110?'✅ CUBIERTO':cob>=100?'⚠️ AJUSTADO':'🔴 RIESGO';
+      totalColat+=valorAct; cobSum+=cob; cobCount++;
+      return `<div class="pign-card">
+        <div class="pign-card-hdr">
+          <div><div style="font-size:14px;font-weight:800;margin-bottom:2px">${eh(l.nombre)}</div><div style="font-size:11px;color:var(--muted)">${eh(l.entidad||'—')} · Deuda pendiente: <strong>${LnFmt(deuda)}</strong></div></div>
+          <div style="display:flex;gap:6px;align-items:center"><span class="pign-badge">🔒 PIGNORADO x${ratio}</span><span style="font-size:10px;color:var(--muted2)">${l.tipo==='credito'?'CRÉDITO':'PRÉSTAMO'}</span></div>
+        </div>
+        <div class="pign-tbl-wrap">
+          <table class="pign-tbl">
+            <thead><tr><th style="text-align:left">Fondo / ETF</th><th>Nº Tít.</th><th>P. Compra</th><th>P. Actual</th><th>Valor Inicial</th><th>Valor Actual</th><th>Diferencia</th><th>Margen</th></tr></thead>
+            <tbody>${rows}</tbody>
+            <tfoot><tr class="pign-total"><td>TOTAL</td><td></td><td></td><td></td><td>${valorIni>0?LnFmt(valorIni):'—'}</td><td>${LnFmt(valorAct)}</td><td style="color:${diffTotal>=0?'var(--green)':'var(--red)'}">${valorIni>0?LnFmt(diffTotal):'—'}</td><td style="color:${pctTotal>=0?'var(--green)':'var(--red)'}">${valorIni>0?LnFmtPct(pctTotal):'—'}</td></tr></tfoot>
+          </table>
+        </div>
+        <div class="pign-summary">
+          <div class="lm"><div class="lm-l">Colateral actual</div><div class="lm-v">${LnFmt(valorAct)}</div></div>
+          <div class="lm"><div class="lm-l">Garantía nec. (×${ratio})</div><div class="lm-v">${LnFmt(garantia)}</div></div>
+          <div class="lm"><div class="lm-l">Margen garantía</div><div class="lm-v" style="color:${margenGar>=0?'var(--green)':'var(--red)'}">${LnFmt(margenGar)}</div></div>
+          <div class="lm"><div class="lm-l">Cobertura</div><div class="lm-v" style="color:${fc}">${cob.toFixed(1)}%</div></div>
+        </div>
+        <div class="pign-cov-bar"><div class="pign-cov-fill" style="width:${fill}%;background:${fc}"></div></div>
+        <div class="pign-status-row"><span class="pign-status ${st}">${sl}</span><span style="font-size:10px;color:var(--muted2)">Cobertura ${cob.toFixed(1)}% · necesario ${(ratio*100).toFixed(0)}% · ${cob>=ratio*100?'excedente':'déficit'} ${LnFmt(Math.abs(margenGar))}</span></div>
+      </div>`;
+    }).join('');
+    if(sub) sub.textContent=`${pigned.length} producto${pigned.length!==1?'s':''} pignorado${pigned.length!==1?'s':''}`;
+    return {totalColat,cobSum,cobCount};
+  }
+
+  // ── Main render ───────────────────────────────────────────
   window.LnRenderPrestamos=function(){
     const loans=LnGetLoans();
     const listEl=document.getElementById('lnList'); if(!listEl) return;
     let debt=0,monthly=0,interest=0,tinW=0,tinB=0;
     const cards=loans.map(l=>{
+      const pignBadge=l.pignorada?`<span style="background:#dcfce7;color:#15803d;font-size:9px;font-weight:800;padding:2px 7px;border-radius:5px;margin-left:6px">🔒 PIGNORADO</span>`:'';
       if(l.tipo==='prestamo'){
         const sched=LnBuildSchedule(l.cap,l.tin,l.meses); const elapsed=Math.min(LnMonthsElapsed(l.fecha),l.meses);
         const pending=elapsed>0?(sched[elapsed-1]?.saldo??l.cap):l.cap; const cuo=LnCalcCuota(l.cap,l.tin,l.meses);
         const remInt=sched.slice(elapsed).reduce((s,r)=>s+r.interes,0); const amortPct=l.cap>0?((l.cap-pending)/l.cap*100):0;
         const tae=LnCalcTAE(l.tin,l.com,l.cap,l.meses);
         debt+=pending; monthly+=cuo; interest+=remInt; tinW+=l.tin*pending; tinB+=pending;
-        const ico=l.kind==='Hipoteca'?'🏠':l.kind==='Coche'?'🚗':l.kind==='Estudios'?'🎓':'⏱';
+        const ico=l.kind?.includes('Hipoteca')?'🏠':l.kind==='Coche'?'🚗':l.kind==='Estudios'?'🎓':'⏱';
         return `<div class="loan-card">
-          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px"><span class="badge" style="background:var(--ga);color:var(--green);border:1px solid rgba(26,122,66,.2);font-size:9px;font-weight:700;padding:2px 7px;border-radius:5px">${(l.kind||'PRÉSTAMO').toUpperCase()}</span><button class="btn-sm" onclick="LnDelete('${l.id}')" style="color:var(--red)">Eliminar</button></div>
-          <div class="loan-card-hdr"><div class="loan-icon">${ico}</div><div class="loan-card-hdr-info"><h3>${l.nombre}</h3><p>${l.entidad||'—'}</p></div></div>
-          <div class="loan-metrics"><div class="lm"><div class="lm-l">Capital</div><div class="lm-v">${LnFmt(l.cap)}</div></div><div class="lm"><div class="lm-l">Pendiente</div><div class="lm-v">${LnFmt(pending)}</div></div><div class="lm"><div class="lm-l">TIN</div><div class="lm-v">${LnFmtPct(l.tin)}</div></div><div class="lm"><div class="lm-l">TAE</div><div class="lm-v">${LnFmtPct(tae)}</div></div></div>
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px"><div><span class="badge" style="background:var(--ga);color:var(--green);border:1px solid rgba(26,122,66,.2);font-size:9px;font-weight:700;padding:2px 7px;border-radius:5px">${(l.kind||'PRÉSTAMO').toUpperCase()}</span>${pignBadge}</div><button class="btn-sm" onclick="LnDelete('${l.id}')" style="color:var(--red)">Eliminar</button></div>
+          <div class="loan-card-hdr"><div class="loan-icon">${ico}</div><div class="loan-card-hdr-info"><h3>${eh(l.nombre)}</h3><p>${eh(l.entidad||'—')}</p></div></div>
+          <div class="loan-metrics"><div class="lm"><div class="lm-l">Capital</div><div class="lm-v">${LnFmt(l.cap)}</div></div><div class="lm"><div class="lm-l">Pendiente</div><div class="lm-v">${LnFmt(pending)}</div></div><div class="lm"><div class="lm-l">TIN</div><div class="lm-v">${LnFmtPctPlain(l.tin)}</div></div><div class="lm"><div class="lm-l">TAE</div><div class="lm-v">${LnFmtPctPlain(tae)}</div></div></div>
           <div class="cuota-row"><span class="cuota-label">Cuota mensual</span><span class="cuota-val">${LnFmt(cuo)} / mes</span></div>
           <div class="prog-label">Amortizado ${amortPct.toFixed(1)}% · ${elapsed} de ${l.meses} meses · ${Math.max(0,l.meses-elapsed)} restantes</div>
           <div class="sbar"><div class="sf" style="width:${Math.min(100,amortPct).toFixed(1)}%;background:var(--green)"></div></div>
-          <div class="loan-footer"><div class="loan-footer-info">${l.fecha?'📅 '+l.fecha+' · ':''}${l.entidad||''}</div><button class="btn-sm" onclick="LnShowAmort('${l.id}')">Ver tabla</button></div>
+          <div class="loan-footer"><div class="loan-footer-info">${l.fecha?'📅 '+l.fecha+' · ':''}${eh(l.entidad||'')}</div><button class="btn-sm" onclick="LnShowAmort('${l.id}')">Ver tabla</button></div>
         </div>`;
       } else {
         const im=l.disp*(l.tin/100/12),cm=Math.max(im,l.disp*0.03),disp=Math.max(0,l.lim-l.disp),util=l.lim>0?(l.disp/l.lim*100):0;
         debt+=l.disp; monthly+=cm; interest+=im*12; tinW+=l.tin*l.disp; tinB+=l.disp;
         const isRev=(l.kind||'').toLowerCase().includes('revolv');
         return `<div class="loan-card">
-          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px"><span class="badge" style="background:#fff8e1;color:var(--gold);border:1px solid rgba(154,111,0,.2);font-size:9px;font-weight:700;padding:2px 7px;border-radius:5px">${(l.kind||'CRÉDITO').toUpperCase()}</span><button class="btn-sm" onclick="LnDelete('${l.id}')" style="color:var(--red)">Eliminar</button></div>
-          <div class="loan-card-hdr"><div class="loan-icon">💳</div><div class="loan-card-hdr-info"><h3>${l.nombre}</h3><p>${l.entidad||'—'}</p></div></div>
-          <div class="loan-metrics"><div class="lm"><div class="lm-l">Límite</div><div class="lm-v">${LnFmt(l.lim)}</div></div><div class="lm"><div class="lm-l">Dispuesto</div><div class="lm-v" style="color:var(--red)">${LnFmt(l.disp)}</div></div><div class="lm"><div class="lm-l">Disponible</div><div class="lm-v" style="color:var(--green)">${LnFmt(disp)}</div></div><div class="lm"><div class="lm-l">TIN</div><div class="lm-v">${LnFmtPct(l.tin)}</div></div></div>
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px"><div><span class="badge" style="background:#fff8e1;color:var(--gold);border:1px solid rgba(154,111,0,.2);font-size:9px;font-weight:700;padding:2px 7px;border-radius:5px">${(l.kind||'CRÉDITO').toUpperCase()}</span>${pignBadge}</div><button class="btn-sm" onclick="LnDelete('${l.id}')" style="color:var(--red)">Eliminar</button></div>
+          <div class="loan-card-hdr"><div class="loan-icon">💳</div><div class="loan-card-hdr-info"><h3>${eh(l.nombre)}</h3><p>${eh(l.entidad||'—')}</p></div></div>
+          <div class="loan-metrics"><div class="lm"><div class="lm-l">Límite</div><div class="lm-v">${LnFmt(l.lim)}</div></div><div class="lm"><div class="lm-l">Dispuesto</div><div class="lm-v" style="color:var(--red)">${LnFmt(l.disp)}</div></div><div class="lm"><div class="lm-l">Disponible</div><div class="lm-v" style="color:var(--green)">${LnFmt(disp)}</div></div><div class="lm"><div class="lm-l">TIN</div><div class="lm-v">${LnFmtPctPlain(l.tin)}</div></div></div>
           <div class="cuota-row"><span class="cuota-label">Cuota mínima</span><span class="cuota-val" style="color:var(--gold)">${LnFmt(cm)} / mes</span></div>
           <div class="prog-label">Utilización: ${util.toFixed(1)}%</div>
           <div class="sbar"><div class="sf" style="width:${Math.min(100,util).toFixed(1)}%;background:var(--gold)"></div></div>
@@ -3718,8 +3974,13 @@ html,body{height:100%;overflow:hidden;font-family:-apple-system,BlinkMacSystemFo
     }).join('');
     listEl.innerHTML = loans.length ? cards : `<div class="ln-empty"><div style="font-size:30px;margin-bottom:10px">⏱</div><div style="font-size:14px;font-weight:700;color:var(--text);margin-bottom:6px">Sin préstamos ni créditos</div><div style="font-size:12px;margin-bottom:14px">Añade tu hipoteca, préstamo o tarjeta para verlos aquí con su tabla de amortización.</div><button class="btn-main" style="padding:11px 20px;background:#15803d;color:#fff;border:none;border-radius:10px;font-weight:700;cursor:pointer" onclick="LnOpenAdd()">＋ Añadir producto</button></div>`;
     const set=(id,v)=>{const e=document.getElementById(id);if(e)e.textContent=v;};
-    set('lnKpiDebt',LnFmt(debt)); set('lnKpiMonthly',LnFmt(monthly)); set('lnKpiInterest',LnFmt(interest)); set('lnKpiTin',tinB>0?LnFmtPct(tinW/tinB):'—');
+    set('lnKpiDebt',LnFmt(debt)); set('lnKpiMonthly',LnFmt(monthly)); set('lnKpiInterest',LnFmt(interest)); set('lnKpiTin',tinB>0?LnFmtPctPlain(tinW/tinB):'—');
+    // Pignoration section + KPIs
+    const {totalColat,cobSum,cobCount}=LnPignCards(loans);
+    set('lnKpiColat',totalColat>0?LnFmt(totalColat):'—');
+    set('lnKpiCob',cobCount>0?(cobSum/cobCount).toFixed(1)+'%':'—');
   };
+
   // init calculator defaults
   try{ LnUpdateCalc(); LnUpdateCalcCredito(); }catch(_){}
 })();
