@@ -6,7 +6,7 @@
   (served no-cache, version-bumped each deploy). Works even where SW/no-store
   are ignored, because it is plain page JS. */
 (function(){try{
-  var FA_BUILD=window.FA_BUILD='257';
+  var FA_BUILD=window.FA_BUILD='258';
   var s=location.search;
   if(s.indexOf('vchk')>-1||s.indexOf('_v=')>-1){history.replaceState(null,'',location.pathname+(location.hash||''));return;}
   fetch('/sw.js?_='+Date.now(),{cache:'no-store'}).then(function(r){return r.text();}).then(function(t){
@@ -4068,12 +4068,6 @@ html,body{height:100%;overflow:hidden;font-family:-apple-system,BlinkMacSystemFo
 #screen-myinvestor .mi-pct.neg{color:var(--red)}
 #screen-myinvestor .mi-pct.neu{color:var(--muted)}
 #screen-myinvestor .mi-empty{text-align:center;padding:60px 20px;color:var(--muted)}
-#screen-myinvestor .mi-setup{background:var(--surf2);border:1px solid var(--border);border-radius:14px;padding:20px;margin-bottom:20px}
-#screen-myinvestor .mi-setup h4{font-size:14px;font-weight:700;margin-bottom:8px;color:var(--text)}
-#screen-myinvestor .mi-setup p{font-size:12px;color:var(--muted);margin-bottom:12px;line-height:1.5}
-#screen-myinvestor .mi-setup-row{display:flex;gap:8px}
-#screen-myinvestor .mi-url-input{flex:1;padding:8px 12px;border:1px solid var(--border);border-radius:8px;font-size:13px;background:var(--surf);color:var(--text);outline:none}
-#screen-myinvestor .mi-url-input:focus{border-color:var(--green)}
 #screen-myinvestor .mi-stars{color:#f59e0b;font-size:11px}
 #screen-myinvestor .mi-footer{margin-top:12px;font-size:11px;color:var(--muted);display:flex;align-items:center;gap:10px}
 #screen-myinvestor .mi-link{color:var(--green);text-decoration:none;font-size:12px}
@@ -4087,17 +4081,6 @@ html,body{height:100%;overflow:hidden;font-family:-apple-system,BlinkMacSystemFo
 </div>
 
 <div style="padding:20px 24px">
-
-  <!-- Setup card — shown only when no URL configured -->
-  <div class="mi-setup" id="miSetupCard">
-    <h4>⚙️ Configuración — Google Apps Script</h4>
-    <p>Para cargar el catálogo necesitas desplegar el script en Google Apps Script como <strong>Web App</strong> y pegar la URL aquí. El catálogo se actualizará automáticamente cada semana.<br><br>
-    En el editor de Apps Script → Implementar → Nueva implementación → Tipo: App web → Ejecutar como: Yo mismo → Acceso: Cualquier usuario.</p>
-    <div class="mi-setup-row">
-      <input class="mi-url-input" id="miUrlInput" type="text" placeholder="https://script.google.com/macros/s/.../exec" />
-      <button class="btn-main" onclick="MiSaveUrl()" style="white-space:nowrap">Guardar URL</button>
-    </div>
-  </div>
 
   <!-- Toolbar -->
   <div class="mi-toolbar">
@@ -4159,46 +4142,25 @@ html,body{height:100%;overflow:hidden;font-family:-apple-system,BlinkMacSystemFo
 
   window.MiSetTipo=function(t){ _miTipo=t; document.querySelectorAll('#screen-myinvestor .mi-pill').forEach(b=>b.classList.toggle('active',b.dataset.tipo===t)); MiRender(); };
   window.MiSetSort=function(s){ _miSort=s; document.querySelectorAll('#screen-myinvestor .mi-sortbtn').forEach(b=>b.classList.toggle('active',b.dataset.sort===s)); MiRender(); };
-  window.MiSaveUrl=function(){ var v=(document.getElementById('miUrlInput')?.value||'').trim(); if(!v){alert('Pega la URL del Apps Script.');return;} localStorage.setItem('mi_webapp_url',v); document.getElementById('miSetupCard').style.display='none'; MiLoad(true); };
 
   window.MiLoad=function(force){
-    var url=localStorage.getItem('mi_webapp_url');
-    if(!url){ document.getElementById('miSetupCard').style.display=''; return; }
-    document.getElementById('miSetupCard').style.display='none';
+    var MI_API='/api/myinvestor/catalog';
     // Check cache (1 week)
     var cached=localStorage.getItem('mi_cache'); var cachedAt=parseInt(localStorage.getItem('mi_cache_at')||'0');
     if(!force && cached && (Date.now()-cachedAt)<7*24*3600*1000){ try{_miData=JSON.parse(cached);}catch(_){} MiRender(); return; }
     document.getElementById('miReloadBtn').textContent='⏳';
     document.getElementById('miError').textContent='';
-    fetch(url).then(r=>r.json()).then(function(json){
+    fetch(MI_API).then(r=>r.json()).then(function(json){
       var arr=json.products||json.data||json||[];
-      if(!Array.isArray(arr)) throw new Error('Respuesta inesperada');
-      // Normalize headers from sheet (e.g. "Rent. 1A (%)" → rent1a)
-      _miData=arr.map(function(row){
-        var get=function(){ for(var i=0;i<arguments.length;i++){if(row[arguments[i]]!==undefined&&row[arguments[i]]!=='')return row[arguments[i]];} return ''; };
-        return {
-          isin:get('ISIN','isin'),
-          nombre:get('Nombre','nombre','name'),
-          tipo:get('Tipo','tipo'),
-          categoria:get('Categoría','categoria','category'),
-          ter:get('TER (%)','ter','TER'),
-          divisa:get('Divisa','divisa','currency'),
-          replica:get('Réplica','replica'),
-          distribucion:get('Distribución','distribucion'),
-          rent1a:get('Rent. 1A (%)','rent1a','return1Year'),
-          rent3a:get('Rent. 3A (%)','rent3a','return3Year'),
-          rent5a:get('Rent. 5A (%)','rent5a','return5Year'),
-          rating:get('Rating Morningstar','rating'),
-          url:get('URL MyInvestor','url'),
-          updated:get('Actualizado','updated')
-        };
-      });
+      if(!Array.isArray(arr)) throw new Error('Sin datos del catálogo');
+      _miData=arr;
       localStorage.setItem('mi_cache',JSON.stringify(_miData));
       localStorage.setItem('mi_cache_at',String(Date.now()));
-      if(_miData[0]) document.getElementById('miUpdated').textContent='Actualizado: '+(_miData[0].updated||'—');
+      var upd=json.updated?new Date(json.updated).toLocaleDateString('es-ES'):'—';
+      document.getElementById('miUpdated').textContent='Actualizado: '+upd+(json.count?' · '+json.count+' productos':'');
       MiRender();
     }).catch(function(e){
-      document.getElementById('miError').textContent='Error: '+e.message+' · ¿Está desplegado el script?';
+      document.getElementById('miError').textContent='Error cargando catálogo: '+e.message;
     }).finally(function(){
       document.getElementById('miReloadBtn').textContent='↻ Actualizar';
     });
@@ -4231,15 +4193,12 @@ html,body{height:100%;overflow:hidden;font-family:-apple-system,BlinkMacSystemFo
     }).join('');
   };
 
-  // Wire up URL input if already saved
+  // Auto-load on init
   (function init(){
-    var url=localStorage.getItem('mi_webapp_url');
-    if(url){ var el=document.getElementById('miUrlInput'); if(el) el.value=url; document.getElementById('miSetupCard').style.display='none'; }
-    // Try to render from cache immediately
     var cached=localStorage.getItem('mi_cache');
     if(cached){ try{_miData=JSON.parse(cached);}catch(_){} MiRender(); }
     var at=parseInt(localStorage.getItem('mi_cache_at')||'0');
-    if(url && (!at||(Date.now()-at)>7*24*3600*1000)){ MiLoad(true); }
+    if(!at||(Date.now()-at)>7*24*3600*1000){ MiLoad(true); }
   })();
 })();
 </script>
