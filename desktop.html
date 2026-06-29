@@ -6,7 +6,7 @@
   (served no-cache, version-bumped each deploy). Works even where SW/no-store
   are ignored, because it is plain page JS. */
 (function(){try{
-  var FA_BUILD=window.FA_BUILD='250';
+  var FA_BUILD=window.FA_BUILD='251';
   var s=location.search;
   if(s.indexOf('vchk')>-1||s.indexOf('_v=')>-1){history.replaceState(null,'',location.pathname+(location.hash||''));return;}
   fetch('/sw.js?_='+Date.now(),{cache:'no-store'}).then(function(r){return r.text();}).then(function(t){
@@ -3489,11 +3489,16 @@ html,body{height:100%;overflow:hidden;font-family:-apple-system,BlinkMacSystemFo
   #screen-prestamos .calc-result-row span{font-size:11px;color:var(--muted)}
   #screen-prestamos .calc-result-row strong{font-size:13px;font-weight:800;color:var(--green)}
   #screen-prestamos .calc-result-row.total strong{font-size:15px;color:var(--text)}
-  #screen-prestamos .ln-fg{margin-bottom:14px}
-  #screen-prestamos .ln-fl{font-size:10px;color:var(--muted);display:block;margin-bottom:5px;font-weight:600;text-transform:uppercase;letter-spacing:.04em}
-  #screen-prestamos .ln-fi{width:100%;background:var(--surf2);border:1px solid var(--border);border-radius:9px;padding:10px 12px;color:var(--text);font-size:14px;outline:none}
-  #screen-prestamos .ln-fi:focus{border-color:rgba(26,122,66,.4);background:var(--surf)}
-  #screen-prestamos .ln-frow{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  #screen-prestamos .ln-fg,.ln-modal-box .ln-fg{margin-bottom:14px}
+  #screen-prestamos .ln-fl,.ln-modal-box .ln-fl{font-size:10px;color:var(--muted);display:block;margin-bottom:5px;font-weight:600;text-transform:uppercase;letter-spacing:.04em}
+  #screen-prestamos .ln-fi,.ln-modal-box .ln-fi{width:100%;background:var(--surf2);border:1.5px solid var(--border);border-radius:10px;padding:11px 13px;color:var(--text);font-size:14px;outline:none;box-sizing:border-box;transition:border-color .15s,box-shadow .15s}
+  #screen-prestamos .ln-fi:focus,.ln-modal-box .ln-fi:focus{border-color:rgba(26,122,66,.5);box-shadow:0 0 0 3px rgba(26,122,66,.08);background:var(--surf)}
+  #screen-prestamos .ln-frow,.ln-modal-box .ln-frow{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  .ln-modal-box .calc-result{background:linear-gradient(135deg,var(--ga),rgba(26,122,66,.04));border:1px solid rgba(26,122,66,.18);border-radius:12px;padding:14px 16px;margin-top:16px}
+  .ln-modal-box .calc-result-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px}
+  .ln-modal-box .calc-result-row:last-child{margin-bottom:0}
+  .ln-modal-box .calc-result-row span{font-size:11.5px;color:var(--muted)}
+  .ln-modal-box .calc-result-row strong{font-size:13px;font-weight:800;color:var(--green)}
   #screen-prestamos .ln-empty{background:var(--surf);border:1px dashed var(--border);border-radius:14px;padding:34px 18px;text-align:center;color:var(--muted);margin-bottom:12px}
   .ln-modal-ov{position:fixed;inset:0;background:rgba(0,0,0,.25);z-index:200;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:.25s;backdrop-filter:blur(4px)}
   .ln-modal-ov.on{opacity:1;pointer-events:all}

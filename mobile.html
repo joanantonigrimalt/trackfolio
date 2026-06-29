@@ -10,7 +10,7 @@
   no-store headers are ignored (in-app webviews) because it is plain page JS.
   Source of truth = sw.js (always served no-cache, version-bumped each deploy). */
 (function(){try{
-  var FA_BUILD='238';
+  var FA_BUILD='252';
   var s=location.search;
   if(s.indexOf('vchk')>-1||s.indexOf('_v=')>-1){
     // Clean the ugly ?vchk= / ?_v= from the URL silently
@@ -3191,10 +3191,16 @@ table.an-corr-mtx{border-collapse:separate;border-spacing:4px}
   #screen-prestamos .lm-c .v{font-size:13px;font-weight:700;color:var(--text)}
   #screen-prestamos .sbar{height:5px;background:var(--surf3);border-radius:3px;overflow:hidden;margin:6px 0 2px}
   #screen-prestamos .sf{height:100%;border-radius:3px}
-  #screen-prestamos .ln-fg{margin-bottom:12px}
-  #screen-prestamos .ln-fl{font-size:10px;color:var(--muted);display:block;margin-bottom:5px;font-weight:600;text-transform:uppercase;letter-spacing:.04em}
-  #screen-prestamos .ln-fi{width:100%;background:var(--surf2);border:1.5px solid var(--border);border-radius:11px;padding:11px 13px;font-size:15px;color:var(--text);outline:none;-webkit-appearance:none}
-  #screen-prestamos .ln-frow{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+  #screen-prestamos .ln-fg,.modal-sh .ln-fg{margin-bottom:12px}
+  #screen-prestamos .ln-fl,.modal-sh .ln-fl{font-size:10px;color:var(--muted);display:block;margin-bottom:5px;font-weight:600;text-transform:uppercase;letter-spacing:.04em}
+  #screen-prestamos .ln-fi,.modal-sh .ln-fi{width:100%;background:var(--surf2);border:1.5px solid var(--border);border-radius:11px;padding:11px 13px;font-size:15px;color:var(--text);outline:none;-webkit-appearance:none;box-sizing:border-box;transition:border-color .15s}
+  #screen-prestamos .ln-fi:focus,.modal-sh .ln-fi:focus{border-color:rgba(26,122,66,.5);box-shadow:0 0 0 3px rgba(26,122,66,.08)}
+  #screen-prestamos .ln-frow,.modal-sh .ln-frow{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+  .modal-sh .calc-result{background:linear-gradient(135deg,var(--ga),rgba(26,122,66,.04));border:1px solid rgba(26,122,66,.18);border-radius:12px;padding:14px 16px;margin-top:14px}
+  .modal-sh .calc-result-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px}
+  .modal-sh .calc-result-row:last-child{margin-bottom:0}
+  .modal-sh .calc-result-row span{font-size:11.5px;color:var(--muted)}
+  .modal-sh .calc-result-row strong{font-size:13px;font-weight:800;color:var(--green)}
   #screen-prestamos .calc-result{background:var(--ga);border:1px solid rgba(26,122,66,.2);border-radius:12px;padding:13px;margin-top:8px}
   #screen-prestamos .crr{display:flex;justify-content:space-between;margin-bottom:6px;font-size:12px}
   #screen-prestamos .crr span{color:var(--muted)}
