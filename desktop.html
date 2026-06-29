@@ -6,7 +6,7 @@
   (served no-cache, version-bumped each deploy). Works even where SW/no-store
   are ignored, because it is plain page JS. */
 (function(){try{
-  var FA_BUILD=window.FA_BUILD='229';
+  var FA_BUILD=window.FA_BUILD='230';
   var s=location.search;
   if(s.indexOf('vchk')>-1||s.indexOf('_v=')>-1){history.replaceState(null,'',location.pathname+(location.hash||''));return;}
   fetch('/sw.js?_='+Date.now(),{cache:'no-store'}).then(function(r){return r.text();}).then(function(t){
@@ -6405,62 +6405,66 @@ function render(){
   renderAnalysisV2();
 }
 
-// ── Análisis (mockup layout: composición por clase + métricas + peso por activo) ──
+// ── Análisis (mockup layout: KPI strip + composición + métricas + peso por activo con donut) ──
 function renderAnalysisV2(){
   const wrap=document.getElementById('anV2'); if(!wrap) return;
   const isEs=currentLang==='es';
   const live=assets.filter(a=>a.quantity>0);
+  // Per-asset color palette (individual colors for each asset)
+  const ASSET_COLS=['#15803d','#3b82f6','#f59e0b','#8b5cf6','#f87171','#fb923c','#2dd4bf','#22c55e','#e879f9','#60a5fa','#fbbf24','#c084fc','#a3e635','#f472b6','#0ea5e9','#94a3b8'];
   const CATCOL={'ETFs':'#2db564','Acciones':'#1a5fa8','Stocks':'#1a5fa8','Oro':'#9a6f00','Plata':'#94a3b8','Fondos':'#7c3aed'};
   const cashLbl=isEs?'Liquidez':'Cash';
-  const barCol=c=>c==='ETFs'?'#2db564':(c==='Acciones'||c==='Stocks')?'#1a5fa8':c==='Oro'?'#9a6f00':c==='Plata'?'#94a3b8':c==='Fondos'?'#7c3aed':'#8aaa95';
-  // composición por clase
-  const sums={};
-  live.forEach(a=>{const c=assetCategory(a);const v=toDisplay(a.value,assetCcy(a))||0;if(v>0)sums[c]=(sums[c]||0)+v;});
-  const liqTot=getLiquidity().reduce((s,l)=>s+toDisplay(Number(l.amount)||0,l.currency||'EUR'),0);
-  if(liqTot>0) sums[cashLbl]=liqTot;
-  const ents=Object.entries(sums).filter(([,v])=>v>0).sort((a,b)=>b[1]-a[1]);
-  const grand=ents.reduce((s,[,v])=>s+v,0)||1;
-  const C=2*Math.PI*38; let off=0; const segs=[];
-  ents.forEach(([k,v])=>{const col=k===cashLbl?'#8aaa95':(CATCOL[k]||'#8aaa95');const len=v/grand*C;segs.push(`<circle cx="50" cy="50" r="38" fill="none" stroke="${col}" stroke-width="14" stroke-dasharray="${len.toFixed(1)} ${(C-len).toFixed(1)}" stroke-dashoffset="${(-off).toFixed(1)}" transform="rotate(-90 50 50)"/>`);off+=len;});
-  const donut=`<svg width="100" height="100" viewBox="0 0 100 100"><circle cx="50" cy="50" r="38" fill="none" stroke="var(--surf3)" stroke-width="14"/>${segs.join('')}</svg>`;
-  const legend=ents.map(([k,v])=>{const col=k===cashLbl?'#8aaa95':(CATCOL[k]||'#8aaa95');return `<div class="dl-r"><div class="dl-d" style="background:${col}"></div><span>${k}</span><span class="dl-p">${(v/grand*100).toFixed(0)}%</span></div>`;}).join('');
-  // peso por activo
-  const items=live.map(a=>({name:a.name,v:toDisplay(a.value,assetCcy(a))||0,cat:assetCategory(a)})).filter(x=>x.v>0).sort((x,y)=>y.v-x.v);
-  if(liqTot>0) items.push({name:cashLbl,v:liqTot,cat:cashLbl});
-  const bars=items.map(it=>{const pct=grand>0?it.v/grand*100:0;return `<div style="display:flex;align-items:center;gap:12px"><span style="font-size:12px;font-weight:600;width:96px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${escapeHtml(it.name)}">${escapeHtml(it.name)}</span><div style="flex:1;height:8px;background:var(--surf3);border-radius:4px;overflow:hidden"><div style="width:${pct.toFixed(1)}%;height:100%;background:${barCol(it.cat)};border-radius:4px"></div></div><span style="width:48px;text-align:right;font-size:12px;font-weight:700;color:var(--muted)">${pct.toFixed(1)}%</span></div>`;}).join('');
-  // métricas reales
-  const hs=computeHealthScore();
+  // ── Totals ──
   const totVal=live.reduce((s,a)=>s+(toDisplay(a.value,assetCcy(a))||0),0);
   const invVal=live.reduce((s,a)=>s+(toDisplay(a.invested,costCcy(a))||0),0);
   const gp=invVal>0?((totVal-invVal)/invVal*100):0;
+  const liqTot=getLiquidity().reduce((s,l)=>s+toDisplay(Number(l.amount)||0,l.currency||'EUR'),0);
+  const hs=computeHealthScore();
+  // ── Composición por clase ──
+  const sums={};
+  live.forEach(a=>{const c=assetCategory(a);const v=toDisplay(a.value,assetCcy(a))||0;if(v>0)sums[c]=(sums[c]||0)+v;});
+  if(liqTot>0) sums[cashLbl]=liqTot;
+  const ents=Object.entries(sums).filter(([,v])=>v>0).sort((a,b)=>b[1]-a[1]);
+  const grand=ents.reduce((s,[,v])=>s+v,0)||1;
   const liqPct=grand>0?(liqTot/grand*100):0;
+  // Composición donut SVG
+  const C=2*Math.PI*38; let off=0; const segs=[];
+  ents.forEach(([k,v])=>{const col=k===cashLbl?'#8aaa95':(CATCOL[k]||'#8aaa95');const len=v/grand*C;segs.push(`<circle cx="50" cy="50" r="38" fill="none" stroke="${col}" stroke-width="14" stroke-dasharray="${len.toFixed(1)} ${(C-len).toFixed(1)}" stroke-dashoffset="${(-off).toFixed(1)}" transform="rotate(-90 50 50)"/>`);off+=len;});
+  const compDonut=`<svg width="100" height="100" viewBox="0 0 100 100" style="flex-shrink:0"><circle cx="50" cy="50" r="38" fill="none" stroke="var(--surf3)" stroke-width="14"/>${segs.join('')}</svg>`;
+  const compLegend=ents.map(([k,v])=>{const col=k===cashLbl?'#8aaa95':(CATCOL[k]||'#8aaa95');return `<div class="dl-r"><div class="dl-d" style="background:${col}"></div><span>${k}</span><span class="dl-p">${(v/grand*100).toFixed(0)}%</span></div>`;}).join('');
+  // ── Peso por activo ──
+  const items=live.map(a=>({name:a.name,v:toDisplay(a.value,assetCcy(a))||0})).filter(x=>x.v>0).sort((x,y)=>y.v-x.v);
+  if(liqTot>0) items.push({name:cashLbl,v:liqTot});
+  // Per-asset donut SVG (individual color per asset)
+  const C2=2*Math.PI*38; let off2=0; const segs2=[];
+  items.forEach((it,i)=>{const col=ASSET_COLS[i%ASSET_COLS.length];const len=it.v/grand*C2;segs2.push(`<circle cx="50" cy="50" r="38" fill="none" stroke="${col}" stroke-width="14" stroke-dasharray="${len.toFixed(1)} ${(C2-len).toFixed(1)}" stroke-dashoffset="${(-off2).toFixed(1)}" transform="rotate(-90 50 50)"/>`);off2+=len;});
+  const pwDonutSVG=`<svg width="110" height="110" viewBox="0 0 100 100" style="flex-shrink:0"><circle cx="50" cy="50" r="38" fill="none" stroke="var(--surf3)" stroke-width="14"/>${segs2.join('')}<text x="50" y="47" text-anchor="middle" font-size="11" fill="var(--text)" font-weight="800">${items.length}</text><text x="50" y="61" text-anchor="middle" font-size="7" fill="var(--muted2)">${isEs?'activos':'assets'}</text></svg>`;
+  const bars=items.map((it,i)=>{const pct=grand>0?it.v/grand*100:0;const col=ASSET_COLS[i%ASSET_COLS.length];return `<div style="display:flex;align-items:center;gap:10px"><div style="width:8px;height:8px;border-radius:50%;background:${col};flex-shrink:0"></div><span style="font-size:12px;font-weight:600;width:90px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--text)" title="${escapeHtml(it.name)}">${escapeHtml(it.name)}</span><div style="flex:1;height:7px;background:var(--surf3);border-radius:4px;overflow:hidden"><div style="width:${pct.toFixed(1)}%;height:100%;background:${col};border-radius:4px"></div></div><span style="width:44px;text-align:right;font-size:12px;font-weight:700;color:var(--muted);font-variant-numeric:tabular-nums">${pct.toFixed(1)}%</span></div>`;}).join('');
+  // ── Métricas clave ──
   const metrics=[
     [isEs?'Rentabilidad total':'Total return',`${gp>=0?'+':''}${gp.toFixed(2)}%`,gp>=0?'var(--green)':'var(--red)'],
-    [isEs?'Diversificación':'Diversification',`${hs.diversif}/100`,''],
-    ['Health Score',`${hs.score}/100`,'var(--green)'],
-    [isEs?'Posiciones':'Positions',`${live.length}`,''],
-    [isEs?'Liquidez':'Cash',`${liqPct.toFixed(1)}%`,''],
+    [isEs?'Diversificación':'Diversification',`${hs.diversif}/100`,'var(--text)'],
+    ['Health Score',`${hs.score}/100`,hs.score>=70?'var(--green)':hs.score>=50?'#f59e0b':'var(--red)'],
+    [isEs?'Posiciones':'Positions',`${live.length}`,'var(--text)'],
+    [isEs?'Liquidez':'Cash',`${liqPct.toFixed(1)}%`,'var(--text)'],
   ];
-  const metricRows=metrics.map(([l,v,c])=>`<div style="display:flex;justify-content:space-between"><span style="color:var(--muted)">${l}</span><strong${c?` style="color:${c}"`:''}>${v}</strong></div>`).join('');
+  const metricRows=metrics.map(([l,v,c],i)=>`<div style="display:flex;justify-content:space-between;align-items:center;padding:7px 0;${i<metrics.length-1?'border-bottom:1px solid var(--border)':''}"><span style="font-size:12px;color:var(--muted)">${l}</span><strong style="font-size:14px;color:${c}">${v}</strong></div>`).join('');
   // ── Beneficio por activo (diverging bars) ──
   const profitItems=live.map(a=>{
     const val=toDisplay(a.value,assetCcy(a))||0;
     const inv=toDisplay(a.invested,costCcy(a))||0;
     const gain=val-inv;
     const pct=inv>0?gain/inv*100:0;
-    return {name:a.name,gain,pct,inv,cat:assetCategory(a)};
+    return {name:a.name,gain,pct,inv};
   }).filter(x=>x.inv>0).sort((a,b)=>b.pct-a.pct);
   const maxAbsPct=Math.max(...profitItems.map(x=>Math.abs(x.pct)),1);
   const profitBars=profitItems.map(it=>{
     const pos=it.pct>=0;const pct=Math.abs(it.pct);const w=Math.min(100,pct/maxAbsPct*100);
-    const col=pos?'#22c55e':'#f87171';
-    const sign=pos?'+':'';
+    const col=pos?'#22c55e':'#f87171';const sign=pos?'+':'';
     return `<div style="display:flex;align-items:center;gap:10px;padding:3px 0">
       <span style="font-size:11px;font-weight:600;width:110px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--text)" title="${escapeHtml(it.name)}">${escapeHtml(it.name.length>18?it.name.slice(0,16)+'…':it.name)}</span>
-      <div style="flex:1;display:flex;align-items:center;gap:4px">
-        <div style="flex:1;height:7px;background:var(--surf3);border-radius:4px;overflow:hidden;position:relative">
-          <div style="position:absolute;${pos?'left':'right'}:0;width:${w}%;height:100%;background:${col};border-radius:4px;transition:width .4s"></div>
-        </div>
+      <div style="flex:1;height:7px;background:var(--surf3);border-radius:4px;overflow:hidden;position:relative">
+        <div style="position:absolute;${pos?'left':'right'}:0;width:${w}%;height:100%;background:${col};border-radius:4px;transition:width .4s"></div>
       </div>
       <span style="width:70px;text-align:right;font-size:12px;font-weight:700;color:${col};font-variant-numeric:tabular-nums">${sign}${it.pct.toFixed(2)}%</span>
       <span style="width:70px;text-align:right;font-size:11px;color:var(--muted);font-variant-numeric:tabular-nums">${sign}${fe(it.gain)}</span>
@@ -6471,23 +6475,20 @@ function renderAnalysisV2(){
       <div style="display:flex;align-items:baseline;justify-content:space-between;margin-bottom:14px">
         <div style="font-size:14px;font-weight:700">${isEs?'Beneficio por activo':'Profit by asset'}</div>
         <div style="display:flex;gap:14px">
-          <span style="display:flex;align-items:center;gap:4px;font-size:10px;font-weight:600;color:#5a6e5e"><span style="width:8px;height:8px;border-radius:50%;background:#22c55e;display:inline-block"></span>${isEs?'Positivo':'Positive'}</span>
-          <span style="display:flex;align-items:center;gap:4px;font-size:10px;font-weight:600;color:#5a6e5e"><span style="width:8px;height:8px;border-radius:50%;background:#f87171;display:inline-block"></span>${isEs?'Negativo':'Negative'}</span>
+          <span style="display:flex;align-items:center;gap:4px;font-size:10px;font-weight:600;color:var(--muted)"><span style="width:8px;height:8px;border-radius:50%;background:#22c55e;display:inline-block"></span>${isEs?'Positivo':'Positive'}</span>
+          <span style="display:flex;align-items:center;gap:4px;font-size:10px;font-weight:600;color:var(--muted)"><span style="width:8px;height:8px;border-radius:50%;background:#f87171;display:inline-block"></span>${isEs?'Negativo':'Negative'}</span>
         </div>
       </div>
       <div style="display:flex;flex-direction:column;gap:2px">${profitBars}</div>
     </div>`:'';
-
-  // ── Costs & Fees (TER) — same source as _anRenderCosts: live TER, then ISIN map ──
+  // ── Costs & Fees (TER) ──
   const _terMap=(typeof AN_TER_MAP!=='undefined')?AN_TER_MAP:{};
   const _terOf=a=>{ let t=a.ter; if(t==null)t=_terMap[a.isin]; if(t==null)t=(a.mapping&&(a.mapping.ter??a.mapping.expenseRatio)); return (t!=null&&Number.isFinite(Number(t))&&Number(t)>0)?Number(t):null; };
   let _terCost=0,_terKnown=0;
   live.forEach(a=>{const t=_terOf(a);const v=toDisplay(a.value,assetCcy(a))||0;if(t!=null&&v>0){_terCost+=v*t/100;_terKnown+=v;}});
   const _terPct=totVal>0?(_terCost/totVal*100):0;
-  // Fetch any missing TERs in the background, then re-render so the card fills in
   if(typeof _prefetchMissingTers==='function' && live.some(a=>a.ter==null&&_terMap[a.isin]==null)){ try{_prefetchMissingTers().then(u=>{if(u)renderAnalysisV2();});}catch(_){} }
   const _terEff=_terPct<0.35;
-  // Per-asset cost rows
   const _terRows=live.map(a=>{const t=_terOf(a);const v=toDisplay(a.value,assetCcy(a))||0;return t!=null&&v>0?{name:a.name,ter:t,cost:v*t/100,val:v}:null;}).filter(Boolean).sort((a,b)=>b.cost-a.cost);
   const _maxCost=_terRows[0]?.cost||1;
   const _perAssetRows=_terRows.map(r=>{const bw=Math.min(100,r.cost/_maxCost*100);const short=r.name.length>22?r.name.slice(0,20)+'…':r.name;return `<div style="display:flex;align-items:center;gap:10px;padding:4px 0"><span style="font-size:11px;font-weight:600;width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--text)" title="${escapeHtml(r.name)}">${escapeHtml(short)}</span><div style="flex:1;height:6px;background:var(--surf3);border-radius:3px;overflow:hidden"><div style="width:${bw}%;height:100%;background:#f97316;border-radius:3px"></div></div><span style="width:48px;text-align:right;font-size:11px;font-weight:700;color:#b45309">${r.ter}%</span><span style="width:64px;text-align:right;font-size:11px;color:var(--muted);font-variant-numeric:tabular-nums">${fe(r.cost)}/${isEs?'año':'yr'}</span></div>`;}).join('');
@@ -6502,11 +6503,39 @@ function renderAnalysisV2(){
     </div>`:'';
   wrap.innerHTML=`
     <h1 style="font-size:20px;font-weight:800;margin-bottom:20px">${isEs?'Análisis de cartera':'Portfolio analysis'}</h1>
-    <div class="anv2-two">
-      <div class="card"><div style="font-size:14px;font-weight:700;margin-bottom:14px">${isEs?'Composición por clase':'Composition by class'}</div><div style="display:flex;gap:18px;align-items:center">${donut}<div class="dl" style="flex:1">${legend}</div></div></div>
-      <div class="card"><div style="font-size:14px;font-weight:700;margin-bottom:14px">${isEs?'Métricas clave':'Key metrics'}</div><div style="display:flex;flex-direction:column;gap:10px">${metricRows}</div></div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:10px;margin-bottom:14px">
+      <div class="card" style="padding:12px 14px">
+        <div style="font-size:10px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.06em;margin-bottom:5px">${isEs?'Rentabilidad':'Return'}</div>
+        <div style="font-size:20px;font-weight:900;color:${gp>=0?'var(--green)':'var(--red)'};line-height:1">${gp>=0?'+':''}${gp.toFixed(2)}%</div>
+      </div>
+      <div class="card" style="padding:12px 14px">
+        <div style="font-size:10px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.06em;margin-bottom:5px">${isEs?'Valor total':'Total value'}</div>
+        <div style="font-size:17px;font-weight:900;color:var(--text);line-height:1">${fe(grand)}</div>
+      </div>
+      <div class="card" style="padding:12px 14px">
+        <div style="font-size:10px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.06em;margin-bottom:5px">${isEs?'Diversificación':'Diversification'}</div>
+        <div style="font-size:20px;font-weight:900;color:var(--text);line-height:1">${hs.diversif}/100</div>
+      </div>
+      <div class="card" style="padding:12px 14px">
+        <div style="font-size:10px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.06em;margin-bottom:5px">Health Score</div>
+        <div style="font-size:20px;font-weight:900;color:${hs.score>=70?'var(--green)':hs.score>=50?'#f59e0b':'var(--red)'};line-height:1">${hs.score}/100</div>
+      </div>
+      <div class="card" style="padding:12px 14px">
+        <div style="font-size:10px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.06em;margin-bottom:5px">${isEs?'Liquidez':'Cash'}</div>
+        <div style="font-size:20px;font-weight:900;color:var(--text);line-height:1">${liqPct.toFixed(1)}%</div>
+      </div>
     </div>
-    <div class="card" style="margin-bottom:14px"><div style="font-size:14px;font-weight:700;margin-bottom:14px">${isEs?'Peso por activo':'Weight by asset'}</div><div style="display:flex;flex-direction:column;gap:10px">${bars}</div></div>
+    <div class="anv2-two">
+      <div class="card"><div style="font-size:14px;font-weight:700;margin-bottom:14px">${isEs?'Composición por clase':'Composition by class'}</div><div style="display:flex;gap:18px;align-items:center">${compDonut}<div class="dl" style="flex:1">${compLegend}</div></div></div>
+      <div class="card"><div style="font-size:14px;font-weight:700;margin-bottom:14px">${isEs?'Métricas clave':'Key metrics'}</div><div style="display:flex;flex-direction:column">${metricRows}</div></div>
+    </div>
+    <div class="card" style="margin-bottom:14px">
+      <div style="font-size:14px;font-weight:700;margin-bottom:14px">${isEs?'Peso por activo':'Weight by asset'}</div>
+      <div style="display:flex;gap:20px;align-items:flex-start;flex-wrap:wrap">
+        ${pwDonutSVG}
+        <div style="flex:1;min-width:180px;display:flex;flex-direction:column;gap:8px">${bars}</div>
+      </div>
+    </div>
     ${profitCard}
     ${costsCard}`;
 }
