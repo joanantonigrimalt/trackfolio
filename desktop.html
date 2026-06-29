@@ -6,7 +6,7 @@
   (served no-cache, version-bumped each deploy). Works even where SW/no-store
   are ignored, because it is plain page JS. */
 (function(){try{
-  var FA_BUILD=window.FA_BUILD='247';
+  var FA_BUILD=window.FA_BUILD='248';
   var s=location.search;
   if(s.indexOf('vchk')>-1||s.indexOf('_v=')>-1){history.replaceState(null,'',location.pathname+(location.hash||''));return;}
   fetch('/sw.js?_='+Date.now(),{cache:'no-store'}).then(function(r){return r.text();}).then(function(t){
@@ -8188,7 +8188,7 @@ function exitDemo(){
   showAuthScreen();
 }
 
-function getLiquidity(){ try{const a=JSON.parse(localStorage.getItem('fa_liquidity')||'[]');return Array.isArray(a)?a:[];}catch{return[];} }
+function getLiquidity(){ try{const a=JSON.parse(localStorage.getItem('fa_liquidity')||'[]');if(!Array.isArray(a))return[];let dirty=false;a.forEach((x,i)=>{if(!x.id){x.id='liq_'+Date.now()+'_'+i;dirty=true;}});if(dirty)localStorage.setItem('fa_liquidity',JSON.stringify(a));return a;}catch{return[];} }
 function saveLiquidity(arr){ localStorage.setItem('fa_liquidity',JSON.stringify(arr)); }
 
 let _liqEditId = null;
