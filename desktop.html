@@ -6,7 +6,7 @@
   (served no-cache, version-bumped each deploy). Works even where SW/no-store
   are ignored, because it is plain page JS. */
 (function(){try{
-  var FA_BUILD=window.FA_BUILD='249';
+  var FA_BUILD=window.FA_BUILD='250';
   var s=location.search;
   if(s.indexOf('vchk')>-1||s.indexOf('_v=')>-1){history.replaceState(null,'',location.pathname+(location.hash||''));return;}
   fetch('/sw.js?_='+Date.now(),{cache:'no-store'}).then(function(r){return r.text();}).then(function(t){
@@ -6371,7 +6371,7 @@ function renderLists(){
       const _rentab=x.rate>0?`<span class="pf-pos">+${x.rate.toFixed(2)}% TAE</span>`:'<span style="color:var(--muted2)">—</span>';
       const _brok=x.broker?escapeHtml(x.broker):'—';
       const _typeBadge=`<span style="background:#e0f2fe;color:#0369a1;font-size:10px;font-weight:700;padding:2px 7px;border-radius:6px;white-space:nowrap">${escapeHtml(_lbl)}</span>`;
-      const liqCellMap={precio:'<td style="color:var(--muted2)">—</td>',hoy:'<td style="color:var(--muted2)">—</td>',cant:'<td style="color:var(--muted2)">—</td>',valor:`<td style="font-weight:700">${_amt}</td>`,pmedio:'<td style="color:var(--muted2)">—</td>`,rentab:`<td>${_rentab}</td>`,tipo:`<td>${_typeBadge}</td>`,peso:'<td style="color:var(--muted2)">—</td>',broker:`<td style="color:var(--muted)">${_brok}</td>`};
+      const liqCellMap={precio:'<td style="color:var(--muted2)">—</td>',hoy:'<td style="color:var(--muted2)">—</td>',cant:'<td style="color:var(--muted2)">—</td>',valor:`<td style="font-weight:700">${_amt}</td>`,pmedio:'<td style="color:var(--muted2)">—</td>',rentab:`<td>${_rentab}</td>`,tipo:`<td>${_typeBadge}</td>`,peso:'<td style="color:var(--muted2)">—</td>',broker:`<td style="color:var(--muted)">${_brok}</td>`};
       return `<tr style="cursor:pointer" onclick="openLiqByIdx(${_li})"><td><div class="pf-asset" style="display:flex;align-items:center"><div class="icon" style="background:linear-gradient(135deg,#0369a1,#38bdf8);font-size:16px">${_icon}</div><div style="min-width:0;flex:1"><div class="pf-tk">${escapeHtml(x.name||(isEs?'Efectivo':'Cash'))}</div><div class="pf-nm">${_lbl}</div></div><button onclick="event.stopPropagation();deleteLiqByIdx(${_li})" title="${isEs?'Eliminar':'Delete'}" style="margin-left:8px;background:none;border:none;color:var(--muted2);cursor:pointer;font-size:13px;padding:2px 5px;border-radius:5px;flex-shrink:0">✕</button></div></td>${visCols.map(c=>liqCellMap[c]||'<td>—</td>').join('')}</tr>`;
     }).join(''):'';
 
