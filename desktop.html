@@ -6,7 +6,7 @@
   (served no-cache, version-bumped each deploy). Works even where SW/no-store
   are ignored, because it is plain page JS. */
 (function(){try{
-  var FA_BUILD=window.FA_BUILD='248';
+  var FA_BUILD=window.FA_BUILD='249';
   var s=location.search;
   if(s.indexOf('vchk')>-1||s.indexOf('_v=')>-1){history.replaceState(null,'',location.pathname+(location.hash||''));return;}
   fetch('/sw.js?_='+Date.now(),{cache:'no-store'}).then(function(r){return r.text();}).then(function(t){
@@ -6295,8 +6295,8 @@ const _COL_ALL=['precio','hoy','cant','valor','pmedio','rentab','tipo','peso','b
 const _COL_DEFAULT=['precio','hoy','cant','valor','pmedio','rentab','tipo','peso','broker'];
 function _getVisCols(){try{const s=localStorage.getItem(_FA_COLS_KEY);const a=s?JSON.parse(s):null;return Array.isArray(a)?a:[..._COL_DEFAULT];}catch(_){return[..._COL_DEFAULT];}}
 function _setVisCols(arr){try{localStorage.setItem(_FA_COLS_KEY,JSON.stringify(arr));}catch(_){}}
-window.toggleColPanel=function(e){e&&e.stopPropagation();document.querySelectorAll('.fa-col-panel').forEach(p=>{const was=p.style.display!=='none';document.querySelectorAll('.fa-col-panel').forEach(x=>x.style.display='none');if(!was)p.style.display='';});};
-window.toggleCol=function(id,checked){let cols=_getVisCols();if(checked&&!cols.includes(id))cols.push(id);else if(!checked)cols=cols.filter(c=>c!==id);cols=_COL_ALL.filter(c=>cols.includes(c));_setVisCols(cols);renderLists();};
+window.toggleColPanel=function(e){if(e){e.stopPropagation();e.preventDefault();}const panels=document.querySelectorAll('.fa-col-panel');if(!panels.length)return;const isOpen=panels[0].style.display==='block';panels.forEach(p=>p.style.display=isOpen?'none':'block');};
+window.toggleCol=function(id,checked){let cols=_getVisCols();if(checked&&!cols.includes(id))cols.push(id);else if(!checked)cols=cols.filter(c=>c!==id);cols=_COL_ALL.filter(c=>cols.includes(c));_setVisCols(cols);renderLists();document.querySelectorAll('.fa-col-panel').forEach(p=>p.style.display='block');};
 document.addEventListener('click',function(e){if(!e.target.closest('.fa-col-wrap'))document.querySelectorAll('.fa-col-panel').forEach(p=>p.style.display='none');});
 
 function renderLists(){
@@ -6364,14 +6364,15 @@ function renderLists(){
   const _liqRows=_liq.length>0?`
     <tr><td colspan="${colCount}" style="padding:10px 8px 5px;font-size:10.5px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;border-top:2px solid var(--border);background:var(--surf2)">
       💰 ${isEs?'Liquidez':'Cash'} <button onclick="openLiqModal()" style="background:none;border:none;font-size:10.5px;font-weight:700;color:#15803d;cursor:pointer;margin-left:8px;padding:0">+ ${isEs?'Añadir':'Add'}</button>
-    </td></tr>`+_liq.map(x=>{
+    </td></tr>`+_liq.map((x,_li)=>{
       const _icon=LIQ_ICONS[x.type]||'💰';
       const _lbl=(LIQ_LABELS&&LIQ_LABELS[x.type])||x.type||(isEs?'Efectivo':'Cash');
       const _amt=fe(toDisplay(x.amount,x.currency||'EUR'));
       const _rentab=x.rate>0?`<span class="pf-pos">+${x.rate.toFixed(2)}% TAE</span>`:'<span style="color:var(--muted2)">—</span>';
       const _brok=x.broker?escapeHtml(x.broker):'—';
-      const liqCellMap={precio:'<td style="color:var(--muted2)">—</td>',hoy:'<td style="color:var(--muted2)">—</td>',cant:'<td style="color:var(--muted2)">—</td>',valor:`<td style="font-weight:700">${_amt}</td>`,pmedio:'<td style="color:var(--muted2)">—</td>',rentab:`<td>${_rentab}</td>`,tipo:`<td><span style="background:#e0f2fe;color:#0369a1;font-size:10px;font-weight:700;padding:2px 7px;border-radius:6px">${isEs?'Efectivo':'Cash'}</span></td>`,peso:'<td style="color:var(--muted2)">—</td>',broker:`<td style="color:var(--muted)">${_brok}</td>`};
-      return `<tr style="cursor:pointer" onclick="openLiqModal('${escapeHtml(String(x.id||''))}')"><td><div class="pf-asset"><div class="icon" style="background:linear-gradient(135deg,#0369a1,#38bdf8);font-size:16px">${_icon}</div><div style="min-width:0"><div class="pf-tk">${escapeHtml(x.name||(isEs?'Efectivo':'Cash'))}</div><div class="pf-nm">${_lbl}</div></div></div></td>${visCols.map(c=>liqCellMap[c]||'<td>—</td>').join('')}</tr>`;
+      const _typeBadge=`<span style="background:#e0f2fe;color:#0369a1;font-size:10px;font-weight:700;padding:2px 7px;border-radius:6px;white-space:nowrap">${escapeHtml(_lbl)}</span>`;
+      const liqCellMap={precio:'<td style="color:var(--muted2)">—</td>',hoy:'<td style="color:var(--muted2)">—</td>',cant:'<td style="color:var(--muted2)">—</td>',valor:`<td style="font-weight:700">${_amt}</td>`,pmedio:'<td style="color:var(--muted2)">—</td>`,rentab:`<td>${_rentab}</td>`,tipo:`<td>${_typeBadge}</td>`,peso:'<td style="color:var(--muted2)">—</td>',broker:`<td style="color:var(--muted)">${_brok}</td>`};
+      return `<tr style="cursor:pointer" onclick="openLiqByIdx(${_li})"><td><div class="pf-asset" style="display:flex;align-items:center"><div class="icon" style="background:linear-gradient(135deg,#0369a1,#38bdf8);font-size:16px">${_icon}</div><div style="min-width:0;flex:1"><div class="pf-tk">${escapeHtml(x.name||(isEs?'Efectivo':'Cash'))}</div><div class="pf-nm">${_lbl}</div></div><button onclick="event.stopPropagation();deleteLiqByIdx(${_li})" title="${isEs?'Eliminar':'Delete'}" style="margin-left:8px;background:none;border:none;color:var(--muted2);cursor:pointer;font-size:13px;padding:2px 5px;border-radius:5px;flex-shrink:0">✕</button></div></td>${visCols.map(c=>liqCellMap[c]||'<td>—</td>').join('')}</tr>`;
     }).join(''):'';
 
   // ── Debt rows ──
@@ -8197,6 +8198,8 @@ let _liqType = 'savings';
 const LIQ_ICONS = {savings:'🏦', deposit:'🔒', moneymarket:'📈', pension:'🏛️', cash:'💳', fondoprivado:'🏢'};
 const LIQ_LABELS = {savings:'Ahorro', deposit:'Depósito', moneymarket:'F. Monetario', pension:'Plan Pensión', cash:'Cta. Cte.', fondoprivado:'Fondo Privado'};
 
+window.openLiqByIdx=function(idx){const liq=getLiquidity();const it=liq[idx];if(it){if(!it.id){it.id='liq_'+Date.now()+'_'+idx;saveLiquidity(liq);}openLiqModal(it.id);}else{openLiqModal();}};
+window.deleteLiqByIdx=function(idx){if(!confirm(currentLang==='es'?'¿Eliminar esta posición de liquidez?':'Delete this cash position?'))return;const liq=getLiquidity();liq.splice(idx,1);saveLiquidity(liq);renderLists();syncToCloud().catch(()=>{});};
 function openLiqModal(id) {
   _liqEditId = id || null;
   const liq = getLiquidity();
