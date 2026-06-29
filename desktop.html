@@ -6,7 +6,7 @@
   (served no-cache, version-bumped each deploy). Works even where SW/no-store
   are ignored, because it is plain page JS. */
 (function(){try{
-  var FA_BUILD=window.FA_BUILD='219';
+  var FA_BUILD=window.FA_BUILD='220';
   var s=location.search;
   if(s.indexOf('vchk')>-1||s.indexOf('_v=')>-1){history.replaceState(null,'',location.pathname+(location.hash||''));return;}
   fetch('/sw.js?_='+Date.now(),{cache:'no-store'}).then(function(r){return r.text();}).then(function(t){
@@ -7226,10 +7226,17 @@ async function _bgRefreshPrices(){
     // Re-fetch coverage to update client-side prices (not just server cache)
     const freshCov=await getJson('/api/portfolio/coverage?isin='+encodeURIComponent(isins.join(',')),9500).catch(()=>null);
     if(freshCov?.results?.length>0){
-      _cvMap=Object.fromEntries(freshCov.results.map(e=>[e.isin,e]));
-      _rawSeedAssets=buildAssets(_cvMap);
-      assets=applyOverridesToAssets(_rawSeedAssets);
-      loadCustomIntoAssets(_cvMap);
+      // Update _cvMap with fresh prices (merge, don't replace — avoids losing history data)
+      freshCov.results.forEach(e=>{ _cvMap[e.isin]=e; });
+      // Update price fields on existing assets directly (buildAssets is a local fn, not accessible here)
+      assets.forEach(a=>{
+        const cv=_cvMap[a.isin];
+        if(!cv)return;
+        if(cv.price!=null){a.price=cv.price;a.currency=cv.currency||a.currency;}
+        if(cv.change1d!=null)a.change1d=cv.change1d;
+        if(cv.changePercent1d!=null)a.changePercent1d=cv.changePercent1d;
+        if(cv.marketCap!=null)a.marketCap=cv.marketCap;
+      });
       _recordValueSnapshot();
       render();_rerenderActive();
     }
