@@ -6,7 +6,7 @@
   (served no-cache, version-bumped each deploy). Works even where SW/no-store
   are ignored, because it is plain page JS. */
 (function(){try{
-  var FA_BUILD=window.FA_BUILD='239';
+  var FA_BUILD=window.FA_BUILD='240';
   var s=location.search;
   if(s.indexOf('vchk')>-1||s.indexOf('_v=')>-1){history.replaceState(null,'',location.pathname+(location.hash||''));return;}
   fetch('/sw.js?_='+Date.now(),{cache:'no-store'}).then(function(r){return r.text();}).then(function(t){
@@ -6548,8 +6548,7 @@ function renderAnalysisV2(){
       <div style="font-size:14px;font-weight:700;margin-bottom:14px">${isEs?'Peso por activo':'Weight by asset'}</div>
       <div style="display:flex;gap:24px;align-items:center">
         <div style="flex:0 0 auto">${allBars}</div>
-        <div style="flex:0 0 auto;display:flex;justify-content:center">${pwDonutSVG}</div>
-        <div style="flex:1;display:grid;grid-template-columns:1fr 1fr;gap:2px 8px;align-content:start">${pwLegend}</div>
+        <div style="flex:1;display:flex;justify-content:center;align-items:center">${pwDonutSVG}</div>
       </div>
     </div>
     ${profitCard}
