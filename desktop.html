@@ -6,7 +6,7 @@
   (served no-cache, version-bumped each deploy). Works even where SW/no-store
   are ignored, because it is plain page JS. */
 (function(){try{
-  var FA_BUILD=window.FA_BUILD='226';
+  var FA_BUILD=window.FA_BUILD='227';
   var s=location.search;
   if(s.indexOf('vchk')>-1||s.indexOf('_v=')>-1){history.replaceState(null,'',location.pathname+(location.hash||''));return;}
   fetch('/sw.js?_='+Date.now(),{cache:'no-store'}).then(function(r){return r.text();}).then(function(t){
@@ -1812,8 +1812,18 @@ html,body{height:100%;overflow:hidden;font-family:-apple-system,BlinkMacSystemFo
   </div>
   <div id="brokerFilterBar"></div>
   <div class="card"><div class="sectionTitle" data-i18n="positions">Posiciones</div><div id="list"></div></div>
-  <!-- homeLiqCard removed: liquidez only shown in screen-portfolio -->
-  <div style="display:none" id="homeLiqCard"><div id="homeLiqList"></div><span id="homeLiqTotalAmt"></span></div>
+  <!-- Liquidity card on home/inicio screen -->
+  <div class="card" id="homeLiqCard" style="display:none">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+      <div class="sectionTitle" style="margin-bottom:0">💰 Liquidez</div>
+      <button onclick="openLiqModal()" style="background:none;border:none;font-size:12px;font-weight:700;color:#15803d;cursor:pointer;padding:4px 8px">+ Añadir</button>
+    </div>
+    <div id="homeLiqList"></div>
+    <div style="display:flex;justify-content:space-between;align-items:center;padding-top:10px;margin-top:6px;border-top:1px solid rgba(20,32,24,.06)">
+      <span style="font-size:12px;font-weight:700;color:#8fa090;text-transform:uppercase;letter-spacing:.06em">Total</span>
+      <span id="homeLiqTotalAmt" style="font-size:16px;font-weight:800;color:#142018"></span>
+    </div>
+  </div>
 
 <div class="legal-disclaimer">
   <b>Aviso legal:</b> Finasset es una herramienta de seguimiento personal de carteras.<br>
@@ -8129,10 +8139,9 @@ function renderLiquidity() {
   const totalDisplay = liq.reduce((s,x)=>s+toDisplay(x.amount,x.currency||'EUR'),0);
   const hasLiq = liq.length > 0;
 
-  // Update total in home hero (add liquidity to portfolio total)
   const homeLiqCard = document.getElementById('homeLiqCard');
   const portLiqCard = document.getElementById('portfolioLiqCard');
-  // homeLiqCard removed from home screen (v210 fix — was stuck/frozen)
+  if(homeLiqCard) homeLiqCard.style.display = hasLiq ? '' : 'none';
   if(portLiqCard) portLiqCard.style.display = hasLiq ? '' : 'none';
 
   if(!hasLiq) {
