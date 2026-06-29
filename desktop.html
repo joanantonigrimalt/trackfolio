@@ -6,7 +6,7 @@
   (served no-cache, version-bumped each deploy). Works even where SW/no-store
   are ignored, because it is plain page JS. */
 (function(){try{
-  var FA_BUILD=window.FA_BUILD='228';
+  var FA_BUILD=window.FA_BUILD='229';
   var s=location.search;
   if(s.indexOf('vchk')>-1||s.indexOf('_v=')>-1){history.replaceState(null,'',location.pathname+(location.hash||''));return;}
   fetch('/sw.js?_='+Date.now(),{cache:'no-store'}).then(function(r){return r.text();}).then(function(t){
@@ -6310,9 +6310,52 @@ function renderLists(){
   }).join('');
   const _hasFx=assets.some(a=>(a.quantity>0)&&assetCcy(a)!=='EUR');
   const _fxNote=_hasFx?`<div style="font-size:11px;color:var(--muted2);margin-top:8px;padding:0 2px;line-height:1.5">${isEs?'Los precios se muestran en su divisa nativa; «Valor» y «P. medio» se convierten a € al tipo de cambio actual.':'Prices are shown in their native currency; «Value» and «Avg» are converted to € at the current FX rate.'}</div>`:'';
+  // ── Liquidity rows (same table, perfect column alignment) ──
+  const _liq = getLiquidity();
+  const _liqRows = _liq.length > 0 ? `
+    <tr><td colspan="9" style="padding:10px 8px 5px;font-size:10.5px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;border-top:2px solid var(--border);background:var(--surf2)">
+      💰 ${isEs?'Liquidez':'Cash'} <button onclick="openLiqModal()" style="background:none;border:none;font-size:10.5px;font-weight:700;color:#15803d;cursor:pointer;margin-left:8px;padding:0">+ ${isEs?'Añadir':'Add'}</button>
+    </td></tr>` + _liq.map(x=>{
+      const _icon=LIQ_ICONS[x.type]||'💰';
+      const _lbl=(LIQ_LABELS&&LIQ_LABELS[x.type])||x.type||(isEs?'Efectivo':'Cash');
+      const _amt=fe(toDisplay(x.amount,x.currency||'EUR'));
+      const _rentab=x.rate>0?`<span class="pf-pos">+${x.rate.toFixed(2)}% TAE</span>`:'<span style="color:var(--muted2)">—</span>';
+      const _brok=x.broker?escapeHtml(x.broker):'—';
+      return `<tr style="cursor:pointer" onclick="openLiqModal('${escapeHtml(String(x.id||''))}')">
+        <td><div class="pf-asset"><div class="icon" style="background:linear-gradient(135deg,#0369a1,#38bdf8);font-size:16px">${_icon}</div><div style="min-width:0"><div class="pf-tk">${escapeHtml(x.name||(isEs?'Efectivo':'Cash'))}</div><div class="pf-nm">${_lbl}</div></div></div></td>
+        <td style="color:var(--muted2)">—</td><td style="color:var(--muted2)">—</td><td style="color:var(--muted2)">—</td>
+        <td style="font-weight:700">${_amt}</td>
+        <td style="color:var(--muted2)">—</td>
+        <td>${_rentab}</td>
+        <td style="color:var(--muted2)">—</td>
+        <td style="color:var(--muted)">${_brok}</td>
+      </tr>`;
+    }).join('') : '';
+  // ── Debt rows (linked to Préstamos section) ──
+  const _loans = typeof LnGetLoans==='function' ? LnGetLoans() : [];
+  const _debtRows = _loans.length > 0 ? `
+    <tr><td colspan="9" style="padding:10px 8px 5px;font-size:10.5px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;border-top:2px solid var(--border);background:var(--surf2)">
+      💳 ${isEs?'Deuda':'Debt'} <button onclick="showScreen('prestamos')" style="background:none;border:none;font-size:10.5px;font-weight:700;color:#b91c1c;cursor:pointer;margin-left:8px;padding:0">${isEs?'Ver todo →':'See all →'}</button>
+    </td></tr>` + _loans.map(l=>{
+      const _isPrest=l.tipo==='prestamo';
+      const _icon=_isPrest?(l.kind==='Hipoteca'?'🏠':l.kind==='Coche'?'🚗':l.kind==='Estudios'?'🎓':'⏱'):'💳';
+      const _bal=_isPrest?l.cap:l.disp;
+      const _amtStr=_bal>0?`<span style="color:var(--red)">-${fe(_bal)}</span>`:'—';
+      const _tinStr=l.tin>0?`<span style="color:var(--red)">-${l.tin.toFixed(2)}% TIN</span>`:'—';
+      const _ent=l.entidad||'—';
+      return `<tr style="cursor:pointer;background:rgba(185,28,28,.02)" onclick="showScreen('prestamos')">
+        <td><div class="pf-asset"><div class="icon" style="background:linear-gradient(135deg,#991b1b,#dc2626);font-size:16px">${_icon}</div><div style="min-width:0"><div class="pf-tk">${escapeHtml(l.nombre||(_isPrest?'Préstamo':'Crédito'))}</div><div class="pf-nm">${escapeHtml(_ent)}</div></div></div></td>
+        <td style="color:var(--muted2)">—</td><td style="color:var(--muted2)">—</td><td style="color:var(--muted2)">—</td>
+        <td style="font-weight:700">${_amtStr}</td>
+        <td style="color:var(--muted2)">—</td>
+        <td>${_tinStr}</td>
+        <td style="color:var(--muted2)">—</td>
+        <td style="color:var(--muted)">${escapeHtml(_ent)}</td>
+      </tr>`;
+    }).join('') : '';
   const html=`<div style="overflow-x:auto"><table class="pf-tbl"><thead><tr>
     <th>${isEs?'Activo':'Asset'}</th><th>${isEs?'Precio':'Price'}</th><th>${isEs?'Hoy':'Today'}</th><th>${isEs?'Cant.':'Qty'}</th><th>${isEs?'Valor':'Value'}</th><th>${isEs?'P. medio':'Avg'}</th><th>${isEs?'Rentab.':'Return'}</th><th>${isEs?'Peso':'Weight'}</th><th>Broker</th>
-  </tr></thead><tbody>${rows}</tbody></table></div>${_fxNote}`;
+  </tr></thead><tbody>${rows}${_liqRows}${_debtRows}</tbody></table></div>${_fxNote}`;
   document.getElementById('list').innerHTML=html;
   document.getElementById('portfolioList').innerHTML=html;
   document.querySelectorAll('#list tr[data-isin], #portfolioList tr[data-isin]').forEach(el=>{
@@ -8141,49 +8184,14 @@ function renderLiquidity() {
   liq.forEach(x=>{ if(!x.id){ x.id='liq_'+Date.now()+'_'+Math.random().toString(36).slice(2); patched=true; } });
   if(patched) saveLiquidity(liq);
 
-  const totalDisplay = liq.reduce((s,x)=>s+toDisplay(x.amount,x.currency||'EUR'),0);
-  const hasLiq = liq.length > 0;
-
+  // Liquidity is now rendered inline in the positions table via renderLists()
+  // Just hide the old separate cards and re-render the unified table
   const homeLiqCard = document.getElementById('homeLiqCard');
   const portLiqCard = document.getElementById('portfolioLiqCard');
-  if(homeLiqCard) homeLiqCard.style.display = hasLiq ? '' : 'none';
-  if(portLiqCard) portLiqCard.style.display = hasLiq ? '' : 'none';
+  if(homeLiqCard) homeLiqCard.style.display = 'none';
+  if(portLiqCard) portLiqCard.style.display = 'none';
 
-  if(!hasLiq) {
-    renderLiqHeroTotal();
-    return;
-  }
-
-  const isEs = currentLang === 'es';
-  // ── Table rows matching pf-tbl positions format ──
-  const tableRows = liq.map(x=>{
-    const icon = LIQ_ICONS[x.type]||'💰';
-    const typeLbl = LIQ_LABELS[x.type]||x.type||(isEs?'Efectivo':'Cash');
-    const isFP = x.type==='fondoprivado';
-    const gainPct = isFP&&x.capitalInvertido>0 ? ((x.amount-x.capitalInvertido)/x.capitalInvertido*100) : null;
-    const rentab = gainPct!=null
-      ? `<span class="${gainPct>=0?'pf-pos':'pf-neg'}">${gainPct>=0?'+':''}${gainPct.toFixed(2)}%</span>`
-      : (x.rate>0 ? `<span class="pf-pos">+${x.rate.toFixed(2)}%/año</span>` : '<span style="color:var(--muted2)">—</span>');
-    const dispAmt = fe(toDisplay(x.amount,x.currency||'EUR'));
-    const brokerStr = x.broker ? escapeHtml(x.broker) : '—';
-    return `<tr style="cursor:pointer" onclick="openLiqModal('${escapeHtml(String(x.id))}')">
-      <td><div class="pf-asset"><div class="icon" style="background:linear-gradient(135deg,#0369a1,#38bdf8);font-size:17px">${icon}</div><div style="min-width:0"><div class="pf-tk">${escapeHtml(x.name||(isEs?'Efectivo':'Cash'))}</div><div class="pf-nm">${typeLbl}</div></div></div></td>
-      <td style="color:var(--muted2)">—</td>
-      <td style="color:var(--muted2)">—</td>
-      <td style="color:var(--muted2)">—</td>
-      <td style="font-weight:700">${dispAmt}</td>
-      <td style="color:var(--muted2)">—</td>
-      <td>${rentab}</td>
-      <td style="color:var(--muted2)">—</td>
-      <td style="color:var(--muted)">${brokerStr}</td>
-    </tr>`;
-  }).join('');
-  const tableHtml = `<div style="overflow-x:auto"><table class="pf-tbl"><thead><tr>
-    <th>${isEs?'Activo':'Asset'}</th><th>${isEs?'Precio':'Price'}</th><th>${isEs?'Hoy':'Today'}</th><th>${isEs?'Cant.':'Qty'}</th><th>${isEs?'Valor':'Value'}</th><th>${isEs?'P. medio':'Avg'}</th><th>${isEs?'Rentab.':'Return'}</th><th>${isEs?'Peso':'Weight'}</th><th>Broker</th>
-  </tr></thead><tbody>${tableRows}</tbody></table></div>`;
-
-  ['homeLiqList','portfolioLiqList'].forEach(id=>{const el=document.getElementById(id);if(el)el.innerHTML=tableHtml;});
-  ['homeLiqTotalAmt','portfolioLiqTotalAmt'].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent=fe(totalDisplay);});
+  renderLists();
 
   renderLiqHeroTotal();
 }

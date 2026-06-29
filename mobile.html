@@ -10,7 +10,7 @@
   no-store headers are ignored (in-app webviews) because it is plain page JS.
   Source of truth = sw.js (always served no-cache, version-bumped each deploy). */
 (function(){try{
-  var FA_BUILD='226';
+  var FA_BUILD='229';
   var s=location.search;
   if(s.indexOf('vchk')>-1||s.indexOf('_v=')>-1){
     // Clean the ugly ?vchk= / ?_v= from the URL silently
@@ -591,9 +591,9 @@ table.an-corr-mtx{border-collapse:separate;border-spacing:4px}
 .liqIcon{width:42px;height:42px;border-radius:13px;background:linear-gradient(135deg,#0369a1,#38bdf8);color:#fff;display:grid;place-items:center;font-size:18px;flex-shrink:0;box-shadow:0 4px 14px rgba(0,0,0,.10)}
 .liqName{font-size:14px;font-weight:700;color:#142018}.liqMeta{font-size:11px;color:#8fa090;margin-top:2px;font-weight:500}
 .liqRight{margin-left:auto;text-align:right;flex-shrink:0}.liqAmt{font-size:14px;font-weight:700;color:#142018}.liqRate{font-size:12px;color:#15803d;font-weight:700;margin-top:2px}
-/* Liquidity modal */
-.liqOverlay{position:absolute;inset:0;background:rgba(20,32,24,.35);z-index:60;opacity:0;pointer-events:none;transition:opacity .25s}.liqOverlay.open{opacity:1;pointer-events:auto}
-.liqSheet{position:absolute;bottom:0;left:0;right:0;background:#f7faf8;border-radius:24px 24px 0 0;padding:0 20px 40px;z-index:61;transform:translateY(100%);transition:transform .3s cubic-bezier(.32,.72,0,1)}.liqSheet.open{transform:translateY(0)}
+/* Liquidity modal — position:fixed so overflow:hidden on .phone doesn't clip it */
+.liqOverlay{position:fixed;inset:0;background:rgba(20,32,24,.35);z-index:490;opacity:0;pointer-events:none;transition:opacity .25s}.liqOverlay.open{opacity:1;pointer-events:auto}
+.liqSheet{position:fixed;bottom:0;left:50%;transform:translateX(-50%) translateY(100%);width:min(100vw,390px);background:#f7faf8;border-radius:24px 24px 0 0;padding:0 20px 40px;z-index:491;transition:transform .3s cubic-bezier(.32,.72,0,1);overflow-y:auto;max-height:90dvh}.liqSheet.open{transform:translateX(-50%) translateY(0)}
 /* Alert sheet */
 .alertOverlay{position:absolute;inset:0;background:rgba(20,32,24,.35);z-index:64;opacity:0;pointer-events:none;display:none;transition:opacity .25s}.alertOverlay.open{opacity:1;pointer-events:auto;display:block}
 .alertSheet{position:absolute;bottom:0;left:0;right:0;background:#f7faf8;border-radius:24px 24px 0 0;padding:0 20px 40px;z-index:65;transform:translateY(100%);display:none;transition:transform .3s cubic-bezier(.32,.72,0,1)}.alertSheet.open{transform:translateY(0);display:block}
@@ -2518,7 +2518,7 @@ table.an-corr-mtx{border-collapse:separate;border-spacing:4px}
     <div class="searchBody" id="searchBody">
       <div class="searchHint" id="searchHint">Busca por nombre, ticker o ISIN</div>
       <!-- Quick-add cash shortcut -->
-      <div id="searchCashShortcut" style="display:flex;align-items:center;gap:10px;background:rgba(20,32,24,.04);border:1.5px solid rgba(20,32,24,.07);border-radius:16px;padding:13px 16px;margin-bottom:14px;cursor:pointer" onclick="closeSearch();setTimeout(openLiqModal,120)">
+      <div id="searchCashShortcut" style="display:flex;align-items:center;gap:10px;background:rgba(20,32,24,.04);border:1.5px solid rgba(20,32,24,.07);border-radius:16px;padding:13px 16px;margin-bottom:14px;cursor:pointer" onclick="closeSearch();setTimeout(openLiqModal,300)">
         <div style="width:38px;height:38px;border-radius:12px;background:linear-gradient(135deg,#1a3f2c,#15803d);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0">💰</div>
         <div style="flex:1;min-width:0">
           <div style="font-size:14px;font-weight:700;color:#142018" data-i18n="addCash">Añadir efectivo</div>
