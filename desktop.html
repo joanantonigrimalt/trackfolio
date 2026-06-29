@@ -6,7 +6,7 @@
   (served no-cache, version-bumped each deploy). Works even where SW/no-store
   are ignored, because it is plain page JS. */
 (function(){try{
-  var FA_BUILD=window.FA_BUILD='253';
+  var FA_BUILD=window.FA_BUILD='255';
   var s=location.search;
   if(s.indexOf('vchk')>-1||s.indexOf('_v=')>-1){history.replaceState(null,'',location.pathname+(location.hash||''));return;}
   fetch('/sw.js?_='+Date.now(),{cache:'no-store'}).then(function(r){return r.text();}).then(function(t){
@@ -3541,6 +3541,7 @@ html,body{height:100%;overflow:hidden;font-family:-apple-system,BlinkMacSystemFo
   .pign-status.ok{background:#dcfce7;color:#15803d}
   .pign-status.warn{background:#fef9c3;color:#a16207}
   .pign-status.danger{background:#fee2e2;color:#b91c1c}
+  .pign-status.exec{background:#7f1d1d;color:#fca5a5}
   </style>
 
   <div class="top" style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px">
@@ -3661,10 +3662,16 @@ html,body{height:100%;overflow:hidden;font-family:-apple-system,BlinkMacSystemFo
         <div class="ln-fg"><label class="ln-fl">Límite (€)</label><input class="ln-fi" type="number" id="lnfc-lim" oninput="LnUpdateModalCredPrev()"/></div>
         <div class="ln-fg"><label class="ln-fl">Dispuesto (€)</label><input class="ln-fi" type="number" id="lnfc-disp" oninput="LnUpdateModalCredPrev()"/></div>
       </div>
-      <div class="ln-fg"><label class="ln-fl">TAE (%)</label><input class="ln-fi" type="number" step="any" id="lnfc-tin" oninput="LnUpdateModalCredPrev()"/></div>
       <div class="ln-frow">
-        <div class="ln-fg"><label class="ln-fl">Tipo</label><select class="ln-fi" id="lnfc-tipo"><option>Revolving</option><option>Línea de crédito</option><option>Otro</option></select></div>
+        <div class="ln-fg"><label class="ln-fl">TIN (%)</label><input class="ln-fi" type="number" step="any" id="lnfc-tin" oninput="LnUpdateModalCredPrev()"/></div>
+        <div class="ln-fg"><label class="ln-fl">Periodicidad intereses</label><select class="ln-fi" id="lnfc-per" onchange="LnUpdateModalCredPrev()"><option value="mensual">Mensual</option><option value="trimestral">Trimestral</option></select></div>
+      </div>
+      <div class="ln-frow">
+        <div class="ln-fg"><label class="ln-fl">Tipo</label><select class="ln-fi" id="lnfc-tipo"><option>Línea de crédito</option><option>Revolving</option><option>Otro</option></select></div>
         <div class="ln-fg"><label class="ln-fl">Entidad</label><input class="ln-fi" type="text" id="lnfc-ent" placeholder="Banco, fintech…"/></div>
+      </div>
+      <div class="ln-frow">
+        <div class="ln-fg"><label class="ln-fl">Fecha inicio</label><input class="ln-fi" type="date" id="lnfc-fecha"/></div>
       </div>
       <div class="calc-result" id="lnModalCredPrev" style="display:none">
         <div class="calc-result-row"><span>Intereses mensuales</span><strong id="lnmcp-int" style="color:var(--red)">—</strong></div>
@@ -3763,12 +3770,12 @@ html,body{height:100%;overflow:hidden;font-family:-apple-system,BlinkMacSystemFo
     document.getElementById('lnTypeH').classList.toggle('active',tipo==='hipoteca');
     document.getElementById('lnTypeC').classList.toggle('active',tipo==='credito');
     window._lnAddTipo=tipo;
-    // Auto-set ratio: préstamo/hipoteca → x2, crédito → x1
-    LnSetPignRatio(tipo==='credito'?1:2);
+    // Todos los productos MyInvestor son x2
+    LnSetPignRatio(2);
   };
   window.LnUpdateModalPrev=function(){ const c=parseFloat(document.getElementById('lnf-cap').value)||0,t=parseFloat(document.getElementById('lnf-tin').value)||0,m=parseInt(document.getElementById('lnf-plazo').value)||0; const p=document.getElementById('lnModalPrev'); if(!(c>0)||!(t>0)||!(m>0)){p.style.display='none';return;} p.style.display='block'; const cuo=LnCalcCuota(c,t,m),intt=cuo*m-c,tae=LnCalcTAE(t,0,c,m); document.getElementById('lnmp-cuota').textContent=LnFmt(cuo); document.getElementById('lnmp-int').textContent=LnFmt(intt); document.getElementById('lnmp-tae').textContent=LnFmtPctPlain(tae); LnUpdatePignCalc(); };
   window.LnUpdateModalHipPrev=function(){ const c=parseFloat(document.getElementById('lnfh-cap').value)||0,t=parseFloat(document.getElementById('lnfh-tin').value)||0,a=parseInt(document.getElementById('lnfh-plazo').value)||0,m=a*12; const p=document.getElementById('lnModalHipPrev'); if(!(c>0)||!(t>0)||!(m>0)){p.style.display='none';return;} p.style.display='block'; const cuo=LnCalcCuota(c,t,m),intt=cuo*m-c; document.getElementById('lnmhp-cuota').textContent=LnFmt(cuo); document.getElementById('lnmhp-int').textContent=LnFmt(intt); document.getElementById('lnmhp-total').textContent=LnFmt(cuo*m); LnUpdatePignCalc(); };
-  window.LnUpdateModalCredPrev=function(){ const l=parseFloat(document.getElementById('lnfc-lim').value)||0,d=parseFloat(document.getElementById('lnfc-disp').value)||0,t=parseFloat(document.getElementById('lnfc-tin').value)||0; const p=document.getElementById('lnModalCredPrev'); if(!t||(!d&&!l)){p.style.display='none';return;} p.style.display='block'; const im=d*(t/100/12),cm=Math.max(im,d*0.03),dp=Math.max(0,l-d); document.getElementById('lnmcp-int').textContent=LnFmt(im); document.getElementById('lnmcp-min').textContent=LnFmt(cm); document.getElementById('lnmcp-disp').textContent=LnFmt(dp); LnUpdatePignCalc(); };
+  window.LnUpdateModalCredPrev=function(){ const l=parseFloat(document.getElementById('lnfc-lim').value)||0,d=parseFloat(document.getElementById('lnfc-disp').value)||0,t=parseFloat(document.getElementById('lnfc-tin').value)||0; const per=(document.getElementById('lnfc-per')?.value)||'mensual'; const p=document.getElementById('lnModalCredPrev'); if(!t||(!d&&!l)){p.style.display='none';return;} p.style.display='block'; const divisor=per==='trimestral'?4:12; const im=d*(t/100/divisor),dp=Math.max(0,l-d); document.getElementById('lnmcp-int').textContent=LnFmt(im)+(per==='trimestral'?' / trim.':' / mes'); document.getElementById('lnmcp-min').textContent=LnFmt(im*divisor)+' / año'; document.getElementById('lnmcp-disp').textContent=LnFmt(dp); LnUpdatePignCalc(); };
 
   // ── Pignoration ───────────────────────────────────────────
   window._lnPignActive=false; window._lnPignRatio=2;
@@ -3855,20 +3862,53 @@ html,body{height:100%;overflow:hidden;font-family:-apple-system,BlinkMacSystemFo
       });
       pignData={pignorada:true,colateral,ratioGarantia:window._lnPignRatio||2};
     }
+    let newObj=null;
     if(tipo==='prestamo'){
       const cap=parseFloat(document.getElementById('lnf-cap').value)||0,tin=parseFloat(document.getElementById('lnf-tin').value)||0,meses=parseInt(document.getElementById('lnf-plazo').value)||0;
       if(!cap||!tin||!meses){alert('Completa capital, TAE y plazo.');return;}
-      loans.push({id,tipo:'prestamo',nombre:document.getElementById('lnf-nombre').value||'Préstamo',entidad:document.getElementById('lnf-ent').value||'',kind:document.getElementById('lnf-tipo').value,cap,tin,meses,fecha:document.getElementById('lnf-fecha').value||'',...pignData});
+      newObj={id,tipo:'prestamo',nombre:document.getElementById('lnf-nombre').value||'Préstamo',entidad:document.getElementById('lnf-ent').value||'',kind:document.getElementById('lnf-tipo').value,cap,tin,meses,fecha:document.getElementById('lnf-fecha').value||'',...pignData};
     } else if(tipo==='hipoteca'){
       const cap=parseFloat(document.getElementById('lnfh-cap').value)||0,tin=parseFloat(document.getElementById('lnfh-tin').value)||0,anos=parseInt(document.getElementById('lnfh-plazo').value)||0,meses=anos*12;
       if(!cap||!tin||!meses){alert('Completa capital, TAE y plazo.');return;}
-      loans.push({id,tipo:'prestamo',nombre:document.getElementById('lnfh-nombre').value||'Hipoteca',entidad:document.getElementById('lnfh-ent').value||'',kind:document.getElementById('lnfh-tipo').value+' · Hipoteca',cap,tin,meses,fecha:document.getElementById('lnfh-fecha').value||'',...pignData});
+      newObj={id,tipo:'prestamo',nombre:document.getElementById('lnfh-nombre').value||'Hipoteca',entidad:document.getElementById('lnfh-ent').value||'',kind:document.getElementById('lnfh-tipo').value+' · Hipoteca',cap,tin,meses,fecha:document.getElementById('lnfh-fecha').value||'',...pignData};
     } else {
-      const lim=parseFloat(document.getElementById('lnfc-lim').value)||0,disp=parseFloat(document.getElementById('lnfc-disp').value)||0,tin=parseFloat(document.getElementById('lnfc-tin').value)||0;
+      const lim=parseFloat(document.getElementById('lnfc-lim').value)||0,disp=parseFloat(document.getElementById('lnfc-disp').value)||0,tin=parseFloat(document.getElementById('lnfc-tin').value)||0,periodicidad=(document.getElementById('lnfc-per')?.value)||'mensual';
       if(!tin||(!disp&&!lim)){alert('Completa límite/dispuesto y TAE.');return;}
-      loans.push({id,tipo:'credito',nombre:document.getElementById('lnfc-nombre').value||'Crédito',entidad:document.getElementById('lnfc-ent').value||'',kind:document.getElementById('lnfc-tipo').value,lim,disp,tin,...pignData});
+      newObj={id,tipo:'credito',nombre:document.getElementById('lnfc-nombre').value||'Crédito',entidad:document.getElementById('lnfc-ent').value||'',kind:document.getElementById('lnfc-tipo').value,lim,disp,tin,periodicidad,...pignData};
     }
+    if(window._lnEditId){
+      const idx=loans.findIndex(x=>x.id===window._lnEditId);
+      if(idx>=0){ const old=loans[idx]; loans[idx]={...newObj,id:old.id,pignorada:old.pignorada,colateral:old.colateral,ratioGarantia:old.ratioGarantia}; }
+      window._lnEditId=null;
+    } else { loans.push(newObj); }
     LnSave(loans); LnCloseM('lnm-add'); LnRenderPrestamos();
+  };
+
+  window.LnEdit=function(id){
+    const l=LnGetLoans().find(x=>x.id===id); if(!l) return;
+    window._lnEditId=id;
+    LnOpenAdd();
+    LnSetTipo(l.tipo==='credito'?'credito':'prestamo');
+    if(l.tipo==='credito'){
+      const set=(eid,v)=>{const e=document.getElementById(eid);if(e&&v!==undefined)e.value=v;};
+      set('lnfc-nombre',l.nombre); set('lnfc-lim',l.lim); set('lnfc-disp',l.disp);
+      set('lnfc-tin',l.tin); set('lnfc-ent',l.entidad); set('lnfc-fecha',l.fecha||'');
+      const perEl=document.getElementById('lnfc-per');if(perEl)perEl.value=l.periodicidad||'mensual';
+      const tipoEl=document.getElementById('lnfc-tipo');if(tipoEl)tipoEl.value=l.kind||'Línea de crédito';
+      LnUpdateModalCredPrev();
+    } else {
+      const set=(eid,v)=>{const e=document.getElementById(eid);if(e&&v!==undefined)e.value=v;};
+      set('lnf-nombre',l.nombre); set('lnf-cap',l.cap); set('lnf-tin',l.tin);
+      set('lnf-plazo',l.meses); set('lnf-ent',l.entidad); set('lnf-fecha',l.fecha||'');
+      const tipoEl=document.getElementById('lnf-tipo');if(tipoEl)tipoEl.value=l.kind||'Préstamo Personal';
+      LnUpdateModalPrev();
+    }
+    // Update modal title
+    const titleEl=document.querySelector('#lnm-add .ln-modal-title,#lnm-add h2,#lnm-add .ln-sh-title');
+    if(titleEl)titleEl.textContent='Editar producto';
+    // Update save button
+    const saveBtn=document.querySelector('#lnm-add button[onclick="LnSaveNew()"]');
+    if(saveBtn)saveBtn.textContent='💾 Guardar cambios';
   };
 
   // ── Amortización table ────────────────────────────────────
@@ -3890,7 +3930,7 @@ html,body{height:100%;overflow:hidden;font-family:-apple-system,BlinkMacSystemFo
       const elapsed=isPrest?Math.min(LnMonthsElapsed(l.fecha),l.meses):0;
       const deuda=isPrest?(elapsed>0?(sched[elapsed-1]?.saldo??l.cap):l.cap):l.disp;
       const ratio=l.ratioGarantia||2;
-      const garantia=deuda*ratio;
+      const garantia=deuda*ratio; // garantía necesaria = deuda × ratio
       let valorIni=0,valorAct=0;
       const rows=l.colateral.map(c=>{
         const live=(typeof assets!=='undefined')?assets.find(a=>a.isin===c.isin):null;
@@ -3902,12 +3942,14 @@ html,body{height:100%;overflow:hidden;font-family:-apple-system,BlinkMacSystemFo
         return `<tr><td>${eh(c.nombre||c.isin)}<div style="font-size:9px;color:var(--muted2)">${c.isin}</div></td><td style="text-align:right">${c.titulos.toLocaleString('es-ES',{maximumFractionDigits:4})}</td><td style="text-align:right">${precioComp>0?LnFmt(precioComp):'—'}</td><td style="text-align:right">${LnFmt(precioAct)}</td><td style="text-align:right">${precioComp>0?LnFmt(vIni):'—'}</td><td style="text-align:right">${LnFmt(vAct)}</td><td style="text-align:right;color:${diff>=0?'var(--green)':'var(--red)'}">${precioComp>0?LnFmt(diff):'—'}</td><td style="text-align:right;font-weight:800;color:${pct>=0?'var(--green)':'var(--red)'}">${precioComp>0?LnFmtPct(pct):'—'}</td></tr>`;
       }).join('');
       const diffTotal=valorAct-valorIni; const pctTotal=valorIni>0?(diffTotal/valorIni*100):0;
-      const margenGar=valorAct-garantia; const cob=garantia>0?(valorAct/garantia*100):0;
-      const fill=Math.min(100,cob).toFixed(1);
-      const fc=cob>=110?'var(--green)':cob>=100?'#ca8a04':'var(--red)';
-      const st=cob>=110?'ok':cob>=100?'warn':'danger';
-      const sl=cob>=110?'✅ CUBIERTO':cob>=100?'⚠️ AJUSTADO':'🔴 RIESGO';
-      totalColat+=valorAct; cobSum+=cob; cobCount++;
+      // Cobertura = colateral/deuda × 100 → 200% = cobertura inicial completa
+      const cobPct=deuda>0?(valorAct/deuda*100):0;
+      const margenGar=valorAct-garantia;
+      const fill=Math.min(100,(cobPct/200*100)).toFixed(1); // barra llena al 200%
+      const fc=cobPct>=200?'var(--green)':cobPct>=130?'#ca8a04':cobPct>=120?'var(--red)':'#7f1d1d';
+      const st=cobPct>=200?'ok':cobPct>=130?'warn':cobPct>=120?'danger':'exec';
+      const sl=cobPct>=200?'✅ CUBIERTO':cobPct>=130?'⚠️ AJUSTADO':cobPct>=120?'🔴 RIESGO':'⚡ EJECUCIÓN';
+      totalColat+=valorAct; cobSum+=cobPct; cobCount++;
       return `<div class="pign-card">
         <div class="pign-card-hdr">
           <div><div style="font-size:14px;font-weight:800;margin-bottom:2px">${eh(l.nombre)}</div><div style="font-size:11px;color:var(--muted)">${eh(l.entidad||'—')} · Deuda pendiente: <strong>${LnFmt(deuda)}</strong></div></div>
@@ -3923,11 +3965,11 @@ html,body{height:100%;overflow:hidden;font-family:-apple-system,BlinkMacSystemFo
         <div class="pign-summary">
           <div class="lm"><div class="lm-l">Colateral actual</div><div class="lm-v">${LnFmt(valorAct)}</div></div>
           <div class="lm"><div class="lm-l">Garantía nec. (×${ratio})</div><div class="lm-v">${LnFmt(garantia)}</div></div>
-          <div class="lm"><div class="lm-l">Margen garantía</div><div class="lm-v" style="color:${margenGar>=0?'var(--green)':'var(--red)'}">${LnFmt(margenGar)}</div></div>
-          <div class="lm"><div class="lm-l">Cobertura</div><div class="lm-v" style="color:${fc}">${cob.toFixed(1)}%</div></div>
+          <div class="lm"><div class="lm-l">${margenGar>=0?'Excedente':'Déficit'} garantía</div><div class="lm-v" style="color:${margenGar>=0?'var(--green)':'var(--red)'}">${LnFmt(Math.abs(margenGar))}</div></div>
+          <div class="lm"><div class="lm-l">Cobertura (col./deuda)</div><div class="lm-v" style="color:${fc}">${cobPct.toFixed(1)}%</div></div>
         </div>
         <div class="pign-cov-bar"><div class="pign-cov-fill" style="width:${fill}%;background:${fc}"></div></div>
-        <div class="pign-status-row"><span class="pign-status ${st}">${sl}</span><span style="font-size:10px;color:var(--muted2)">Cobertura ${cob.toFixed(1)}% · necesario ${(ratio*100).toFixed(0)}% · ${cob>=ratio*100?'excedente':'déficit'} ${LnFmt(Math.abs(margenGar))}</span></div>
+        <div class="pign-status-row"><span class="pign-status ${st}">${sl}</span><span style="font-size:10px;color:var(--muted2)">Cobertura ${cobPct.toFixed(1)}% · NMG: 130% · Umbral: 120% · ${margenGar>=0?'excedente':'déficit'} ${LnFmt(Math.abs(margenGar))}</span></div>
       </div>`;
     }).join('');
     if(sub) sub.textContent=`${pigned.length} producto${pigned.length!==1?'s':''} pignorado${pigned.length!==1?'s':''}`;
@@ -3949,7 +3991,7 @@ html,body{height:100%;overflow:hidden;font-family:-apple-system,BlinkMacSystemFo
         debt+=pending; monthly+=cuo; interest+=remInt; tinW+=l.tin*pending; tinB+=pending;
         const ico=l.kind?.includes('Hipoteca')?'🏠':l.kind==='Coche'?'🚗':l.kind==='Estudios'?'🎓':'⏱';
         return `<div class="loan-card">
-          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px"><div><span class="badge" style="background:var(--ga);color:var(--green);border:1px solid rgba(26,122,66,.2);font-size:9px;font-weight:700;padding:2px 7px;border-radius:5px">${(l.kind||'PRÉSTAMO').toUpperCase()}</span>${pignBadge}</div><button class="btn-sm" onclick="LnDelete('${l.id}')" style="color:var(--red)">Eliminar</button></div>
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px"><div><span class="badge" style="background:var(--ga);color:var(--green);border:1px solid rgba(26,122,66,.2);font-size:9px;font-weight:700;padding:2px 7px;border-radius:5px">${(l.kind||'PRÉSTAMO').toUpperCase()}</span>${pignBadge}</div><div style="display:flex;gap:6px"><button class="btn-sm" onclick="LnEdit('${l.id}')">✏️ Editar</button><button class="btn-sm" onclick="LnDelete('${l.id}')" style="color:var(--red)">Eliminar</button></div></div>
           <div class="loan-card-hdr"><div class="loan-icon">${ico}</div><div class="loan-card-hdr-info"><h3>${eh(l.nombre)}</h3><p>${eh(l.entidad||'—')}</p></div></div>
           <div class="loan-metrics"><div class="lm"><div class="lm-l">Capital</div><div class="lm-v">${LnFmt(l.cap)}</div></div><div class="lm"><div class="lm-l">Pendiente</div><div class="lm-v">${LnFmt(pending)}</div></div><div class="lm"><div class="lm-l">TIN</div><div class="lm-v">${LnFmtPctPlain(l.tin)}</div></div><div class="lm"><div class="lm-l">TAE</div><div class="lm-v">${LnFmtPctPlain(tae)}</div></div></div>
           <div class="cuota-row"><span class="cuota-label">Cuota mensual</span><span class="cuota-val">${LnFmt(cuo)} / mes</span></div>
@@ -3958,14 +4000,16 @@ html,body{height:100%;overflow:hidden;font-family:-apple-system,BlinkMacSystemFo
           <div class="loan-footer"><div class="loan-footer-info">${l.fecha?'📅 '+l.fecha+' · ':''}${eh(l.entidad||'')}</div><button class="btn-sm" onclick="LnShowAmort('${l.id}')">Ver tabla</button></div>
         </div>`;
       } else {
-        const im=l.disp*(l.tin/100/12),cm=Math.max(im,l.disp*0.03),disp=Math.max(0,l.lim-l.disp),util=l.lim>0?(l.disp/l.lim*100):0;
-        debt+=l.disp; monthly+=cm; interest+=im*12; tinW+=l.tin*l.disp; tinB+=l.disp;
+        const per=l.periodicidad||'mensual'; const divisor=per==='trimestral'?4:12;
+        const im=l.disp*(l.tin/100/divisor); // solo intereses, sin amortizar capital
+        const disp=Math.max(0,l.lim-l.disp),util=l.lim>0?(l.disp/l.lim*100):0;
+        debt+=l.disp; monthly+=(per==='trimestral'?im/3:im); interest+=im*divisor; tinW+=l.tin*l.disp; tinB+=l.disp;
         const isRev=(l.kind||'').toLowerCase().includes('revolv');
         return `<div class="loan-card">
-          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px"><div><span class="badge" style="background:#fff8e1;color:var(--gold);border:1px solid rgba(154,111,0,.2);font-size:9px;font-weight:700;padding:2px 7px;border-radius:5px">${(l.kind||'CRÉDITO').toUpperCase()}</span>${pignBadge}</div><button class="btn-sm" onclick="LnDelete('${l.id}')" style="color:var(--red)">Eliminar</button></div>
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px"><div><span class="badge" style="background:#fff8e1;color:var(--gold);border:1px solid rgba(154,111,0,.2);font-size:9px;font-weight:700;padding:2px 7px;border-radius:5px">${(l.kind||'CRÉDITO').toUpperCase()}</span>${pignBadge}</div><div style="display:flex;gap:6px"><button class="btn-sm" onclick="LnEdit('${l.id}')">✏️ Editar</button><button class="btn-sm" onclick="LnDelete('${l.id}')" style="color:var(--red)">Eliminar</button></div></div>
           <div class="loan-card-hdr"><div class="loan-icon">💳</div><div class="loan-card-hdr-info"><h3>${eh(l.nombre)}</h3><p>${eh(l.entidad||'—')}</p></div></div>
           <div class="loan-metrics"><div class="lm"><div class="lm-l">Límite</div><div class="lm-v">${LnFmt(l.lim)}</div></div><div class="lm"><div class="lm-l">Dispuesto</div><div class="lm-v" style="color:var(--red)">${LnFmt(l.disp)}</div></div><div class="lm"><div class="lm-l">Disponible</div><div class="lm-v" style="color:var(--green)">${LnFmt(disp)}</div></div><div class="lm"><div class="lm-l">TIN</div><div class="lm-v">${LnFmtPctPlain(l.tin)}</div></div></div>
-          <div class="cuota-row"><span class="cuota-label">Cuota mínima</span><span class="cuota-val" style="color:var(--gold)">${LnFmt(cm)} / mes</span></div>
+          <div class="cuota-row"><span class="cuota-label">Intereses (solo intereses)</span><span class="cuota-val" style="color:var(--gold)">${LnFmt(im)}${per==='trimestral'?' / trim.':' / mes'}</span></div>
           <div class="prog-label">Utilización: ${util.toFixed(1)}%</div>
           <div class="sbar"><div class="sf" style="width:${Math.min(100,util).toFixed(1)}%;background:var(--gold)"></div></div>
           ${isRev?'<div class="alert-box">⚠️ <strong>Crédito revolving</strong> · El capital no se amortiza solo. Cancela el saldo cuanto antes para evitar intereses compuestos.</div>':''}
@@ -6643,19 +6687,24 @@ function renderLists(){
 
   // ── Debt rows ──
   const _loans=typeof LnGetLoans==='function'?LnGetLoans():[];
-  const _debtRows=_loans.length>0?`
-    <tr><td colspan="${colCount}" style="padding:10px 8px 5px;font-size:10.5px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;border-top:2px solid var(--border);background:var(--surf2)">
-      💳 ${isEs?'Deuda':'Debt'} <button onclick="showScreen('prestamos')" style="background:none;border:none;font-size:10.5px;font-weight:700;color:#b91c1c;cursor:pointer;margin-left:8px;padding:0">${isEs?'Ver todo →':'See all →'}</button>
-    </td></tr>`+_loans.map(l=>{
-      const _isPrest=l.tipo==='prestamo';
-      const _icon=_isPrest?(l.kind==='Hipoteca'?'🏠':l.kind==='Coche'?'🚗':l.kind==='Estudios'?'🎓':'⏱'):'💳';
-      const _bal=_isPrest?l.cap:l.disp;
-      const _amtStr=_bal>0?`<span style="color:var(--red)">-${fe(_bal)}</span>`:'—';
-      const _tinStr=l.tin>0?`<span style="color:var(--red)">-${l.tin.toFixed(2)}% TIN</span>`:'—';
-      const _ent=l.entidad||'—';
-      const debtCellMap={precio:'<td style="color:var(--muted2)">—</td>',hoy:'<td style="color:var(--muted2)">—</td>',cant:'<td style="color:var(--muted2)">—</td>',valor:`<td style="font-weight:700">${_amtStr}</td>`,pmedio:'<td style="color:var(--muted2)">—</td>',rentab:`<td>${_tinStr}</td>`,tipo:'<td style="color:var(--muted2)">—</td>',peso:'<td style="color:var(--muted2)">—</td>',broker:`<td style="color:var(--muted)">${escapeHtml(_ent)}</td>`};
-      return `<tr style="cursor:pointer;background:rgba(185,28,28,.02)" onclick="showScreen('prestamos')"><td><div class="pf-asset"><div class="icon" style="background:linear-gradient(135deg,#991b1b,#dc2626);font-size:16px">${_icon}</div><div style="min-width:0"><div class="pf-tk">${escapeHtml(l.nombre||(_isPrest?'Préstamo':'Crédito'))}</div><div class="pf-nm">${escapeHtml(_ent)}</div></div></div></td>${visCols.map(c=>debtCellMap[c]||'<td>—</td>').join('')}</tr>`;
-    }).join(''):'';
+  const _debtHdr=`<tr><td colspan="${colCount}" style="padding:10px 8px 5px;font-size:10.5px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;border-top:2px solid var(--border);background:var(--surf2)">
+    💳 ${isEs?'Deuda':'Debt'} <button onclick="showScreen('prestamos')" style="background:none;border:none;font-size:10.5px;font-weight:700;color:#b91c1c;cursor:pointer;margin-left:8px;padding:0">${isEs?'Ver todo →':'See all →'}</button><button onclick="if(typeof LnOpenAdd==='function')LnOpenAdd()" style="background:none;border:none;font-size:10.5px;font-weight:700;color:#b91c1c;cursor:pointer;margin-left:8px;padding:0">+ ${isEs?'Añadir':'Add'}</button>
+  </td></tr>`;
+  const _debtItems=_loans.map(l=>{
+    const _isPrest=l.tipo==='prestamo';
+    const _icon=_isPrest?(l.kind==='Hipoteca'?'🏠':l.kind==='Coche'?'🚗':l.kind==='Estudios'?'🎓':'⏱'):'💳';
+    // pending balance: for prestamo use schedule, for credito use disp
+    let _bal=_isPrest?l.cap:l.disp;
+    if(_isPrest&&typeof LnBuildSchedule==='function'&&typeof LnMonthsElapsed==='function'){
+      try{const _s=LnBuildSchedule(l.cap,l.tin,l.meses);const _e=Math.min(LnMonthsElapsed(l.fecha),l.meses);_bal=_e>0?(_s[_e-1]?.saldo??l.cap):l.cap;}catch(_){}
+    }
+    const _amtStr=_bal>0?`<span style="color:var(--red)">-${fe(_bal)}</span>`:'—';
+    const _tinStr=l.tin>0?`<span style="color:var(--red)">-${l.tin.toFixed(2)}% TIN</span>`:'—';
+    const _ent=l.entidad||'—';
+    const debtCellMap={precio:'<td style="color:var(--muted2)">—</td>',hoy:'<td style="color:var(--muted2)">—</td>',cant:'<td style="color:var(--muted2)">—</td>',valor:`<td style="font-weight:700">${_amtStr}</td>`,pmedio:'<td style="color:var(--muted2)">—</td>',rentab:`<td>${_tinStr}</td>`,tipo:'<td style="color:var(--muted2)">—</td>',peso:'<td style="color:var(--muted2)">—</td>',broker:`<td style="color:var(--muted)">${escapeHtml(_ent)}</td>`};
+    return `<tr style="cursor:pointer;background:rgba(185,28,28,.02)" onclick="showScreen('prestamos')"><td><div class="pf-asset"><div class="icon" style="background:linear-gradient(135deg,#991b1b,#dc2626);font-size:16px">${_icon}</div><div style="min-width:0"><div class="pf-tk">${escapeHtml(l.nombre||(_isPrest?'Préstamo':'Crédito'))}</div><div class="pf-nm">${escapeHtml(_ent)}</div></div></div></td>${visCols.map(c=>debtCellMap[c]||'<td>—</td>').join('')}</tr>`;
+  }).join('');
+  const _debtRows=_debtHdr+(_loans.length>0?_debtItems:`<tr><td colspan="${colCount}" style="padding:8px 16px;font-size:12px;color:var(--muted2);background:rgba(185,28,28,.02)">${isEs?'Sin préstamos ni créditos registrados.':'No loans or credits registered.'}</td></tr>`);
 
   // ── Column selector panel ──
   const colPanelHtml=`<div class="fa-col-wrap" style="position:relative;display:inline-block">
