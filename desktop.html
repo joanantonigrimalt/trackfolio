@@ -6,7 +6,7 @@
   (served no-cache, version-bumped each deploy). Works even where SW/no-store
   are ignored, because it is plain page JS. */
 (function(){try{
-  var FA_BUILD=window.FA_BUILD='222';
+  var FA_BUILD=window.FA_BUILD='223';
   var s=location.search;
   if(s.indexOf('vchk')>-1||s.indexOf('_v=')>-1){history.replaceState(null,'',location.pathname+(location.hash||''));return;}
   fetch('/sw.js?_='+Date.now(),{cache:'no-store'}).then(function(r){return r.text();}).then(function(t){
@@ -7219,19 +7219,27 @@ async function _bgRefreshPrices(){
       const chunk=isins.slice(i,i+batchSize);
       await fetch('/api/portfolio/coverage?isin='+encodeURIComponent(chunk.join(','))+'&refresh=1').catch(()=>{});
     }
-    // Re-fetch coverage to update client-side prices (not just server cache)
-    const freshCov=await getJson('/api/portfolio/coverage?isin='+encodeURIComponent(isins.join(',')),9500).catch(()=>null);
+    // Re-fetch coverage with refresh=1 to get live prices on client too
+    const freshCov=await getJson('/api/portfolio/coverage?isin='+encodeURIComponent(isins.join(','))+'&refresh=1',12000).catch(()=>null);
     if(freshCov?.results?.length>0){
-      // Update _cvMap with fresh prices (merge, don't replace — avoids losing history data)
       freshCov.results.forEach(e=>{ _cvMap[e.isin]=e; });
-      // Update price fields on existing assets directly (buildAssets is a local fn, not accessible here)
+      // API structure: price is nested at data.quote.price (native CCY) or position.currentPrice (EUR)
       assets.forEach(a=>{
         const cv=_cvMap[a.isin];
         if(!cv)return;
-        if(cv.price!=null){a.price=cv.price;a.currency=cv.currency||a.currency;}
-        if(cv.change1d!=null)a.change1d=cv.change1d;
-        if(cv.changePercent1d!=null)a.changePercent1d=cv.changePercent1d;
-        if(cv.marketCap!=null)a.marketCap=cv.marketCap;
+        // position.currentPrice is already EUR-converted by the API
+        const priceEur=cv.position?.currentPrice;
+        if(priceEur!=null&&priceEur>0){
+          a.currentPrice=priceEur;
+          a.value=priceEur*(a.quantity||a._rawQty||0);
+          const inv=(a.buyPrice||a._rawBuyPrice||0)*(a.quantity||a._rawQty||0);
+          a.gain=a.value-inv;
+          a.gainPct=inv>0?a.gain/inv*100:0;
+        }
+        const q=cv.data?.quote||{};
+        if(q.changePercent1d!=null)a.changePercent1d=q.changePercent1d;
+        if(q.change1d!=null)a.change1d=q.change1d;
+        if(q.marketCap!=null)a.marketCap=q.marketCap;
       });
       _recordValueSnapshot();
       render();_rerenderActive();

@@ -10,7 +10,7 @@
   no-store headers are ignored (in-app webviews) because it is plain page JS.
   Source of truth = sw.js (always served no-cache, version-bumped each deploy). */
 (function(){try{
-  var FA_BUILD='222';
+  var FA_BUILD='223';
   var s=location.search;
   if(s.indexOf('vchk')>-1||s.indexOf('_v=')>-1){
     // Clean the ugly ?vchk= / ?_v= from the URL silently
@@ -7035,17 +7035,26 @@ async function _bgRefreshPrices(){
       const chunk=isins.slice(i,i+batchSize);
       await fetch('/api/portfolio/coverage?isin='+encodeURIComponent(chunk.join(','))+'&refresh=1').catch(()=>{});
     }
-    const freshCov=await getJson('/api/portfolio/coverage?isin='+encodeURIComponent(isins.join(',')),9500).catch(()=>null);
+    const freshCov=await getJson('/api/portfolio/coverage?isin='+encodeURIComponent(isins.join(','))+'&refresh=1',12000).catch(()=>null);
     if(freshCov?.results?.length>0){
       // buildAssets is local to boot() — cannot call it here. Merge fresh prices directly into assets.
+      // API structure: price nested at data.quote.price (native CCY) or position.currentPrice (EUR)
       freshCov.results.forEach(e=>{ _cvMap[e.isin]=e; });
       assets.forEach(a=>{
         const cv=_cvMap[a.isin];
         if(!cv)return;
-        if(cv.price!=null){a.price=cv.price;a.currency=cv.currency||a.currency;}
-        if(cv.change1d!=null)a.change1d=cv.change1d;
-        if(cv.changePercent1d!=null)a.changePercent1d=cv.changePercent1d;
-        if(cv.marketCap!=null)a.marketCap=cv.marketCap;
+        const priceEur=cv.position?.currentPrice;
+        if(priceEur!=null&&priceEur>0){
+          a.currentPrice=priceEur;
+          a.value=priceEur*(a.quantity||a._rawQty||0);
+          const inv=(a.buyPrice||a._rawBuyPrice||0)*(a.quantity||a._rawQty||0);
+          a.gain=a.value-inv;
+          a.gainPct=inv>0?a.gain/inv*100:0;
+        }
+        const q=cv.data?.quote||{};
+        if(q.changePercent1d!=null)a.changePercent1d=q.changePercent1d;
+        if(q.change1d!=null)a.change1d=q.change1d;
+        if(q.marketCap!=null)a.marketCap=q.marketCap;
       });
       _recordValueSnapshot();
       render();_rerenderActive();
