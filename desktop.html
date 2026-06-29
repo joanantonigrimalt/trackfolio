@@ -6,7 +6,7 @@
   (served no-cache, version-bumped each deploy). Works even where SW/no-store
   are ignored, because it is plain page JS. */
 (function(){try{
-  var FA_BUILD=window.FA_BUILD='221';
+  var FA_BUILD=window.FA_BUILD='222';
   var s=location.search;
   if(s.indexOf('vchk')>-1||s.indexOf('_v=')>-1){history.replaceState(null,'',location.pathname+(location.hash||''));return;}
   fetch('/sw.js?_='+Date.now(),{cache:'no-store'}).then(function(r){return r.text();}).then(function(t){
@@ -7036,38 +7036,34 @@ function _showUpgradeModal(reason) {
 
 async function _goPricing(plan) {
   document.getElementById('upgradeModalOverlay')?.remove();
-  if (plan === 'pro') {
-    // Trigger Stripe Checkout for Pro 9.99€/month
-    const tok = localStorage.getItem('fa_token');
-    if (!tok) {
-      alert('Debes iniciar sesión para suscribirte.');
-      return;
-    }
-    const btn = event?.target;
-    if (btn) { btn.disabled = true; btn.textContent = 'Redirigiendo…'; }
-    try {
-      const r = await fetch('/api/stripe/checkout', {
-        method: 'POST',
-        headers: { 'Authorization': 'Bearer ' + tok, 'Content-Type': 'application/json' },
-      });
-      const d = await r.json();
-      if (d.url) {
-        window.location.href = d.url;
-      } else if (d.error === 'already_pro') {
-        alert('Ya tienes el plan Pro activo. 🎉');
-      } else {
-        alert('Error al iniciar pago: ' + (d.detail || d.error || 'Unknown'));
-        if (btn) { btn.disabled = false; btn.textContent = '⭐ Pro — 9,99€/mes'; }
-      }
-    } catch (e) {
-      alert('Error de conexión. Inténtalo de nuevo.');
-      if (btn) { btn.disabled = false; btn.textContent = '⭐ Pro — 9,99€/mes'; }
-    }
+  // Both starter and pro go through Stripe Checkout
+  const tok = localStorage.getItem('fa_token');
+  if (!tok) {
+    alert('Debes iniciar sesión para suscribirte.');
     return;
   }
-  // For starter / other plans — navigate to pricing screen
-  if (typeof showScreen === 'function') showScreen('pricing');
-  else if (typeof _deskShowScreen === 'function') _deskShowScreen('pricing');
+  const btn = event?.target;
+  const btnLabel = btn?.querySelector('span')?.textContent || btn?.textContent || '';
+  if (btn) { btn.disabled = true; btn.textContent = 'Redirigiendo…'; }
+  try {
+    const r = await fetch('/api/stripe/checkout', {
+      method: 'POST',
+      headers: { 'Authorization': 'Bearer ' + tok, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ plan }),
+    });
+    const d = await r.json();
+    if (d.url) {
+      window.location.href = d.url;
+    } else if (d.error === 'already_pro') {
+      showToast('Ya tienes el plan Pro activo. 🎉');
+    } else {
+      alert('Error al iniciar pago: ' + (d.detail || d.error || 'Unknown'));
+      if (btn) { btn.disabled = false; btn.textContent = btnLabel; }
+    }
+  } catch (e) {
+    alert('Error de conexión. Inténtalo de nuevo.');
+    if (btn) { btn.disabled = false; btn.textContent = btnLabel; }
+  }
 }
 
 // Handle return from Stripe checkout (?upgraded=1)
@@ -8072,7 +8068,7 @@ function saveLiqItem() {
   saveLiquidity(liq);
   closeLiqModal();
   renderLiquidity();
-  saveToCloud().catch(()=>{});
+  syncToCloud().catch(()=>{});
 }
 function deleteLiqItem() {
   if(!_liqEditId)return;
@@ -8080,7 +8076,7 @@ function deleteLiqItem() {
   saveLiquidity(liq);
   closeLiqModal();
   renderLiquidity();
-  saveToCloud().catch(()=>{});
+  syncToCloud().catch(()=>{});
 }
 
 function renderLiquidity() {

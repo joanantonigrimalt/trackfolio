@@ -10,7 +10,7 @@
   no-store headers are ignored (in-app webviews) because it is plain page JS.
   Source of truth = sw.js (always served no-cache, version-bumped each deploy). */
 (function(){try{
-  var FA_BUILD='221';
+  var FA_BUILD='222';
   var s=location.search;
   if(s.indexOf('vchk')>-1||s.indexOf('_v=')>-1){
     // Clean the ugly ?vchk= / ?_v= from the URL silently
@@ -7037,12 +7037,18 @@ async function _bgRefreshPrices(){
     }
     const freshCov=await getJson('/api/portfolio/coverage?isin='+encodeURIComponent(isins.join(',')),9500).catch(()=>null);
     if(freshCov?.results?.length>0){
-      _cvMap=Object.fromEntries(freshCov.results.map(e=>[e.isin,e]));
-      _rawSeedAssets=buildAssets(_cvMap);
-      assets=applyOverridesToAssets(_rawSeedAssets);
-      loadCustomIntoAssets(_cvMap);
+      // buildAssets is local to boot() — cannot call it here. Merge fresh prices directly into assets.
+      freshCov.results.forEach(e=>{ _cvMap[e.isin]=e; });
+      assets.forEach(a=>{
+        const cv=_cvMap[a.isin];
+        if(!cv)return;
+        if(cv.price!=null){a.price=cv.price;a.currency=cv.currency||a.currency;}
+        if(cv.change1d!=null)a.change1d=cv.change1d;
+        if(cv.changePercent1d!=null)a.changePercent1d=cv.changePercent1d;
+        if(cv.marketCap!=null)a.marketCap=cv.marketCap;
+      });
       _recordValueSnapshot();
-      render();
+      render();_rerenderActive();
     }
   }catch(e){console.warn('[bgRefreshPrices]',e);}
 }
