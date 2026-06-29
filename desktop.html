@@ -6,7 +6,7 @@
   (served no-cache, version-bumped each deploy). Works even where SW/no-store
   are ignored, because it is plain page JS. */
 (function(){try{
-  var FA_BUILD=window.FA_BUILD='242';
+  var FA_BUILD=window.FA_BUILD='243';
   var s=location.search;
   if(s.indexOf('vchk')>-1||s.indexOf('_v=')>-1){history.replaceState(null,'',location.pathname+(location.hash||''));return;}
   fetch('/sw.js?_='+Date.now(),{cache:'no-store'}).then(function(r){return r.text();}).then(function(t){
@@ -6461,22 +6461,34 @@ function renderAnalysisV2(){
   // ── Peso por activo ──
   const items=live.map(a=>({name:a.name,v:toDisplay(a.value,assetCcy(a))||0})).filter(x=>x.v>0).sort((x,y)=>y.v-x.v);
   if(liqTot>0) items.push({name:cashLbl,v:liqTot});
-  // Per-asset donut SVG — a la derecha, con % en segmentos grandes
-  const C2=2*Math.PI*62; let off2=0; const segs2=[]; const lbls2=[];
+  // Per-asset donut SVG con callout labels (nombre + %)
+  const C2=2*Math.PI*62; let off2=0; const segs2=[]; const _ld=[];
   items.forEach((it,i)=>{
     const col=ASSET_COLS[i%ASSET_COLS.length];
     const len=it.v/grand*C2;
     const pct=it.v/grand*100;
     segs2.push(`<circle cx="80" cy="80" r="62" fill="none" stroke="${col}" stroke-width="18" stroke-dasharray="${len.toFixed(1)} ${(C2-len).toFixed(1)}" stroke-dashoffset="${(-off2).toFixed(1)}" transform="rotate(-90 80 80)"/>`);
-    if(pct>=4.5){
-      const mid=-Math.PI/2+(off2+len/2)/62;
-      const lx=(80+62*Math.cos(mid)).toFixed(1);
-      const ly=(80+62*Math.sin(mid)).toFixed(1);
-      lbls2.push(`<text x="${lx}" y="${ly}" text-anchor="middle" dy="0.35em" font-size="8" fill="white" font-weight="800" font-family="system-ui,sans-serif">${pct.toFixed(0)}%</text>`);
-    }
+    const mid=-Math.PI/2+(off2+len/2)/62;
+    const isR=Math.cos(mid)>=0;
+    const sn=it.name.length>15?it.name.slice(0,14)+'…':it.name;
+    _ld.push({mid,pct,col,elbowX:80+88*Math.cos(mid),elbowY:80+88*Math.sin(mid),adjY:80+88*Math.sin(mid),isR,sn});
     off2+=len;
   });
-  const pwDonutSVG=`<svg width="280" height="280" viewBox="0 0 160 160" style="flex-shrink:0;display:block"><circle cx="80" cy="80" r="62" fill="none" stroke="var(--surf3)" stroke-width="18"/>${segs2.join('')}${lbls2.join('')}<text x="80" y="75" text-anchor="middle" font-size="26" fill="var(--text)" font-weight="900">${items.length}</text><text x="80" y="96" text-anchor="middle" font-size="13" fill="var(--muted2)">${isEs?'activos':'assets'}</text></svg>`;
+  // Anti-collision: push overlapping y-positions apart
+  ['R','L'].forEach(side=>{
+    const g=_ld.filter(l=>side==='R'?l.isR:!l.isR).sort((a,b)=>a.adjY-b.adjY);
+    for(let k=0;k<50;k++) for(let i=1;i<g.length;i++){const d=g[i].adjY-g[i-1].adjY;if(d<11){const p=(11-d)/2;g[i].adjY+=p;g[i-1].adjY-=p;}}
+  });
+  const _callouts=_ld.map(l=>{
+    const ox=(80+72*Math.cos(l.mid)).toFixed(1),oy=(80+72*Math.sin(l.mid)).toFixed(1);
+    const ex=l.elbowX.toFixed(1),ey=l.adjY.toFixed(1);
+    const hx=(l.isR?l.elbowX+9:l.elbowX-9).toFixed(1);
+    const tx=(l.isR?l.elbowX+12:l.elbowX-12).toFixed(1);
+    const an=l.isR?'start':'end';
+    const ty=parseFloat(ey);
+    return `<line x1="${ox}" y1="${oy}" x2="${ex}" y2="${ey}" stroke="${l.col}" stroke-width="0.9" stroke-opacity="0.55"/><line x1="${ex}" y1="${ey}" x2="${hx}" y2="${ey}" stroke="${l.col}" stroke-width="0.9" stroke-opacity="0.55"/><text x="${tx}" y="${(ty-1).toFixed(1)}" text-anchor="${an}" font-size="7" font-weight="700" fill="var(--text)" font-family="system-ui,sans-serif">${escapeHtml(l.sn)}</text><text x="${tx}" y="${(ty+7.5).toFixed(1)}" text-anchor="${an}" font-size="6.5" font-weight="800" fill="${l.col}" font-family="system-ui,sans-serif">${l.pct.toFixed(1)}%</text>`;
+  }).join('');
+  const pwDonutSVG=`<svg width="420" height="220" viewBox="-110 -10 360 175" style="flex-shrink:0;display:block"><circle cx="80" cy="80" r="62" fill="none" stroke="var(--surf3)" stroke-width="18"/>${segs2.join('')}${_callouts}<text x="80" y="74" text-anchor="middle" font-size="26" fill="var(--text)" font-weight="900">${items.length}</text><text x="80" y="94" text-anchor="middle" font-size="13" fill="var(--muted2)">${isEs?'activos':'assets'}</text></svg>`;
   // Todas las barras en columna izquierda: ● nombre → barra corta (% real, max 50%) → %
   const maxV2=items.reduce((m,it)=>Math.max(m,it.v),0);
   const allBars=items.map((it,i)=>{const pct=grand>0?it.v/grand*100:0;const barW=maxV2>0?it.v/maxV2*100:0;const col=ASSET_COLS[i%ASSET_COLS.length];const isLast=i===items.length-1;return `<div style="display:flex;align-items:center;gap:8px;padding:5px 0;${isLast?'':'border-bottom:1px solid var(--border)'}"><div style="width:8px;height:8px;border-radius:50%;background:${col};flex-shrink:0"></div><span style="font-size:12px;font-weight:600;width:130px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--text);flex-shrink:0" title="${escapeHtml(it.name)}">${escapeHtml(it.name)}</span><div style="flex:1;height:6px;border-radius:3px;overflow:hidden"><div style="width:${barW.toFixed(1)}%;height:100%;background:${col};border-radius:3px"></div></div><span style="width:38px;text-align:right;font-size:12px;font-weight:700;color:var(--text);font-variant-numeric:tabular-nums;flex-shrink:0">${pct.toFixed(1)}%</span></div>`;}).join('');
