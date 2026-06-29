@@ -6,7 +6,7 @@
   (served no-cache, version-bumped each deploy). Works even where SW/no-store
   are ignored, because it is plain page JS. */
 (function(){try{
-  var FA_BUILD=window.FA_BUILD='227';
+  var FA_BUILD=window.FA_BUILD='228';
   var s=location.search;
   if(s.indexOf('vchk')>-1||s.indexOf('_v=')>-1){history.replaceState(null,'',location.pathname+(location.hash||''));return;}
   fetch('/sw.js?_='+Date.now(),{cache:'no-store'}).then(function(r){return r.text();}).then(function(t){
@@ -8136,6 +8136,11 @@ function deleteLiqItem() {
 
 function renderLiquidity() {
   const liq = getLiquidity();
+  // ── Patch items without id (migrates old data saved before id system) ──
+  let patched = false;
+  liq.forEach(x=>{ if(!x.id){ x.id='liq_'+Date.now()+'_'+Math.random().toString(36).slice(2); patched=true; } });
+  if(patched) saveLiquidity(liq);
+
   const totalDisplay = liq.reduce((s,x)=>s+toDisplay(x.amount,x.currency||'EUR'),0);
   const hasLiq = liq.length > 0;
 
@@ -8145,34 +8150,39 @@ function renderLiquidity() {
   if(portLiqCard) portLiqCard.style.display = hasLiq ? '' : 'none';
 
   if(!hasLiq) {
-    // Update hero total by subtracting any previous liquidity (re-render does this)
     renderLiqHeroTotal();
     return;
   }
 
-  const rows = liq.map(x=>{
-    const annualInterest = x.amount*(x.rate/100);
-    const dispAmt = fd(x.amount, x.currency||'EUR');
-    const dispInt = x.rate>0 ? `+${fd(annualInterest,x.currency||'EUR')}/año` : '';
+  const isEs = currentLang === 'es';
+  // ── Table rows matching pf-tbl positions format ──
+  const tableRows = liq.map(x=>{
     const icon = LIQ_ICONS[x.type]||'💰';
+    const typeLbl = LIQ_LABELS[x.type]||x.type||(isEs?'Efectivo':'Cash');
     const isFP = x.type==='fondoprivado';
     const gainPct = isFP&&x.capitalInvertido>0 ? ((x.amount-x.capitalInvertido)/x.capitalInvertido*100) : null;
-    const metaExtra = isFP ? (x.planName?` · ${x.planName}`:'')+(gainPct!=null?` · <span style="color:${gainPct>=0?'#059669':'#b91c1c'}">${gainPct>=0?'+':''}${gainPct.toFixed(1)}%</span>`:'') : '';
-    return `<div class="liqRow" onclick="openLiqModal('${escapeHtml(String(x.id||''))}')">
-      <div class="liqIcon">${icon}</div>
-      <div style="min-width:0;flex:1">
-        <div class="liqName">${escapeHtml(x.name || (currentLang==='es'?'Efectivo':'Cash'))}</div>
-        <div class="liqMeta">${LIQ_LABELS[x.type]||x.type||(currentLang==='es'?'Efectivo':'Cash')}${x.broker?' · '+escapeHtml(x.broker):''}${x.rate>0?' · '+x.rate.toFixed(2)+'%/año':''}${metaExtra}</div>
-        ${isFP&&x.capitalInvertido>0?`<div class="liqMeta">Invertido: ${fd(x.capitalInvertido,x.currency||'EUR')}</div>`:''}
-      </div>
-      <div class="liqRight">
-        <div class="liqAmt">${dispAmt}</div>
-        ${x.rate>0?`<div class="liqRate">${dispInt}</div>`:''}
-      </div>
-    </div>`;
+    const rentab = gainPct!=null
+      ? `<span class="${gainPct>=0?'pf-pos':'pf-neg'}">${gainPct>=0?'+':''}${gainPct.toFixed(2)}%</span>`
+      : (x.rate>0 ? `<span class="pf-pos">+${x.rate.toFixed(2)}%/año</span>` : '<span style="color:var(--muted2)">—</span>');
+    const dispAmt = fe(toDisplay(x.amount,x.currency||'EUR'));
+    const brokerStr = x.broker ? escapeHtml(x.broker) : '—';
+    return `<tr style="cursor:pointer" onclick="openLiqModal('${escapeHtml(String(x.id))}')">
+      <td><div class="pf-asset"><div class="icon" style="background:linear-gradient(135deg,#0369a1,#38bdf8);font-size:17px">${icon}</div><div style="min-width:0"><div class="pf-tk">${escapeHtml(x.name||(isEs?'Efectivo':'Cash'))}</div><div class="pf-nm">${typeLbl}</div></div></div></td>
+      <td style="color:var(--muted2)">—</td>
+      <td style="color:var(--muted2)">—</td>
+      <td style="color:var(--muted2)">—</td>
+      <td style="font-weight:700">${dispAmt}</td>
+      <td style="color:var(--muted2)">—</td>
+      <td>${rentab}</td>
+      <td style="color:var(--muted2)">—</td>
+      <td style="color:var(--muted)">${brokerStr}</td>
+    </tr>`;
   }).join('');
+  const tableHtml = `<div style="overflow-x:auto"><table class="pf-tbl"><thead><tr>
+    <th>${isEs?'Activo':'Asset'}</th><th>${isEs?'Precio':'Price'}</th><th>${isEs?'Hoy':'Today'}</th><th>${isEs?'Cant.':'Qty'}</th><th>${isEs?'Valor':'Value'}</th><th>${isEs?'P. medio':'Avg'}</th><th>${isEs?'Rentab.':'Return'}</th><th>${isEs?'Peso':'Weight'}</th><th>Broker</th>
+  </tr></thead><tbody>${tableRows}</tbody></table></div>`;
 
-  ['homeLiqList','portfolioLiqList'].forEach(id=>{const el=document.getElementById(id);if(el)el.innerHTML=rows;});
+  ['homeLiqList','portfolioLiqList'].forEach(id=>{const el=document.getElementById(id);if(el)el.innerHTML=tableHtml;});
   ['homeLiqTotalAmt','portfolioLiqTotalAmt'].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent=fe(totalDisplay);});
 
   renderLiqHeroTotal();
