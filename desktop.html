@@ -6,7 +6,7 @@
   (served no-cache, version-bumped each deploy). Works even where SW/no-store
   are ignored, because it is plain page JS. */
 (function(){try{
-  var FA_BUILD=window.FA_BUILD='216';
+  var FA_BUILD=window.FA_BUILD='224';
   var s=location.search;
   if(s.indexOf('vchk')>-1||s.indexOf('_v=')>-1){history.replaceState(null,'',location.pathname+(location.hash||''));return;}
   fetch('/sw.js?_='+Date.now(),{cache:'no-store'}).then(function(r){return r.text();}).then(function(t){
@@ -1497,13 +1497,13 @@ html,body{height:100%;overflow:hidden;font-family:-apple-system,BlinkMacSystemFo
 /* ── Vera IA persistent panel ── */
 .d-ia-panel{width:320px;flex-shrink:0;background:#fff;border-left:1px solid rgba(20,32,24,.08);display:flex;flex-direction:column;height:100vh;overflow:hidden;transition:width .22s ease,border-color .22s ease}
 .d-ia-panel.ia-hidden{width:0;border-left-color:transparent;overflow:hidden}
-.d-ia-ph{display:flex;align-items:center;gap:10px;padding:13px 14px;border-bottom:1px solid rgba(255,255,255,.07);flex-shrink:0;background:linear-gradient(135deg,#0f1c13 0%,#1a3025 100%)}
-.d-ia-av{width:32px;height:32px;border-radius:50%;background:rgba(45,201,138,.12);border:1.5px solid rgba(45,201,138,.35);display:flex;align-items:center;justify-content:center;position:relative;flex-shrink:0}
-.d-ia-av .vera-dot{width:7px;height:7px;background:#2dc98a;border-radius:50%;border:1.5px solid #0f1c13;position:absolute;bottom:-1px;right:-1px}
-.d-ia-name{font-size:.78rem;font-weight:700;color:#f5fbf6;line-height:1.25}
-.d-ia-role{font-size:.6rem;color:rgba(245,251,246,.42);line-height:1.2}
-.d-ia-close-btn{margin-left:auto;background:rgba(255,255,255,.08);border:none;width:24px;height:24px;border-radius:6px;cursor:pointer;color:rgba(255,255,255,.5);font-size:13px;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:background .15s,color .15s;line-height:1}
-.d-ia-close-btn:hover{background:rgba(255,255,255,.18);color:#fff}
+.d-ia-ph{display:flex;align-items:center;gap:10px;padding:13px 14px;border-bottom:1px solid rgba(20,32,24,.07);flex-shrink:0;background:#fff}
+.d-ia-av{width:32px;height:32px;border-radius:10px;background:linear-gradient(135deg,#142018,#1a3f2c);display:flex;align-items:center;justify-content:center;position:relative;flex-shrink:0}
+.d-ia-av .vera-dot{width:7px;height:7px;background:#2dc98a;border-radius:50%;border:1.5px solid #fff;position:absolute;bottom:-1px;right:-1px}
+.d-ia-name{font-size:.78rem;font-weight:700;color:#142018;line-height:1.25}
+.d-ia-role{font-size:.6rem;color:#8fa090;line-height:1.2}
+.d-ia-close-btn{margin-left:auto;background:rgba(20,32,24,.06);border:none;width:24px;height:24px;border-radius:6px;cursor:pointer;color:#7a9080;font-size:13px;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:background .15s,color .15s;line-height:1}
+.d-ia-close-btn:hover{background:rgba(20,32,24,.12);color:#142018}
 .d-ia-mets{display:flex;padding:8px 10px;border-bottom:1px solid rgba(20,32,24,.06);flex-shrink:0;background:#f9fbf9}
 .d-ia-mets .vm-cell{flex:1;text-align:center;padding:1px 0}
 .d-ia-mets .vm-label{font-size:.58rem;color:#8a9e93;text-transform:uppercase;letter-spacing:.04em;font-weight:600}
@@ -1756,6 +1756,7 @@ html,body{height:100%;overflow:hidden;font-family:-apple-system,BlinkMacSystemFo
     <div class="hChip" onclick="showScreen('dividends')"><span>◎</span> <span data-i18n="navDividends">Dividendos</span></div>
     <div class="hChip" onclick="showScreen('impuestos')"><span>◫</span> <span data-i18n="navTax">Fiscal</span></div>
     <div class="hChip green" onclick="openSearch()"><span>＋</span> <span data-i18n="newPosition">Nueva posición</span></div>
+    <div class="hChip" onclick="openLiqModal()" style="background:linear-gradient(135deg,#1a3f2c,#15803d);color:#fff;border-color:#15803d"><span>💰</span> <span data-i18n="addLiquidity">Añadir liquidez</span></div>
   </div>
 
   <!-- Chart + Distribution -->
@@ -4080,7 +4081,8 @@ async function renderChart(){
   if(!lp){canvas.style.display='none';fallback.style.display='flex';return;}
   const aPct=lp.totalCurrent>0?lp.approximateCurrent/lp.totalCurrent*100:0;
   const _withHist=assets.filter(a=>a.hasRealHistory&&a.history?.length>0).length;
-  const noteText=aPct>0.5?`${_withHist}/${assets.length} ${currentLang==='es'?'activos · '+aPct.toFixed(0)+'% estimado':'assets · '+aPct.toFixed(0)+'% estimated'}`:currentLang==='es'?`${_withHist}/${assets.length} activos con histórico`:`${_withHist}/${assets.length} assets with history`;
+  const _activeCount=assets.filter(a=>a.quantity>0).length||assets.length;
+  const noteText=aPct>0.5?`${_withHist}/${_activeCount} ${currentLang==='es'?'activos · '+aPct.toFixed(0)+'% estimado':'assets · '+aPct.toFixed(0)+'% estimated'}`:currentLang==='es'?`${_withHist}/${_activeCount} activos con histórico`:`${_withHist}/${_activeCount} assets with history`;
   _drawChart(canvas,series.map(p=>dateLabel(p.date,selectedRange)),values,note,meta,rv,noteText);
   // Period return for selected range — shown in blue
   const _serFirst=series[0]?.totalValue||0,_serLast=series[series.length-1]?.totalValue||0;
@@ -6290,7 +6292,8 @@ function render(){
     _totalEl.innerHTML='<span style="opacity:.4;font-size:26px;letter-spacing:0">'+(currentLang==='es'?'Actualizando…':'Updating…')+'</span>';
     ge.textContent=currentLang==='es'?'Cargando precios…':'Loading prices…';ge.className='pill info';ge.style.opacity='0.5';
   }else{
-    _totalEl.textContent=fe(total);_totalEl.removeAttribute('style');
+    const _liqTot=typeof getLiquidity==='function'?getLiquidity().reduce((s,x)=>s+toDisplay(x.amount,x.currency||'EUR'),0):0;
+    _totalEl.textContent=fe(total+_liqTot);_totalEl.removeAttribute('style');
     ge.textContent=`${gain>=0?'+':''}${fe(gain)} · ${gainPct>=0?'+':''}${gainPct.toFixed(2)}%`;ge.className=`pill ${gain>=0?'pos':'neg'}`;ge.style.opacity='';
   }
   document.getElementById('investedTotal').textContent=fe(invested);
@@ -7033,38 +7036,34 @@ function _showUpgradeModal(reason) {
 
 async function _goPricing(plan) {
   document.getElementById('upgradeModalOverlay')?.remove();
-  if (plan === 'pro') {
-    // Trigger Stripe Checkout for Pro 9.99€/month
-    const tok = localStorage.getItem('fa_token');
-    if (!tok) {
-      alert('Debes iniciar sesión para suscribirte.');
-      return;
-    }
-    const btn = event?.target;
-    if (btn) { btn.disabled = true; btn.textContent = 'Redirigiendo…'; }
-    try {
-      const r = await fetch('/api/stripe/checkout', {
-        method: 'POST',
-        headers: { 'Authorization': 'Bearer ' + tok, 'Content-Type': 'application/json' },
-      });
-      const d = await r.json();
-      if (d.url) {
-        window.location.href = d.url;
-      } else if (d.error === 'already_pro') {
-        alert('Ya tienes el plan Pro activo. 🎉');
-      } else {
-        alert('Error al iniciar pago: ' + (d.detail || d.error || 'Unknown'));
-        if (btn) { btn.disabled = false; btn.textContent = '⭐ Pro — 9,99€/mes'; }
-      }
-    } catch (e) {
-      alert('Error de conexión. Inténtalo de nuevo.');
-      if (btn) { btn.disabled = false; btn.textContent = '⭐ Pro — 9,99€/mes'; }
-    }
+  // Both starter and pro go through Stripe Checkout
+  const tok = localStorage.getItem('fa_token');
+  if (!tok) {
+    alert('Debes iniciar sesión para suscribirte.');
     return;
   }
-  // For starter / other plans — navigate to pricing screen
-  if (typeof showScreen === 'function') showScreen('pricing');
-  else if (typeof _deskShowScreen === 'function') _deskShowScreen('pricing');
+  const btn = event?.target;
+  const btnLabel = btn?.querySelector('span')?.textContent || btn?.textContent || '';
+  if (btn) { btn.disabled = true; btn.textContent = 'Redirigiendo…'; }
+  try {
+    const r = await fetch('/api/stripe/checkout', {
+      method: 'POST',
+      headers: { 'Authorization': 'Bearer ' + tok, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ plan }),
+    });
+    const d = await r.json();
+    if (d.url) {
+      window.location.href = d.url;
+    } else if (d.error === 'already_pro') {
+      showToast('Ya tienes el plan Pro activo. 🎉');
+    } else {
+      alert('Error al iniciar pago: ' + (d.detail || d.error || 'Unknown'));
+      if (btn) { btn.disabled = false; btn.textContent = btnLabel; }
+    }
+  } catch (e) {
+    alert('Error de conexión. Inténtalo de nuevo.');
+    if (btn) { btn.disabled = false; btn.textContent = btnLabel; }
+  }
 }
 
 // Handle return from Stripe checkout (?upgraded=1)
@@ -7220,8 +7219,31 @@ async function _bgRefreshPrices(){
       const chunk=isins.slice(i,i+batchSize);
       await fetch('/api/portfolio/coverage?isin='+encodeURIComponent(chunk.join(','))+'&refresh=1').catch(()=>{});
     }
-    // Re-sync from cloud to pick up fresh cached prices
-    await syncFromCloud();
+    // Re-fetch coverage with refresh=1 to get live prices on client too
+    const freshCov=await getJson('/api/portfolio/coverage?isin='+encodeURIComponent(isins.join(','))+'&refresh=1',12000).catch(()=>null);
+    if(freshCov?.results?.length>0){
+      freshCov.results.forEach(e=>{ _cvMap[e.isin]=e; });
+      // API structure: price is nested at data.quote.price (native CCY) or position.currentPrice (EUR)
+      assets.forEach(a=>{
+        const cv=_cvMap[a.isin];
+        if(!cv)return;
+        // position.currentPrice is already EUR-converted by the API
+        const priceEur=cv.position?.currentPrice;
+        if(priceEur!=null&&priceEur>0){
+          a.currentPrice=priceEur;
+          a.value=priceEur*(a.quantity||a._rawQty||0);
+          const inv=(a.buyPrice||a._rawBuyPrice||0)*(a.quantity||a._rawQty||0);
+          a.gain=a.value-inv;
+          a.gainPct=inv>0?a.gain/inv*100:0;
+        }
+        const q=cv.data?.quote||{};
+        if(q.changePercent1d!=null)a.changePercent1d=q.changePercent1d;
+        if(q.change1d!=null)a.change1d=q.change1d;
+        if(q.marketCap!=null)a.marketCap=q.marketCap;
+      });
+      _recordValueSnapshot();
+      render();_rerenderActive();
+    }
   }catch(e){console.warn('[bgRefreshPrices]',e);}
 }
 function _startPriceRefreshLoop(){
@@ -8054,6 +8076,7 @@ function saveLiqItem() {
   saveLiquidity(liq);
   closeLiqModal();
   renderLiquidity();
+  syncToCloud().catch(()=>{});
 }
 function deleteLiqItem() {
   if(!_liqEditId)return;
@@ -8061,6 +8084,7 @@ function deleteLiqItem() {
   saveLiquidity(liq);
   closeLiqModal();
   renderLiquidity();
+  syncToCloud().catch(()=>{});
 }
 
 function renderLiquidity() {
@@ -9978,16 +10002,24 @@ async function _comPublish() {
     payload.content = JSON.stringify({_tx:1,a:asset,ty:_txType,dt:_txDate,q:_txQty,pr:_txPrice,d:_txComment,k:_txTags});
   }
 
+  // Ensure all required columns have defaults
+  payload.likes_count = 0;
+  payload.comments_count = 0;
   btn.textContent = '…'; btn.disabled = true;
   try {
-    const { error } = await _sb.from('community_posts').insert(payload);
+    const insertPromise = _sb.from('community_posts').insert(payload);
+    const timeoutPromise = new Promise((_,reject)=>setTimeout(()=>reject(new Error('Tiempo de espera agotado — reintenta')),15000));
+    const { error } = await Promise.race([insertPromise, timeoutPromise]);
     if (error) throw error;
     _comCloseModal();
     // Reset form fields
     ['comTextContent','comTextTags','comPfContent','comPfTotal','comPfInvested','comPfGain','comPfPositions','comPfTags','comTxAsset','comTxQty','comTxPrice','comTxComment'].forEach(id => { const el=document.getElementById(id); if(el) el.value=''; });
     await _comLoadFeed();
   } catch(e) {
-    msgEl.textContent = e.message || 'Error al publicar'; msgEl.style.display = '';
+    const msg = e.message||'Error al publicar';
+    if(msgEl){ msgEl.textContent=msg; msgEl.style.display=''; }
+    else alert(msg);
+    console.error('[comPublish]', e);
   } finally {
     btn.textContent = '✦ Publicar'; btn.disabled = false;
   }
@@ -10079,7 +10111,7 @@ function _comTimeAgo(ts) {
 }
 
 function _comEsc(str) {
-  return String(str||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  return String(str||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
 }
 
 // ── Alert sheet (legacy mobile sheet reused for asset-detail alerts) ──────────
