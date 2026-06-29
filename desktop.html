@@ -6,7 +6,7 @@
   (served no-cache, version-bumped each deploy). Works even where SW/no-store
   are ignored, because it is plain page JS. */
 (function(){try{
-  var FA_BUILD=window.FA_BUILD='220';
+  var FA_BUILD=window.FA_BUILD='221';
   var s=location.search;
   if(s.indexOf('vchk')>-1||s.indexOf('_v=')>-1){history.replaceState(null,'',location.pathname+(location.hash||''));return;}
   fetch('/sw.js?_='+Date.now(),{cache:'no-store'}).then(function(r){return r.text();}).then(function(t){
@@ -10004,7 +10004,7 @@ async function _comPublish() {
   btn.textContent = '…'; btn.disabled = true;
   try {
     const insertPromise = _sb.from('community_posts').insert(payload);
-    const timeoutPromise = new Promise((_,reject)=>setTimeout(()=>reject(new Error('Tiempo de espera agotado — reintenta')),8000));
+    const timeoutPromise = new Promise((_,reject)=>setTimeout(()=>reject(new Error('Tiempo de espera agotado — reintenta')),15000));
     const { error } = await Promise.race([insertPromise, timeoutPromise]);
     if (error) throw error;
     _comCloseModal();

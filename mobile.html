@@ -10,7 +10,7 @@
   no-store headers are ignored (in-app webviews) because it is plain page JS.
   Source of truth = sw.js (always served no-cache, version-bumped each deploy). */
 (function(){try{
-  var FA_BUILD='219';
+  var FA_BUILD='221';
   var s=location.search;
   if(s.indexOf('vchk')>-1||s.indexOf('_v=')>-1){
     // Clean the ugly ?vchk= / ?_v= from the URL silently
@@ -9581,7 +9581,7 @@ async function _comPublish() {
   btn.textContent = '…'; btn.disabled = true;
   try {
     const _insertP = _sbR('community_posts', { method: 'POST', body: payload });
-    await Promise.race([_insertP, new Promise((_,r)=>setTimeout(()=>r(new Error('Tiempo de espera agotado — reintenta')),8000))]);
+    await Promise.race([_insertP, new Promise((_,r)=>setTimeout(()=>r(new Error('Tiempo de espera agotado — reintenta')),15000))]);
     _comCloseModal();
     // Reset form fields
     ['comTextContent','comTextTags','comPfContent','comPfTotal','comPfInvested','comPfGain','comPfPositions','comPfTags','comTxAsset','comTxQty','comTxPrice','comTxComment'].forEach(id => { const el=document.getElementById(id); if(el) el.value=''; });
