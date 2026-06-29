@@ -6,7 +6,7 @@
   (served no-cache, version-bumped each deploy). Works even where SW/no-store
   are ignored, because it is plain page JS. */
 (function(){try{
-  var FA_BUILD=window.FA_BUILD='225';
+  var FA_BUILD=window.FA_BUILD='226';
   var s=location.search;
   if(s.indexOf('vchk')>-1||s.indexOf('_v=')>-1){history.replaceState(null,'',location.pathname+(location.hash||''));return;}
   fetch('/sw.js?_='+Date.now(),{cache:'no-store'}).then(function(r){return r.text();}).then(function(t){
@@ -6567,7 +6567,7 @@ async function boot(){
       const gain=quantity*(currentPrice-adjBuyPrice);
       // NOTE: currentPrice and value are always stored in EUR (converted by toEur above).
       // customCurrency is therefore 'EUR' so toDisplay(value,'EUR')=value (no double-conversion).
-      return{isin:pos.isin,name:pos.shortName||pos.name||mapping?.name||pos.isin,fullName:pos.name||mapping?.name||pos.isin,quantity,buyPrice:adjBuyPrice,currentPrice,invested:quantity*adjBuyPrice,value:quantity*currentPrice,gain,gainPct:adjBuyPrice?((currentPrice-adjBuyPrice)/adjBuyPrice)*100:0,mapping,provider:entry.data?.provider||null,coverageStatus:entry.data?.coverage?.status||'MISSING',coverage:entry.data?.coverage||{status:'MISSING'},history:adjHistory,hasRealHistory:adjHistory.length>1,_rawQty:quantity,_rawBuyPrice:adjBuyPrice,customCurrency:'EUR',_nativeCurrency:adjCcy||'EUR',costCurrency:null};
+      return{isin:pos.isin,name:pos.shortName||pos.name||mapping?.name||pos.isin,fullName:pos.name||mapping?.name||pos.isin,quantity,buyPrice:adjBuyPrice,currentPrice,invested:quantity*adjBuyPrice,value:quantity*currentPrice,gain,gainPct:adjBuyPrice?((currentPrice-adjBuyPrice)/adjBuyPrice)*100:0,mapping,provider:entry.data?.provider||null,coverageStatus:entry.data?.coverage?.status||'MISSING',coverage:entry.data?.coverage||{status:'MISSING'},history:adjHistory,hasRealHistory:adjHistory.length>1,_rawQty:quantity,_rawBuyPrice:adjBuyPrice,customCurrency:'EUR',_nativeCurrency:adjCcy||'EUR',costCurrency:null,broker:pos.broker||null};
     });
   }
   // Phase 1: instant render with seed prices only (no coverage yet)
