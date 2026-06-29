@@ -6,7 +6,7 @@
   (served no-cache, version-bumped each deploy). Works even where SW/no-store
   are ignored, because it is plain page JS. */
 (function(){try{
-  var FA_BUILD=window.FA_BUILD='232';
+  var FA_BUILD=window.FA_BUILD='233';
   var s=location.search;
   if(s.indexOf('vchk')>-1||s.indexOf('_v=')>-1){history.replaceState(null,'',location.pathname+(location.hash||''));return;}
   fetch('/sw.js?_='+Date.now(),{cache:'no-store'}).then(function(r){return r.text();}).then(function(t){
@@ -6438,10 +6438,9 @@ function renderAnalysisV2(){
   // Per-asset donut SVG — a la derecha
   const C2=2*Math.PI*62; let off2=0; const segs2=[];
   items.forEach((it,i)=>{const col=ASSET_COLS[i%ASSET_COLS.length];const len=it.v/grand*C2;segs2.push(`<circle cx="80" cy="80" r="62" fill="none" stroke="${col}" stroke-width="18" stroke-dasharray="${len.toFixed(1)} ${(C2-len).toFixed(1)}" stroke-dashoffset="${(-off2).toFixed(1)}" transform="rotate(-90 80 80)"/>`);off2+=len;});
-  const pwDonutSVG=`<svg width="190" height="190" viewBox="0 0 160 160" style="flex-shrink:0;display:block"><circle cx="80" cy="80" r="62" fill="none" stroke="var(--surf3)" stroke-width="18"/>${segs2.join('')}<text x="80" y="75" text-anchor="middle" font-size="24" fill="var(--text)" font-weight="900">${items.length}</text><text x="80" y="95" text-anchor="middle" font-size="12" fill="var(--muted2)">${isEs?'activos':'assets'}</text></svg>`;
-  // Todas las barras en columna izquierda: ● nombre → barra → %
-  const maxPw=grand>0?items[0].v/grand*100:1;
-  const allBars=items.map((it,i)=>{const pct=grand>0?it.v/grand*100:0;const col=ASSET_COLS[i%ASSET_COLS.length];const isLast=i===items.length-1;return `<div style="display:flex;align-items:center;gap:10px;padding:5px 0;${isLast?'':'border-bottom:1px solid var(--border)'}"><div style="width:8px;height:8px;border-radius:50%;background:${col};flex-shrink:0"></div><span style="font-size:12px;font-weight:600;width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--text);flex-shrink:0" title="${escapeHtml(it.name)}">${escapeHtml(it.name)}</span><div style="flex:1;height:6px;background:var(--surf3);border-radius:3px;overflow:hidden"><div style="width:${(pct/maxPw*100).toFixed(1)}%;height:100%;background:${col};border-radius:3px"></div></div><span style="width:36px;text-align:right;font-size:12px;font-weight:600;color:var(--muted);font-variant-numeric:tabular-nums;flex-shrink:0">${pct.toFixed(1)}%</span></div>`;}).join('');
+  const pwDonutSVG=`<svg width="220" height="220" viewBox="0 0 160 160" style="flex-shrink:0;display:block"><circle cx="80" cy="80" r="62" fill="none" stroke="var(--surf3)" stroke-width="18"/>${segs2.join('')}<text x="80" y="75" text-anchor="middle" font-size="26" fill="var(--text)" font-weight="900">${items.length}</text><text x="80" y="96" text-anchor="middle" font-size="13" fill="var(--muted2)">${isEs?'activos':'assets'}</text></svg>`;
+  // Todas las barras en columna izquierda: ● nombre → barra (% real) → %
+  const allBars=items.map((it,i)=>{const pct=grand>0?it.v/grand*100:0;const col=ASSET_COLS[i%ASSET_COLS.length];const isLast=i===items.length-1;return `<div style="display:flex;align-items:center;gap:10px;padding:5px 0;${isLast?'':'border-bottom:1px solid var(--border)'}"><div style="width:8px;height:8px;border-radius:50%;background:${col};flex-shrink:0"></div><span style="font-size:12px;font-weight:600;width:130px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--text);flex-shrink:0" title="${escapeHtml(it.name)}">${escapeHtml(it.name)}</span><div style="flex:1;height:6px;background:var(--surf3);border-radius:3px;overflow:hidden"><div style="width:${pct.toFixed(1)}%;height:100%;background:${col};border-radius:3px"></div></div><span style="width:38px;text-align:right;font-size:12px;font-weight:700;color:var(--text);font-variant-numeric:tabular-nums;flex-shrink:0">${pct.toFixed(1)}%</span></div>`;}).join('');
   // ── Métricas clave ──
   const metrics=[
     [isEs?'Rentabilidad total':'Total return',`${gp>=0?'+':''}${gp.toFixed(2)}%`,gp>=0?'var(--green)':'var(--red)'],
