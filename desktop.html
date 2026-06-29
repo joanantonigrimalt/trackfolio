@@ -6,7 +6,7 @@
   (served no-cache, version-bumped each deploy). Works even where SW/no-store
   are ignored, because it is plain page JS. */
 (function(){try{
-  var FA_BUILD=window.FA_BUILD='243';
+  var FA_BUILD=window.FA_BUILD='244';
   var s=location.search;
   if(s.indexOf('vchk')>-1||s.indexOf('_v=')>-1){history.replaceState(null,'',location.pathname+(location.hash||''));return;}
   fetch('/sw.js?_='+Date.now(),{cache:'no-store'}).then(function(r){return r.text();}).then(function(t){
@@ -6486,9 +6486,9 @@ function renderAnalysisV2(){
     const tx=(l.isR?l.elbowX+12:l.elbowX-12).toFixed(1);
     const an=l.isR?'start':'end';
     const ty=parseFloat(ey);
-    return `<line x1="${ox}" y1="${oy}" x2="${ex}" y2="${ey}" stroke="${l.col}" stroke-width="0.9" stroke-opacity="0.55"/><line x1="${ex}" y1="${ey}" x2="${hx}" y2="${ey}" stroke="${l.col}" stroke-width="0.9" stroke-opacity="0.55"/><text x="${tx}" y="${(ty-1).toFixed(1)}" text-anchor="${an}" font-size="7" font-weight="700" fill="var(--text)" font-family="system-ui,sans-serif">${escapeHtml(l.sn)}</text><text x="${tx}" y="${(ty+7.5).toFixed(1)}" text-anchor="${an}" font-size="6.5" font-weight="800" fill="${l.col}" font-family="system-ui,sans-serif">${l.pct.toFixed(1)}%</text>`;
+    return `<line x1="${ox}" y1="${oy}" x2="${ex}" y2="${ey}" stroke="${l.col}" stroke-width="0.8" stroke-opacity="0.55"/><line x1="${ex}" y1="${ey}" x2="${hx}" y2="${ey}" stroke="${l.col}" stroke-width="0.8" stroke-opacity="0.55"/><text x="${tx}" y="${(ty-1.5).toFixed(1)}" text-anchor="${an}" font-size="8" font-weight="700" fill="var(--text)" font-family="system-ui,sans-serif">${escapeHtml(l.sn)}</text><text x="${tx}" y="${(ty+8).toFixed(1)}" text-anchor="${an}" font-size="7.5" font-weight="800" fill="${l.col}" font-family="system-ui,sans-serif">${l.pct.toFixed(1)}%</text>`;
   }).join('');
-  const pwDonutSVG=`<svg width="420" height="220" viewBox="-110 -10 360 175" style="flex-shrink:0;display:block"><circle cx="80" cy="80" r="62" fill="none" stroke="var(--surf3)" stroke-width="18"/>${segs2.join('')}${_callouts}<text x="80" y="74" text-anchor="middle" font-size="26" fill="var(--text)" font-weight="900">${items.length}</text><text x="80" y="94" text-anchor="middle" font-size="13" fill="var(--muted2)">${isEs?'activos':'assets'}</text></svg>`;
+  const pwDonutSVG=`<svg width="620" height="330" viewBox="-105 -10 340 175" style="flex-shrink:0;display:block"><circle cx="80" cy="80" r="62" fill="none" stroke="var(--surf3)" stroke-width="16"/>${segs2.join('')}${_callouts}<text x="80" y="74" text-anchor="middle" font-size="26" fill="var(--text)" font-weight="900">${items.length}</text><text x="80" y="94" text-anchor="middle" font-size="13" fill="var(--muted2)">${isEs?'activos':'assets'}</text></svg>`;
   // Todas las barras en columna izquierda: ● nombre → barra corta (% real, max 50%) → %
   const maxV2=items.reduce((m,it)=>Math.max(m,it.v),0);
   const allBars=items.map((it,i)=>{const pct=grand>0?it.v/grand*100:0;const barW=maxV2>0?it.v/maxV2*100:0;const col=ASSET_COLS[i%ASSET_COLS.length];const isLast=i===items.length-1;return `<div style="display:flex;align-items:center;gap:8px;padding:5px 0;${isLast?'':'border-bottom:1px solid var(--border)'}"><div style="width:8px;height:8px;border-radius:50%;background:${col};flex-shrink:0"></div><span style="font-size:12px;font-weight:600;width:130px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--text);flex-shrink:0" title="${escapeHtml(it.name)}">${escapeHtml(it.name)}</span><div style="flex:1;height:6px;border-radius:3px;overflow:hidden"><div style="width:${barW.toFixed(1)}%;height:100%;background:${col};border-radius:3px"></div></div><span style="width:38px;text-align:right;font-size:12px;font-weight:700;color:var(--text);font-variant-numeric:tabular-nums;flex-shrink:0">${pct.toFixed(1)}%</span></div>`;}).join('');
