@@ -10,7 +10,7 @@
   no-store headers are ignored (in-app webviews) because it is plain page JS.
   Source of truth = sw.js (always served no-cache, version-bumped each deploy). */
 (function(){try{
-  var FA_BUILD='229';
+  var FA_BUILD='238';
   var s=location.search;
   if(s.indexOf('vchk')>-1||s.indexOf('_v=')>-1){
     // Clean the ugly ?vchk= / ?_v= from the URL silently
@@ -6052,10 +6052,11 @@ function renderLists(){
   renderBrokerFilter();
   if(_sbUser && assets.length===0){
     const isEs=currentLang==='es';
-    const emptyHtml=`<div style="padding:32px 16px;text-align:center">
-      <div style="font-size:36px;margin-bottom:12px">📊</div>
-      <div style="font-size:15px;font-weight:700;color:#142018;margin-bottom:6px">${isEs?'Tu cartera está vacía':'Your portfolio is empty'}</div>
-      <div style="font-size:13px;color:#8fa090;line-height:1.5;margin-bottom:16px">${isEs?'Añade tu primera posición buscando un activo por nombre o ISIN.':'Add your first position by searching for an asset by name or ISIN.'}</div>
+    const emptyHtml=`<div style="padding:40px 20px;text-align:center">
+      <div style="font-size:48px;margin-bottom:14px">📊</div>
+      <div style="font-size:17px;font-weight:800;color:#142018;margin-bottom:8px">${isEs?'Tu cartera está vacía':'Your portfolio is empty'}</div>
+      <div style="font-size:13px;color:#8fa090;line-height:1.6;margin-bottom:24px">${isEs?'Busca un ETF, fondo o acción por nombre o ISIN y añade tu primera posición.':'Search for an ETF, fund or stock by name or ISIN and add your first position.'}</div>
+      <button onclick="openSearch()" style="display:inline-flex;align-items:center;gap:8px;padding:14px 28px;border-radius:30px;border:none;background:#15803d;color:#fff;font:inherit;font-size:15px;font-weight:700;cursor:pointer;box-shadow:0 4px 18px rgba(21,128,61,.32);-webkit-tap-highlight-color:transparent">＋ ${isEs?'Añadir primer activo':'Add first asset'}</button>
     </div>`;
     document.getElementById('list').innerHTML=emptyHtml;
     document.getElementById('portfolioList').innerHTML=emptyHtml;
