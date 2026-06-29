@@ -6,7 +6,7 @@
   (served no-cache, version-bumped each deploy). Works even where SW/no-store
   are ignored, because it is plain page JS. */
 (function(){try{
-  var FA_BUILD=window.FA_BUILD='246';
+  var FA_BUILD=window.FA_BUILD='247';
   var s=location.search;
   if(s.indexOf('vchk')>-1||s.indexOf('_v=')>-1){history.replaceState(null,'',location.pathname+(location.hash||''));return;}
   fetch('/sw.js?_='+Date.now(),{cache:'no-store'}).then(function(r){return r.text();}).then(function(t){
@@ -6533,15 +6533,20 @@ function renderAnalysisV2(){
   const profitBars=profitItems.map(it=>{
     const pos=it.pct>=0;const pct=Math.abs(it.pct);const w=Math.min(100,pct/maxAbsPct*100);
     const col=pos?'#22c55e':'#f87171';const sign=pos?'+':'';
-    return `<div style="display:flex;align-items:center;gap:10px;padding:3px 0">
-      <span style="font-size:11px;font-weight:600;width:110px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--text)" title="${escapeHtml(it.name)}">${escapeHtml(it.name.length>18?it.name.slice(0,16)+'…':it.name)}</span>
-      <div style="flex:1;height:7px;background:var(--surf3);border-radius:4px;overflow:hidden;position:relative">
+    return `<div style="display:flex;align-items:center;gap:8px;padding:3px 0">
+      <span style="font-size:12px;font-weight:600;width:130px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--text)" title="${escapeHtml(it.name)}">${escapeHtml(it.name.length>18?it.name.slice(0,17)+'…':it.name)}</span>
+      <div style="flex:1;height:6px;background:var(--surf3);border-radius:4px;overflow:hidden;position:relative">
         <div style="position:absolute;${pos?'left':'right'}:0;width:${w}%;height:100%;background:${col};border-radius:4px;transition:width .4s"></div>
       </div>
-      <span style="width:70px;text-align:right;font-size:12px;font-weight:700;color:${col};font-variant-numeric:tabular-nums">${sign}${it.pct.toFixed(2)}%</span>
-      <span style="width:70px;text-align:right;font-size:11px;color:var(--muted);font-variant-numeric:tabular-nums">${sign}${fe(it.gain)}</span>
+      <span style="width:52px;text-align:right;font-size:12px;font-weight:700;color:${col};font-variant-numeric:tabular-nums">${sign}${it.pct.toFixed(1)}%</span>
+      <span style="width:62px;text-align:right;font-size:11px;color:var(--muted);font-variant-numeric:tabular-nums">${sign}${fe(it.gain)}</span>
     </div>`;
   }).join('');
+  // Right: vertical diverging bar chart
+  {var _pn=profitItems.length||1,_pCW=280,_pCH=180,_pOX=34,_pOY=10,_pIW=0,_pIH=0,_pZero=0,_pStep=0,_pBw=0;
+  _pIW=_pCW-_pOX-4;_pIH=_pCH-_pOY-8;_pZero=_pOY+_pIH/2;_pStep=_pIW/_pn;_pBw=Math.max(4,Math.min(18,_pStep-3));
+  var _pBarEls=profitItems.map((it,i)=>{const bh=Math.abs(it.pct)/maxAbsPct*(_pIH/2);const bx=_pOX+i*_pStep+(_pStep-_pBw)/2;const by=it.pct>=0?_pZero-bh:_pZero;const col=it.pct>=0?'#22c55e':'#f87171';return `<rect x="${bx.toFixed(1)}" y="${by.toFixed(1)}" width="${_pBw}" height="${Math.max(1,bh).toFixed(1)}" fill="${col}" rx="2" opacity="0.85"/>`;}).join('');}
+  const profitChartSVG=`<svg width="100%" viewBox="0 0 280 180" style="display:block"><line x1="${_pOX}" y1="${_pOY}" x2="${_pOX}" y2="${_pOY+_pIH}" stroke="var(--border)" stroke-width="0.6"/><line x1="${_pOX}" y1="${_pZero.toFixed(1)}" x2="276" y2="${_pZero.toFixed(1)}" stroke="var(--border)" stroke-width="1"/><text x="${(_pOX-2).toFixed(1)}" y="${(_pOY+6).toFixed(1)}" text-anchor="end" font-size="6.5" fill="var(--muted)">+${maxAbsPct.toFixed(0)}%</text><text x="${(_pOX-2).toFixed(1)}" y="${(_pZero+2.5).toFixed(1)}" text-anchor="end" font-size="6.5" fill="var(--muted)">0%</text><text x="${(_pOX-2).toFixed(1)}" y="${(_pOY+_pIH).toFixed(1)}" text-anchor="end" font-size="6.5" fill="var(--muted)">-${maxAbsPct.toFixed(0)}%</text>${_pBarEls}</svg>`;
   const profitCard=profitItems.length?`
     <div class="card" style="margin-bottom:14px">
       <div style="display:flex;align-items:baseline;justify-content:space-between;margin-bottom:14px">
@@ -6551,7 +6556,10 @@ function renderAnalysisV2(){
           <span style="display:flex;align-items:center;gap:4px;font-size:10px;font-weight:600;color:var(--muted)"><span style="width:8px;height:8px;border-radius:50%;background:#f87171;display:inline-block"></span>${isEs?'Negativo':'Negative'}</span>
         </div>
       </div>
-      <div style="display:flex;flex-direction:column;gap:2px">${profitBars}</div>
+      <div style="display:flex;gap:0;align-items:center">
+        <div style="flex:0 0 50%;min-width:0;padding-right:20px;box-sizing:border-box"><div style="display:flex;flex-direction:column;gap:2px">${profitBars}</div></div>
+        <div style="flex:1;display:flex;justify-content:center;align-items:center">${profitChartSVG}</div>
+      </div>
     </div>`:'';
   // ── Costs & Fees (TER) ──
   const _terMap=(typeof AN_TER_MAP!=='undefined')?AN_TER_MAP:{};
@@ -6563,15 +6571,26 @@ function renderAnalysisV2(){
   const _terEff=_terPct<0.35;
   const _terRows=live.map(a=>{const t=_terOf(a);const v=toDisplay(a.value,assetCcy(a))||0;return t!=null&&v>0?{name:a.name,ter:t,cost:v*t/100,val:v}:null;}).filter(Boolean).sort((a,b)=>b.cost-a.cost);
   const _maxCost=_terRows[0]?.cost||1;
-  const _perAssetRows=_terRows.map(r=>{const bw=Math.min(100,r.cost/_maxCost*100);const short=r.name.length>22?r.name.slice(0,20)+'…':r.name;return `<div style="display:flex;align-items:center;gap:10px;padding:4px 0"><span style="font-size:11px;font-weight:600;width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--text)" title="${escapeHtml(r.name)}">${escapeHtml(short)}</span><div style="flex:1;height:6px;background:var(--surf3);border-radius:3px;overflow:hidden"><div style="width:${bw}%;height:100%;background:#f97316;border-radius:3px"></div></div><span style="width:48px;text-align:right;font-size:11px;font-weight:700;color:#b45309">${r.ter}%</span><span style="width:64px;text-align:right;font-size:11px;color:var(--muted);font-variant-numeric:tabular-nums">${fe(r.cost)}/${isEs?'año':'yr'}</span></div>`;}).join('');
+  const _perAssetRows=_terRows.map(r=>{const bw=Math.min(100,r.cost/_maxCost*100);const short=r.name.length>18?r.name.slice(0,16)+'…':r.name;return `<div style="display:flex;align-items:center;gap:8px;padding:4px 0"><span style="font-size:12px;font-weight:600;width:130px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--text)" title="${escapeHtml(r.name)}">${escapeHtml(short)}</span><div style="flex:1;height:6px;background:var(--surf3);border-radius:3px;overflow:hidden"><div style="width:${bw}%;height:100%;background:#f97316;border-radius:3px"></div></div><span style="width:38px;text-align:right;font-size:12px;font-weight:700;color:#b45309">${r.ter}%</span><span style="width:62px;text-align:right;font-size:11px;color:var(--muted);font-variant-numeric:tabular-nums">${fe(r.cost)}/${isEs?'año':'yr'}</span></div>`;}).join('');
+  // Right: vertical bar chart for costs
+  {var _tn=_terRows.length||1,_tCW=280,_tCH=180,_tOX=34,_tOY=10,_tIW=0,_tIH=0,_tStep=0,_tBw=0;
+  _tIW=_tCW-_tOX-4;_tIH=_tCH-_tOY-8;_tStep=_tIW/_tn;_tBw=Math.max(4,Math.min(18,_tStep-3));
+  var _tBarEls=_terRows.map((r,i)=>{const bh=r.cost/_maxCost*_tIH;const bx=_tOX+i*_tStep+(_tStep-_tBw)/2;const by=_tOY+_tIH-bh;return `<rect x="${bx.toFixed(1)}" y="${by.toFixed(1)}" width="${_tBw}" height="${Math.max(1,bh).toFixed(1)}" fill="#f97316" rx="2" opacity="0.85"/>`;}).join('');}
+  const costsChartSVG=`<svg width="100%" viewBox="0 0 280 180" style="display:block"><line x1="${_tOX}" y1="${_tOY}" x2="${_tOX}" y2="${_tOY+_tIH}" stroke="var(--border)" stroke-width="0.6"/><line x1="${_tOX}" y1="${(_tOY+_tIH).toFixed(1)}" x2="276" y2="${(_tOY+_tIH).toFixed(1)}" stroke="var(--border)" stroke-width="1"/><text x="${(_tOX-2).toFixed(1)}" y="${(_tOY+6).toFixed(1)}" text-anchor="end" font-size="6.5" fill="var(--muted)">${fe(_maxCost)}</text><text x="${(_tOX-2).toFixed(1)}" y="${(_tOY+_tIH).toFixed(1)}" text-anchor="end" font-size="6.5" fill="var(--muted)">0</text>${_tBarEls}</svg>`;
   const costsCard=totVal>0?`
     <div class="card" style="margin-bottom:14px">
-      <div style="font-size:14px;font-weight:700;margin-bottom:14px">${isEs?'Costes y comisiones':'Costs & Fees'} · TER ${_terPct.toFixed(2)}%</div>
-      <div style="display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:${_terRows.length?'16px':'0'}">
-        <div><div style="font-size:28px;font-weight:900;color:var(--text)">${fe(_terCost)}</div><div style="font-size:12px;color:var(--muted)">${isEs?'estimado anual':'annual estimate'}${_terKnown>0&&_terKnown<totVal?` · ${(_terKnown/totVal*100).toFixed(0)}% ${isEs?'con datos':'covered'}`:''}</div></div>
-        <div style="background:var(--ga);border:1px solid rgba(26,122,66,.2);border-radius:9px;padding:9px 12px;text-align:center"><div style="font-size:12px;font-weight:700;color:var(--green)">${_terEff?(isEs?'Muy eficiente ✓':'Very efficient ✓'):(isEs?'Coste medio':'Average')}</div><div style="font-size:10px;color:var(--muted)">${_terEff?(isEs?'mínimo indexados':'low-cost index'):''}</div></div>
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+        <div style="font-size:14px;font-weight:700">${isEs?'Costes y comisiones':'Costs & Fees'} · TER ${_terPct.toFixed(2)}%</div>
+        <div style="display:flex;align-items:center;gap:12px">
+          <div><div style="font-size:22px;font-weight:900;color:var(--text);line-height:1">${fe(_terCost)}</div><div style="font-size:11px;color:var(--muted)">${isEs?'estimado anual':'annual estimate'}${_terKnown>0&&_terKnown<totVal?` · ${(_terKnown/totVal*100).toFixed(0)}% ${isEs?'con datos':'covered'}`:''}</div></div>
+          <div style="background:var(--ga);border:1px solid rgba(26,122,66,.2);border-radius:9px;padding:8px 12px;text-align:center"><div style="font-size:11px;font-weight:700;color:var(--green)">${_terEff?(isEs?'Muy eficiente ✓':'Very efficient ✓'):(isEs?'Coste medio':'Average')}</div></div>
+        </div>
       </div>
-      ${_perAssetRows?`<div style="border-top:1px solid var(--border);padding-top:12px"><div style="font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;margin-bottom:8px">${isEs?'Por activo':'Per asset'}</div><div style="display:flex;flex-direction:column">${_perAssetRows}</div></div>`:''}
+      ${_terRows.length?`<div style="border-top:1px solid var(--border);padding-top:12px">
+        <div style="display:flex;gap:0;align-items:center">
+          <div style="flex:0 0 50%;min-width:0;padding-right:20px;box-sizing:border-box"><div style="display:flex;flex-direction:column">${_perAssetRows}</div></div>
+          <div style="flex:1;display:flex;justify-content:center;align-items:center">${costsChartSVG}</div>
+        </div></div>`:''}
     </div>`:'';
   wrap.innerHTML=`
     <h1 style="font-size:20px;font-weight:800;margin-bottom:20px">${isEs?'Análisis de cartera':'Portfolio analysis'}</h1>
