@@ -6,7 +6,7 @@
   (served no-cache, version-bumped each deploy). Works even where SW/no-store
   are ignored, because it is plain page JS. */
 (function(){try{
-  var FA_BUILD=window.FA_BUILD='236';
+  var FA_BUILD=window.FA_BUILD='237';
   var s=location.search;
   if(s.indexOf('vchk')>-1||s.indexOf('_v=')>-1){history.replaceState(null,'',location.pathname+(location.hash||''));return;}
   fetch('/sw.js?_='+Date.now(),{cache:'no-store'}).then(function(r){return r.text();}).then(function(t){
@@ -6453,7 +6453,7 @@ function renderAnalysisV2(){
   const pwDonutSVG=`<svg width="220" height="220" viewBox="0 0 160 160" style="flex-shrink:0;display:block"><circle cx="80" cy="80" r="62" fill="none" stroke="var(--surf3)" stroke-width="18"/>${segs2.join('')}${lbls2.join('')}<text x="80" y="75" text-anchor="middle" font-size="26" fill="var(--text)" font-weight="900">${items.length}</text><text x="80" y="96" text-anchor="middle" font-size="13" fill="var(--muted2)">${isEs?'activos':'assets'}</text></svg>`;
   // Todas las barras en columna izquierda: ● nombre → barra corta (% real, max 50%) → %
   const maxV2=items.reduce((m,it)=>Math.max(m,it.v),0);
-  const allBars=items.map((it,i)=>{const pct=grand>0?it.v/grand*100:0;const barW=maxV2>0?it.v/maxV2*100:0;const col=ASSET_COLS[i%ASSET_COLS.length];const isLast=i===items.length-1;return `<div style="display:flex;align-items:center;gap:10px;padding:5px 0;${isLast?'':'border-bottom:1px solid var(--border)'}"><div style="width:8px;height:8px;border-radius:50%;background:${col};flex-shrink:0"></div><span style="font-size:12px;font-weight:600;width:130px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--text);flex-shrink:0" title="${escapeHtml(it.name)}">${escapeHtml(it.name)}</span><div style="flex:1;height:6px;border-radius:3px;overflow:hidden"><div style="width:${barW.toFixed(1)}%;height:100%;background:${col};border-radius:3px"></div></div><span style="width:38px;text-align:right;font-size:12px;font-weight:700;color:var(--text);font-variant-numeric:tabular-nums;flex-shrink:0">${pct.toFixed(1)}%</span></div>`;}).join('');
+  const allBars=items.map((it,i)=>{const pct=grand>0?it.v/grand*100:0;const barW=maxV2>0?it.v/maxV2*100:0;const col=ASSET_COLS[i%ASSET_COLS.length];const isLast=i===items.length-1;return `<div style="display:flex;align-items:center;gap:10px;padding:5px 0;${isLast?'':'border-bottom:1px solid var(--border)'}"><div style="width:8px;height:8px;border-radius:50%;background:${col};flex-shrink:0"></div><span style="font-size:12px;font-weight:600;width:130px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--text);flex-shrink:0" title="${escapeHtml(it.name)}">${escapeHtml(it.name)}</span><div style="flex:1;max-width:55%;height:6px;border-radius:3px;overflow:hidden"><div style="width:${barW.toFixed(1)}%;height:100%;background:${col};border-radius:3px"></div></div><span style="width:38px;text-align:right;font-size:12px;font-weight:700;color:var(--text);font-variant-numeric:tabular-nums;flex-shrink:0">${pct.toFixed(1)}%</span></div>`;}).join('');
   // ── Métricas clave ──
   const metrics=[
     [isEs?'Rentabilidad total':'Total return',`${gp>=0?'+':''}${gp.toFixed(2)}%`,gp>=0?'var(--green)':'var(--red)'],
@@ -6545,7 +6545,7 @@ function renderAnalysisV2(){
     </div>
     <div class="card" style="margin-bottom:14px">
       <div style="font-size:14px;font-weight:700;margin-bottom:14px">${isEs?'Peso por activo':'Weight by asset'}</div>
-      <div style="display:grid;grid-template-columns:1fr 240px;gap:20px;align-items:center">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:0;align-items:center">
         <div>${allBars}</div>
         <div style="display:flex;justify-content:center;align-items:center">${pwDonutSVG}</div>
       </div>
