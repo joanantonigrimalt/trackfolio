@@ -4084,7 +4084,7 @@ html,body{height:100%;overflow:hidden;font-family:-apple-system,BlinkMacSystemFo
 
   <!-- Toolbar -->
   <div class="mi-toolbar">
-    <input class="mi-search" id="miSearch" type="text" placeholder="Buscar fondo o ISIN…" oninput="MiRender()" />
+    <input class="mi-search" id="miSearch" type="text" placeholder="Buscar fondo o ISIN…" oninput="MiPage(0);MiRender()" />
     <div class="mi-pills">
       <button class="mi-pill active" data-tipo="todos" onclick="MiSetTipo('todos')">Todos</button>
       <button class="mi-pill" data-tipo="ETF" onclick="MiSetTipo('ETF')">ETF</button>
@@ -4124,6 +4124,7 @@ html,body{height:100%;overflow:hidden;font-family:-apple-system,BlinkMacSystemFo
       <tbody id="miTableBody"></tbody>
     </table>
   </div>
+  <div id="miPagination" style="display:flex;gap:12px;align-items:center;justify-content:center;margin-top:12px"></div>
   <div class="mi-footer">
     <span id="miUpdated"></span>
     <span id="miError" style="color:var(--red)"></span>
@@ -4133,15 +4134,16 @@ html,body{height:100%;overflow:hidden;font-family:-apple-system,BlinkMacSystemFo
 
 <script>
 (function(){
-  var _miData=[], _miTipo='todos', _miSort='rent1a';
+  var _miData=[], _miTipo='todos', _miSort='rent1a', _miPage=0, _miPageSize=100;
 
   function MiFmt(v){ if(v===''||v===null||v===undefined) return '<span style="color:var(--muted)">—</span>'; var n=parseFloat(v); if(isNaN(n)) return '<span style="color:var(--muted)">—</span>'; var cls=n>0?'pos':n<0?'neg':'neu'; return '<span class="mi-pct '+cls+'">'+(n>0?'+':'')+n.toFixed(2)+'%</span>'; }
   function MiTer(v){ if(v===''||v===null||v===undefined) return '<span style="color:var(--muted)">—</span>'; var n=parseFloat(v); return isNaN(n)?'<span style="color:var(--muted)">—</span>':n.toFixed(2)+'%'; }
   function MiStars(r){ if(!r||r==='') return '<span style="color:var(--muted)">—</span>'; var n=parseInt(r); if(isNaN(n)||n<1) return '<span style="color:var(--muted)">—</span>'; return '<span class="mi-stars">'+'★'.repeat(Math.min(n,5))+'☆'.repeat(Math.max(0,5-n))+'</span>'; }
   function MiEh(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
 
-  window.MiSetTipo=function(t){ _miTipo=t; document.querySelectorAll('#screen-myinvestor .mi-pill').forEach(b=>b.classList.toggle('active',b.dataset.tipo===t)); MiRender(); };
-  window.MiSetSort=function(s){ _miSort=s; document.querySelectorAll('#screen-myinvestor .mi-sortbtn').forEach(b=>b.classList.toggle('active',b.dataset.sort===s)); MiRender(); };
+  window.MiSetTipo=function(t){ _miTipo=t; _miPage=0; document.querySelectorAll('#screen-myinvestor .mi-pill').forEach(b=>b.classList.toggle('active',b.dataset.tipo===t)); MiRender(); };
+  window.MiSetSort=function(s){ _miSort=s; _miPage=0; document.querySelectorAll('#screen-myinvestor .mi-sortbtn').forEach(b=>b.classList.toggle('active',b.dataset.sort===s)); MiRender(); };
+  window.MiPage=function(p){ _miPage=p; };
 
   window.MiLoad=function(force){
     var MI_API='/api/myinvestor/catalog?v=260';
@@ -4182,15 +4184,36 @@ html,body{height:100%;overflow:hidden;font-family:-apple-system,BlinkMacSystemFo
       if(an&&bn) return 0; if(an) return 1; if(bn) return -1;
       return asc?(av-bv):(bv-av);
     });
-    document.getElementById('miCount').textContent=rows.length+' productos';
+    var total=rows.length;
+    var totalPages=Math.max(1,Math.ceil(total/_miPageSize));
+    if(_miPage>=totalPages) _miPage=Math.max(0,totalPages-1);
+    var start=_miPage*_miPageSize;
+    var pageRows=rows.slice(start,start+_miPageSize);
+    var end=Math.min(start+_miPageSize,total);
+    document.getElementById('miCount').textContent=total+' productos'+(total>_miPageSize?' (mostrando '+(start+1)+'–'+end+')':'');
     var body=document.getElementById('miTableBody'); if(!body) return;
-    if(!rows.length){ body.innerHTML='<tr><td colspan="13" class="mi-empty">Sin resultados. '+(q?'Prueba otra búsqueda.':'Carga el catálogo con ↻ Actualizar.')+'</td></tr>'; return; }
-    body.innerHTML=rows.map(function(r){
+    if(!total){ body.innerHTML='<tr><td colspan="13" class="mi-empty">Sin resultados. '+(q?'Prueba otra búsqueda.':'Carga el catálogo con ↻ Actualizar.')+'</td></tr>'; }
+    else { body.innerHTML=pageRows.map(function(r){
       var tipo=String(r.tipo||'').toUpperCase()==='ETF'?'ETF':'Fondo';
       var badge=tipo==='ETF'?'<span class="mi-badge mi-badge-etf">ETF</span>':'<span class="mi-badge mi-badge-fund">Fondo</span>';
       var link=r.url?'<a href="'+MiEh(r.url)+'" target="_blank" class="mi-link">Ver →</a>':'';
       return '<tr><td style="max-width:260px"><div style="font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:250px" title="'+MiEh(r.nombre)+'">'+MiEh(r.nombre)+'</div></td><td>'+badge+'</td><td style="font-size:11px;color:var(--muted);max-width:120px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+MiEh(r.categoria)+'</td><td style="font-family:monospace;font-size:11px">'+MiEh(r.isin)+'</td><td>'+MiTer(r.ter)+'</td><td style="font-size:12px">'+MiEh(r.divisa)+'</td><td style="font-size:11px;color:var(--muted)">'+MiEh(r.replica)+'</td><td style="font-size:11px;color:var(--muted)">'+MiEh(r.distribucion)+'</td><td>'+MiFmt(r.rent1a)+'</td><td>'+MiFmt(r.rent3a)+'</td><td>'+MiFmt(r.rent5a)+'</td><td>'+MiStars(r.rating)+'</td><td>'+link+'</td></tr>';
-    }).join('');
+    }).join(''); }
+    // Pagination
+    var pag=document.getElementById('miPagination');
+    if(pag){
+      if(totalPages<=1){ pag.innerHTML=''; }
+      else {
+        var prev=_miPage>0?'<button class="btn-sm" onclick="MiGotoPage('+(_miPage-1)+')">← Anterior</button>':'<button class="btn-sm" disabled style="opacity:.4">← Anterior</button>';
+        var next=_miPage<totalPages-1?'<button class="btn-sm" onclick="MiGotoPage('+(_miPage+1)+')">Siguiente →</button>':'<button class="btn-sm" disabled style="opacity:.4">Siguiente →</button>';
+        var info='<span style="font-size:12px;color:var(--muted);padding:0 8px">Pág. '+(_miPage+1)+' / '+totalPages+'</span>';
+        pag.innerHTML=prev+info+next;
+      }
+    }
+  };
+  window.MiGotoPage=function(p){
+    _miPage=p; MiRender();
+    var sc=document.getElementById('screen-myinvestor'); if(sc) sc.scrollTop=0;
   };
 
   // Auto-load on init
