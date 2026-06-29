@@ -6,7 +6,7 @@
   (served no-cache, version-bumped each deploy). Works even where SW/no-store
   are ignored, because it is plain page JS. */
 (function(){try{
-  var FA_BUILD=window.FA_BUILD='255';
+  var FA_BUILD=window.FA_BUILD='257';
   var s=location.search;
   if(s.indexOf('vchk')>-1||s.indexOf('_v=')>-1){history.replaceState(null,'',location.pathname+(location.hash||''));return;}
   fetch('/sw.js?_='+Date.now(),{cache:'no-store'}).then(function(r){return r.text();}).then(function(t){
@@ -728,19 +728,19 @@ table.an-corr-mtx{border-collapse:separate;border-spacing:4px}
 #screen-impuestos .tx-h-status{background:rgba(29,179,106,.2);border:1px solid rgba(29,179,106,.3);border-radius:20px;padding:3px 10px;font-size:10px;font-weight:700;color:#2de899;display:inline-flex;align-items:center;gap:5px}
 #screen-impuestos .tx-h-dot{width:5px;height:5px;border-radius:50%;background:#2de899}
 #screen-impuestos .tx-h-albl{font-size:9px;font-weight:600;color:rgba(255,255,255,.35);text-transform:uppercase;letter-spacing:.1em;margin-bottom:4px;margin-top:14px}
-#screen-impuestos .tx-h-amount{font-size:2.1rem;font-weight:800;color:#fff;letter-spacing:-.05em;line-height:1;font-family:'DM Mono',monospace}
+#screen-impuestos .tx-h-amount{font-size:2.1rem;font-weight:800;color:#fff;letter-spacing:-.05em;line-height:1;font-family:inherit}
 #screen-impuestos .tx-h-sub{font-size:10px;color:rgba(255,255,255,.35);margin-top:3px}
 #screen-impuestos .tx-h-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-top:14px}
 #screen-impuestos .tx-h-box{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:8px 10px}
 #screen-impuestos .tx-h-blbl{font-size:8px;font-weight:600;color:rgba(255,255,255,.3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:3px}
-#screen-impuestos .tx-h-bval{font-size:13px;font-weight:700;color:#fff;font-family:'DM Mono',monospace;letter-spacing:-.02em}
+#screen-impuestos .tx-h-bval{font-size:13px;font-weight:700;color:#fff;font-family:inherit;letter-spacing:-.02em}
 #screen-impuestos .tx-h-bval.pos{color:#2de899}
 #screen-impuestos .tx-h-bval.warn{color:#fbbf24}
 #screen-impuestos .tx-h-track{height:5px;background:rgba(255,255,255,.08);border-radius:5px;overflow:hidden;margin-top:14px}
 #screen-impuestos .tx-h-fill{height:100%;border-radius:5px;background:linear-gradient(90deg,#1db36a,#2de899)}
 #screen-impuestos .tx-h-row{display:flex;justify-content:space-between;margin-bottom:5px}
 #screen-impuestos .tx-h-rlbl{font-size:9px;font-weight:600;color:rgba(255,255,255,.35)}
-#screen-impuestos .tx-h-rpct{font-size:9px;font-weight:700;color:rgba(255,255,255,.6);font-family:'DM Mono',monospace}
+#screen-impuestos .tx-h-rpct{font-size:9px;font-weight:700;color:rgba(255,255,255,.6);font-family:inherit}
 #screen-impuestos .tx-sec{display:flex;align-items:center;justify-content:space-between;margin:12px 0 8px}
 #screen-impuestos .tx-sec-t{font-size:9px;font-weight:700;color:#8fa090;text-transform:uppercase;letter-spacing:.1em}
 #screen-impuestos .tx-sec-lnk{font-size:10px;font-weight:600;color:#2563eb;cursor:pointer}
@@ -753,8 +753,8 @@ table.an-corr-mtx{border-collapse:separate;border-spacing:4px}
 #screen-impuestos .src-name{font-size:12px;font-weight:700;color:#0f1c15}
 #screen-impuestos .src-desc{font-size:10px;color:#8da098;margin-top:1px}
 #screen-impuestos .src-right{text-align:right;flex-shrink:0}
-#screen-impuestos .src-amt{font-size:13px;font-weight:700;color:#0f1c15;font-family:'DM Mono',monospace}
-#screen-impuestos .src-tax{font-size:10px;font-weight:600;margin-top:2px;font-family:'DM Mono',monospace}
+#screen-impuestos .src-amt{font-size:13px;font-weight:700;color:#0f1c15;font-family:inherit}
+#screen-impuestos .src-tax{font-size:10px;font-weight:600;margin-top:2px;font-family:inherit}
 #screen-impuestos .src-tax.neg{color:#e03636}
 #screen-impuestos .src-tax.pos{color:#1db36a}
 #screen-impuestos .tx-row-item{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid rgba(0,0,0,.06)}
@@ -764,18 +764,18 @@ table.an-corr-mtx{border-collapse:separate;border-spacing:4px}
 #screen-impuestos .tx-nm{font-size:12px;font-weight:700;color:#0f1c15;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 #screen-impuestos .tx-mt{font-size:10px;color:#8da098;margin-top:1px}
 #screen-impuestos .tx-rt{text-align:right;flex-shrink:0}
-#screen-impuestos .tx-gn{font-size:12px;font-weight:700;font-family:'DM Mono',monospace}
+#screen-impuestos .tx-gn{font-size:12px;font-weight:700;font-family:inherit}
 #screen-impuestos .tx-gn.pos{color:#1db36a}
 #screen-impuestos .tx-gn.neg{color:#e03636}
-#screen-impuestos .tx-tx{font-size:10px;font-weight:600;color:#8da098;margin-top:2px;font-family:'DM Mono',monospace}
+#screen-impuestos .tx-tx{font-size:10px;font-weight:600;color:#8da098;margin-top:2px;font-family:inherit}
 #screen-impuestos .tx-tx.comp{color:#1db36a}
 #screen-impuestos .brk-row{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid rgba(0,0,0,.06)}
 #screen-impuestos .brk-row:last-child{border-bottom:none}
-#screen-impuestos .brk-range{font-size:11px;font-weight:600;color:#3d5248;flex:1;font-family:'DM Mono',monospace}
+#screen-impuestos .brk-range{font-size:11px;font-weight:600;color:#3d5248;flex:1;font-family:inherit}
 #screen-impuestos .brk-bar{width:72px;height:5px;background:#f0f0f0;border-radius:4px;overflow:hidden;flex-shrink:0}
 #screen-impuestos .brk-fill{height:100%;border-radius:4px}
-#screen-impuestos .brk-pct{font-size:12px;font-weight:800;color:#0f1c15;font-family:'DM Mono',monospace;width:32px;text-align:right;flex-shrink:0}
-#screen-impuestos .tx-badge{display:inline-flex;align-items:center;border-radius:5px;padding:2px 7px;font-size:10px;font-weight:700;font-family:'DM Mono',monospace}
+#screen-impuestos .brk-pct{font-size:12px;font-weight:800;color:#0f1c15;font-family:inherit;width:32px;text-align:right;flex-shrink:0}
+#screen-impuestos .tx-badge{display:inline-flex;align-items:center;border-radius:5px;padding:2px 7px;font-size:10px;font-weight:700;font-family:inherit}
 #screen-impuestos .tx-badge.pos{background:rgba(29,179,106,.09);color:#16924f}
 #screen-impuestos .tx-badge.neg{background:rgba(224,54,54,.09);color:#e03636}
 #screen-impuestos .tx-badge.warn{background:rgba(217,119,6,.1);color:#d97706}
@@ -973,12 +973,12 @@ a.d-nav-item{text-decoration:none;color:inherit;}.d-nav-item.active{background:#
 .ref-stats-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:18px}
 .ref-stat-card{background:#fff;border:1px solid rgba(20,32,24,.08);border-radius:16px;padding:16px 14px;box-shadow:0 1px 4px rgba(0,0,0,.05)}
 .ref-stat-label{font-size:9px;font-weight:700;color:#8fa090;text-transform:uppercase;letter-spacing:.1em;margin-bottom:6px}
-.ref-stat-value{font-size:26px;font-weight:800;color:#0f1c15;letter-spacing:-.04em;font-family:'DM Mono',monospace}
+.ref-stat-value{font-size:26px;font-weight:800;color:#0f1c15;letter-spacing:-.04em;font-family:inherit}
 .ref-stat-sub{font-size:10px;color:#8fa090;margin-top:3px}
 .ref-link-card{background:#fff;border:1px solid rgba(20,32,24,.08);border-radius:16px;padding:18px;margin-bottom:14px;box-shadow:0 1px 4px rgba(0,0,0,.05)}
 .ref-link-label{font-size:10px;font-weight:700;color:#8fa090;text-transform:uppercase;letter-spacing:.1em;margin-bottom:10px}
 .ref-link-row{display:flex;gap:8px;align-items:center}
-.ref-link-input{flex:1;padding:10px 12px;border:1.5px solid rgba(20,32,24,.1);border-radius:10px;font-size:12px;font-family:'DM Mono',monospace;color:#142018;background:#f8faf8;outline:none;cursor:pointer}
+.ref-link-input{flex:1;padding:10px 12px;border:1.5px solid rgba(20,32,24,.1);border-radius:10px;font-size:12px;font-family:inherit;color:#142018;background:#f8faf8;outline:none;cursor:pointer}
 .ref-link-copy{padding:10px 18px;background:#142018;color:#f5fbf6;border:none;border-radius:10px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;white-space:nowrap;transition:background .15s}
 .ref-link-copy:hover{background:#1e3028}
 .ref-copy-ok{font-size:11px;color:#16924f;font-weight:600;margin-top:6px;display:none}
@@ -1557,6 +1557,7 @@ html,body{height:100%;overflow:hidden;font-family:-apple-system,BlinkMacSystemFo
     <button class="d-nav-item" id="navBtnIa" onclick="toggleIaPanel()"><span class="d-nav-ico">✦</span>IA — Vera</button>
     <button class="d-nav-item" data-screen="prestamos"><span class="d-nav-ico">⏱</span>Préstamos</button>
     <button class="d-nav-item" data-screen="impuestos"><span class="d-nav-ico">◫</span>Impuestos</button>
+    <button class="d-nav-item" data-screen="myinvestor"><span class="d-nav-ico">◐</span>MyInvestor</button>
     <div class="d-nav-section">REFERIDOS</div>
     <button class="d-nav-item" data-screen="referidos"><span class="d-nav-ico">◇</span>Referidos</button>
   </nav>
@@ -3225,7 +3226,7 @@ html,body{height:100%;overflow:hidden;font-family:-apple-system,BlinkMacSystemFo
     <div class="tax-card-inner">
       <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px">
         <div><div style="font-size:13px;font-weight:700;color:#0f1c15">Total retenciones</div><div style="font-size:10px;color:#8da098;margin-top:2px">Ya descontadas por el broker</div></div>
-        <span style="font-size:16px;font-weight:800;color:#1db36a;font-family:'DM Mono',monospace" id="taxRetTotal">—</span>
+        <span style="font-size:16px;font-weight:800;color:#1db36a;font-family:inherit" id="taxRetTotal">—</span>
       </div>
       <div style="height:130px;position:relative"><canvas id="taxRetChart"></canvas></div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:12px" id="taxRetGrid"></div>
@@ -3621,10 +3622,11 @@ html,body{height:100%;overflow:hidden;font-family:-apple-system,BlinkMacSystemFo
     <div id="lnFormP">
       <div class="ln-fg"><label class="ln-fl">Nombre</label><input class="ln-fi" type="text" id="lnf-nombre" placeholder="Coche, personal…"/></div>
       <div class="ln-frow">
-        <div class="ln-fg"><label class="ln-fl">Capital (€)</label><input class="ln-fi" type="number" id="lnf-cap" oninput="LnUpdateModalPrev()"/></div>
+        <div class="ln-fg"><label class="ln-fl">Capital / Garantía (€)</label><input class="ln-fi" type="number" id="lnf-cap" oninput="LnUpdateModalPrev()"/></div>
         <div class="ln-fg"><label class="ln-fl">TAE (%)</label><input class="ln-fi" type="number" step="any" id="lnf-tin" oninput="LnUpdateModalPrev()"/></div>
       </div>
       <div class="ln-fg"><label class="ln-fl">Plazo (meses)</label><input class="ln-fi" type="number" id="lnf-plazo" oninput="LnUpdateModalPrev()"/></div>
+      <div class="ln-fg"><label class="ln-fl">Saldo pendiente actual (€) <span style="font-weight:400;color:var(--muted);font-size:10px">— opcional, si has amortizado extra</span></label><input class="ln-fi" type="number" id="lnf-pen" placeholder="Calculado automáticamente si vacío"/></div>
       <div class="ln-frow">
         <div class="ln-fg"><label class="ln-fl">Entidad</label><input class="ln-fi" type="text" id="lnf-ent" placeholder="Banco, fintech…"/></div>
         <div class="ln-fg"><label class="ln-fl">Fecha inicio</label><input class="ln-fi" type="date" id="lnf-fecha"/></div>
@@ -3742,7 +3744,7 @@ html,body{height:100%;overflow:hidden;font-family:-apple-system,BlinkMacSystemFo
   window.LnCloseM=function(id){ document.getElementById(id).classList.remove('on'); };
   window.LnOpenAdd=function(){
     LnSetTipo('prestamo');
-    ['lnf-nombre','lnf-cap','lnf-tin','lnf-plazo','lnf-ent','lnf-fecha',
+    ['lnf-nombre','lnf-cap','lnf-tin','lnf-plazo','lnf-ent','lnf-fecha','lnf-pen',
      'lnfh-nombre','lnfh-cap','lnfh-tin','lnfh-plazo','lnfh-ent','lnfh-fecha',
      'lnfc-nombre','lnfc-lim','lnfc-disp','lnfc-tin','lnfc-ent'].forEach(i=>{const e=document.getElementById(i);if(e)e.value='';});
     ['lnModalPrev','lnModalHipPrev','lnModalCredPrev'].forEach(i=>{const e=document.getElementById(i);if(e)e.style.display='none';});
@@ -3866,7 +3868,9 @@ html,body{height:100%;overflow:hidden;font-family:-apple-system,BlinkMacSystemFo
     if(tipo==='prestamo'){
       const cap=parseFloat(document.getElementById('lnf-cap').value)||0,tin=parseFloat(document.getElementById('lnf-tin').value)||0,meses=parseInt(document.getElementById('lnf-plazo').value)||0;
       if(!cap||!tin||!meses){alert('Completa capital, TAE y plazo.');return;}
-      newObj={id,tipo:'prestamo',nombre:document.getElementById('lnf-nombre').value||'Préstamo',entidad:document.getElementById('lnf-ent').value||'',kind:document.getElementById('lnf-tipo').value,cap,tin,meses,fecha:document.getElementById('lnf-fecha').value||'',...pignData};
+      const penRaw=parseFloat(document.getElementById('lnf-pen')?.value);
+      const saldoPendiente=(!isNaN(penRaw)&&penRaw>0)?penRaw:undefined;
+      newObj={id,tipo:'prestamo',nombre:document.getElementById('lnf-nombre').value||'Préstamo',entidad:document.getElementById('lnf-ent').value||'',kind:document.getElementById('lnf-tipo').value,cap,tin,meses,fecha:document.getElementById('lnf-fecha').value||'',...(saldoPendiente!==undefined?{saldoPendiente}:{}),...pignData};
     } else if(tipo==='hipoteca'){
       const cap=parseFloat(document.getElementById('lnfh-cap').value)||0,tin=parseFloat(document.getElementById('lnfh-tin').value)||0,anos=parseInt(document.getElementById('lnfh-plazo').value)||0,meses=anos*12;
       if(!cap||!tin||!meses){alert('Completa capital, TAE y plazo.');return;}
@@ -3901,6 +3905,8 @@ html,body{height:100%;overflow:hidden;font-family:-apple-system,BlinkMacSystemFo
       set('lnf-nombre',l.nombre); set('lnf-cap',l.cap); set('lnf-tin',l.tin);
       set('lnf-plazo',l.meses); set('lnf-ent',l.entidad); set('lnf-fecha',l.fecha||'');
       const tipoEl=document.getElementById('lnf-tipo');if(tipoEl)tipoEl.value=l.kind||'Préstamo Personal';
+      // Pre-fill saldoPendiente: use stored value or compute from schedule
+      try{const _sc=LnBuildSchedule(l.cap,l.tin,l.meses);const _el=Math.min(LnMonthsElapsed(l.fecha),l.meses);const _cp=l.saldoPendiente!==undefined?l.saldoPendiente:(_el>0?(_sc[_el-1]?.saldo??l.cap):l.cap);set('lnf-pen',_cp>0?_cp.toFixed(2):'');}catch(_){}
       LnUpdateModalPrev();
     }
     // Update modal title
@@ -3928,7 +3934,8 @@ html,body{height:100%;overflow:hidden;font-family:-apple-system,BlinkMacSystemFo
       const isPrest=l.tipo==='prestamo';
       const sched=isPrest?LnBuildSchedule(l.cap,l.tin,l.meses):null;
       const elapsed=isPrest?Math.min(LnMonthsElapsed(l.fecha),l.meses):0;
-      const deuda=isPrest?(elapsed>0?(sched[elapsed-1]?.saldo??l.cap):l.cap):l.disp;
+      const calcDeuda=isPrest?(elapsed>0?(sched[elapsed-1]?.saldo??l.cap):l.cap):l.disp;
+      const deuda=isPrest&&l.saldoPendiente!==undefined?l.saldoPendiente:calcDeuda;
       const ratio=l.ratioGarantia||2;
       const garantia=deuda*ratio; // garantía necesaria = deuda × ratio
       let valorIni=0,valorAct=0;
@@ -3985,7 +3992,8 @@ html,body{height:100%;overflow:hidden;font-family:-apple-system,BlinkMacSystemFo
       const pignBadge=l.pignorada?`<span style="background:#dcfce7;color:#15803d;font-size:9px;font-weight:800;padding:2px 7px;border-radius:5px;margin-left:6px">🔒 PIGNORADO</span>`:'';
       if(l.tipo==='prestamo'){
         const sched=LnBuildSchedule(l.cap,l.tin,l.meses); const elapsed=Math.min(LnMonthsElapsed(l.fecha),l.meses);
-        const pending=elapsed>0?(sched[elapsed-1]?.saldo??l.cap):l.cap; const cuo=LnCalcCuota(l.cap,l.tin,l.meses);
+        const calcPending=elapsed>0?(sched[elapsed-1]?.saldo??l.cap):l.cap;
+        const pending=l.saldoPendiente!==undefined?l.saldoPendiente:calcPending; const cuo=LnCalcCuota(l.cap,l.tin,l.meses);
         const remInt=sched.slice(elapsed).reduce((s,r)=>s+r.interes,0); const amortPct=l.cap>0?((l.cap-pending)/l.cap*100):0;
         const tae=LnCalcTAE(l.tin,l.com,l.cap,l.meses);
         debt+=pending; monthly+=cuo; interest+=remInt; tinW+=l.tin*pending; tinB+=pending;
@@ -3993,7 +4001,7 @@ html,body{height:100%;overflow:hidden;font-family:-apple-system,BlinkMacSystemFo
         return `<div class="loan-card">
           <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px"><div><span class="badge" style="background:var(--ga);color:var(--green);border:1px solid rgba(26,122,66,.2);font-size:9px;font-weight:700;padding:2px 7px;border-radius:5px">${(l.kind||'PRÉSTAMO').toUpperCase()}</span>${pignBadge}</div><div style="display:flex;gap:6px"><button class="btn-sm" onclick="LnEdit('${l.id}')">✏️ Editar</button><button class="btn-sm" onclick="LnDelete('${l.id}')" style="color:var(--red)">Eliminar</button></div></div>
           <div class="loan-card-hdr"><div class="loan-icon">${ico}</div><div class="loan-card-hdr-info"><h3>${eh(l.nombre)}</h3><p>${eh(l.entidad||'—')}</p></div></div>
-          <div class="loan-metrics"><div class="lm"><div class="lm-l">Capital</div><div class="lm-v">${LnFmt(l.cap)}</div></div><div class="lm"><div class="lm-l">Pendiente</div><div class="lm-v">${LnFmt(pending)}</div></div><div class="lm"><div class="lm-l">TIN</div><div class="lm-v">${LnFmtPctPlain(l.tin)}</div></div><div class="lm"><div class="lm-l">TAE</div><div class="lm-v">${LnFmtPctPlain(tae)}</div></div></div>
+          <div class="loan-metrics"><div class="lm"><div class="lm-l">${l.pignorada&&l.ratioGarantia?'Garantía req.':'Garantía'}</div><div class="lm-v">${l.pignorada&&l.ratioGarantia?LnFmt(pending*(l.ratioGarantia||1.3)):LnFmt(l.cap)}</div></div><div class="lm"><div class="lm-l">Capital inicial</div><div class="lm-v">${LnFmt(l.cap)}</div></div><div class="lm"><div class="lm-l">Pendiente</div><div class="lm-v" style="${l.saldoPendiente!==undefined?'color:var(--gold)':''}">${LnFmt(pending)}</div></div><div class="lm"><div class="lm-l">TAE</div><div class="lm-v">${LnFmtPctPlain(tae)}</div></div></div>
           <div class="cuota-row"><span class="cuota-label">Cuota mensual</span><span class="cuota-val">${LnFmt(cuo)} / mes</span></div>
           <div class="prog-label">Amortizado ${amortPct.toFixed(1)}% · ${elapsed} de ${l.meses} meses · ${Math.max(0,l.meses-elapsed)} restantes</div>
           <div class="sbar"><div class="sf" style="width:${Math.min(100,amortPct).toFixed(1)}%;background:var(--green)"></div></div>
@@ -4027,6 +4035,212 @@ html,body{height:100%;overflow:hidden;font-family:-apple-system,BlinkMacSystemFo
 
   // init calculator defaults
   try{ LnUpdateCalc(); LnUpdateCalcCredito(); }catch(_){}
+})();
+</script>
+
+<!-- ============ MYINVESTOR SCREEN ============ -->
+<div id="screen-myinvestor" class="screen">
+<style>
+#screen-myinvestor .mi-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px}
+#screen-myinvestor .mi-title{font-size:22px;font-weight:800;color:var(--text)}
+#screen-myinvestor .mi-sub{font-size:12px;color:var(--muted);margin-top:2px}
+#screen-myinvestor .mi-toolbar{display:flex;align-items:center;gap:10px;margin-bottom:16px;flex-wrap:wrap}
+#screen-myinvestor .mi-search{flex:1;min-width:180px;padding:8px 12px;border:1px solid var(--border);border-radius:8px;font-size:13px;background:var(--surf);color:var(--text);outline:none}
+#screen-myinvestor .mi-search:focus{border-color:var(--green)}
+#screen-myinvestor .mi-pills{display:flex;gap:6px}
+#screen-myinvestor .mi-pill{padding:6px 14px;border-radius:20px;border:1px solid var(--border);background:var(--surf);color:var(--muted);font-size:12px;font-weight:600;cursor:pointer;transition:.15s}
+#screen-myinvestor .mi-pill.active{background:var(--green);color:#fff;border-color:var(--green)}
+#screen-myinvestor .mi-sort{display:flex;gap:6px;align-items:center}
+#screen-myinvestor .mi-sort-lbl{font-size:11px;color:var(--muted);font-weight:600}
+#screen-myinvestor .mi-sortbtn{padding:6px 12px;border-radius:8px;border:1px solid var(--border);background:var(--surf);color:var(--muted);font-size:12px;font-weight:600;cursor:pointer;transition:.15s}
+#screen-myinvestor .mi-sortbtn.active{background:var(--surf2);color:var(--green);border-color:var(--green)}
+#screen-myinvestor .mi-table-wrap{overflow-x:auto;border-radius:14px;border:1px solid var(--border)}
+#screen-myinvestor .mi-table{width:100%;border-collapse:collapse;font-size:13px}
+#screen-myinvestor .mi-table th{padding:10px 12px;text-align:left;font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;background:var(--surf2);border-bottom:1px solid var(--border);white-space:nowrap}
+#screen-myinvestor .mi-table td{padding:10px 12px;border-bottom:1px solid var(--border);color:var(--text);vertical-align:middle}
+#screen-myinvestor .mi-table tr:last-child td{border-bottom:none}
+#screen-myinvestor .mi-table tr:hover td{background:var(--ga)}
+#screen-myinvestor .mi-badge{display:inline-block;padding:2px 7px;border-radius:5px;font-size:9px;font-weight:800}
+#screen-myinvestor .mi-badge-etf{background:#e0f2fe;color:#0369a1}
+#screen-myinvestor .mi-badge-fund{background:#f0fdf4;color:#15803d}
+#screen-myinvestor .mi-pct{font-weight:700}
+#screen-myinvestor .mi-pct.pos{color:var(--green)}
+#screen-myinvestor .mi-pct.neg{color:var(--red)}
+#screen-myinvestor .mi-pct.neu{color:var(--muted)}
+#screen-myinvestor .mi-empty{text-align:center;padding:60px 20px;color:var(--muted)}
+#screen-myinvestor .mi-setup{background:var(--surf2);border:1px solid var(--border);border-radius:14px;padding:20px;margin-bottom:20px}
+#screen-myinvestor .mi-setup h4{font-size:14px;font-weight:700;margin-bottom:8px;color:var(--text)}
+#screen-myinvestor .mi-setup p{font-size:12px;color:var(--muted);margin-bottom:12px;line-height:1.5}
+#screen-myinvestor .mi-setup-row{display:flex;gap:8px}
+#screen-myinvestor .mi-url-input{flex:1;padding:8px 12px;border:1px solid var(--border);border-radius:8px;font-size:13px;background:var(--surf);color:var(--text);outline:none}
+#screen-myinvestor .mi-url-input:focus{border-color:var(--green)}
+#screen-myinvestor .mi-stars{color:#f59e0b;font-size:11px}
+#screen-myinvestor .mi-footer{margin-top:12px;font-size:11px;color:var(--muted);display:flex;align-items:center;gap:10px}
+#screen-myinvestor .mi-link{color:var(--green);text-decoration:none;font-size:12px}
+#screen-myinvestor .mi-link:hover{text-decoration:underline}
+#screen-myinvestor .mi-count{font-size:11px;color:var(--muted);font-weight:600}
+</style>
+
+<div class="top" style="padding:20px 24px 0">
+  <div class="title">MyInvestor · Catálogo</div>
+  <div style="font-size:12px;color:var(--muted);margin-top:2px">ETFs y fondos disponibles — rentabilidad 1A / 3A / 5A</div>
+</div>
+
+<div style="padding:20px 24px">
+
+  <!-- Setup card — shown only when no URL configured -->
+  <div class="mi-setup" id="miSetupCard">
+    <h4>⚙️ Configuración — Google Apps Script</h4>
+    <p>Para cargar el catálogo necesitas desplegar el script en Google Apps Script como <strong>Web App</strong> y pegar la URL aquí. El catálogo se actualizará automáticamente cada semana.<br><br>
+    En el editor de Apps Script → Implementar → Nueva implementación → Tipo: App web → Ejecutar como: Yo mismo → Acceso: Cualquier usuario.</p>
+    <div class="mi-setup-row">
+      <input class="mi-url-input" id="miUrlInput" type="text" placeholder="https://script.google.com/macros/s/.../exec" />
+      <button class="btn-main" onclick="MiSaveUrl()" style="white-space:nowrap">Guardar URL</button>
+    </div>
+  </div>
+
+  <!-- Toolbar -->
+  <div class="mi-toolbar">
+    <input class="mi-search" id="miSearch" type="text" placeholder="Buscar fondo o ISIN…" oninput="MiRender()" />
+    <div class="mi-pills">
+      <button class="mi-pill active" data-tipo="todos" onclick="MiSetTipo('todos')">Todos</button>
+      <button class="mi-pill" data-tipo="ETF" onclick="MiSetTipo('ETF')">ETF</button>
+      <button class="mi-pill" data-tipo="Fondo" onclick="MiSetTipo('Fondo')">Fondo</button>
+    </div>
+    <div class="mi-sort">
+      <span class="mi-sort-lbl">Ordenar:</span>
+      <button class="mi-sortbtn active" data-sort="rent1a" onclick="MiSetSort('rent1a')">1A ↓</button>
+      <button class="mi-sortbtn" data-sort="rent3a" onclick="MiSetSort('rent3a')">3A ↓</button>
+      <button class="mi-sortbtn" data-sort="rent5a" onclick="MiSetSort('rent5a')">5A ↓</button>
+      <button class="mi-sortbtn" data-sort="ter" onclick="MiSetSort('ter')">TER ↑</button>
+    </div>
+    <button class="btn-sm" onclick="MiLoad(true)" id="miReloadBtn">↻ Actualizar</button>
+  </div>
+  <div class="mi-count" id="miCount" style="margin-bottom:10px"></div>
+
+  <!-- Table -->
+  <div class="mi-table-wrap">
+    <table class="mi-table">
+      <thead>
+        <tr>
+          <th>Nombre</th>
+          <th>Tipo</th>
+          <th>Categoría</th>
+          <th>ISIN</th>
+          <th>TER %</th>
+          <th>Divisa</th>
+          <th>Réplica</th>
+          <th>Dist.</th>
+          <th>Rent. 1A</th>
+          <th>Rent. 3A</th>
+          <th>Rent. 5A</th>
+          <th>Rating</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody id="miTableBody"></tbody>
+    </table>
+  </div>
+  <div class="mi-footer">
+    <span id="miUpdated"></span>
+    <span id="miError" style="color:var(--red)"></span>
+  </div>
+</div>
+</div><!-- end screen-myinvestor -->
+
+<script>
+(function(){
+  var _miData=[], _miTipo='todos', _miSort='rent1a';
+
+  function MiFmt(v){ if(v===''||v===null||v===undefined) return '<span style="color:var(--muted)">—</span>'; var n=parseFloat(v); if(isNaN(n)) return '<span style="color:var(--muted)">—</span>'; var cls=n>0?'pos':n<0?'neg':'neu'; return '<span class="mi-pct '+cls+'">'+(n>0?'+':'')+n.toFixed(2)+'%</span>'; }
+  function MiTer(v){ if(v===''||v===null||v===undefined) return '<span style="color:var(--muted)">—</span>'; var n=parseFloat(v); return isNaN(n)?'<span style="color:var(--muted)">—</span>':n.toFixed(2)+'%'; }
+  function MiStars(r){ if(!r||r==='') return '<span style="color:var(--muted)">—</span>'; var n=parseInt(r); if(isNaN(n)||n<1) return '<span style="color:var(--muted)">—</span>'; return '<span class="mi-stars">'+'★'.repeat(Math.min(n,5))+'☆'.repeat(Math.max(0,5-n))+'</span>'; }
+  function MiEh(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+  window.MiSetTipo=function(t){ _miTipo=t; document.querySelectorAll('#screen-myinvestor .mi-pill').forEach(b=>b.classList.toggle('active',b.dataset.tipo===t)); MiRender(); };
+  window.MiSetSort=function(s){ _miSort=s; document.querySelectorAll('#screen-myinvestor .mi-sortbtn').forEach(b=>b.classList.toggle('active',b.dataset.sort===s)); MiRender(); };
+  window.MiSaveUrl=function(){ var v=(document.getElementById('miUrlInput')?.value||'').trim(); if(!v){alert('Pega la URL del Apps Script.');return;} localStorage.setItem('mi_webapp_url',v); document.getElementById('miSetupCard').style.display='none'; MiLoad(true); };
+
+  window.MiLoad=function(force){
+    var url=localStorage.getItem('mi_webapp_url');
+    if(!url){ document.getElementById('miSetupCard').style.display=''; return; }
+    document.getElementById('miSetupCard').style.display='none';
+    // Check cache (1 week)
+    var cached=localStorage.getItem('mi_cache'); var cachedAt=parseInt(localStorage.getItem('mi_cache_at')||'0');
+    if(!force && cached && (Date.now()-cachedAt)<7*24*3600*1000){ try{_miData=JSON.parse(cached);}catch(_){} MiRender(); return; }
+    document.getElementById('miReloadBtn').textContent='⏳';
+    document.getElementById('miError').textContent='';
+    fetch(url).then(r=>r.json()).then(function(json){
+      var arr=json.products||json.data||json||[];
+      if(!Array.isArray(arr)) throw new Error('Respuesta inesperada');
+      // Normalize headers from sheet (e.g. "Rent. 1A (%)" → rent1a)
+      _miData=arr.map(function(row){
+        var get=function(){ for(var i=0;i<arguments.length;i++){if(row[arguments[i]]!==undefined&&row[arguments[i]]!=='')return row[arguments[i]];} return ''; };
+        return {
+          isin:get('ISIN','isin'),
+          nombre:get('Nombre','nombre','name'),
+          tipo:get('Tipo','tipo'),
+          categoria:get('Categoría','categoria','category'),
+          ter:get('TER (%)','ter','TER'),
+          divisa:get('Divisa','divisa','currency'),
+          replica:get('Réplica','replica'),
+          distribucion:get('Distribución','distribucion'),
+          rent1a:get('Rent. 1A (%)','rent1a','return1Year'),
+          rent3a:get('Rent. 3A (%)','rent3a','return3Year'),
+          rent5a:get('Rent. 5A (%)','rent5a','return5Year'),
+          rating:get('Rating Morningstar','rating'),
+          url:get('URL MyInvestor','url'),
+          updated:get('Actualizado','updated')
+        };
+      });
+      localStorage.setItem('mi_cache',JSON.stringify(_miData));
+      localStorage.setItem('mi_cache_at',String(Date.now()));
+      if(_miData[0]) document.getElementById('miUpdated').textContent='Actualizado: '+(_miData[0].updated||'—');
+      MiRender();
+    }).catch(function(e){
+      document.getElementById('miError').textContent='Error: '+e.message+' · ¿Está desplegado el script?';
+    }).finally(function(){
+      document.getElementById('miReloadBtn').textContent='↻ Actualizar';
+    });
+  };
+
+  window.MiRender=function(){
+    var q=(document.getElementById('miSearch')?.value||'').toLowerCase();
+    var rows=_miData.filter(function(r){
+      if(_miTipo!=='todos' && String(r.tipo).toLowerCase()!==_miTipo.toLowerCase()) return false;
+      if(q && !String(r.nombre).toLowerCase().includes(q) && !String(r.isin).toLowerCase().includes(q) && !String(r.categoria).toLowerCase().includes(q)) return false;
+      return true;
+    });
+    // Sort
+    var sortKey=_miSort==='ter'?'ter':_miSort;
+    var asc=_miSort==='ter';
+    rows.sort(function(a,b){
+      var av=parseFloat(a[sortKey]); var bv=parseFloat(b[sortKey]);
+      var an=isNaN(av), bn=isNaN(bv);
+      if(an&&bn) return 0; if(an) return 1; if(bn) return -1;
+      return asc?(av-bv):(bv-av);
+    });
+    document.getElementById('miCount').textContent=rows.length+' productos';
+    var body=document.getElementById('miTableBody'); if(!body) return;
+    if(!rows.length){ body.innerHTML='<tr><td colspan="13" class="mi-empty">Sin resultados. '+(q?'Prueba otra búsqueda.':'Carga el catálogo con ↻ Actualizar.')+'</td></tr>'; return; }
+    body.innerHTML=rows.map(function(r){
+      var tipo=String(r.tipo||'').toUpperCase()==='ETF'?'ETF':'Fondo';
+      var badge=tipo==='ETF'?'<span class="mi-badge mi-badge-etf">ETF</span>':'<span class="mi-badge mi-badge-fund">Fondo</span>';
+      var link=r.url?'<a href="'+MiEh(r.url)+'" target="_blank" class="mi-link">Ver →</a>':'';
+      return '<tr><td style="max-width:260px"><div style="font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:250px" title="'+MiEh(r.nombre)+'">'+MiEh(r.nombre)+'</div></td><td>'+badge+'</td><td style="font-size:11px;color:var(--muted);max-width:120px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+MiEh(r.categoria)+'</td><td style="font-family:monospace;font-size:11px">'+MiEh(r.isin)+'</td><td>'+MiTer(r.ter)+'</td><td style="font-size:12px">'+MiEh(r.divisa)+'</td><td style="font-size:11px;color:var(--muted)">'+MiEh(r.replica)+'</td><td style="font-size:11px;color:var(--muted)">'+MiEh(r.distribucion)+'</td><td>'+MiFmt(r.rent1a)+'</td><td>'+MiFmt(r.rent3a)+'</td><td>'+MiFmt(r.rent5a)+'</td><td>'+MiStars(r.rating)+'</td><td>'+link+'</td></tr>';
+    }).join('');
+  };
+
+  // Wire up URL input if already saved
+  (function init(){
+    var url=localStorage.getItem('mi_webapp_url');
+    if(url){ var el=document.getElementById('miUrlInput'); if(el) el.value=url; document.getElementById('miSetupCard').style.display='none'; }
+    // Try to render from cache immediately
+    var cached=localStorage.getItem('mi_cache');
+    if(cached){ try{_miData=JSON.parse(cached);}catch(_){} MiRender(); }
+    var at=parseInt(localStorage.getItem('mi_cache_at')||'0');
+    if(url && (!at||(Date.now()-at)>7*24*3600*1000)){ MiLoad(true); }
+  })();
 })();
 </script>
 
@@ -4355,6 +4569,7 @@ function showScreen(name,keepTab=false){
   if(name==='alerts')renderAlertsScreen();
   if(name==='impuestos'&&dataReady)renderImpuestos();
   if(name==='prestamos')LnRenderPrestamos();
+  if(name==='myinvestor')try{MiLoad();}catch(_){}
   if(name==='topinvestors')_insLoad(_insCurrentSymbol);
 }
 function normalizeHistory(h){const _all=(Array.isArray(h)?h:[]).map(p=>({date:String(p.date).slice(0,10),close:Number(p.close)})).filter(p=>p.date&&Number.isFinite(p.close)&&p.close>0).sort((a,b)=>a.date.localeCompare(b.date));if(_all.length>=4){const _s=[..._all].sort((a,b)=>a.close-b.close);const _m=_s[Math.floor(_s.length/2)].close;const _c=_all.filter(p=>p.close<=_m*10&&p.close>=_m/10);if(_c.length>=4){return _c.length>1260?_c.slice(-1260):_c;}}return _all.length>1260?_all.slice(-1260):_all;} // cap at 5Y; outlier filter removes bad data points >10x median
@@ -6696,7 +6911,7 @@ function renderLists(){
     // pending balance: for prestamo use schedule, for credito use disp
     let _bal=_isPrest?l.cap:l.disp;
     if(_isPrest&&typeof LnBuildSchedule==='function'&&typeof LnMonthsElapsed==='function'){
-      try{const _s=LnBuildSchedule(l.cap,l.tin,l.meses);const _e=Math.min(LnMonthsElapsed(l.fecha),l.meses);_bal=_e>0?(_s[_e-1]?.saldo??l.cap):l.cap;}catch(_){}
+      try{const _s=LnBuildSchedule(l.cap,l.tin,l.meses);const _e=Math.min(LnMonthsElapsed(l.fecha),l.meses);const _cb=_e>0?(_s[_e-1]?.saldo??l.cap):l.cap;_bal=l.saldoPendiente!==undefined?l.saldoPendiente:_cb;}catch(_){}
     }
     const _amtStr=_bal>0?`<span style="color:var(--red)">-${fe(_bal)}</span>`:'—';
     const _tinStr=l.tin>0?`<span style="color:var(--red)">-${l.tin.toFixed(2)}% TIN</span>`:'—';
@@ -9398,7 +9613,7 @@ function renderImpuestos(){
       <div class="brk-pct">${b.pct}</div>
       <div>${i===myBracket?'<span class="tx-badge pos">Tu tramo</span>':'<span class="tx-badge neu">—</span>'}</div>
     </div>`).join('')
-    + (base>0?`<div style="margin-top:10px;background:rgba(29,179,106,.09);border-radius:9px;padding:10px 12px;border-left:2px solid #16924f"><div style="font-size:11px;color:#3d5248;line-height:1.55">Tu base de ahorro de <strong style="color:#0f1c15">${_taxEuro(base)}</strong> tributa principalmente al <strong style="color:#16924f">${BRACKETS[myBracket].pct}</strong>. Cuota estimada: <strong style="font-family:'DM Mono',monospace">${_taxEuro(cuota)}</strong> antes de retenciones.</div></div>`:'');
+    + (base>0?`<div style="margin-top:10px;background:rgba(29,179,106,.09);border-radius:9px;padding:10px 12px;border-left:2px solid #16924f"><div style="font-size:11px;color:#3d5248;line-height:1.55">Tu base de ahorro de <strong style="color:#0f1c15">${_taxEuro(base)}</strong> tributa principalmente al <strong style="color:#16924f">${BRACKETS[myBracket].pct}</strong>. Cuota estimada: <strong style="font-family:inherit">${_taxEuro(cuota)}</strong> antes de retenciones.</div></div>`:'');
 
   // Sell rows
   const sellEl = document.getElementById('taxSellRows');
@@ -9501,7 +9716,7 @@ function renderImpuestos(){
     {lbl:'Intereses',val:retInt,bg:'rgba(37,99,235,.09)',col:'#2563eb'}
   ].map(r=>`<div style="background:${r.bg};border-radius:9px;padding:9px 11px">
     <div style="font-size:8px;color:#8da098;text-transform:uppercase;letter-spacing:.08em;font-weight:600;margin-bottom:3px">${r.lbl}</div>
-    <div style="font-size:14px;font-weight:700;color:${r.col};font-family:'DM Mono',monospace">${_taxEuro(r.val)}</div>
+    <div style="font-size:14px;font-weight:700;color:${r.col};font-family:inherit">${_taxEuro(r.val)}</div>
   </div>`).join('');
 
   _renderTaxChart('taxRetChart',{

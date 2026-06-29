@@ -10,7 +10,7 @@
   no-store headers are ignored (in-app webviews) because it is plain page JS.
   Source of truth = sw.js (always served no-cache, version-bumped each deploy). */
 (function(){try{
-  var FA_BUILD='255';
+  var FA_BUILD='257';
   var s=location.search;
   if(s.indexOf('vchk')>-1||s.indexOf('_v=')>-1){
     // Clean the ugly ?vchk= / ?_v= from the URL silently
@@ -733,19 +733,19 @@ table.an-corr-mtx{border-collapse:separate;border-spacing:4px}
 #screen-impuestos .tx-h-status{background:rgba(29,179,106,.2);border:1px solid rgba(29,179,106,.3);border-radius:20px;padding:3px 10px;font-size:10px;font-weight:700;color:#2de899;display:inline-flex;align-items:center;gap:5px}
 #screen-impuestos .tx-h-dot{width:5px;height:5px;border-radius:50%;background:#2de899}
 #screen-impuestos .tx-h-albl{font-size:9px;font-weight:600;color:rgba(255,255,255,.35);text-transform:uppercase;letter-spacing:.1em;margin-bottom:4px;margin-top:14px}
-#screen-impuestos .tx-h-amount{font-size:2.1rem;font-weight:800;color:#fff;letter-spacing:-.05em;line-height:1;font-family:'DM Mono',monospace}
+#screen-impuestos .tx-h-amount{font-size:2.1rem;font-weight:800;color:#fff;letter-spacing:-.05em;line-height:1;font-family:inherit}
 #screen-impuestos .tx-h-sub{font-size:10px;color:rgba(255,255,255,.35);margin-top:3px}
 #screen-impuestos .tx-h-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-top:14px}
 #screen-impuestos .tx-h-box{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:8px 10px}
 #screen-impuestos .tx-h-blbl{font-size:8px;font-weight:600;color:rgba(255,255,255,.3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:3px}
-#screen-impuestos .tx-h-bval{font-size:13px;font-weight:700;color:#fff;font-family:'DM Mono',monospace;letter-spacing:-.02em}
+#screen-impuestos .tx-h-bval{font-size:13px;font-weight:700;color:#fff;font-family:inherit;letter-spacing:-.02em}
 #screen-impuestos .tx-h-bval.pos{color:#2de899}
 #screen-impuestos .tx-h-bval.warn{color:#fbbf24}
 #screen-impuestos .tx-h-track{height:5px;background:rgba(255,255,255,.08);border-radius:5px;overflow:hidden;margin-top:14px}
 #screen-impuestos .tx-h-fill{height:100%;border-radius:5px;background:linear-gradient(90deg,#1db36a,#2de899)}
 #screen-impuestos .tx-h-row{display:flex;justify-content:space-between;margin-bottom:5px}
 #screen-impuestos .tx-h-rlbl{font-size:9px;font-weight:600;color:rgba(255,255,255,.35)}
-#screen-impuestos .tx-h-rpct{font-size:9px;font-weight:700;color:rgba(255,255,255,.6);font-family:'DM Mono',monospace}
+#screen-impuestos .tx-h-rpct{font-size:9px;font-weight:700;color:rgba(255,255,255,.6);font-family:inherit}
 #screen-impuestos .tx-sec{display:flex;align-items:center;justify-content:space-between;margin:12px 0 8px}
 #screen-impuestos .tx-sec-t{font-size:9px;font-weight:700;color:#8fa090;text-transform:uppercase;letter-spacing:.1em}
 #screen-impuestos .tx-sec-lnk{font-size:10px;font-weight:600;color:#2563eb;cursor:pointer}
@@ -758,8 +758,8 @@ table.an-corr-mtx{border-collapse:separate;border-spacing:4px}
 #screen-impuestos .src-name{font-size:12px;font-weight:700;color:#0f1c15}
 #screen-impuestos .src-desc{font-size:10px;color:#8da098;margin-top:1px}
 #screen-impuestos .src-right{text-align:right;flex-shrink:0}
-#screen-impuestos .src-amt{font-size:13px;font-weight:700;color:#0f1c15;font-family:'DM Mono',monospace}
-#screen-impuestos .src-tax{font-size:10px;font-weight:600;margin-top:2px;font-family:'DM Mono',monospace}
+#screen-impuestos .src-amt{font-size:13px;font-weight:700;color:#0f1c15;font-family:inherit}
+#screen-impuestos .src-tax{font-size:10px;font-weight:600;margin-top:2px;font-family:inherit}
 #screen-impuestos .src-tax.neg{color:#e03636}
 #screen-impuestos .src-tax.pos{color:#1db36a}
 #screen-impuestos .tx-row-item{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid rgba(0,0,0,.06)}
@@ -769,18 +769,18 @@ table.an-corr-mtx{border-collapse:separate;border-spacing:4px}
 #screen-impuestos .tx-nm{font-size:12px;font-weight:700;color:#0f1c15;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 #screen-impuestos .tx-mt{font-size:10px;color:#8da098;margin-top:1px}
 #screen-impuestos .tx-rt{text-align:right;flex-shrink:0}
-#screen-impuestos .tx-gn{font-size:12px;font-weight:700;font-family:'DM Mono',monospace}
+#screen-impuestos .tx-gn{font-size:12px;font-weight:700;font-family:inherit}
 #screen-impuestos .tx-gn.pos{color:#1db36a}
 #screen-impuestos .tx-gn.neg{color:#e03636}
-#screen-impuestos .tx-tx{font-size:10px;font-weight:600;color:#8da098;margin-top:2px;font-family:'DM Mono',monospace}
+#screen-impuestos .tx-tx{font-size:10px;font-weight:600;color:#8da098;margin-top:2px;font-family:inherit}
 #screen-impuestos .tx-tx.comp{color:#1db36a}
 #screen-impuestos .brk-row{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid rgba(0,0,0,.06)}
 #screen-impuestos .brk-row:last-child{border-bottom:none}
-#screen-impuestos .brk-range{font-size:11px;font-weight:600;color:#3d5248;flex:1;font-family:'DM Mono',monospace}
+#screen-impuestos .brk-range{font-size:11px;font-weight:600;color:#3d5248;flex:1;font-family:inherit}
 #screen-impuestos .brk-bar{width:72px;height:5px;background:#f0f0f0;border-radius:4px;overflow:hidden;flex-shrink:0}
 #screen-impuestos .brk-fill{height:100%;border-radius:4px}
-#screen-impuestos .brk-pct{font-size:12px;font-weight:800;color:#0f1c15;font-family:'DM Mono',monospace;width:32px;text-align:right;flex-shrink:0}
-#screen-impuestos .tx-badge{display:inline-flex;align-items:center;border-radius:5px;padding:2px 7px;font-size:10px;font-weight:700;font-family:'DM Mono',monospace}
+#screen-impuestos .brk-pct{font-size:12px;font-weight:800;color:#0f1c15;font-family:inherit;width:32px;text-align:right;flex-shrink:0}
+#screen-impuestos .tx-badge{display:inline-flex;align-items:center;border-radius:5px;padding:2px 7px;font-size:10px;font-weight:700;font-family:inherit}
 #screen-impuestos .tx-badge.pos{background:rgba(29,179,106,.09);color:#16924f}
 #screen-impuestos .tx-badge.neg{background:rgba(224,54,54,.09);color:#e03636}
 #screen-impuestos .tx-badge.warn{background:rgba(217,119,6,.1);color:#d97706}
@@ -2963,7 +2963,7 @@ table.an-corr-mtx{border-collapse:separate;border-spacing:4px}
     <div class="tax-card-inner">
       <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px">
         <div><div style="font-size:13px;font-weight:700;color:#0f1c15">Total retenciones</div><div style="font-size:10px;color:#8da098;margin-top:2px">Ya descontadas por el broker</div></div>
-        <span style="font-size:16px;font-weight:800;color:#1db36a;font-family:'DM Mono',monospace" id="taxRetTotal">—</span>
+        <span style="font-size:16px;font-weight:800;color:#1db36a;font-family:inherit" id="taxRetTotal">—</span>
       </div>
       <div style="height:130px;position:relative"><canvas id="taxRetChart"></canvas></div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:12px" id="taxRetGrid"></div>
@@ -3274,13 +3274,14 @@ table.an-corr-mtx{border-collapse:separate;border-spacing:4px}
     <div id="lnFormP">
       <div class="ln-fg"><label class="ln-fl">Nombre</label><input class="ln-fi" type="text" id="lnf-nombre" placeholder="Hipoteca, coche…"></div>
       <div class="ln-frow">
-        <div class="ln-fg"><label class="ln-fl">Capital (€)</label><input class="ln-fi" type="number" id="lnf-cap" oninput="LnUpdateModalPrev()"></div>
+        <div class="ln-fg"><label class="ln-fl">Capital / Garantía (€)</label><input class="ln-fi" type="number" id="lnf-cap" oninput="LnUpdateModalPrev()"></div>
         <div class="ln-fg"><label class="ln-fl">TIN (%)</label><input class="ln-fi" type="number" step="any" id="lnf-tin" oninput="LnUpdateModalPrev()"></div>
       </div>
       <div class="ln-frow">
         <div class="ln-fg"><label class="ln-fl">Plazo (meses)</label><input class="ln-fi" type="number" id="lnf-plazo" oninput="LnUpdateModalPrev()"></div>
         <div class="ln-fg"><label class="ln-fl">Comisión (€)</label><input class="ln-fi" type="number" id="lnf-com" placeholder="Opcional" oninput="LnUpdateModalPrev()"></div>
       </div>
+      <div class="ln-fg"><label class="ln-fl">Saldo pendiente actual (€) <span style="font-weight:400;color:var(--muted);font-size:10px">— opcional</span></label><input class="ln-fi" type="number" id="lnf-pen" placeholder="Auto si vacío"></div>
       <div class="ln-frow">
         <div class="ln-fg"><label class="ln-fl">Entidad</label><input class="ln-fi" type="text" id="lnf-ent" placeholder="Banco…"></div>
         <div class="ln-fg"><label class="ln-fl">Fecha inicio</label><input class="ln-fi" type="date" id="lnf-fecha"></div>
@@ -3344,7 +3345,7 @@ table.an-corr-mtx{border-collapse:separate;border-spacing:4px}
   window.LnDelete=function(id){ if(!confirm('¿Eliminar este producto?')) return; LnSave(LnGetLoans().filter(x=>x.id!==id)); LnRenderPrestamos(); };
   window.LnOpenM=function(id){ document.getElementById(id).classList.add('on'); };
   window.LnCloseM=function(id){ document.getElementById(id).classList.remove('on'); };
-  window.LnOpenAdd=function(){ LnSetTipo('prestamo'); ['lnf-nombre','lnf-cap','lnf-tin','lnf-plazo','lnf-com','lnf-ent','lnf-fecha','lnfc-nombre','lnfc-lim','lnfc-disp','lnfc-tin','lnfc-ent','lnfc-fecha'].forEach(i=>{const e=document.getElementById(i);if(e)e.value='';}); const perEl=document.getElementById('lnfc-per');if(perEl)perEl.value='mensual'; var p1=document.getElementById('lnModalPrev');if(p1)p1.style.display='none'; var p2=document.getElementById('lnModalCredPrev');if(p2)p2.style.display='none'; LnOpenM('lnm-add'); };
+  window.LnOpenAdd=function(){ LnSetTipo('prestamo'); ['lnf-nombre','lnf-cap','lnf-tin','lnf-plazo','lnf-com','lnf-ent','lnf-fecha','lnf-pen','lnfc-nombre','lnfc-lim','lnfc-disp','lnfc-tin','lnfc-ent','lnfc-fecha'].forEach(i=>{const e=document.getElementById(i);if(e)e.value='';}); const perEl=document.getElementById('lnfc-per');if(perEl)perEl.value='mensual'; var p1=document.getElementById('lnModalPrev');if(p1)p1.style.display='none'; var p2=document.getElementById('lnModalCredPrev');if(p2)p2.style.display='none'; LnOpenM('lnm-add'); };
 
   window.LnSetCalcMode=function(mode){ document.getElementById('lnCalcP').style.display=mode==='prestamo'?'':'none'; document.getElementById('lnCalcC').style.display=mode==='credito'?'':'none'; document.getElementById('lnCalcTabP').classList.toggle('active',mode==='prestamo'); document.getElementById('lnCalcTabC').classList.toggle('active',mode==='credito'); if(mode==='prestamo')LnUpdateCalc(); else LnUpdateCalcCredito(); };
   window.LnUpdateCalc=function(){ const c=parseFloat(document.getElementById('lnc-cap').value)||0,t=parseFloat(document.getElementById('lnc-tin').value)||0,m=parseInt(document.getElementById('lnc-meses').value)||0; if(!c||!t||!m){['lnr-cuota','lnr-int','lnr-total','lnr-tae'].forEach(id=>{const e=document.getElementById(id);if(e)e.textContent='—';});return;} const cuo=LnCalcCuota(c,t,m),tot=cuo*m,intt=tot-c,tae=LnCalcTAE(t,0,c,m); document.getElementById('lnr-cuota').textContent=LnFmt(cuo); document.getElementById('lnr-int').textContent=LnFmt(intt); document.getElementById('lnr-total').textContent=LnFmt(tot); document.getElementById('lnr-tae').textContent=LnFmtPct(tae); };
@@ -3354,9 +3355,9 @@ table.an-corr-mtx{border-collapse:separate;border-spacing:4px}
   window.LnUpdateModalPrev=function(){ const c=parseFloat(document.getElementById('lnf-cap').value)||0,t=parseFloat(document.getElementById('lnf-tin').value)||0,m=parseInt(document.getElementById('lnf-plazo').value)||0,fee=parseFloat(document.getElementById('lnf-com').value)||0; const p=document.getElementById('lnModalPrev'); if(!c||!t||!m){p.style.display='none';return;} p.style.display='block'; const cuo=LnCalcCuota(c,t,m),intt=cuo*m-c,tae=LnCalcTAE(t,fee,c,m); document.getElementById('lnmp-cuota').textContent=LnFmt(cuo); document.getElementById('lnmp-int').textContent=LnFmt(intt); document.getElementById('lnmp-tae').textContent=LnFmtPct(tae); };
   window.LnUpdateModalCredPrev=function(){ const l=parseFloat(document.getElementById('lnfc-lim').value)||0,d=parseFloat(document.getElementById('lnfc-disp').value)||0,t=parseFloat(document.getElementById('lnfc-tin').value)||0; const p=document.getElementById('lnModalCredPrev'); if(!t||(!d&&!l)){p.style.display='none';return;} p.style.display='block'; const per=(document.getElementById('lnfc-per')?.value)||'mensual'; const divisor=per==='trimestral'?4:12; const im=d*(t/100/divisor),dp=Math.max(0,l-d); const lbl=document.getElementById('lnmcp-per-lbl'); if(lbl)lbl.textContent=per==='trimestral'?'Intereses/trim.':'Intereses/mes'; document.getElementById('lnmcp-int').textContent=LnFmt(im); document.getElementById('lnmcp-min').textContent=LnFmt(im*divisor); document.getElementById('lnmcp-disp').textContent=LnFmt(dp); };
 
-  window.LnSaveNew=function(){ const tipo=window._lnAddTipo||'prestamo'; const loans=LnGetLoans(); const id='ln'+Date.now(); let newObj=null; if(tipo==='prestamo'){ const cap=parseFloat(document.getElementById('lnf-cap').value)||0,tin=parseFloat(document.getElementById('lnf-tin').value)||0,meses=parseInt(document.getElementById('lnf-plazo').value)||0; if(!cap||!tin||!meses){alert('Completa capital, TIN y plazo.');return;} newObj={id,tipo:'prestamo',nombre:document.getElementById('lnf-nombre').value||'Préstamo',entidad:document.getElementById('lnf-ent').value||'',kind:document.getElementById('lnf-tipo').value,cap,tin,meses,com:parseFloat(document.getElementById('lnf-com').value)||0,fecha:document.getElementById('lnf-fecha').value||''}; } else { const lim=parseFloat(document.getElementById('lnfc-lim').value)||0,disp=parseFloat(document.getElementById('lnfc-disp').value)||0,tin=parseFloat(document.getElementById('lnfc-tin').value)||0; if(!tin||(!disp&&!lim)){alert('Completa límite/dispuesto y TIN.');return;} const periodicidad=(document.getElementById('lnfc-per')?.value)||'mensual'; newObj={id,tipo:'credito',nombre:document.getElementById('lnfc-nombre').value||'Crédito',entidad:document.getElementById('lnfc-ent').value||'',kind:document.getElementById('lnfc-tipo').value,lim,disp,tin,periodicidad,fecha:document.getElementById('lnfc-fecha')?.value||''}; } if(window._lnEditId){ const idx=loans.findIndex(x=>x.id===window._lnEditId); if(idx>=0){ const old=loans[idx]; loans[idx]={...newObj,id:old.id,pignorada:old.pignorada,colateral:old.colateral,ratioGarantia:old.ratioGarantia}; } window._lnEditId=null; } else { loans.push(newObj); } LnSave(loans); LnCloseM('lnm-add'); LnRenderPrestamos(); };
+  window.LnSaveNew=function(){ const tipo=window._lnAddTipo||'prestamo'; const loans=LnGetLoans(); const id='ln'+Date.now(); let newObj=null; if(tipo==='prestamo'){ const cap=parseFloat(document.getElementById('lnf-cap').value)||0,tin=parseFloat(document.getElementById('lnf-tin').value)||0,meses=parseInt(document.getElementById('lnf-plazo').value)||0; if(!cap||!tin||!meses){alert('Completa capital, TIN y plazo.');return;} const penRaw=parseFloat(document.getElementById('lnf-pen')?.value);const saldoPendiente=(!isNaN(penRaw)&&penRaw>0)?penRaw:undefined; newObj={id,tipo:'prestamo',nombre:document.getElementById('lnf-nombre').value||'Préstamo',entidad:document.getElementById('lnf-ent').value||'',kind:document.getElementById('lnf-tipo').value,cap,tin,meses,com:parseFloat(document.getElementById('lnf-com').value)||0,fecha:document.getElementById('lnf-fecha').value||'',...(saldoPendiente!==undefined?{saldoPendiente}:{})}; } else { const lim=parseFloat(document.getElementById('lnfc-lim').value)||0,disp=parseFloat(document.getElementById('lnfc-disp').value)||0,tin=parseFloat(document.getElementById('lnfc-tin').value)||0; if(!tin||(!disp&&!lim)){alert('Completa límite/dispuesto y TIN.');return;} const periodicidad=(document.getElementById('lnfc-per')?.value)||'mensual'; newObj={id,tipo:'credito',nombre:document.getElementById('lnfc-nombre').value||'Crédito',entidad:document.getElementById('lnfc-ent').value||'',kind:document.getElementById('lnfc-tipo').value,lim,disp,tin,periodicidad,fecha:document.getElementById('lnfc-fecha')?.value||''}; } if(window._lnEditId){ const idx=loans.findIndex(x=>x.id===window._lnEditId); if(idx>=0){ const old=loans[idx]; loans[idx]={...newObj,id:old.id,pignorada:old.pignorada,colateral:old.colateral,ratioGarantia:old.ratioGarantia}; } window._lnEditId=null; } else { loans.push(newObj); } LnSave(loans); LnCloseM('lnm-add'); LnRenderPrestamos(); };
 
-  window.LnEdit=function(id){ const l=LnGetLoans().find(x=>x.id===id); if(!l) return; window._lnEditId=id; LnOpenAdd(); LnSetTipo(l.tipo==='credito'?'credito':'prestamo'); if(l.tipo==='credito'){ const set=(eid,v)=>{const e=document.getElementById(eid);if(e&&v!==undefined)e.value=v;}; set('lnfc-nombre',l.nombre); set('lnfc-lim',l.lim); set('lnfc-disp',l.disp); set('lnfc-tin',l.tin); set('lnfc-ent',l.entidad); set('lnfc-fecha',l.fecha||''); const perEl=document.getElementById('lnfc-per');if(perEl)perEl.value=l.periodicidad||'mensual'; const tipoEl=document.getElementById('lnfc-tipo');if(tipoEl)tipoEl.value=l.kind||'Línea de crédito'; LnUpdateModalCredPrev(); } else { const set=(eid,v)=>{const e=document.getElementById(eid);if(e&&v!==undefined)e.value=v;}; set('lnf-nombre',l.nombre); set('lnf-cap',l.cap); set('lnf-tin',l.tin); set('lnf-plazo',l.meses); set('lnf-ent',l.entidad); set('lnf-fecha',l.fecha||''); const tipoEl=document.getElementById('lnf-tipo');if(tipoEl)tipoEl.value=l.kind||'Préstamo Personal'; LnUpdateModalPrev(); } const saveBtn=document.querySelector('#lnm-add button[onclick="LnSaveNew()"]');if(saveBtn)saveBtn.textContent='💾 Guardar'; };
+  window.LnEdit=function(id){ const l=LnGetLoans().find(x=>x.id===id); if(!l) return; window._lnEditId=id; LnOpenAdd(); LnSetTipo(l.tipo==='credito'?'credito':'prestamo'); if(l.tipo==='credito'){ const set=(eid,v)=>{const e=document.getElementById(eid);if(e&&v!==undefined)e.value=v;}; set('lnfc-nombre',l.nombre); set('lnfc-lim',l.lim); set('lnfc-disp',l.disp); set('lnfc-tin',l.tin); set('lnfc-ent',l.entidad); set('lnfc-fecha',l.fecha||''); const perEl=document.getElementById('lnfc-per');if(perEl)perEl.value=l.periodicidad||'mensual'; const tipoEl=document.getElementById('lnfc-tipo');if(tipoEl)tipoEl.value=l.kind||'Línea de crédito'; LnUpdateModalCredPrev(); } else { const set=(eid,v)=>{const e=document.getElementById(eid);if(e&&v!==undefined)e.value=v;}; set('lnf-nombre',l.nombre); set('lnf-cap',l.cap); set('lnf-tin',l.tin); set('lnf-plazo',l.meses); set('lnf-ent',l.entidad); set('lnf-fecha',l.fecha||''); const tipoEl=document.getElementById('lnf-tipo');if(tipoEl)tipoEl.value=l.kind||'Préstamo Personal'; LnUpdateModalPrev(); try{const _sc=LnBuildSchedule(l.cap,l.tin,l.meses);const _el=Math.min(LnMonthsElapsed(l.fecha),l.meses);const _cp=l.saldoPendiente!==undefined?l.saldoPendiente:(_el>0?(_sc[_el-1]?.saldo??l.cap):l.cap);set('lnf-pen',_cp>0?_cp.toFixed(2):'');}catch(_){} } const saveBtn=document.querySelector('#lnm-add button[onclick="LnSaveNew()"]');if(saveBtn)saveBtn.textContent='💾 Guardar'; };
 
   window.LnShowAmort=function(id){ const loan=LnGetLoans().find(x=>x.id===id); if(!loan||loan.tipo!=='prestamo') return; document.getElementById('lnAmortTitle').textContent=loan.nombre; const sched=LnBuildSchedule(loan.cap,loan.tin,loan.meses); const elapsed=Math.min(LnMonthsElapsed(loan.fecha),loan.meses); document.getElementById('lnAmortMeta').innerHTML=`<div style="font-size:11px;color:var(--muted)">Capital <b style="color:var(--text)">${LnFmt(loan.cap)}</b></div><div style="font-size:11px;color:var(--muted)">TIN <b style="color:var(--text)">${LnFmtPct(loan.tin)}</b></div><div style="font-size:11px;color:var(--muted)">Cuota <b style="color:var(--text)">${LnFmt(LnCalcCuota(loan.cap,loan.tin,loan.meses))}</b></div>`; const slice=sched.slice(elapsed,elapsed+12); document.getElementById('lnAmortBody').innerHTML=slice.map(r=>`<tr style="border-bottom:1px solid var(--border)"><td style="padding:5px;color:var(--muted);font-weight:600">${r.mes}</td><td style="text-align:right;padding:5px">${LnFmt(r.cuota)}</td><td style="text-align:right;padding:5px;color:var(--green)">${LnFmt(r.capital)}</td><td style="text-align:right;padding:5px;color:var(--red)">${LnFmt(r.interes)}</td><td style="text-align:right;padding:5px;font-weight:600">${LnFmt(r.saldo)}</td></tr>`).join(''); LnOpenM('lnm-amort'); };
 
@@ -3366,7 +3367,7 @@ table.an-corr-mtx{border-collapse:separate;border-spacing:4px}
     const cards=loans.map(l=>{
       if(l.tipo==='prestamo'){
         const sched=LnBuildSchedule(l.cap,l.tin,l.meses); const elapsed=Math.min(LnMonthsElapsed(l.fecha),l.meses);
-        const pending=elapsed>0?(sched[elapsed-1]?.saldo??l.cap):l.cap; const cuo=LnCalcCuota(l.cap,l.tin,l.meses);
+        const calcPending=elapsed>0?(sched[elapsed-1]?.saldo??l.cap):l.cap; const pending=l.saldoPendiente!==undefined?l.saldoPendiente:calcPending; const cuo=LnCalcCuota(l.cap,l.tin,l.meses);
         const remInt=sched.slice(elapsed).reduce((s,r)=>s+r.interes,0); const amortPct=l.cap>0?((l.cap-pending)/l.cap*100):0;
         const tae=LnCalcTAE(l.tin,l.com,l.cap,l.meses);
         debt+=pending; monthly+=cuo; interest+=remInt;
@@ -3374,8 +3375,8 @@ table.an-corr-mtx{border-collapse:separate;border-spacing:4px}
         const pignBadge=l.pignorada?`<span style="background:#dcfce7;color:#15803d;font-size:9px;font-weight:800;padding:2px 7px;border-radius:5px;margin-left:4px">🔒 PIGN.</span>`:'';
         return `<div class="ln-loan">
           <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:9px"><div style="display:flex;align-items:center;gap:8px"><span style="font-size:20px">${ico}</span><div><div style="font-size:14px;font-weight:800">${l.nombre}${pignBadge}</div><div style="font-size:11px;color:var(--muted2)">${l.entidad||'—'}</div></div></div><div style="display:flex;gap:6px"><button onclick="LnEdit('${l.id}')" style="background:none;border:none;color:var(--muted);font-size:11px;font-weight:700;cursor:pointer">✏️</button><button onclick="LnDelete('${l.id}')" style="background:none;border:none;color:var(--red);font-size:11px;font-weight:700;cursor:pointer">Eliminar</button></div></div>
-          <div style="margin-bottom:8px"><span style="font-size:20px;font-weight:800">${LnFmt(pending)}</span><span style="font-size:12px;color:var(--muted);margin-left:5px">pendiente</span><span style="font-size:11px;color:var(--muted2);margin-left:4px">de ${LnFmt(l.cap)}</span></div>
-          <div class="lm-row"><div class="lm-c"><div class="l">TIN</div><div class="v">${LnFmtPct(l.tin)}</div></div><div class="lm-c"><div class="l">Cuota</div><div class="v" style="color:var(--green)">${LnFmt(cuo)}</div></div><div class="lm-c"><div class="l">TAE</div><div class="v">${LnFmtPct(tae)}</div></div></div>
+          <div style="margin-bottom:8px"><span style="font-size:20px;font-weight:800;${l.saldoPendiente!==undefined?'color:var(--gold)':''}">${LnFmt(pending)}</span><span style="font-size:12px;color:var(--muted);margin-left:5px">pendiente</span><span style="font-size:11px;color:var(--muted2);margin-left:4px">de ${LnFmt(l.cap)} garantía</span></div>
+          <div class="lm-row"><div class="lm-c"><div class="l">Cap. inicial</div><div class="v">${LnFmt(l.cap)}</div></div><div class="lm-c"><div class="l">Cuota / mes</div><div class="v" style="color:var(--green)">${LnFmt(cuo)}</div></div><div class="lm-c"><div class="l">TAE</div><div class="v">${LnFmtPct(tae)}</div></div></div>
           <div class="sbar"><div class="sf" style="width:${Math.min(100,amortPct).toFixed(1)}%;background:var(--green)"></div></div>
           <div style="font-size:10px;color:var(--muted);margin-bottom:9px">${amortPct.toFixed(1)}% amortizado · ${Math.max(0,l.meses-elapsed)} meses restantes</div>
           <div style="display:flex;align-items:center;justify-content:space-between"><div style="font-size:11px;color:var(--muted2)">${l.fecha?'📅 '+l.fecha:''}</div><button onclick="LnShowAmort('${l.id}')" style="background:var(--surf2);border:1px solid var(--border);border-radius:8px;padding:5px 10px;font-size:11px;font-weight:600;color:var(--muted);cursor:pointer">Tabla →</button></div>
@@ -8889,7 +8890,7 @@ function renderImpuestos(){
       <div class="brk-pct">${b.pct}</div>
       <div>${i===myBracket?'<span class="tx-badge pos">'+(_isEsTax?'Tu tramo':'Your bracket')+'</span>':'<span class="tx-badge neu">—</span>'}</div>
     </div>`).join('')
-    + (base>0?_isEsTax?`<div style="margin-top:10px;background:rgba(29,179,106,.09);border-radius:9px;padding:10px 12px;border-left:2px solid #16924f"><div style="font-size:11px;color:#3d5248;line-height:1.55">Tu base de ahorro de <strong style="color:#0f1c15">${_taxEuro(base)}</strong> tributa principalmente al <strong style="color:#16924f">${BRACKETS[myBracket].pct}</strong>. Cuota estimada: <strong style="font-family:'DM Mono',monospace">${_taxEuro(cuota)}</strong> antes de retenciones.</div></div>`:`<div style="margin-top:10px;background:rgba(29,179,106,.09);border-radius:9px;padding:10px 12px;border-left:2px solid #16924f"><div style="font-size:11px;color:#3d5248;line-height:1.55">Your savings base of <strong style="color:#0f1c15">${_taxEuro(base)}</strong> is taxed mainly at <strong style="color:#16924f">${BRACKETS[myBracket].pct}</strong>. Estimated tax: <strong style="font-family:'DM Mono',monospace">${_taxEuro(cuota)}</strong> before withholdings.</div></div>`:'');
+    + (base>0?_isEsTax?`<div style="margin-top:10px;background:rgba(29,179,106,.09);border-radius:9px;padding:10px 12px;border-left:2px solid #16924f"><div style="font-size:11px;color:#3d5248;line-height:1.55">Tu base de ahorro de <strong style="color:#0f1c15">${_taxEuro(base)}</strong> tributa principalmente al <strong style="color:#16924f">${BRACKETS[myBracket].pct}</strong>. Cuota estimada: <strong style="font-family:inherit">${_taxEuro(cuota)}</strong> antes de retenciones.</div></div>`:`<div style="margin-top:10px;background:rgba(29,179,106,.09);border-radius:9px;padding:10px 12px;border-left:2px solid #16924f"><div style="font-size:11px;color:#3d5248;line-height:1.55">Your savings base of <strong style="color:#0f1c15">${_taxEuro(base)}</strong> is taxed mainly at <strong style="color:#16924f">${BRACKETS[myBracket].pct}</strong>. Estimated tax: <strong style="font-family:inherit">${_taxEuro(cuota)}</strong> before withholdings.</div></div>`:'');
 
   // Sell rows
   const sellEl = document.getElementById('taxSellRows');
@@ -8990,7 +8991,7 @@ function renderImpuestos(){
     {lbl:_isEsTax?'Intereses':'Interest',val:retInt,bg:'rgba(37,99,235,.09)',col:'#2563eb'}
   ].map(r=>`<div style="background:${r.bg};border-radius:9px;padding:9px 11px">
     <div style="font-size:8px;color:#8da098;text-transform:uppercase;letter-spacing:.08em;font-weight:600;margin-bottom:3px">${r.lbl}</div>
-    <div style="font-size:14px;font-weight:700;color:${r.col};font-family:'DM Mono',monospace">${_taxEuro(r.val)}</div>
+    <div style="font-size:14px;font-weight:700;color:${r.col};font-family:inherit">${_taxEuro(r.val)}</div>
   </div>`).join('');
 
   _renderTaxChart('taxRetChart',{
