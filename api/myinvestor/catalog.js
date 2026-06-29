@@ -133,7 +133,7 @@ module.exports = async (req, res) => {
 
   if (_cache && Date.now() - _cacheAt < CACHE_TTL) {
     res.setHeader('Content-Type', 'application/json');
-    res.setHeader('Cache-Control', 'public, max-age=21600');
+    res.setHeader('Cache-Control', 'private, max-age=21600');
     res.setHeader('X-Cache', 'HIT');
     res.statusCode = 200;
     return res.end(JSON.stringify(_cache));
@@ -173,7 +173,7 @@ module.exports = async (req, res) => {
   _cacheAt = Date.now();
 
   res.setHeader('Content-Type', 'application/json');
-  res.setHeader('Cache-Control', 'public, max-age=21600');
+  res.setHeader('Cache-Control', 'private, max-age=21600');
   res.setHeader('X-Cache', 'MISS');
   res.statusCode = 200;
   return res.end(JSON.stringify(body));

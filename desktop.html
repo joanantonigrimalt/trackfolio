@@ -4144,7 +4144,7 @@ html,body{height:100%;overflow:hidden;font-family:-apple-system,BlinkMacSystemFo
   window.MiSetSort=function(s){ _miSort=s; document.querySelectorAll('#screen-myinvestor .mi-sortbtn').forEach(b=>b.classList.toggle('active',b.dataset.sort===s)); MiRender(); };
 
   window.MiLoad=function(force){
-    var MI_API='/api/myinvestor/catalog';
+    var MI_API='/api/myinvestor/catalog?v=260';
     // Check cache (1 week)
     var cached=localStorage.getItem('mi_cache'); var cachedAt=parseInt(localStorage.getItem('mi_cache_at')||'0');
     if(!force && cached && (Date.now()-cachedAt)<7*24*3600*1000){ try{_miData=JSON.parse(cached);}catch(_){} MiRender(); return; }
