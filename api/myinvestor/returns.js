@@ -1,5 +1,5 @@
 // GET /api/myinvestor/returns?isins=ISIN1,ISIN2,...
-// Fetches 1Y / 3Y / 5Y returns from justETF (ETFs) or Morningstar (funds).
+// Fetches 1Y / 3Y / 5Y returns from justETF (ETFs) or Yahoo Finance (funds).
 // Called by desktop.html after each page render to lazy-load rentabilidades.
 
 function dateBack(years) {
@@ -7,6 +7,12 @@ function dateBack(years) {
   d.setFullYear(d.getFullYear() - years);
   return d.toISOString().slice(0, 10);
 }
+
+const YF_HEADERS = {
+  'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36',
+  'Accept': 'application/json',
+  'Accept-Language': 'es-ES,es;q=0.9,en;q=0.8',
+};
 
 // ── justETF: 1Y batched via cards endpoint ────────────────────────────────
 async function fetch1Y(isins) {
@@ -47,56 +53,63 @@ async function fetchPerf(isin, dateFrom, today) {
   }
 }
 
-// ── Morningstar: fetch 5Y monthly NAV, derive 1Y/3Y/5Y returns ───────────
-// Falls back to null if the fund is not found or the API fails.
-async function fetchMorningstar(isin) {
+// ── Yahoo Finance: ISIN → ticker symbol ──────────────────────────────────
+async function yfSearch(isin) {
   try {
-    const today = new Date();
-    const startDate = new Date(today);
-    startDate.setFullYear(startDate.getFullYear() - 5);
-    startDate.setDate(startDate.getDate() - 5);
-    const startStr = startDate.toISOString().slice(0, 10);
+    const url = `https://query2.finance.yahoo.com/v1/finance/search?q=${isin}&lang=en-US&region=US&quotesCount=5&newsCount=0&listsCount=0&enableFuzzyQuery=false&enableNavLinks=false`;
+    const r = await fetch(url, { signal: AbortSignal.timeout(5000), headers: YF_HEADERS });
+    const j = await r.json();
+    const quotes = j?.quotes || [];
+    // Prefer MUTUALFUND or EQUITY type; filter out options/futures
+    const best = quotes.find(q => q.quoteType === 'MUTUALFUND' || q.quoteType === 'ETF' || q.quoteType === 'EQUITY');
+    return best?.symbol || null;
+  } catch (e) {
+    return null;
+  }
+}
 
-    const url = `https://lt.morningstar.com/api/rest.svc/timeseries_price/9vehuxllxs?currencyId=EUR&idtype=Isin&frequency=monthly&startDate=${startStr}&outputType=COMPACTJSON&id=${isin}`;
-    const r = await fetch(url, {
-      signal: AbortSignal.timeout(9000),
-      headers: {
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36',
-        'Accept': 'application/json, text/javascript, */*; q=0.01',
-        'Accept-Language': 'es-ES,es;q=0.9',
-        'Referer': 'https://tools.morningstar.es/',
-        'Origin': 'https://tools.morningstar.es',
-      },
-    });
+// ── Yahoo Finance: 5Y monthly chart → derive 1Y/3Y/5Y ────────────────────
+async function fetchYahoo(isin) {
+  try {
+    const symbol = await yfSearch(isin);
+    if (!symbol) return { rent1a: null, rent3a: null, rent5a: null };
 
-    if (!r.ok) return { rent1a: null, rent3a: null, rent5a: null };
+    const now = Math.floor(Date.now() / 1000);
+    const fiveYrsAgo = now - Math.ceil((5 * 365.25 + 10)) * 86400;
+    const url = `https://query1.finance.yahoo.com/v8/finance/chart/${encodeURIComponent(symbol)}?period1=${fiveYrsAgo}&period2=${now}&interval=1mo&includeAdjustedClose=true`;
+    const r = await fetch(url, { signal: AbortSignal.timeout(8000), headers: YF_HEADERS });
     const j = await r.json();
 
-    // Response: [{TimeSeries:{Security:[{HistoryDetail:[{EndDate:"...",Value:"..."},...]}]}}]
-    const history = j?.[0]?.TimeSeries?.Security?.[0]?.HistoryDetail;
-    if (!Array.isArray(history) || history.length < 2) return { rent1a: null, rent3a: null, rent5a: null };
+    const result = j?.chart?.result?.[0];
+    const timestamps = result?.timestamp;
+    const closes = result?.indicators?.adjclose?.[0]?.adjclose
+      || result?.indicators?.quote?.[0]?.close;
 
-    const sorted = history
-      .filter(h => h.EndDate && h.Value != null)
-      .sort((a, b) => a.EndDate.localeCompare(b.EndDate));
+    if (!timestamps || !closes || timestamps.length < 2) return { rent1a: null, rent3a: null, rent5a: null };
 
-    const latestVal = parseFloat(sorted[sorted.length - 1].Value);
-    if (isNaN(latestVal) || latestVal === 0) return { rent1a: null, rent3a: null, rent5a: null };
+    // Build valid pairs (filter nulls)
+    const pairs = timestamps
+      .map((ts, i) => ({ ts: ts * 1000, val: closes[i] }))
+      .filter(p => p.val != null && !isNaN(p.val));
+
+    if (pairs.length < 2) return { rent1a: null, rent3a: null, rent5a: null };
+
+    const latestVal = pairs[pairs.length - 1].val;
+    const latestTime = pairs[pairs.length - 1].ts;
 
     const calcReturn = (yearsBack) => {
-      const target = new Date(today);
-      target.setFullYear(target.getFullYear() - yearsBack);
-      const targetStr = target.toISOString().slice(0, 10);
-      // Find closest entry on or before target date
+      const targetTime = latestTime - yearsBack * 365.25 * 86400 * 1000;
+      // Find closest pair to target time (must not be the latest itself)
       let closest = null;
-      for (const entry of sorted) {
-        if (entry.EndDate <= targetStr) closest = entry;
-        else break;
+      let minDiff = Infinity;
+      for (const p of pairs.slice(0, -1)) {
+        const diff = Math.abs(p.ts - targetTime);
+        if (diff < minDiff) { minDiff = diff; closest = p; }
       }
-      if (!closest) return null;
-      const startVal = parseFloat(closest.Value);
-      if (isNaN(startVal) || startVal === 0) return null;
-      return Math.round(((latestVal / startVal) - 1) * 10000) / 100;
+      if (!closest || closest.val === 0) return null;
+      // Only return if data is reasonably close to the target date (within 2 months)
+      if (minDiff > 70 * 86400 * 1000) return null;
+      return Math.round(((latestVal / closest.val) - 1) * 10000) / 100;
     };
 
     return {
@@ -105,7 +118,7 @@ async function fetchMorningstar(isin) {
       rent5a: calcReturn(5),
     };
   } catch (e) {
-    console.warn('[returns] Morningstar error for', isin, e.message);
+    console.warn('[returns] Yahoo error for', isin, e.message);
     return { rent1a: null, rent3a: null, rent5a: null };
   }
 }
@@ -117,7 +130,6 @@ module.exports = async (req, res) => {
   if (req.method === 'OPTIONS') { res.statusCode = 204; return res.end(); }
 
   const raw = (req.query.isins || req.query.isin || '').toString();
-  // Validate ISIN format: 2 letters + 10 alphanumeric
   const isins = raw
     .split(',')
     .map(s => s.trim().toUpperCase())
@@ -134,7 +146,7 @@ module.exports = async (req, res) => {
   const d3 = dateBack(3);
   const d5 = dateBack(5);
 
-  // Step 1: fetch justETF data for all ISINs in parallel (1Y batched + 3Y/5Y concurrent)
+  // Step 1: justETF — 1Y batched + 3Y/5Y concurrent
   const [returns1y, multiYear] = await Promise.all([
     fetch1Y(isins),
     (async () => {
@@ -158,33 +170,33 @@ module.exports = async (req, res) => {
     })(),
   ]);
 
-  // Step 2: find ISINs with no justETF data → try Morningstar
+  // Step 2: find ISINs with no justETF data → try Yahoo Finance
   const noData = isins.filter(isin =>
-    returns1y[isin] == null &&
-    multiYear.r3[isin] == null &&
-    multiYear.r5[isin] == null
+    (returns1y[isin] == null) &&
+    (multiYear.r3[isin] == null) &&
+    (multiYear.r5[isin] == null)
   );
 
-  const msResults = {};
+  const yfResults = {};
   if (noData.length > 0) {
-    const CONCURRENCY = 15;
+    const CONCURRENCY = 10;
     for (let i = 0; i < noData.length; i += CONCURRENCY) {
       const batch = noData.slice(i, i + CONCURRENCY);
       const results = await Promise.all(batch.map(async (isin) => {
-        const ms = await fetchMorningstar(isin);
-        return { isin, ...ms };
+        const yf = await fetchYahoo(isin);
+        return { isin, ...yf };
       }));
       for (const { isin, rent1a, rent3a, rent5a } of results) {
-        msResults[isin] = { rent1a, rent3a, rent5a };
+        yfResults[isin] = { rent1a, rent3a, rent5a };
       }
     }
   }
 
-  // Step 3: merge
+  // Step 3: merge results (Yahoo Finance takes priority for funds)
   const output = {};
   for (const isin of isins) {
-    if (msResults[isin]) {
-      output[isin] = msResults[isin];
+    if (yfResults[isin] && (yfResults[isin].rent1a != null || yfResults[isin].rent3a != null)) {
+      output[isin] = yfResults[isin];
     } else {
       output[isin] = {
         rent1a: returns1y[isin] ?? null,
