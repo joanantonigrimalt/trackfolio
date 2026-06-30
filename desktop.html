@@ -6,7 +6,7 @@
   (served no-cache, version-bumped each deploy). Works even where SW/no-store
   are ignored, because it is plain page JS. */
 (function(){try{
-  var FA_BUILD=window.FA_BUILD='290';
+  var FA_BUILD=window.FA_BUILD='291';
   var s=location.search;
   if(s.indexOf('vchk')>-1||s.indexOf('_v=')>-1){history.replaceState(null,'',location.pathname+(location.hash||''));return;}
   fetch('/sw.js?_='+Date.now(),{cache:'no-store'}).then(function(r){return r.text();}).then(function(t){
@@ -2621,10 +2621,8 @@ html,body{height:100%;overflow:hidden;font-family:-apple-system,BlinkMacSystemFo
         <div class="pf"><div class="pf-dot"></div><div><div class="pf-name">Benchmark global</div><div class="pf-desc">Vs índices y top portfolios</div></div></div>
       </div>
       <div class="prem-price-row">
-        <span class="prem-price-num">4,99 €</span>
-        <span class="prem-price-mo">/mes</span>
-        <span class="prem-price-old">9,99 €</span>
-        <span style="margin-left:6px;background:rgba(45,201,138,.2);color:#6ee7b7;font-size:.58rem;font-weight:800;padding:2px 7px;border-radius:5px;text-transform:uppercase;letter-spacing:.06em;">−50%</span>
+        <span class="prem-price-num">9,99 €</span>
+        <span class="prem-price-mo">/mes + IVA</span>
       </div>
       <button class="prem-btn">Empezar prueba gratuita 7 días →</button>
       <div class="prem-note">Sin tarjeta de crédito · Cancela cuando quieras</div>
@@ -7909,11 +7907,18 @@ let _userCredits = { used: 0, limit: 0, remaining: 0, month: '' };
 
 async function loadUserPlan() {
   try {
-    const tok = localStorage.getItem('fa_token');
+    let tok = localStorage.getItem('fa_token');
     if (!tok) { _userPlan = 'free'; _updatePlanUI(); return; }
-    const r = await fetch('/api/auth/plan', {
-      headers: { 'Authorization': 'Bearer ' + tok }
-    });
+    let r = await fetch('/api/auth/plan', { headers: { 'Authorization': 'Bearer ' + tok } });
+    // Token expired? try refreshing via Supabase SDK session
+    if (!r.ok && r.status === 401 && typeof _sb !== 'undefined') {
+      try {
+        const sess = await _sb.auth.getSession();
+        const freshTok = sess?.data?.session?.access_token;
+        if (freshTok) { localStorage.setItem('fa_token', freshTok); tok = freshTok; }
+        r = await fetch('/api/auth/plan', { headers: { 'Authorization': 'Bearer ' + tok } });
+      } catch(_) {}
+    }
     if (!r.ok) return;
     const data = await r.json();
     _userPlan = data.plan || 'free';
