@@ -10,7 +10,7 @@
   no-store headers are ignored (in-app webviews) because it is plain page JS.
   Source of truth = sw.js (always served no-cache, version-bumped each deploy). */
 (function(){try{
-  var FA_BUILD='287';
+  var FA_BUILD='288';
   var s=location.search;
   if(s.indexOf('vchk')>-1||s.indexOf('_v=')>-1){
     // Clean the ugly ?vchk= / ?_v= from the URL silently
@@ -6392,6 +6392,7 @@ function _doRender(){
   document.getElementById('summaryAssetCount').textContent=`${c.total} ${t('positions')} · ${c.ok} ${currentLang==='es'?'con histórico':'w/ history'}`;
   renderLists();buildTfRow();renderChart();
   renderLiquidity();
+  if(typeof renderDebt==='function')renderDebt();
   renderAnalysisV2();
 }
 
@@ -6524,7 +6525,7 @@ async function boot(){
     if (cn) cn.innerHTML = currentLang==='es'
       ? '&#128202; Tu cartera está vacía. Pulsa <strong>+ Nueva posición</strong> para añadir tu primer activo.'
       : '&#128202; Your portfolio is empty. Click <strong>+ New position</strong> to add your first asset.';
-    if(_sbUser){syncFromCloud().catch(()=>{});syncSnapshotsFromCloud();}
+    if(_sbUser){syncFromCloud().catch(()=>{});syncSnapshotsFromCloud();setTimeout(()=>{if(typeof window.LnSyncFromSB==='function')window.LnSyncFromSB().catch(()=>{});},1200);}
     loadCustomIntoAssets(); dataReady=true; render();
     return;
   }
