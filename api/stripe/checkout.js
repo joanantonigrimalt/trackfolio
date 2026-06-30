@@ -60,6 +60,7 @@ export default async (req) => {
     'cancel_url': `${CORS_ORIGIN}/desktop`,
     'locale': 'es',
     'allow_promotion_codes': 'true',
+    'automatic_tax[enabled]': 'true',
     'subscription_data[metadata][user_id]': user.id,
     'subscription_data[metadata][email]': user.email || '',
   });

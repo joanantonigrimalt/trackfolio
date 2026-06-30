@@ -10,7 +10,7 @@
   no-store headers are ignored (in-app webviews) because it is plain page JS.
   Source of truth = sw.js (always served no-cache, version-bumped each deploy). */
 (function(){try{
-  var FA_BUILD='277';
+  var FA_BUILD='278';
   var s=location.search;
   if(s.indexOf('vchk')>-1||s.indexOf('_v=')>-1){
     // Clean the ugly ?vchk= / ?_v= from the URL silently
@@ -1224,9 +1224,9 @@ table.an-corr-mtx{border-collapse:separate;border-spacing:4px}
 .prem-card::before{display:none!important}
 .pf{background:var(--surf2)!important;border:1px solid var(--border)!important}
 .prem-btn{background:linear-gradient(135deg,#1a7a42,#15803d)!important;box-shadow:0 4px 16px rgba(26,122,66,.3)!important}
-/* Análisis (mockup layout) — hide old blocks, use new */
-#screen-analysis .top, #screen-analysis .an-ps-wrap, #screen-analysis .an-cards-area{display:none!important}
-#anV2{padding-top:14px}
+/* Análisis — ocultar solo el header duplicado, mostrar cartas y charts */
+#screen-analysis .top{display:none!important}
+#anV2{padding:14px 14px 0}
 #anV2 .anv2-card{background:var(--surf);border:1px solid var(--border);border-radius:14px;padding:14px;margin-bottom:10px;box-shadow:0 2px 8px rgba(0,0,0,.04)}
 #anV2 .dl{display:flex;flex-direction:column;gap:8px}
 #anV2 .dl-r{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--text)}
@@ -1850,7 +1850,7 @@ table.an-corr-mtx{border-collapse:separate;border-spacing:4px}
             <div style="font-size:9px;font-weight:700;color:#8fa090;text-transform:uppercase;letter-spacing:.1em;margin-bottom:3px">Rendimiento 6 meses</div>
             <div style="font-size:16px;font-weight:800;color:#142018;letter-spacing:-.02em">Trend Analysis vs MSCI World</div>
           </div>
-          <div style="background:#f0f5f2;border-radius:8px;padding:4px 10px"><span style="font-size:10px;font-weight:700;color:#8fa090">2021–2025</span></div>
+          <div style="background:#f0f5f2;border-radius:8px;padding:4px 10px"><span style="font-size:10px;font-weight:700;color:#8fa090">2021–2026</span></div>
         </div>
         <div id="vsWorldChips" style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:4px"></div>
       </div>
