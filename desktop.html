@@ -6,7 +6,7 @@
   (served no-cache, version-bumped each deploy). Works even where SW/no-store
   are ignored, because it is plain page JS. */
 (function(){try{
-  var FA_BUILD=window.FA_BUILD='279';
+  var FA_BUILD=window.FA_BUILD='281';
   var s=location.search;
   if(s.indexOf('vchk')>-1||s.indexOf('_v=')>-1){history.replaceState(null,'',location.pathname+(location.hash||''));return;}
   fetch('/sw.js?_='+Date.now(),{cache:'no-store'}).then(function(r){return r.text();}).then(function(t){
@@ -4263,7 +4263,7 @@ html,body{height:100%;overflow:hidden;font-family:-apple-system,BlinkMacSystemFo
   window.MiPage=function(p){ _miPage=p; };
 
   window.MiLoad=function(force){
-    var MI_API='/api/myinvestor/catalog?v=279';
+    var MI_API='/api/myinvestor/catalog?v=280';
     // Check cache (7 days). Also skip cache if it's empty (0 items — failed previous load)
     var cached=localStorage.getItem('mi_cache'); var cachedAt=parseInt(localStorage.getItem('mi_cache_at')||'0');
     if(!force && cached && (Date.now()-cachedAt)<7*24*3600*1000){
@@ -4326,7 +4326,7 @@ html,body{height:100%;overflow:hidden;font-family:-apple-system,BlinkMacSystemFo
     var pageRows=rows.slice(start,start+_miPageSize);
     var end=Math.min(start+_miPageSize,total);
     var _isEsMR=currentLang==='es';
-    document.getElementById('miCount').textContent=total+(_isEsMR?' productos':' products')+(total>_miPageSize?(_isEsMR?' (mostrando ':(  ' (showing ')+(start+1)+'–'+end+')':'');
+    document.getElementById('miCount').textContent=total+(_isEsMR?' productos':' products')+(total>_miPageSize?(_isEsMR?' (mostrando ':' (showing ')+(start+1)+'–'+end+')':'');
     var body=document.getElementById('miTableBody'); if(!body) return;
     if(!total){ body.innerHTML='<tr><td colspan="13" class="mi-empty">'+(_isEsMR?'Sin resultados. '+(q?'Prueba otra búsqueda.':'Carga el catálogo con ↻ Actualizar.'):'No results. '+(q?'Try another search.':'Load the catalog with ↻ Refresh.'))+'</td></tr>'; }
     else { body.innerHTML=pageRows.map(function(r){ var cachedRet=_miReturns[r.isin]; if(cachedRet){ if(cachedRet.rent1a!==null) r=Object.assign({},r,{rent1a:cachedRet.rent1a}); if(cachedRet.rent3a!==null) r=Object.assign({},r,{rent3a:cachedRet.rent3a}); if(cachedRet.rent5a!==null) r=Object.assign({},r,{rent5a:cachedRet.rent5a}); }
@@ -4569,8 +4569,8 @@ let currentModalIsin = null, txType = 'buy';
 let dataReady = false;
 
 const RANGE_DAYS = {'1W':7,'1M':30,'3M':91,'6M':183,'YTD':null,'1Y':365,'5Y':365*5};
-const TF_RANGES    = [['1D','1D'],['1W','1S'],['1M','1M'],['3M','3M'],['6M','6M'],['YTD','YTD'],['1Y','1A'],['5Y','5A']];
-const TF_RANGES_EN = [['1D','1D'],['1W','1W'],['1M','1M'],['3M','3M'],['6M','6M'],['YTD','YTD'],['1Y','1Y'],['5Y','5Y']];
+const TF_RANGES    = [['1W','1S'],['1M','1M'],['3M','3M'],['6M','6M'],['YTD','YTD'],['1Y','1A'],['5Y','5A']];
+const TF_RANGES_EN = [['1W','1W'],['1M','1M'],['3M','3M'],['6M','6M'],['YTD','YTD'],['1Y','1Y'],['5Y','5Y']];
 const MONTH_ES = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
 const MONTH_EN = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 const months = () => currentLang === 'es' ? MONTH_ES : MONTH_EN;
@@ -4847,6 +4847,27 @@ async function renderChart(){
 // ========== Asset Detail ==========
 function showAssetDetail(asset,from){
   selectedAsset=asset;prevScreen=from||'home';assetRange='1Y';
+  // Background: single-ISIN refresh so chart shows today's prices (fires and updates chart when done)
+  if(asset.isin&&asset.isin.length>4){
+    setTimeout(async()=>{
+      try{
+        const fr=await getJson('/api/portfolio/coverage?isin='+encodeURIComponent(asset.isin)+'&refresh=1',12000);
+        const e=(fr?.results||[])[0];
+        if(e&&e.data?.history?.length>1&&selectedAsset?.isin===asset.isin){
+          _cvMap[e.isin]=e;
+          selectedAsset.history=normalizeHistory(e.data.history);
+          selectedAsset.hasRealHistory=true;
+          selectedAsset.provider=e.data.provider||selectedAsset.provider;
+          // Update price too
+          const lp=e.data?.quote?.price??e.data?.quote?.close;
+          if(lp&&Number.isFinite(lp)&&lp>0){selectedAsset.currentPrice=lp;}
+          if(document.getElementById('screen-asset')?.classList.contains('active')){
+            try{renderAssetChart();}catch(_){}
+          }
+        }
+      }catch(_){}
+    },300);
+  }
   const isEs=currentLang==='es';
   document.getElementById('adNavTitle').textContent=asset.fullName||asset.name;
 
@@ -8194,10 +8215,20 @@ async function _bgRefreshPrices(){
       const chunk=isins.slice(i,i+batchSize);
       await fetch('/api/portfolio/coverage?isin='+encodeURIComponent(chunk.join(','))+'&refresh=1').catch(()=>{});
     }
-    // Re-fetch coverage with refresh=1 to get live prices on client too
-    const freshCov=await getJson('/api/portfolio/coverage?isin='+encodeURIComponent(isins.join(','))+'&refresh=1',12000).catch(()=>null);
+    // Re-fetch coverage WITHOUT refresh=1 — Supabase was just updated by the batched refresh above,
+    // so reading cache now gives today's data without risking provider timeouts on a bulk call.
+    const freshCov=await getJson('/api/portfolio/coverage?isin='+encodeURIComponent(isins.join(',')),12000).catch(()=>null);
     if(freshCov?.results?.length>0){
-      freshCov.results.forEach(e=>{ _cvMap[e.isin]=e; });
+      freshCov.results.forEach(e=>{
+        _cvMap[e.isin]=e;
+        // Update history in assets array so charts immediately show fresh data
+        const a=assets.find(x=>x.isin===e.isin);
+        if(a&&e.data?.history?.length>1){
+          a.history=normalizeHistory(e.data.history);
+          a.hasRealHistory=true;
+          a.provider=e.data.provider||a.provider;
+        }
+      });
       // API structure: price is nested at data.quote.price (native CCY) or position.currentPrice (EUR)
       assets.forEach(a=>{
         const cv=_cvMap[a.isin];
@@ -8216,6 +8247,16 @@ async function _bgRefreshPrices(){
         if(q.change1d!=null)a.change1d=q.change1d;
         if(q.marketCap!=null)a.marketCap=q.marketCap;
       });
+      // If asset detail is currently open, refresh selectedAsset history + re-render chart
+      if(selectedAsset&&document.getElementById('screen-asset')?.classList.contains('active')){
+        const freshAsset=assets.find(a=>a.isin===selectedAsset.isin);
+        if(freshAsset&&freshAsset.history?.length>1){
+          selectedAsset.history=freshAsset.history;
+          selectedAsset.hasRealHistory=true;
+          selectedAsset.provider=freshAsset.provider;
+          try{renderAssetChart();}catch(_){}
+        }
+      }
       _recordValueSnapshot();
       render();_rerenderActive();
     }

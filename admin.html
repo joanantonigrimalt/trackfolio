@@ -382,7 +382,8 @@ html,body{height:100%;overflow:hidden;font-family:-apple-system,BlinkMacSystemFo
 
 <!-- ===== ACTIVOS ===== -->
 <div id="v-activos" class="view">
-  <div class="ph"><div><div class="ph-t">Activos / Tickers</div><div class="ph-s">Catálogo de activos y estado de feeds de precios</div></div><div class="ph-r"><button class="btn btn-out btn-sm">⟳ Forzar sync</button><button class="btn btn-main btn-sm">＋ Añadir activo</button></div></div>
+  <div class="ph"><div><div class="ph-t">Activos / Tickers</div><div class="ph-s">Catálogo de activos y estado de feeds de precios</div></div><div class="ph-r"><button class="btn btn-out btn-sm" id="btnRefreshPrices" onclick="forceRefreshPrices()">⟳ Actualizar Precios</button></div></div>
+  <div id="refreshPricesLog" style="display:none;background:#f0fdf4;border:1px solid #86efac;border-radius:8px;padding:12px 14px;margin-bottom:12px;font-size:11px;line-height:1.7;color:#166534;white-space:pre-wrap;font-family:monospace"></div>
   <div class="alert alert-y"><span>⚠️</span><span><strong>Feed Alpha Vantage con latencia</strong> — 340ms de respuesta. Los precios pueden estar retrasados hasta 5 min.</span></div>
   <div class="kpi-grid kpi-grid-4" style="margin-bottom:18px">
     <div class="kpi"><div class="kpi-l">Activos en catálogo</div><div class="kpi-v">24.841</div><div class="kpi-s">14 mercados</div></div>
@@ -911,10 +912,68 @@ function renderUsersTable(users){
     <td>${timeAgo(u.last_sign_in)}</td>
     <td>${u.provider==='google'?'🌐':'📧'}</td>
     <td style="color:var(--muted2)">${u.created_at?new Date(u.created_at).toLocaleDateString('es'):''}</td>
-    <td><button class="btn btn-out btn-sm" onclick='showUserDetail(${JSON.stringify(u)})'>Ver →</button></td>
+    <td style="display:flex;gap:6px">
+      <button class="btn btn-out btn-sm" onclick='showUserDetail(${JSON.stringify(u)})'>Ver →</button>
+      <button class="btn btn-sm" style="background:#fee2e2;color:#b91c1c;border:1px solid #fca5a5" onclick='deleteUser("${u.id}","${u.email?.replace(/"/g,"")}")' title="Eliminar usuario">🗑</button>
+    </td>
   </tr>`).join(''):'<tr><td colspan="8" style="color:var(--muted2);text-align:center;padding:20px">Sin resultados</td></tr>';
   const uc=document.getElementById('users-count');
   if(uc)uc.textContent='Mostrando '+page.length+' de '+show.length+' (total: '+users.length+' usuarios)';
+}
+
+async function deleteUser(uid, email){
+  if(!confirm('¿Eliminar permanentemente al usuario '+email+'?\n\nSe eliminarán también sus datos de portfolio y préstamos. Esta acción NO se puede deshacer.'))return;
+  try{
+    const r=await fetch('/api/admin/delete-user',{
+      method:'POST',
+      headers:{Authorization:'Bearer '+_tok,'Content-Type':'application/json'},
+      body:JSON.stringify({user_id:uid})
+    });
+    const d=await r.json();
+    if(!r.ok)throw new Error(d.error||'Error '+r.status);
+    _allUsers=_allUsers.filter(u=>u.id!==uid);
+    renderUsersTable(_allUsers);
+    alert('Usuario '+email+' eliminado correctamente.');
+  }catch(e){alert('Error eliminando usuario: '+e.message);}
+}
+// ── Force-refresh price history for all portfolio ISINs ────────────────────────
+async function forceRefreshPrices(){
+  const btn=document.getElementById('btnRefreshPrices');
+  const log=document.getElementById('refreshPricesLog');
+  if(!btn||!log)return;
+  // All ISINs from portfolio-providers.json that have live price sources
+  const ALL_ISINS=[
+    'IE00B9CQXS71','IE00BZ4BMM98','IE00BYX5NK04','ES0146309002','IE00B4ND3602',
+    'ES0112611001','ES0146311008','LU1598719752','IE00BYX5P602','IE00BZ4D7648',
+    'IE00B42LF923','IE00B43VDT70','ES0119199018','ES0173311103','IE000QAZP7L2',
+    'ES0159259011','ES0174115057','LU0084617165','IE00B579F325','DE000A0F5UH1',
+    'NL0011683594','NL0011821202','LU2145461757',
+    'N5396','N5227','N1894','N1893'
+  ];
+  btn.disabled=true;btn.textContent='⏳ Actualizando…';
+  log.style.display='block';log.textContent='Iniciando actualización de '+ALL_ISINS.length+' activos…\n';
+  const batchSize=3;let ok=0,fail=0;
+  for(let i=0;i<ALL_ISINS.length;i+=batchSize){
+    const chunk=ALL_ISINS.slice(i,i+batchSize);
+    log.textContent+='Procesando: '+chunk.join(', ')+'…\n';
+    try{
+      const r=await fetch('/api/portfolio/coverage?isin='+encodeURIComponent(chunk.join(','))+'&refresh=1',{
+        headers:{Authorization:'Bearer '+_tok}
+      });
+      const d=await r.json();
+      (d.results||[]).forEach(e=>{
+        const st=e.data?.coverage?.status||'?';
+        const prov=e.data?.provider||'?';
+        const pts=e.data?.history?.length||0;
+        if(st!=='MISSING'){ok++;log.textContent+='  ✓ '+e.isin+' — '+st+' ('+pts+'pts, '+prov+')\n';}
+        else{fail++;log.textContent+='  ✗ '+e.isin+' — MISSING\n';}
+      });
+    }catch(e){fail+=chunk.length;log.textContent+='  ERROR: '+e.message+'\n';}
+    log.scrollTop=log.scrollHeight;
+    await new Promise(res=>setTimeout(res,500)); // small pause between batches
+  }
+  log.textContent+='\n✅ Completado: '+ok+' OK · '+fail+' errores';
+  btn.disabled=false;btn.textContent='⟳ Actualizar Precios';
 }
 
 function filterUsers(q){_currentFilter=q.toLowerCase();renderUsersTable(_allUsers);}

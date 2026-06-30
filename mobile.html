@@ -10,7 +10,7 @@
   no-store headers are ignored (in-app webviews) because it is plain page JS.
   Source of truth = sw.js (always served no-cache, version-bumped each deploy). */
 (function(){try{
-  var FA_BUILD='279';
+  var FA_BUILD='281';
   var s=location.search;
   if(s.indexOf('vchk')>-1||s.indexOf('_v=')>-1){
     // Clean the ugly ?vchk= / ?_v= from the URL silently
@@ -3425,20 +3425,180 @@ table.an-corr-mtx{border-collapse:separate;border-spacing:4px}
 })();
 </script>
 
+<!-- ══ SCREEN: MyInvestor Catalog ══ -->
+<div id="screen-myinvestor" class="screen">
+<style>
+#screen-myinvestor .mi-hdr{padding:16px 16px 0;display:flex;align-items:center;justify-content:space-between}
+#screen-myinvestor .mi-title{font-size:18px;font-weight:800;color:var(--text)}
+#screen-myinvestor .mi-sub{font-size:11px;color:var(--muted);margin-top:2px}
+#screen-myinvestor .mi-toolbar{padding:12px 16px 8px;display:flex;flex-direction:column;gap:8px}
+#screen-myinvestor .mi-search{width:100%;padding:9px 12px;border:1px solid var(--border);border-radius:10px;font-size:14px;background:var(--surf);color:var(--text);outline:none;box-sizing:border-box}
+#screen-myinvestor .mi-search:focus{border-color:var(--green)}
+#screen-myinvestor .mi-row2{display:flex;gap:8px;align-items:center;justify-content:space-between}
+#screen-myinvestor .mi-pills{display:flex;gap:6px}
+#screen-myinvestor .mi-pill{padding:5px 12px;border-radius:20px;border:1px solid var(--border);background:var(--surf);color:var(--muted);font-size:12px;font-weight:600;cursor:pointer}
+#screen-myinvestor .mi-pill.active{background:var(--green);color:#fff;border-color:var(--green)}
+#screen-myinvestor .mi-reload{padding:6px 12px;border-radius:10px;border:1px solid var(--border);background:var(--surf);color:var(--muted);font-size:12px;font-weight:600;cursor:pointer;white-space:nowrap}
+#screen-myinvestor .mi-info{padding:0 16px 8px;font-size:11px;color:var(--muted)}
+#screen-myinvestor .mi-list{padding:0 12px 80px}
+#screen-myinvestor .mi-card{background:var(--surf);border:1px solid var(--border);border-radius:12px;padding:12px;margin-bottom:8px}
+#screen-myinvestor .mi-card-top{display:flex;align-items:flex-start;justify-content:space-between;gap:8px;margin-bottom:6px}
+#screen-myinvestor .mi-card-name{font-weight:700;font-size:13px;color:var(--text);line-height:1.3;flex:1}
+#screen-myinvestor .mi-badge{display:inline-block;padding:2px 7px;border-radius:5px;font-size:10px;font-weight:800;flex-shrink:0}
+#screen-myinvestor .mi-badge-etf{background:#e0f2fe;color:#0369a1}
+#screen-myinvestor .mi-badge-fund{background:#f0fdf4;color:#15803d}
+#screen-myinvestor .mi-card-stats{display:flex;gap:12px;flex-wrap:wrap}
+#screen-myinvestor .mi-stat{display:flex;flex-direction:column;gap:1px}
+#screen-myinvestor .mi-stat-lbl{font-size:9px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.04em}
+#screen-myinvestor .mi-stat-val{font-size:12px;font-weight:700}
+#screen-myinvestor .mi-pct.pos{color:var(--green)}
+#screen-myinvestor .mi-pct.neg{color:var(--red)}
+#screen-myinvestor .mi-pct.neu{color:var(--muted)}
+#screen-myinvestor .mi-link{font-size:11px;color:var(--green);text-decoration:none;font-weight:600}
+#screen-myinvestor .mi-empty{text-align:center;padding:60px 20px;color:var(--muted);font-size:14px}
+#screen-myinvestor .mi-pag{display:flex;gap:10px;align-items:center;justify-content:center;padding:12px 0}
+</style>
+
+<div class="mi-hdr">
+  <div>
+    <div class="mi-title">◐ MyInvestor</div>
+    <div class="mi-sub">ETFs y fondos disponibles — mismos datos que escritorio</div>
+  </div>
+</div>
+
+<div class="mi-toolbar">
+  <input class="mi-search" id="miMSearch" type="text" placeholder="Buscar fondo o ISIN…" oninput="MiMPage(0);MiMRender()" />
+  <div class="mi-row2">
+    <div class="mi-pills">
+      <button class="mi-pill active" data-tipo="todos" onclick="MiMSetTipo('todos')">Todos</button>
+      <button class="mi-pill" data-tipo="ETF" onclick="MiMSetTipo('ETF')">ETF</button>
+      <button class="mi-pill" data-tipo="Fondo" onclick="MiMSetTipo('Fondo')">Fondo</button>
+    </div>
+    <button class="mi-reload" onclick="MiLoad(true)" id="miMReloadBtn">↻</button>
+  </div>
+</div>
+<div class="mi-info">
+  <span id="miMCount"></span> · <span id="miMUpdated"></span>
+  <span id="miMError" style="color:var(--red)"></span>
+</div>
+<div class="mi-list" id="miMList"></div>
+<div class="mi-pag" id="miMPagination"></div>
+</div><!-- end screen-myinvestor -->
+
+<script>
+(function(){
+  var _miMPage=0, _miMPageSize=30, _miMTipo='todos';
+
+  function MiFmt(v){ if(v===''||v===null||v===undefined)return '<span style="color:var(--muted)">—</span>'; var n=parseFloat(v); if(isNaN(n))return '<span style="color:var(--muted)">—</span>'; var cls=n>0?'pos':n<0?'neg':'neu'; return '<span class="mi-pct '+cls+'">'+(n>0?'+':'')+n.toFixed(1)+'%</span>'; }
+  function MiTer(v){ if(v===''||v===null||v===undefined)return '—'; var n=parseFloat(v); return isNaN(n)?'—':n.toFixed(2)+'%'; }
+  function MiEh(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+  window.MiMSetTipo=function(t){ _miMTipo=t; _miMPage=0; document.querySelectorAll('#screen-myinvestor .mi-pill').forEach(b=>b.classList.toggle('active',b.dataset.tipo===t)); MiMRender(); };
+  window.MiMPage=function(p){ _miMPage=p; };
+
+  // MiLoad is shared — same API + localStorage cache as desktop (mi_cache key)
+  // Override MiLoad to also trigger mobile render
+  var _origMiLoad=window.MiLoad;
+  window.MiLoad=function(force){
+    var MI_API='/api/myinvestor/catalog?v=280';
+    var cached=localStorage.getItem('mi_cache'); var cachedAt=parseInt(localStorage.getItem('mi_cache_at')||'0');
+    if(!force && cached && (Date.now()-cachedAt)<7*24*3600*1000){
+      try{_miMData=JSON.parse(cached);}catch(_){}
+      if(_miMData.length>0){
+        var upd=localStorage.getItem('mi_cache_updated');
+        if(upd){var ue=document.getElementById('miMUpdated');if(ue)ue.textContent=upd;}
+        MiMRender(); return;
+      }
+    }
+    var rb=document.getElementById('miMReloadBtn'); if(rb)rb.textContent='⏳';
+    var er=document.getElementById('miMError'); if(er)er.textContent='';
+    fetch(MI_API).then(r=>r.json()).then(function(json){
+      var arr=json.products||json.data||json||[];
+      if(!Array.isArray(arr))throw new Error('Sin datos del catálogo');
+      _miMData=arr;
+      localStorage.setItem('mi_cache',JSON.stringify(_miMData));
+      localStorage.setItem('mi_cache_at',String(Date.now()));
+      var upd=json.updated?new Date(json.updated).toLocaleDateString('es-ES'):'—';
+      var updTxt='Actualizado: '+upd+(json.count?' · '+json.count+' productos':'');
+      localStorage.setItem('mi_cache_updated',updTxt);
+      var ue=document.getElementById('miMUpdated');if(ue)ue.textContent=updTxt;
+      MiMRender();
+    }).catch(function(e){
+      if(er)er.textContent='Error: '+e.message;
+    }).finally(function(){
+      if(rb)rb.textContent='↻';
+    });
+  };
+
+  var _miMData=[];
+
+  window.MiMRender=function(){
+    // Sync data from cache if not loaded yet
+    if(!_miMData.length){ try{var c=localStorage.getItem('mi_cache');if(c){_miMData=JSON.parse(c)||[];}}catch(_){} }
+    var q=(document.getElementById('miMSearch')?.value||'').toLowerCase();
+    var rows=_miMData.filter(function(r){
+      if(_miMTipo==='ETF' && String(r.tipo).toUpperCase()!=='ETF') return false;
+      if(_miMTipo==='Fondo' && String(r.tipo).toUpperCase()==='ETF') return false;
+      if(q && !String(r.nombre).toLowerCase().includes(q) && !String(r.isin).toLowerCase().includes(q) && !String(r.categoria).toLowerCase().includes(q)) return false;
+      return true;
+    }).sort(function(a,b){ return String(a.nombre||'').localeCompare(String(b.nombre||''),'es'); });
+    var total=rows.length;
+    var totalPages=Math.max(1,Math.ceil(total/_miMPageSize));
+    if(_miMPage>=totalPages)_miMPage=Math.max(0,totalPages-1);
+    var start=_miMPage*_miMPageSize;
+    var pageRows=rows.slice(start,start+_miMPageSize);
+    var cnt=document.getElementById('miMCount'); if(cnt)cnt.textContent=total+' productos';
+    var list=document.getElementById('miMList'); if(!list) return;
+    if(!total){ list.innerHTML='<div class="mi-empty">'+(q?'Sin resultados para "'+MiEh(q)+'"':'Carga el catálogo con ↻')+'</div>'; }
+    else{ list.innerHTML=pageRows.map(function(r){
+      var tipo=String(r.tipo||'').toUpperCase()==='ETF'?'ETF':'Fondo';
+      var badge=tipo==='ETF'?'<span class="mi-badge mi-badge-etf">ETF</span>':'<span class="mi-badge mi-badge-fund">Fondo</span>';
+      var link=r.url?'<a href="'+MiEh(r.url)+'" target="_blank" class="mi-link">Ver →</a>':'';
+      return '<div class="mi-card">'+
+        '<div class="mi-card-top">'+
+          '<div class="mi-card-name" title="'+MiEh(r.isin)+'">'+MiEh(r.nombre)+'</div>'+
+          badge+
+        '</div>'+
+        '<div class="mi-card-stats">'+
+          '<div class="mi-stat"><span class="mi-stat-lbl">1A</span><span class="mi-stat-val">'+MiFmt(r.rent1a)+'</span></div>'+
+          '<div class="mi-stat"><span class="mi-stat-lbl">3A</span><span class="mi-stat-val">'+MiFmt(r.rent3a)+'</span></div>'+
+          '<div class="mi-stat"><span class="mi-stat-lbl">5A</span><span class="mi-stat-val">'+MiFmt(r.rent5a)+'</span></div>'+
+          '<div class="mi-stat"><span class="mi-stat-lbl">TER</span><span class="mi-stat-val" style="color:var(--muted)">'+MiTer(r.ter)+'</span></div>'+
+          '<div class="mi-stat" style="justify-content:flex-end;margin-left:auto">'+link+'</div>'+
+        '</div>'+
+      '</div>';
+    }).join(''); }
+    // Pagination
+    var pag=document.getElementById('miMPagination');
+    if(pag){
+      if(totalPages<=1){pag.innerHTML='';}
+      else{
+        var prev=_miMPage>0?'<button class="btn-sm" onclick="MiMGoto('+(_miMPage-1)+')">← Anterior</button>':'<button class="btn-sm" disabled style="opacity:.4">← Anterior</button>';
+        var next=_miMPage<totalPages-1?'<button class="btn-sm" onclick="MiMGoto('+(_miMPage+1)+')">Siguiente →</button>':'<button class="btn-sm" disabled style="opacity:.4">Siguiente →</button>';
+        var info='<span style="font-size:12px;color:var(--muted)">Pág. '+(_miMPage+1)+' / '+totalPages+'</span>';
+        pag.innerHTML=prev+info+next;
+      }
+    }
+  };
+  window.MiMGoto=function(p){ _miMPage=p; MiMRender(); var sc=document.getElementById('screen-myinvestor'); if(sc)sc.scrollTop=0; };
+})();
+</script>
+
 <!-- TAB BAR -->
 <div class="tab" id="mainTabBar">
   <div class="tab-row tab-row-extra" id="tabExtraRow">
     <div style="flex:1"></div>
     <div style="flex:1"></div>
-    <button data-screen="comunidad" onclick="closeExtraTabRow()"><b>❖</b><span>Foro</span></button>
+    <button data-screen="ia" onclick="closeExtraTabRow()"><b>✦</b><span>Vera IA</span></button>
     <button data-screen="prestamos" onclick="closeExtraTabRow()"><b>⏱</b><span>Préstamos</span></button>
     <button data-screen="impuestos" onclick="closeExtraTabRow()"><b>◫</b><span>Impuestos</span></button>
   </div>
   <div class="tab-row tab-row-main">
     <button class="active" data-screen="home"><b>⌂</b><span data-i18n="tabHome">Inicio</span></button>
     <button data-screen="analysis"><b>◈</b><span data-i18n="tabAnalysis">Análisis</span></button>
+    <button data-screen="comunidad"><b>❖</b><span>Foro</span></button>
     <button data-screen="dividends"><b>◎</b><span>Divid.</span></button>
-    <button data-screen="ia"><b>✦</b><span>Vera IA</span></button>
+    <button data-screen="myinvestor"><b>◐</b><span>MY</span></button>
     <button class="tab-more-btn" id="tabMoreBtn" onclick="toggleExtraTabRow(event)"><b>⊞</b><span>Más</span></button>
   </div>
 </div>
@@ -3756,6 +3916,7 @@ function showScreen(name,keepTab=false){
   if(name==='impuestos'&&dataReady)renderImpuestos();
   if(name==='prestamos'){LnRenderPrestamos();setTimeout(()=>window.LnSyncFromSB&&window.LnSyncFromSB(),300);}
   if(name==='topinvestors')_insLoad(_insCurrentSymbol);
+  if(name==='myinvestor')MiLoad(false);
 }
 function normalizeHistory(h){const _all=(Array.isArray(h)?h:[]).map(p=>({date:String(p.date).slice(0,10),close:Number(p.close)})).filter(p=>p.date&&Number.isFinite(p.close)&&p.close>0).sort((a,b)=>a.date.localeCompare(b.date));if(_all.length>=4){const _s=[..._all].sort((a,b)=>a.close-b.close);const _m=_s[Math.floor(_s.length/2)].close;const _c=_all.filter(p=>p.close<=_m*10&&p.close>=_m/10);if(_c.length>=4){return _c.length>1260?_c.slice(-1260):_c;}}return _all.length>1260?_all.slice(-1260):_all;} // cap at 5Y; outlier filter removes bad data points >10x median
 function getPriceOnOrBefore(s,date){if(!s.length)return null;let lo=0,hi=s.length-1,best=-1;while(lo<=hi){const m=Math.floor((lo+hi)/2);if(s[m].date<=date){best=m;lo=m+1;}else hi=m-1;}return best>=0?s[best].close:null;}
