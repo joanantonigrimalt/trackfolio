@@ -2,7 +2,7 @@
 // Strategy: Cache-First for static assets, Network-First for API calls
 // Provides offline shell + background sync for critical data
 
-const CACHE_VERSION = 'finasset-v288';
+const CACHE_VERSION = 'finasset-v289';
 const STATIC_CACHE  = `${CACHE_VERSION}-static`;
 const DATA_CACHE    = `${CACHE_VERSION}-data`;
 
@@ -51,6 +51,12 @@ self.addEventListener('activate', event => {
           .map(k => caches.delete(k))
       )
     ).then(() => self.clients.claim())
+      .then(() => {
+        // Tell all open tabs to reload so they pick up the new version immediately
+        self.clients.matchAll({ type: 'window', includeUncontrolled: true }).then(clients => {
+          clients.forEach(client => client.postMessage({ type: 'SW_UPDATED', version: CACHE_VERSION }));
+        });
+      })
   );
 });
 

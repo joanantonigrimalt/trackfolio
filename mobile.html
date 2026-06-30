@@ -10,7 +10,7 @@
   no-store headers are ignored (in-app webviews) because it is plain page JS.
   Source of truth = sw.js (always served no-cache, version-bumped each deploy). */
 (function(){try{
-  var FA_BUILD='288';
+  var FA_BUILD='289';
   var s=location.search;
   if(s.indexOf('vchk')>-1||s.indexOf('_v=')>-1){
     // Clean the ugly ?vchk= / ?_v= from the URL silently
@@ -8617,6 +8617,10 @@ if ('serviceWorker' in navigator) {
         // When a new SW takes control, reload to get fresh HTML
         navigator.serviceWorker.addEventListener('controllerchange', () => {
           window.location.reload();
+        });
+        // Also reload when SW sends SW_UPDATED message (belt+suspenders)
+        navigator.serviceWorker.addEventListener('message', e => {
+          if(e.data && e.data.type === 'SW_UPDATED') window.location.reload();
         });
         // Also check for updates every 60 seconds when app is open
         setInterval(() => reg.update(), 60000);
