@@ -6,7 +6,7 @@
   (served no-cache, version-bumped each deploy). Works even where SW/no-store
   are ignored, because it is plain page JS. */
 (function(){try{
-  var FA_BUILD=window.FA_BUILD='258';
+  var FA_BUILD=window.FA_BUILD='269';
   var s=location.search;
   if(s.indexOf('vchk')>-1||s.indexOf('_v=')>-1){history.replaceState(null,'',location.pathname+(location.hash||''));return;}
   fetch('/sw.js?_='+Date.now(),{cache:'no-store'}).then(function(r){return r.text();}).then(function(t){
@@ -1599,7 +1599,7 @@ html,body{height:100%;overflow:hidden;font-family:-apple-system,BlinkMacSystemFo
     <div style="padding:10px 16px;border-bottom:1px solid rgba(20,32,24,.06);display:flex;align-items:center;gap:8px;display:none">
       <span style="font-size:12px;color:#8fa090;font-weight:600;flex:1">IDIOMA_OLD</span>
       <button onclick="switchLang('es');_highlightLang()" id="deskMenuLangEs_old" style="padding:5px 12px;border-radius:7px;border:1.5px solid rgba(20,32,24,.15);font-size:12.5px;font-weight:600;cursor:pointer;font-family:inherit">ES</button>
-      <button onclick="switchLang('en');_highlightLang()" id="deskMenuLangEn" style="padding:5px 12px;border-radius:7px;border:1.5px solid rgba(20,32,24,.15);font-size:12.5px;font-weight:600;cursor:pointer;font-family:inherit">EN</button>
+      <button onclick="switchLang('en');_highlightLang()" id="deskMenuLangEn2" style="padding:5px 12px;border-radius:7px;border:1.5px solid rgba(20,32,24,.15);font-size:12.5px;font-weight:600;cursor:pointer;font-family:inherit">EN</button>
     </div>
     <button onclick="_deskLogout()" style="width:100%;padding:12px 16px;background:none;border:none;color:#e05252;font-size:13.5px;font-weight:600;cursor:pointer;text-align:left;font-family:inherit">Cerrar sesi&oacute;n &rarr;</button>
   </div>
@@ -1609,7 +1609,7 @@ html,body{height:100%;overflow:hidden;font-family:-apple-system,BlinkMacSystemFo
       <div style="min-width:0;flex:1">
         <div class="d-user-name" id="deskUserName" style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">—</div>
         <div class="d-user-plan" id="deskUserPlan">Plan Free</div>
-        <div id="deskVersionBadge" style="font-size:10px;color:#9fb0a5;margin-top:2px;font-weight:700">v209</div>
+        <div id="deskVersionBadge" style="font-size:10px;color:#9fb0a5;margin-top:2px;font-weight:700">v268</div>
       </div>
       <span style="font-size:10px;color:#8fa090;flex-shrink:0;margin-left:4px" id="deskUserChevron">&#9650;</span>
     </div>
@@ -1652,8 +1652,8 @@ html,body{height:100%;overflow:hidden;font-family:-apple-system,BlinkMacSystemFo
 <!-- ============ ONBOARDING ============ -->
 <div id="cs-ob" class="cover-screen">
   <div class="ob-lang-row">
-    <button class="auth-lang-btn" id="ob-lang-es" onclick="switchLang('es')">ES</button>
-    <button class="auth-lang-btn active" id="ob-lang-en" onclick="switchLang('en')">EN</button>
+    <button class="auth-lang-btn active" id="ob-lang-es" onclick="switchLang('es')">ES</button>
+    <button class="auth-lang-btn" id="ob-lang-en" onclick="switchLang('en')">EN</button>
   </div>
   <div class="ob-body" id="ob-body"></div>
   <div class="ob-dots" id="ob-dots"></div>
@@ -2149,7 +2149,7 @@ html,body{height:100%;overflow:hidden;font-family:-apple-system,BlinkMacSystemFo
             <div style="font-size:9px;font-weight:700;color:#8fa090;text-transform:uppercase;letter-spacing:.1em;margin-bottom:3px">Rendimiento 6 meses</div>
             <div style="font-size:16px;font-weight:800;color:#142018;letter-spacing:-.02em">Trend Analysis vs MSCI World</div>
           </div>
-          <div style="background:#f0f5f2;border-radius:8px;padding:4px 10px"><span style="font-size:10px;font-weight:700;color:#8fa090">2021–2025</span></div>
+          <div style="background:#f0f5f2;border-radius:8px;padding:4px 10px"><span style="font-size:10px;font-weight:700;color:#8fa090">2021–2026</span></div>
         </div>
         <div id="vsWorldChips" style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:4px"></div>
       </div>
@@ -2709,7 +2709,7 @@ html,body{height:100%;overflow:hidden;font-family:-apple-system,BlinkMacSystemFo
           <div class="mLabel" data-i18n="avgCost">Precio medio (Avg Cost)</div>
           <div class="mFieldRow">
             <div style="display:flex;align-items:center;gap:8px"><input type="text" inputmode="decimal" id="simpleAvgCost" placeholder="0.00" style="flex:1"><span id="simpleAvgCostCcy" style="font-size:13px;font-weight:700;color:#8fa090;white-space:nowrap">EUR</span></div>
-            <div class="mCurrencyBadge">🌐 EUR</div>
+            <div class="mCurrencyBadge" id="modalCurrencyBadge">🌐 EUR</div>
           </div>
           <div class="mHint" data-i18n="avgCostHint">Precio medio por acción</div>
         </div>
@@ -2956,7 +2956,7 @@ html,body{height:100%;overflow:hidden;font-family:-apple-system,BlinkMacSystemFo
     <div id="alertAssetList" style="display:flex;flex-direction:column;gap:6px;max-height:140px;overflow-y:auto;border:1.5px solid rgba(20,32,24,.1);border-radius:14px;padding:6px;background:#fff"></div>
   </div>
   <!-- Selected asset display -->
-  <div id="alertSelectedWrap" style="display:none;background:#e6faf3;border-radius:14px;padding:10px 14px;margin-bottom:14px;display:flex;align-items:center;gap:10px">
+  <div id="alertSelectedWrap" style="display:none;background:#e6faf3;border-radius:14px;padding:10px 14px;margin-bottom:14px;align-items:center;gap:10px">
     <span id="alertSelectedName" style="font-size:14px;font-weight:700;color:#142018;flex:1"></span>
     <span style="font-size:12px;color:#4a5f4e">Precio actual:</span>
     <span id="alertSelectedPrice" style="font-size:14px;font-weight:700;color:#15803d"></span>
@@ -2977,7 +2977,7 @@ html,body{height:100%;overflow:hidden;font-family:-apple-system,BlinkMacSystemFo
   </div>
   <!-- Target price -->
   <div class="liqField">
-    <div class="liqLabel">Precio objetivo (€)</div>
+    <div class="liqLabel">Precio objetivo (<span id="alertCurrencyLbl">€</span>)</div>
     <input class="liqInp" id="alertPrice" placeholder="0.00" type="number" min="0" step="0.01">
   </div>
   <!-- Notification toggle -->
@@ -3162,7 +3162,7 @@ html,body{height:100%;overflow:hidden;font-family:-apple-system,BlinkMacSystemFo
       <div class="sub">Resumen fiscal &middot; Espa&ntilde;a &middot; IRPF</div>
     </div>
     <button id="taxYearBtn" class="tx-h-yearbadge" onclick="cycleImpuestosYear()">
-      <span id="taxYearLabel">2025</span>
+      <span id="taxYearLabel">2026</span>
       <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
     </button>
   </div>
@@ -3192,7 +3192,7 @@ html,body{height:100%;overflow:hidden;font-family:-apple-system,BlinkMacSystemFo
   </div>
 
   <!-- Tramos IRPF -->
-  <div class="tx-sec"><span class="tx-sec-t">Tramos IRPF ahorro <span id="taxBracketsYear">2025</span></span><span class="tx-sec-lnk">Actualizado</span></div>
+  <div class="tx-sec"><span class="tx-sec-t">Tramos IRPF ahorro <span id="taxBracketsYear">2026</span></span><span class="tx-sec-lnk">Actualizado</span></div>
   <div class="tax-card">
     <div class="tax-card-inner" id="taxBrackets"></div>
   </div>
@@ -3327,12 +3327,12 @@ html,body{height:100%;overflow:hidden;font-family:-apple-system,BlinkMacSystemFo
       <div class="com-sb-card">
         <div class="com-sb-title">🔥 Tendencias</div>
         <div id="comTrending">
-          <span class="com-trending-tag">#Dividendos <span class="com-tc">142</span></span>
-          <span class="com-trending-tag">#ETF <span class="com-tc">98</span></span>
-          <span class="com-trending-tag">#FIRE <span class="com-tc">76</span></span>
-          <span class="com-trending-tag">#SP500 <span class="com-tc">64</span></span>
-          <span class="com-trending-tag">#DCA <span class="com-tc">51</span></span>
-          <span class="com-trending-tag">#LargoPlazo <span class="com-tc">43</span></span>
+          <span class="com-trending-tag">#Dividendos</span>
+          <span class="com-trending-tag">#ETF</span>
+          <span class="com-trending-tag">#FIRE</span>
+          <span class="com-trending-tag">#SP500</span>
+          <span class="com-trending-tag">#DCA</span>
+          <span class="com-trending-tag">#LargoPlazo</span>
         </div>
       </div>
     </div>
@@ -4148,10 +4148,10 @@ html,body{height:100%;overflow:hidden;font-family:-apple-system,BlinkMacSystemFo
   window.MiPage=function(p){ _miPage=p; };
 
   window.MiLoad=function(force){
-    var MI_API='/api/myinvestor/catalog?v=260';
+    var MI_API='/api/myinvestor/catalog?v=268';
     // Check cache (1 week)
     var cached=localStorage.getItem('mi_cache'); var cachedAt=parseInt(localStorage.getItem('mi_cache_at')||'0');
-    if(!force && cached && (Date.now()-cachedAt)<7*24*3600*1000){ try{_miData=JSON.parse(cached);}catch(_){} MiRender(); return; }
+    if(!force && cached && (Date.now()-cachedAt)<24*3600*1000){ try{_miData=JSON.parse(cached);}catch(_){} MiRender(); return; }
     document.getElementById('miReloadBtn').textContent='⏳';
     document.getElementById('miError').textContent='';
     fetch(MI_API).then(r=>r.json()).then(function(json){
@@ -4515,7 +4515,7 @@ async function buildIntraday1D() {
 }
 
 // Dividend data now fetched live from /api/dividends/history
-const MSCI_WORLD_ANNUAL = {'2021':31.1,'2022':-17.7,'2023':24.0,'2024':18.0,'2025':2.4};
+const MSCI_WORLD_ANNUAL = {'2021':31.1,'2022':-17.7,'2023':24.0,'2024':18.0,'2025':2.4,'2026':0};
 
 // fe() — format in display currency (already in display currency)
 const fe = n => new Intl.NumberFormat(currentLang==='es'?'es-ES':'en-GB',{style:'currency',currency:_displayCcy,maximumFractionDigits:2}).format(Number.isFinite(n)?n:0);
@@ -4958,6 +4958,7 @@ function openModal(isin){
   document.getElementById('simpleQty').value=fn(ov.quantity??a.quantity).replace(/\./g,'').replace(',','.');
   document.getElementById('simpleAvgCost').value=Number(ov.avgCost??a.buyPrice??0).toFixed(2);
   const _scl=document.getElementById('simpleAvgCostCcy');if(_scl)_scl.textContent=costCcy(a)||'EUR';
+  const _mcb=document.getElementById('modalCurrencyBadge');if(_mcb){const _ac=assetCcy(a)||'EUR';_mcb.textContent='🌐 '+_ac;}
   document.getElementById('simpleBroker').value=ov.broker||'';
   renderBrokerChips('simpleBroker','simpleBrokerChips');
   // Tx defaults
@@ -5044,7 +5045,7 @@ function saveSimple(){
   const broker=(document.getElementById('simpleBroker')?.value||'').trim();
   const ov=getOverrides();
   if(qty<=0){delete ov[currentModalIsin];}
-  else{ov[currentModalIsin]={...(ov[currentModalIsin]||{}),quantity:qty,avgCost,costCurrency:'EUR',...(broker&&{broker})};}
+  else{const _sAccEl=document.getElementById('simpleAvgCostCcy');const simpleAvgCostCcy=(_sAccEl&&_sAccEl.textContent)||'EUR';ov[currentModalIsin]={...(ov[currentModalIsin]||{}),quantity:qty,avgCost,costCurrency:simpleAvgCostCcy||'EUR',...(broker&&{broker})};}
   saveOverrides(ov);
   _debouncedSync(true);
   reapplyAndRender();closeModal();
@@ -7212,7 +7213,9 @@ function renderHomeExtras(){
   const dEl=document.getElementById('homeDate');
   if(dEl){
     try{ const d=new Date().toLocaleDateString(currentLang==='es'?'es-ES':'en-US',{weekday:'long',day:'numeric',month:'long'});
-      const _now=new Date(),_dy=_now.getDay(),_hr=_now.getHours();const _mOpen=_dy>=1&&_dy<=5&&_hr>=9&&_hr<22;
+      /* Market hours check using Madrid/CET time to correctly handle DST across timezones */
+      const madridNow=new Date(new Date().toLocaleString('en-US',{timeZone:'Europe/Madrid'}));
+      const _dy=madridNow.getDay(),_hr=madridNow.getHours();const _mOpen=_dy>=1&&_dy<=5&&_hr>=9&&_hr<22;
       dEl.innerHTML=`${d} · <span style="color:${_mOpen?'var(--green)':'var(--muted2)'};font-weight:600">${_mOpen?'●':'○'} ${currentLang==='es'?(_mOpen?'Mercados abiertos':'Mercados cerrados'):(_mOpen?'Markets open':'Markets closed')}</span>`; }catch(_){}
   }
   const wrap=document.getElementById('homeDonut'), leg=document.getElementById('homeDonutLegend');
@@ -10881,6 +10884,12 @@ function openAlertSheet(isin) {
     if (asset) {
       const lbl = document.getElementById('alertSheetAssetLabel');
       if (lbl) lbl.textContent = asset.shortName || asset.name;
+      const ccyLbl = document.getElementById('alertCurrencyLbl');
+      if (ccyLbl) {
+        const ccy = assetCcy(asset);
+        const ccySymbol = ccy === 'USD' ? '$' : ccy === 'GBP' ? '£' : ccy === 'GBp' ? 'p' : ccy === 'EUR' ? '€' : ccy;
+        ccyLbl.textContent = ccySymbol;
+      }
     }
   }
 }
