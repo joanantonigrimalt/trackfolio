@@ -10,7 +10,7 @@
   no-store headers are ignored (in-app webviews) because it is plain page JS.
   Source of truth = sw.js (always served no-cache, version-bumped each deploy). */
 (function(){try{
-  var FA_BUILD='281';
+  var FA_BUILD='283';
   var s=location.search;
   if(s.indexOf('vchk')>-1||s.indexOf('_v=')>-1){
     // Clean the ugly ?vchk= / ?_v= from the URL silently
@@ -3347,7 +3347,7 @@ table.an-corr-mtx{border-collapse:separate;border-spacing:4px}
       if(!_sb||!_sbUser) return;
       await fetch(_sb.supabaseUrl+'/rest/v1/user_loans',{
         method:'POST',
-        headers:{'apikey':_sb.supabaseKey,'Authorization':'Bearer '+_comGetTok(),'Content-Type':'application/json','Prefer':'resolution=merge-duplicates,return=minimal'},
+        headers:{'apikey':_sb.supabaseKey,'Authorization':'Bearer '+(localStorage.getItem('fa_token')||(_sbUser&&_sbUser.access_token)||''),'Content-Type':'application/json','Prefer':'resolution=merge-duplicates,return=minimal'},
         body:JSON.stringify({user_id:_sbUser.id,data:arr,updated_at:new Date().toISOString()})
       });
     }catch(e){console.warn('ln-save-sb',e);}
@@ -3356,9 +3356,9 @@ table.an-corr-mtx{border-collapse:separate;border-spacing:4px}
     try{
       if(!_sb||!_sbUser) return;
       const r=await fetch(_sb.supabaseUrl+'/rest/v1/user_loans?user_id=eq.'+encodeURIComponent(_sbUser.id)+'&select=data&limit=1',{
-        headers:{'apikey':_sb.supabaseKey,'Authorization':'Bearer '+_comGetTok(),'Accept':'application/vnd.pgrst.object+json'}
+        headers:{'apikey':_sb.supabaseKey,'Authorization':'Bearer '+(localStorage.getItem('fa_token')||(_sbUser&&_sbUser.access_token)||''),'Accept':'application/vnd.pgrst.object+json'}
       });
-      if(r.ok){const j=await r.json();if(j&&Array.isArray(j.data)){localStorage.setItem('fa_loans',JSON.stringify(j.data));window.LnRenderPrestamos();}}
+      if(r.ok){const j=await r.json();if(j&&Array.isArray(j.data)){localStorage.setItem('fa_loans',JSON.stringify(j.data));window.LnRenderPrestamos();if(typeof renderLists==='function')renderLists();}}
     }catch(e){console.warn('ln-sync-sb',e);}
   };
   window.LnDelete=function(id){ if(!confirm('¿Eliminar este producto?')) return; LnSave(LnGetLoans().filter(x=>x.id!==id)); LnRenderPrestamos(); };
@@ -3476,6 +3476,13 @@ table.an-corr-mtx{border-collapse:separate;border-spacing:4px}
     </div>
     <button class="mi-reload" onclick="MiLoad(true)" id="miMReloadBtn">↻</button>
   </div>
+  <div style="display:flex;gap:5px;flex-wrap:wrap;margin-top:6px">
+    <button class="mi-sortbtn" data-sort="nombre" onclick="MiMSetSort('nombre')" style="padding:4px 9px;border-radius:14px;border:1px solid var(--border);background:var(--green);color:#fff;font-size:11px;font-weight:700;cursor:pointer">Nombre ↑</button>
+    <button class="mi-sortbtn" data-sort="rent1a" onclick="MiMSetSort('rent1a')" style="padding:4px 9px;border-radius:14px;border:1px solid var(--border);background:var(--surf);color:var(--muted);font-size:11px;font-weight:700;cursor:pointer">1A ↓</button>
+    <button class="mi-sortbtn" data-sort="rent3a" onclick="MiMSetSort('rent3a')" style="padding:4px 9px;border-radius:14px;border:1px solid var(--border);background:var(--surf);color:var(--muted);font-size:11px;font-weight:700;cursor:pointer">3A ↓</button>
+    <button class="mi-sortbtn" data-sort="rent5a" onclick="MiMSetSort('rent5a')" style="padding:4px 9px;border-radius:14px;border:1px solid var(--border);background:var(--surf);color:var(--muted);font-size:11px;font-weight:700;cursor:pointer">5A ↓</button>
+    <button class="mi-sortbtn" data-sort="ter" onclick="MiMSetSort('ter')" style="padding:4px 9px;border-radius:14px;border:1px solid var(--border);background:var(--surf);color:var(--muted);font-size:11px;font-weight:700;cursor:pointer">TER ↓</button>
+  </div>
 </div>
 <div class="mi-info">
   <span id="miMCount"></span> · <span id="miMUpdated"></span>
@@ -3487,7 +3494,21 @@ table.an-corr-mtx{border-collapse:separate;border-spacing:4px}
 
 <script>
 (function(){
-  var _miMPage=0, _miMPageSize=30, _miMTipo='todos';
+  var _miMPage=0, _miMPageSize=30, _miMTipo='todos', _miMSort='nombre', _miMAsc={nombre:true,rent1a:false,rent3a:false,rent5a:false,ter:true};
+  window.MiMSetSort=function(s){
+    if(_miMSort===s){ _miMAsc[s]=!_miMAsc[s]; }
+    else { _miMSort=s; _miMPage=0; }
+    _miMPage=0;
+    var lbls={nombre:'Nombre',rent1a:'1A',rent3a:'3A',rent5a:'5A',ter:'TER'};
+    document.querySelectorAll('#screen-myinvestor .mi-sortbtn').forEach(function(b){
+      var f=b.dataset.sort;
+      var isActive=f===_miMSort;
+      b.textContent=(lbls[f]||f)+' '+(_miMAsc[f]?'↑':'↓');
+      b.style.background=isActive?'var(--green)':'var(--surf)';
+      b.style.color=isActive?'#fff':'var(--muted)';
+    });
+    MiMRender();
+  };
 
   function MiFmt(v){ if(v===''||v===null||v===undefined)return '<span style="color:var(--muted)">—</span>'; var n=parseFloat(v); if(isNaN(n))return '<span style="color:var(--muted)">—</span>'; var cls=n>0?'pos':n<0?'neg':'neu'; return '<span class="mi-pct '+cls+'">'+(n>0?'+':'')+n.toFixed(1)+'%</span>'; }
   function MiTer(v){ if(v===''||v===null||v===undefined)return '—'; var n=parseFloat(v); return isNaN(n)?'—':n.toFixed(2)+'%'; }
@@ -3500,7 +3521,7 @@ table.an-corr-mtx{border-collapse:separate;border-spacing:4px}
   // Override MiLoad to also trigger mobile render
   var _origMiLoad=window.MiLoad;
   window.MiLoad=function(force){
-    var MI_API='/api/myinvestor/catalog?v=280';
+    var MI_API='/api/myinvestor/catalog?v=283';
     var cached=localStorage.getItem('mi_cache'); var cachedAt=parseInt(localStorage.getItem('mi_cache_at')||'0');
     if(!force && cached && (Date.now()-cachedAt)<7*24*3600*1000){
       try{_miMData=JSON.parse(cached);}catch(_){}
@@ -3541,7 +3562,14 @@ table.an-corr-mtx{border-collapse:separate;border-spacing:4px}
       if(_miMTipo==='Fondo' && String(r.tipo).toUpperCase()==='ETF') return false;
       if(q && !String(r.nombre).toLowerCase().includes(q) && !String(r.isin).toLowerCase().includes(q) && !String(r.categoria).toLowerCase().includes(q)) return false;
       return true;
-    }).sort(function(a,b){ return String(a.nombre||'').localeCompare(String(b.nombre||''),'es'); });
+    }).sort(function(a,b){
+      var s=_miMSort, asc=_miMAsc[s]!==false;
+      var av=a[s], bv=b[s];
+      if(s==='nombre'){ var c=String(av||'').localeCompare(String(bv||''),'es'); return asc?c:-c; }
+      var an=parseFloat(av), bn=parseFloat(bv);
+      var an2=isNaN(an)?-Infinity:an, bn2=isNaN(bn)?-Infinity:bn;
+      return asc?(an2-bn2):(bn2-an2);
+    });
     var total=rows.length;
     var totalPages=Math.max(1,Math.ceil(total/_miMPageSize));
     if(_miMPage>=totalPages)_miMPage=Math.max(0,totalPages-1);
@@ -3938,6 +3966,8 @@ function buildPortfolioTimeSeries(){
   if(full.length<2){_tsCache=null;return null;}
   const fr=full[0].realValue,approx=assets.filter(a=>!a.hasRealHistory),aC=approx.reduce((s,a)=>s+toDisplay(a.value,assetCcy(a)),0),tC=assets.reduce((s,a)=>s+toDisplay(a.value,assetCcy(a)),0);
   _tsCache=full.map(p=>{const ratio=fr>0?p.realValue/fr:1;const av=approx.reduce((s,a)=>{const b=toDisplay(a.buyPrice>0?a.invested:a.value,a.buyPrice>0?costCcy(a):assetCcy(a));const sc=b*ratio;return s+Math.min(Math.max(b,toDisplay(a.value,assetCcy(a))),Math.max(Math.min(b,toDisplay(a.value,assetCcy(a))),sc));},0);return{date:p.date,totalValue:p.realValue+av,realValue:p.realValue,approximatedValue:av,totalCurrent:tC,approximateCurrent:aC};});
+  // Always inject today's current value as last point when live prices are ready and history is stale
+  if(_pricesLive&&_tsCache.length){const _today=new Date().toISOString().slice(0,10);if(_tsCache[_tsCache.length-1].date<_today)_tsCache.push({date:_today,totalValue:tC,realValue:tC-aC,approximatedValue:aC,totalCurrent:tC,approximateCurrent:aC});}
   return _tsCache;
 }
 // User-recorded daily snapshots of total portfolio value (stored in EUR base).
@@ -6290,10 +6320,44 @@ function renderLists(){
       </div>
     </div>`;
   }).join('');
-  document.getElementById('list').innerHTML=html;
-  document.getElementById('portfolioList').innerHTML=html;
+  // Append loan cards to home/portfolio list
+  const _loans=typeof LnGetLoans==='function'?LnGetLoans():[];
+  let loanHtml='';
+  if(_loans.length>0){
+    function _lnPending(l){
+      if(l.tipo==='credito') return (l.disp||0);
+      try{
+        const r=l.tin/100/12,m=l.meses,c=l.cap;
+        const cuo=r===0?c/m:c*r*Math.pow(1+r,m)/(Math.pow(1+r,m)-1);
+        const el=Math.min((()=>{if(!l.fecha)return 0;const d=new Date(l.fecha+'T00:00:00'),now=new Date();return Math.max(0,(now.getFullYear()-d.getFullYear())*12+(now.getMonth()-d.getMonth()));})(),m);
+        const sched=(()=>{let s=c;const rows=[];for(let i=1;i<=m;i++){const intv=s*r,cap=cuo-intv;s=Math.max(0,s-cap);rows.push(s);}return rows;})();
+        return l.saldoPendiente!==undefined?l.saldoPendiente:(el>0?(sched[el-1]??c):c);
+      }catch(_){return l.cap||0;}
+    }
+    function _lnFmt(n){return new Intl.NumberFormat('es-ES',{style:'currency',currency:'EUR',maximumFractionDigits:0}).format(n||0);}
+    loanHtml=_loans.map(l=>{
+      const pending=_lnPending(l);
+      const isCredito=l.tipo==='credito';
+      const label=isCredito?'Crédito':'Préstamo';
+      const sublabel=isCredito?`Dispuesto: ${_lnFmt(l.disp||0)}`:`${l.meses} meses · TIN ${(l.tin||0).toFixed(2)}%`;
+      return`<div class="asset" style="cursor:pointer" onclick="navTo('screen-prestamos')">
+        <div class="icon" style="background:#fee2e2;color:#b91c1c;font-size:14px;font-weight:800">🏦</div>
+        <div style="min-width:0;flex:1">
+          <div class="name">${(l.nombre||label).replace(/</g,'&lt;')}</div>
+          <div class="meta">${label}${l.entidad?' · '+l.entidad.replace(/</g,'&lt;'):''}</div>
+          <div class="meta" style="font-size:9.5px">${sublabel}</div>
+        </div>
+        <div class="right">
+          <div class="money" style="color:#b91c1c">-${_lnFmt(pending)}</div>
+          <div class="pct" style="font-size:10px;color:#8fa090">deuda</div>
+        </div>
+      </div>`;
+    }).join('');
+  }
+  document.getElementById('list').innerHTML=html+loanHtml;
+  document.getElementById('portfolioList').innerHTML=html+loanHtml;
   document.querySelectorAll('#list .asset, #portfolioList .asset').forEach(el=>{
-    el.addEventListener('click',()=>{const a=assets.find(x=>x.isin===el.dataset.isin);if(a)showAssetDetail(a,document.querySelector('.tab button.active')?.dataset?.screen||'home');});
+    if(el.dataset.isin){el.addEventListener('click',()=>{const a=assets.find(x=>x.isin===el.dataset.isin);if(a)showAssetDetail(a,document.querySelector('.tab button.active')?.dataset?.screen||'home');});}
   });
 }
 
@@ -7381,6 +7445,8 @@ async function syncFromCloud(){
       render();renderLiquidity();
     }
     localStorage.setItem('tf_last_sync',new Date().toISOString());
+    // Also sync loans from Supabase so Préstamos shows same data as desktop
+    if(typeof window.LnSyncFromSB==='function')window.LnSyncFromSB().catch(()=>{});
     renderAccountSection();
   }catch(e){
     console.warn('[sync↓]',e.message);

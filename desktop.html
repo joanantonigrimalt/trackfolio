@@ -6,7 +6,7 @@
   (served no-cache, version-bumped each deploy). Works even where SW/no-store
   are ignored, because it is plain page JS. */
 (function(){try{
-  var FA_BUILD=window.FA_BUILD='281';
+  var FA_BUILD=window.FA_BUILD='283';
   var s=location.search;
   if(s.indexOf('vchk')>-1||s.indexOf('_v=')>-1){history.replaceState(null,'',location.pathname+(location.hash||''));return;}
   fetch('/sw.js?_='+Date.now(),{cache:'no-store'}).then(function(r){return r.text();}).then(function(t){
@@ -4250,7 +4250,7 @@ html,body{height:100%;overflow:hidden;font-family:-apple-system,BlinkMacSystemFo
 
 <script>
 (function(){
-  var _miData=[], _miTipo='todos', _miSort='nombre', _miPage=0, _miPageSize=100;
+  var _miData=[], _miTipo='todos', _miSort='nombre', _miAsc={nombre:true,rent1a:false,rent3a:false,rent5a:false,ter:true}, _miPage=0, _miPageSize=100;
   var _miReturns={}; // session cache: isin → {rent1a,rent3a,rent5a}
 
   function MiFmt(v){ if(v===''||v===null||v===undefined) return '<span style="color:var(--muted)">—</span>'; var n=parseFloat(v); if(isNaN(n)) return '<span style="color:var(--muted)">—</span>'; var cls=n>0?'pos':n<0?'neg':'neu'; return '<span class="mi-pct '+cls+'">'+(n>0?'+':'')+n.toFixed(2)+'%</span>'; }
@@ -4259,11 +4259,19 @@ html,body{height:100%;overflow:hidden;font-family:-apple-system,BlinkMacSystemFo
   function MiEh(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
 
   window.MiSetTipo=function(t){ _miTipo=t; _miPage=0; document.querySelectorAll('#screen-myinvestor .mi-pill').forEach(b=>b.classList.toggle('active',b.dataset.tipo===t)); MiRender(); };
-  window.MiSetSort=function(s){ _miSort=s; _miPage=0; document.querySelectorAll('#screen-myinvestor .mi-sortbtn').forEach(b=>b.classList.toggle('active',b.dataset.sort===s)); MiRender(); };
+  window.MiSetSort=function(s){
+    if(_miSort===s){ _miAsc[s]=!_miAsc[s]; } // toggle direction when re-clicking active sort
+    else { _miSort=s; _miPage=0; document.querySelectorAll('#screen-myinvestor .mi-sortbtn').forEach(b=>b.classList.toggle('active',b.dataset.sort===s)); }
+    _miPage=0;
+    // Update button labels to show current direction arrow
+    var _lbls={nombre:'Nombre',rent1a:'1A',rent3a:'3A',rent5a:'5A',ter:'TER'};
+    document.querySelectorAll('#screen-myinvestor .mi-sortbtn').forEach(function(b){ var f=b.dataset.sort; b.textContent=(_lbls[f]||f)+' '+(_miAsc[f]?'↑':'↓'); });
+    MiRender();
+  };
   window.MiPage=function(p){ _miPage=p; };
 
   window.MiLoad=function(force){
-    var MI_API='/api/myinvestor/catalog?v=280';
+    var MI_API='/api/myinvestor/catalog?v=283';
     // Check cache (7 days). Also skip cache if it's empty (0 items — failed previous load)
     var cached=localStorage.getItem('mi_cache'); var cachedAt=parseInt(localStorage.getItem('mi_cache_at')||'0');
     if(!force && cached && (Date.now()-cachedAt)<7*24*3600*1000){
@@ -4308,9 +4316,10 @@ html,body{height:100%;overflow:hidden;font-family:-apple-system,BlinkMacSystemFo
     });
     // Sort
     if(_miSort==='nombre'){
-      rows.sort(function(a,b){ return String(a.nombre||'').localeCompare(String(b.nombre||''),'es'); });
+      var _nAsc=_miAsc['nombre']!==false;
+      rows.sort(function(a,b){ var c=String(a.nombre||'').localeCompare(String(b.nombre||''),'es'); return _nAsc?c:-c; });
     } else {
-      var sortKey=_miSort; var asc=_miSort==='ter';
+      var sortKey=_miSort; var asc=!!_miAsc[sortKey];
       rows.sort(function(a,b){
         var av=parseFloat(a[sortKey]); var bv=parseFloat(b[sortKey]);
         var an=isNaN(av), bn=isNaN(bv);
@@ -4746,7 +4755,10 @@ function buildPortfolioTimeSeries(){
   const full=dates.map(date=>{let rv=0;for(const{asset,factor}of scaled){const p=getPriceOnOrBefore(asset.history,date);if(p!=null){const v=toDisplay(asset.quantity*p*factor,assetCcy(asset));if(Number.isFinite(v))rv+=v;}}return{date,realValue:rv};}).filter(p=>p.realValue>0);
   if(full.length<2)return null;
   const fr=full[0].realValue,approx=assets.filter(a=>!a.hasRealHistory),aC=approx.reduce((s,a)=>s+a.value,0),tC=assets.reduce((s,a)=>s+a.value,0);
-  return full.map(p=>{const ratio=fr>0?p.realValue/fr:1;const av=approx.reduce((s,a)=>{const b=a.buyPrice>0?a.invested:a.value;const sc=b*ratio;return s+Math.min(Math.max(b,a.value),Math.max(Math.min(b,a.value),sc));},0);return{date:p.date,totalValue:p.realValue+av,realValue:p.realValue,approximatedValue:av,totalCurrent:tC,approximateCurrent:aC};});
+  const result=full.map(p=>{const ratio=fr>0?p.realValue/fr:1;const av=approx.reduce((s,a)=>{const b=a.buyPrice>0?a.invested:a.value;const sc=b*ratio;return s+Math.min(Math.max(b,a.value),Math.max(Math.min(b,a.value),sc));},0);return{date:p.date,totalValue:p.realValue+av,realValue:p.realValue,approximatedValue:av,totalCurrent:tC,approximateCurrent:aC};});
+  // Always inject today's current portfolio value as the last point when live prices are ready and history is stale
+  if(_pricesLive&&result.length){const _today=new Date().toISOString().slice(0,10);if(result[result.length-1].date<_today)result.push({date:_today,totalValue:tC,realValue:tC-aC,approximatedValue:aC,totalCurrent:tC,approximateCurrent:aC});}
+  return result;
 }
 // User-recorded daily snapshots of total portfolio value (stored in EUR base).
 // These let the evolution chart show a REAL curve even when the holdings (e.g.
@@ -7941,6 +7953,11 @@ function _updatePlanUI() {
   if (dm) { dm.textContent = lbl; dm.style.color = col; }
   // Update IA credits bar
   _updateIACreditsBar();
+  // Re-render portfolio table so plan change is reflected immediately
+  // (free→pro removes hidden-assets banner without needing a page reload)
+  if(typeof dataReady !== 'undefined' && dataReady && typeof render === 'function') {
+    try { render(); } catch(_) {}
+  }
 }
 
 function _updateIACreditsBar() {
@@ -8126,7 +8143,7 @@ async function initSupabase(){
       const session=res?.data?.session||null;
       _sbUser=session?.user||null;
       renderAccountSection();
-      if(_sbUser){syncFromCloud();syncSnapshotsFromCloud();}
+      if(_sbUser){syncFromCloud();syncSnapshotsFromCloud();loadUserPlan().catch(()=>{});}
     }).catch(e=>{_sbInitErr=e.message;console.warn('[auth getSession]',e.message);});
   }catch(e){_sb=null;_sbInitErr=e.message;console.warn('[auth]',e.message);}
 }
