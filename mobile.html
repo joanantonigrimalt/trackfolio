@@ -10,7 +10,7 @@
   no-store headers are ignored (in-app webviews) because it is plain page JS.
   Source of truth = sw.js (always served no-cache, version-bumped each deploy). */
 (function(){try{
-  var FA_BUILD='289';
+  var FA_BUILD='290';
   var s=location.search;
   if(s.indexOf('vchk')>-1||s.indexOf('_v=')>-1){
     // Clean the ugly ?vchk= / ?_v= from the URL silently
@@ -7027,6 +7027,9 @@ function _updatePlanUI() {
   if (dp) { dp.textContent = lbl; dp.style.color = col; }
   const dm = document.getElementById('deskMenuPlanLabel');
   if (dm) { dm.textContent = lbl; dm.style.color = col; }
+  // Hide upgrade card for paid plans
+  const upgradeCard = document.getElementById('upgradeCardSection');
+  if (upgradeCard) upgradeCard.style.display = _userPlan === 'free' ? '' : 'none';
   // Update IA credits bar
   _updateIACreditsBar();
 }
@@ -7182,7 +7185,7 @@ function renderAccountSection(){
           </div>
         </div>
       </div>
-      <div style="background:linear-gradient(135deg,#142018 0%,#1e3a2a 100%);border-radius:14px;padding:16px;margin-bottom:10px">
+      <div id="upgradeCardSection" style="background:linear-gradient(135deg,#142018 0%,#1e3a2a 100%);border-radius:14px;padding:16px;margin-bottom:10px;${_userPlan!=='free'?'display:none':''}">
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
           <div>
             <div style="font-size:11px;color:#7aab8a;font-weight:600;letter-spacing:.04em;margin-bottom:3px">${currentLang==='es'?'OFERTA ESPECIAL':'SPECIAL OFFER'}</div>
