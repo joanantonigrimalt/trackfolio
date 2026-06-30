@@ -6,7 +6,7 @@
   (served no-cache, version-bumped each deploy). Works even where SW/no-store
   are ignored, because it is plain page JS. */
 (function(){try{
-  var FA_BUILD=window.FA_BUILD='291';
+  var FA_BUILD=window.FA_BUILD='292';
   var s=location.search;
   if(s.indexOf('vchk')>-1||s.indexOf('_v=')>-1){history.replaceState(null,'',location.pathname+(location.hash||''));return;}
   fetch('/sw.js?_='+Date.now(),{cache:'no-store'}).then(function(r){return r.text();}).then(function(t){
@@ -8051,7 +8051,7 @@ async function _goPricing(plan, evt) {
     if (d.url) {
       window.location.href = d.url;
     } else if (d.error === 'already_pro') {
-      showToast('Ya tienes el plan Pro activo. 🎉');
+      showToast('Ya tienes el plan Premium activo. 🎉');
     } else {
       alert('Error al iniciar pago: ' + (d.detail || d.error || 'Unknown'));
       if (btn) { btn.disabled = false; btn.textContent = btnLabel; }
@@ -10335,7 +10335,7 @@ function _insClearSearch() {
     const av = (email.split('@')[0] || displayName).slice(0,2).toUpperCase() || '?';
     const set = (id, val) => { const el = document.getElementById(id); if (el) el.textContent = val; };
     set('deskUserName', email || displayName);
-    set('deskUserPlan', (typeof _userPlan !== 'undefined' && _userPlan === 'pro') ? 'Plan Pro' : 'Plan Free');
+    set('deskUserPlan', (typeof _userPlan !== 'undefined' && _userPlan !== 'free') ? 'Plan Premium' : 'Plan Free');
     set('deskUserAv', av);
     set('deskMenuAv', av);
     set('deskMenuEmail', email || displayName);
