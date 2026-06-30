@@ -4135,6 +4135,7 @@ html,body{height:100%;overflow:hidden;font-family:-apple-system,BlinkMacSystemFo
 <script>
 (function(){
   var _miData=[], _miTipo='todos', _miSort='rent1a', _miPage=0, _miPageSize=100;
+  var _miReturns={}; // session cache: isin → {rent1a,rent3a,rent5a}
 
   function MiFmt(v){ if(v===''||v===null||v===undefined) return '<span style="color:var(--muted)">—</span>'; var n=parseFloat(v); if(isNaN(n)) return '<span style="color:var(--muted)">—</span>'; var cls=n>0?'pos':n<0?'neg':'neu'; return '<span class="mi-pct '+cls+'">'+(n>0?'+':'')+n.toFixed(2)+'%</span>'; }
   function MiTer(v){ if(v===''||v===null||v===undefined) return '<span style="color:var(--muted)">—</span>'; var n=parseFloat(v); return isNaN(n)?'<span style="color:var(--muted)">—</span>':n.toFixed(2)+'%'; }
@@ -4193,12 +4194,16 @@ html,body{height:100%;overflow:hidden;font-family:-apple-system,BlinkMacSystemFo
     document.getElementById('miCount').textContent=total+' productos'+(total>_miPageSize?' (mostrando '+(start+1)+'–'+end+')':'');
     var body=document.getElementById('miTableBody'); if(!body) return;
     if(!total){ body.innerHTML='<tr><td colspan="13" class="mi-empty">Sin resultados. '+(q?'Prueba otra búsqueda.':'Carga el catálogo con ↻ Actualizar.')+'</td></tr>'; }
-    else { body.innerHTML=pageRows.map(function(r){
+    else { body.innerHTML=pageRows.map(function(r){ var cachedRet=_miReturns[r.isin]; if(cachedRet){ if(cachedRet.rent1a!==null) r=Object.assign({},r,{rent1a:cachedRet.rent1a}); if(cachedRet.rent3a!==null) r=Object.assign({},r,{rent3a:cachedRet.rent3a}); if(cachedRet.rent5a!==null) r=Object.assign({},r,{rent5a:cachedRet.rent5a}); }
       var tipo=String(r.tipo||'').toUpperCase()==='ETF'?'ETF':'Fondo';
       var badge=tipo==='ETF'?'<span class="mi-badge mi-badge-etf">ETF</span>':'<span class="mi-badge mi-badge-fund">Fondo</span>';
       var link=r.url?'<a href="'+MiEh(r.url)+'" target="_blank" class="mi-link">Ver →</a>':'';
-      return '<tr><td style="max-width:260px"><div style="font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:250px" title="'+MiEh(r.nombre)+'">'+MiEh(r.nombre)+'</div></td><td>'+badge+'</td><td style="font-size:11px;color:var(--muted);max-width:120px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+MiEh(r.categoria)+'</td><td style="font-family:monospace;font-size:11px">'+MiEh(r.isin)+'</td><td>'+MiTer(r.ter)+'</td><td style="font-size:12px">'+MiEh(r.divisa)+'</td><td style="font-size:11px;color:var(--muted)">'+MiEh(r.replica)+'</td><td style="font-size:11px;color:var(--muted)">'+MiEh(r.distribucion)+'</td><td>'+MiFmt(r.rent1a)+'</td><td>'+MiFmt(r.rent3a)+'</td><td>'+MiFmt(r.rent5a)+'</td><td>'+MiStars(r.rating)+'</td><td>'+link+'</td></tr>';
-    }).join(''); }
+      return '<tr><td style="max-width:260px"><div style="font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:250px" title="'+MiEh(r.nombre)+'">'+MiEh(r.nombre)+'</div></td><td>'+badge+'</td><td style="font-size:11px;color:var(--muted);max-width:120px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+MiEh(r.categoria)+'</td><td style="font-family:monospace;font-size:11px">'+MiEh(r.isin)+'</td><td>'+MiTer(r.ter)+'</td><td style="font-size:12px">'+MiEh(r.divisa)+'</td><td style="font-size:11px;color:var(--muted)">'+MiEh(r.replica)+'</td><td style="font-size:11px;color:var(--muted)">'+MiEh(r.distribucion)+'</td><td id="mir1-'+r.isin+'">'+MiFmt(r.rent1a)+'</td><td id="mir3-'+r.isin+'">'+MiFmt(r.rent3a)+'</td><td id="mir5-'+r.isin+'">'+MiFmt(r.rent5a)+'</td><td>'+MiStars(r.rating)+'</td><td>'+link+'</td></tr>';
+    }).join('');
+    // Lazy-load rentabilidades from justETF for visible ISINs
+    var visibleIsins=pageRows.map(function(r){ return r.isin; }).filter(Boolean);
+    if(visibleIsins.length) MiLoadReturns(visibleIsins);
+    }
     // Pagination
     var pag=document.getElementById('miPagination');
     if(pag){
@@ -4215,6 +4220,46 @@ html,body{height:100%;overflow:hidden;font-family:-apple-system,BlinkMacSystemFo
     _miPage=p; MiRender();
     var sc=document.getElementById('screen-myinvestor'); if(sc) sc.scrollTop=0;
   };
+
+  // Lazy-load rentabilidades from justETF for visible ISINs
+  function MiLoadReturns(isins){
+    var toFetch=isins.filter(function(i){ return i && !_miReturns[i]; });
+    // Apply cached values first
+    isins.forEach(function(isin){
+      var d=_miReturns[isin]; if(!d) return;
+      var e1=document.getElementById('mir1-'+isin);
+      var e3=document.getElementById('mir3-'+isin);
+      var e5=document.getElementById('mir5-'+isin);
+      if(e1) e1.innerHTML=MiFmt(d.rent1a);
+      if(e3) e3.innerHTML=MiFmt(d.rent3a);
+      if(e5) e5.innerHTML=MiFmt(d.rent5a);
+    });
+    if(!toFetch.length) return;
+    fetch('/api/myinvestor/returns?isins='+toFetch.join(','))
+      .then(function(r){ return r.json(); })
+      .then(function(json){
+        var ret=json.returns||{};
+        Object.keys(ret).forEach(function(isin){
+          var d=ret[isin];
+          _miReturns[isin]=d;
+          // Update DOM cells
+          var e1=document.getElementById('mir1-'+isin);
+          var e3=document.getElementById('mir3-'+isin);
+          var e5=document.getElementById('mir5-'+isin);
+          if(e1) e1.innerHTML=MiFmt(d.rent1a);
+          if(e3) e3.innerHTML=MiFmt(d.rent3a);
+          if(e5) e5.innerHTML=MiFmt(d.rent5a);
+          // Update _miData so sorting works after load
+          var item=_miData.find(function(p){ return p.isin===isin; });
+          if(item){
+            if(d.rent1a!==null) item.rent1a=d.rent1a;
+            if(d.rent3a!==null) item.rent3a=d.rent3a;
+            if(d.rent5a!==null) item.rent5a=d.rent5a;
+          }
+        });
+      })
+      .catch(function(e){ console.warn('[MiLoadReturns]',e.message); });
+  }
 
   // Auto-load on init
   (function init(){
