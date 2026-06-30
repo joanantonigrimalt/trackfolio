@@ -6,7 +6,7 @@
   (served no-cache, version-bumped each deploy). Works even where SW/no-store
   are ignored, because it is plain page JS. */
 (function(){try{
-  var FA_BUILD=window.FA_BUILD='275';
+  var FA_BUILD=window.FA_BUILD='276';
   var s=location.search;
   if(s.indexOf('vchk')>-1||s.indexOf('_v=')>-1){history.replaceState(null,'',location.pathname+(location.hash||''));return;}
   fetch('/sw.js?_='+Date.now(),{cache:'no-store'}).then(function(r){return r.text();}).then(function(t){
@@ -7008,7 +7008,10 @@ function renderLists(){
     return'<span style="color:var(--muted2)">—</span>';
   }
 
-  const rows=visible.map(a=>{
+  // Free plan: only show first FREE_ASSET_LIMIT assets
+  const _visibleCapped=(_userPlan==='free'&&visible.length>FREE_ASSET_LIMIT)?visible.slice(0,FREE_ASSET_LIMIT):visible;
+  const _hiddenCount=visible.length-_visibleCapped.length;
+  const rows=_visibleCapped.map(a=>{
     const _av=toDisplay(a.value,assetCcy(a)),_ai=toDisplay(a.invested,costCcy(a)),_ag=_av-_ai,_agp=_ai>0?(_ag/_ai)*100:a.gainPct;
     const dp=getDayPct(a);
     const _ccy=assetCcy(a);const _csym=_ccy==='USD'?'$':_ccy==='GBP'?'£':_ccy==='CHF'?'Fr':'€';
@@ -7030,7 +7033,7 @@ function renderLists(){
       broker:`<td style="color:var(--muted)">${a.broker?escapeHtml(a.broker):'—'}</td>`,
     };
     return `<tr data-isin="${a.isin}"><td><div class="pf-asset"><div class="icon ${assetType(a)}">${iconInitials(a)}</div><div style="min-width:0"><div class="pf-tk">${escapeHtml(a.name)}</div><div class="pf-nm" title="${escapeHtml(a.fullName||a.name)}">${escapeHtml(a.fullName||'')}</div></div></div></td>${visCols.map(c=>cellMap[c]||'<td>—</td>').join('')}</tr>`;
-  }).join('');
+  }).join('')+(_hiddenCount>0?`<tr><td colspan="${colCount}" style="padding:14px 16px;background:linear-gradient(135deg,rgba(20,32,24,.04),rgba(74,222,128,.08));border-top:1.5px solid rgba(74,222,128,.25);border-bottom:1.5px solid rgba(74,222,128,.15)"><div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap"><div style="font-size:18px">🔒</div><div style="flex:1;min-width:0"><div style="font-size:13px;font-weight:700;color:#142018">${isEs?`+${_hiddenCount} activos ocultos en Plan Free`:`+${_hiddenCount} assets hidden on Free Plan`}</div><div style="font-size:12px;color:#4a6a52;margin-top:2px">${isEs?'Hazte Premium para ver y gestionar todos tus activos sin límites.':'Upgrade to Premium to view and manage all your assets without limits.'}</div></div><button onclick="_showUpgradeModal('assets')" style="background:linear-gradient(135deg,#15803d,#22c55e);color:#fff;border:none;border-radius:10px;padding:8px 18px;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;flex-shrink:0">⭐ ${isEs?'Ver Premium':'See Premium'} — 9,99€</button></div></td></tr>`:'');
   const _hasFx=assets.some(a=>(a.quantity>0)&&assetCcy(a)!=='EUR');
   const _fxNote=_hasFx?`<div style="font-size:11px;color:var(--muted2);margin-top:8px;padding:0 2px;line-height:1.5">${isEs?'Los precios se muestran en su divisa nativa; «Valor» y «P. medio» se convierten a € al tipo de cambio actual.':'Prices are shown in their native currency; «Value» and «Avg» are converted to € at the current FX rate.'}</div>`:'';
 
