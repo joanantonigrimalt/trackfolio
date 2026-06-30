@@ -6,7 +6,7 @@
   (served no-cache, version-bumped each deploy). Works even where SW/no-store
   are ignored, because it is plain page JS. */
 (function(){try{
-  var FA_BUILD=window.FA_BUILD='270';
+  var FA_BUILD=window.FA_BUILD='273';
   var s=location.search;
   if(s.indexOf('vchk')>-1||s.indexOf('_v=')>-1){history.replaceState(null,'',location.pathname+(location.hash||''));return;}
   fetch('/sw.js?_='+Date.now(),{cache:'no-store'}).then(function(r){return r.text();}).then(function(t){
@@ -4523,7 +4523,7 @@ async function buildIntraday1D() {
 }
 
 // Dividend data now fetched live from /api/dividends/history
-const MSCI_WORLD_ANNUAL = {'2021':31.1,'2022':-17.7,'2023':24.0,'2024':18.0,'2025':2.4,'2026':0};
+const MSCI_WORLD_ANNUAL = {'2021':31.1,'2022':-17.7,'2023':24.0,'2024':18.0,'2025':2.4};
 
 // fe() — format in display currency (already in display currency)
 const fe = n => new Intl.NumberFormat(currentLang==='es'?'es-ES':'en-GB',{style:'currency',currency:_displayCcy,maximumFractionDigits:2}).format(Number.isFinite(n)?n:0);
@@ -5702,7 +5702,7 @@ function _anRenderTrendVsWorld(){
   if(_pts&&_pts.length>5){
     portAnnual=years.map(y=>{
       const yStart=_pts.find(p=>p.date>=(y+'-01-01'));
-      const yEnd=[..._pts].reverse().find(p=>p.date<=((parseInt(y)+1)+'-01-01'))||_pts[_pts.length-1];
+      const yEnd=[..._pts].reverse().find(p=>p.date<=(y+'-12-31'))||[..._pts].reverse().find(p=>p.date<=((parseInt(y)+1)+'-01-01'))||_pts[_pts.length-1];
       if(!yStart||!yEnd||yStart.totalValue<=0)return totalPct/Math.max(years.length,1);
       return((yEnd.totalValue-yStart.totalValue)/yStart.totalValue)*100;
     });
@@ -5711,12 +5711,12 @@ function _anRenderTrendVsWorld(){
     _portAnnualFabricated=true;
   }
 
-  // Cumulative index (start = 0)
-  let cumPort=0,cumMsci=0;
+  // Cumulative index using compound returns (start = 0%)
+  let cumPort=1,cumMsci=1;
   const portCum=[],msciCum=[];
   years.forEach((_,i)=>{
-    cumPort+=portAnnual[i];portCum.push(parseFloat(cumPort.toFixed(2)));
-    cumMsci+=msciAnnual[i];msciCum.push(parseFloat(cumMsci.toFixed(2)));
+    cumPort*=1+portAnnual[i]/100;portCum.push(parseFloat(((cumPort-1)*100).toFixed(2)));
+    cumMsci*=1+msciAnnual[i]/100;msciCum.push(parseFloat(((cumMsci-1)*100).toFixed(2)));
   });
 
   if(chips){
@@ -6235,11 +6235,11 @@ function _renderDivHoldings(divItems, liqWithRate){
           <td><div style="font-size:11px;color:#6b7280">${x.rate.toFixed(2)}%/año</div></td>
           <td>
             <div class="div-tbl-yield">${x.rate.toFixed(2)}%</div>
-            <div class="div-tbl-yoc">interés</div>
+            <div class="div-tbl-yoc">${_isEsDH?'interés':'interest'}</div>
           </td>
           <td>
             <div class="div-tbl-amt">${fe(annual)}</div>
-            <div class="div-tbl-yoc">${fe(annual/12)}/mes</div>
+            <div class="div-tbl-yoc">${fe(annual/12)}/${_isEsDH?'mes':'mo'}</div>
           </td>
         </tr>`;
       }).join('');
@@ -6314,13 +6314,13 @@ function _renderDivGoal(totalAnnual){
   const pct=Math.min(100,totalAnnual>0?Math.round(totalAnnual/target*100):0);
   const remains=Math.max(0,target-totalAnnual);
   const today=new Date();
-  const daysLeft=Math.round((new Date(today.getFullYear(),11,31)-today)/(1000*60*60*24));
+  const daysLeft=Math.max(0,Math.ceil((new Date(today.getFullYear(),11,31,23,59,59)-today)/(1000*60*60*24)));
   document.getElementById('divGoalLabel').textContent=`${fe(totalAnnual)} de ${fe(target)}`;
   document.getElementById('divGoalPct').textContent=pct+'%';
   document.getElementById('divGoalFill').style.width=pct+'%';
   const isEsGoal=currentLang==='es';
   document.getElementById('divGoalRemains').textContent=remains>0?(isEsGoal?`Faltan ${fe(remains)}`:`${fe(remains)} remaining`):(isEsGoal?'Meta alcanzada!':'Goal reached!');
-  document.getElementById('divGoalDeadline').textContent=`${daysLeft} días para fin de año`;
+  document.getElementById('divGoalDeadline').textContent=isEsGoal?`${daysLeft} días para fin de año`:`${daysLeft} days to year end`;
   const yrsAtRate=remains>0&&totalAnnual>0?(remains/totalAnnual).toFixed(1)+' años':'—';
   document.getElementById('divGoalRate').textContent=yrsAtRate;
   // With DRIP reinvestment estimate
@@ -7237,7 +7237,10 @@ function renderHomeExtras(){
     try{ const d=new Date().toLocaleDateString(currentLang==='es'?'es-ES':'en-US',{weekday:'long',day:'numeric',month:'long'});
       /* Market hours check using Madrid/CET time to correctly handle DST across timezones */
       const madridNow=new Date(new Date().toLocaleString('en-US',{timeZone:'Europe/Madrid'}));
-      const _dy=madridNow.getDay(),_hr=madridNow.getHours();const _mOpen=_dy>=1&&_dy<=5&&_hr>=9&&_hr<22;
+      const _dy=madridNow.getDay(),_hr=madridNow.getHours(),_hm=madridNow.getMinutes();
+      const _euOpen=_dy>=1&&_dy<=5&&_hr>=9&&(_hr<17||(_hr===17&&_hm<=35));
+      const _usOpen=_dy>=1&&_dy<=5&&(_hr>15||(_hr===15&&_hm>=30))&&_hr<22;
+      const _mOpen=_euOpen||_usOpen;
       dEl.innerHTML=`${d} · <span style="color:${_mOpen?'var(--green)':'var(--muted2)'};font-weight:600">${_mOpen?'●':'○'} ${currentLang==='es'?(_mOpen?'Mercados abiertos':'Mercados cerrados'):(_mOpen?'Markets open':'Markets closed')}</span>`; }catch(_){}
   }
   const wrap=document.getElementById('homeDonut'), leg=document.getElementById('homeDonutLegend');
@@ -8651,7 +8654,7 @@ function _renderAlertsListScreen(){
       <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:8px">
         <div>
           <div style="font-size:14px;font-weight:800;color:#142018">${escapeHtml(a.name)}</div>
-          <div style="font-size:11px;color:#8fa090;margin-top:2px">${new Date(a.createdAt).toLocaleDateString('es-ES')}</div>
+          <div style="font-size:11px;color:#8fa090;margin-top:2px">${new Date(a.createdAt).toLocaleDateString(currentLang==='es'?'es-ES':'en-GB')}</div>
         </div>
         <div style="display:flex;align-items:center;gap:8px">
           ${isTriggered?'<span style="font-size:10px;font-weight:700;background:#e6faf3;color:#15803d;border-radius:6px;padding:2px 7px">✓ Alcanzada</span>':''}
@@ -8667,7 +8670,7 @@ function _renderAlertsListScreen(){
         ${curPrice!=null?`<div style="flex:1;background:#f7faf8;border-radius:10px;padding:8px 12px">
           <div style="font-size:10px;color:#8fa090;font-weight:600;margin-bottom:2px">Precio actual</div>
           <div style="font-size:16px;font-weight:800;color:#142018">${fe(curPrice)}</div>
-          <div style="font-size:10px;font-weight:700;color:#8fa090;margin-top:2px">Diferencia: ${((curPrice-a.targetPrice)/a.targetPrice*100).toFixed(1)}%</div>
+          <div style="font-size:10px;font-weight:700;color:#8fa090;margin-top:2px">${curPrice>0?((a.targetPrice-curPrice)/curPrice*100).toFixed(1):'—'}% ${currentLang==='es'?'al objetivo':'to target'}</div>
         </div>`:''}
       </div>
       ${a.notif?'<div style="font-size:10px;color:#8fa090;margin-top:8px;display:flex;align-items:center;gap:4px">◉ Notificación activada</div>':''}

@@ -118,9 +118,9 @@ async function fetchFromAppsScript(url) {
     divisa:       String(p.divisa || p['Divisa'] || 'EUR'),
     replica:      String(p.replica || p['Réplica'] || p['Replica'] || ''),
     distribucion: String(p.distribucion || p['Distribución'] || p['Distribucion'] || ''),
-    rent1a:       parseFloat(p.rent1a || p['Rent. 1A (%)'] || p['rent1a']) || null,
-    rent3a:       parseFloat(p.rent3a || p['Rent. 3A (%)'] || p['rent3a']) || null,
-    rent5a:       parseFloat(p.rent5a || p['Rent. 5A (%)'] || p['rent5a']) || null,
+    rent1a:       (v => isNaN(v) ? null : v)(parseFloat(p.rent1a || p['Rent. 1A (%)'] || p['rent1a'])),
+    rent3a:       (v => isNaN(v) ? null : v)(parseFloat(p.rent3a || p['Rent. 3A (%)'] || p['rent3a'])),
+    rent5a:       (v => isNaN(v) ? null : v)(parseFloat(p.rent5a || p['Rent. 5A (%)'] || p['rent5a'])),
     rating:       String(p.rating || p['Rating Morningstar'] || ''),
     url:          String(p.url || p['URL MyInvestor'] || ''),
   })).filter(p => p.isin);

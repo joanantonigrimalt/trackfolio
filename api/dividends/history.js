@@ -59,6 +59,7 @@ async function eodhdDiv(symbol) {
         }))
         .filter(d => d.date && d.amount > 0)
         .sort((a, b) => a.date.localeCompare(b.date));
+      if (!divs.length) continue; // rows existed but all filtered out (e.g. all amount<=0) — try next source
       cset(k, divs);
       return divs;
     } catch (_) {}
@@ -183,7 +184,10 @@ function derivePayMonths(divs) {
   const cutoff = new Date(); cutoff.setFullYear(cutoff.getFullYear() - 2);
   const cut = cutoff.toISOString().slice(0, 10);
   const recent = divs.filter(d => d.date >= cut);
-  const set = new Set(recent.map(d => new Date(d.date + 'T12:00:00Z').getMonth()));
+  const set = new Set(recent.map(d => {
+    const dateStr = d.paymentDate || d.date; // prefer payment date; fall back to ex-date
+    return new Date(dateStr + 'T12:00:00Z').getMonth();
+  }));
   return [...set].sort((a, b) => a - b);
 }
 
@@ -232,7 +236,8 @@ function estimateNextDates(divs, nextMonth, nextYear) {
     .filter(g => g > 0 && g < 60);
   const avgGap = gaps.length ? Math.round(gaps.reduce((s, v) => s + v, 0) / gaps.length) : 7;
 
-  const exDate = new Date(Date.UTC(nextYear, nextMonth, Math.min(avgExDay, 28)));
+  const daysInMonth = new Date(Date.UTC(nextYear, nextMonth + 1, 0)).getUTCDate();
+  const exDate = new Date(Date.UTC(nextYear, nextMonth, Math.min(avgExDay, daysInMonth)));
   const payDate = new Date(exDate.getTime() + avgGap * 86400000);
 
   return {
@@ -403,11 +408,17 @@ module.exports = async (req, res) => {
 
       const today = new Date();
       const cm = today.getMonth();
-      const nextM = pm.find(m => m > cm) ?? pm[0];
-      const nextYear = today.getFullYear() + (nextM != null && nextM <= cm ? 1 : 0);
+      const nextM = pm.length > 0 ? (pm.find(m => m > cm) ?? pm[0]) : null;
+      const nextYear = nextM != null
+        ? today.getFullYear() + (nextM <= cm ? 1 : 0)
+        : today.getFullYear();
       const { exDate: nextExDate, payDate: nextPayDate } = estimateNextDates(divs, nextM, nextYear);
       const monthlyAvgEur = (aps * qty) / 12;
-      const nextPaymentAmountEur = ps[nextM] != null && ps[nextM] > 0 ? ps[nextM] * qty : await estimateNextPaymentEur(divs, nextM, gbpRate);
+      const nextPaymentAmountEur = nextM != null && ps[nextM] != null && ps[nextM] > 0
+        ? ps[nextM] * qty
+        : nextM != null
+          ? ((await estimateNextPaymentEur(divs, nextM, gbpRate)) ?? 0) * qty
+          : null;
 
       const lastEx = divs.length > 0 ? divs[divs.length-1].date : null;
       const dataAgeHours = lastEx ? Math.round((Date.now() - new Date(lastEx).getTime()) / 3600000) : null;

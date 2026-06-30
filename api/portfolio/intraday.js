@@ -50,7 +50,7 @@ function isMarketOpen(timezone) {
 
   // HH:MM in exchange-local time → minutes since midnight
   const [hStr, mStr] = now.toLocaleTimeString('en-GB', {
-    hour: '2-digit', minute: '2-digit', timeZone: timezone,
+    hour: '2-digit', minute: '2-digit', timeZone: timezone, hour12: false,
   }).split(':');
   const hm = parseInt(hStr, 10) * 60 + parseInt(mStr, 10);
 
@@ -72,9 +72,7 @@ function isMarketOpen(timezone) {
   if (hm < open || hm >= close) return false;
 
   // Extra holiday check for Spanish exchanges (CET/CEST)
-  if (timezone === 'Europe/Madrid' || timezone === 'Europe/Berlin' ||
-      timezone === 'Europe/Amsterdam' || timezone === 'Europe/Paris' ||
-      timezone === 'Europe/Rome') {
+  if (timezone === 'Europe/Madrid') {
     const localDate = now.toLocaleDateString('en-CA', { timeZone: timezone }); // YYYY-MM-DD
     if (SPANISH_HOLIDAYS_YYYY_MM_DD.has(localDate)) return false;
     const mmdd = localDate.slice(5); // MM-DD
@@ -121,16 +119,16 @@ async function fetchIntraday(symbol) {
   for (const host of ['query1', 'query2']) {
     try {
       const url = `https://${host}.finance.yahoo.com/v8/finance/chart/${encodeURIComponent(symbol)}?range=1d&interval=5m`;
-      const r = await fetch(url, { headers: { 'User-Agent': 'Mozilla/5.0', Accept: 'application/json' } });
+      const r = await fetch(url, { signal: AbortSignal.timeout ? AbortSignal.timeout(7000) : undefined, headers: { 'User-Agent': 'Mozilla/5.0', Accept: 'application/json' } });
       if (!r.ok) {
-        if (r.status === 404) return { error: true, reason: 'symbol_not_found', points: [], currency: null };
+        if (r.status === 404) return { error: true, reason: 'symbol_not_found', points: [], currency: null, marketClosed: false };
         continue;
       }
       const d   = await r.json();
       const res = d?.chart?.result?.[0];
       if (!res) {
         const errCode = d?.chart?.error?.code;
-        if (errCode === 'Not Found') return { error: true, reason: 'symbol_not_found', points: [], currency: null };
+        if (errCode === 'Not Found') return { error: true, reason: 'symbol_not_found', points: [], currency: null, marketClosed: false };
         continue;
       }
 
@@ -158,16 +156,9 @@ async function fetchIntraday(symbol) {
         });
       }
 
-      if (points.length > 3) {
-        const out = { points, currency, timezone, marketState };
-        cset(ck, out, marketOpen ? TTL : TTL_CLOSED);
-        return { ...out, marketClosed: !marketOpen };
-      }
-
-      // Market closed or pre-market — fewer than 3 points, not an error
       if (points.length > 0) {
         const out = { points, currency, timezone, marketState };
-        cset(ck, out, TTL_CLOSED);
+        cset(ck, out, marketOpen ? TTL : TTL_CLOSED);
         return { ...out, marketClosed: !marketOpen };
       }
 
@@ -191,15 +182,14 @@ module.exports = async (req, res) => {
   if (invalid.length > 0) return sendError(res, 400, `Invalid symbol format: ${invalid[0]}`);
 
   const rawResults = {};
-  let anyHit = false;
   await Promise.all(symbols.map(async sym => {
-    const before = CACHE.has(`intra:${sym}`);
     rawResults[sym] = await fetchIntraday(sym);
-    if (before) anyHit = true;
   }));
+  const anyHit = symbols.some(sym => CACHE.has(`intra:${sym}`));
 
-  // Determine whether ALL requested markets are currently closed
-  const allClosed = symbols.every(sym => {
+  // Determine whether ALL requested markets are currently closed (exclude all-error case)
+  const allErrored = symbols.every(sym => rawResults[sym]?.error === true);
+  const allClosed = !allErrored && symbols.every(sym => {
     const r = rawResults[sym];
     return r?.marketClosed === true || r?.error === true;
   });
