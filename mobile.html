@@ -10,7 +10,7 @@
   no-store headers are ignored (in-app webviews) because it is plain page JS.
   Source of truth = sw.js (always served no-cache, version-bumped each deploy). */
 (function(){try{
-  var FA_BUILD='285';
+  var FA_BUILD='286';
   var s=location.search;
   if(s.indexOf('vchk')>-1||s.indexOf('_v=')>-1){
     // Clean the ugly ?vchk= / ?_v= from the URL silently
@@ -1509,7 +1509,7 @@ table.an-corr-mtx{border-collapse:separate;border-spacing:4px}
   <!-- Quick chips -->
   <div class="hChips">
     <div class="hChip" onclick="showScreen('dividends')"><span>◎</span> <span data-i18n="navDividends">Dividendos</span></div>
-    <div class="hChip green" onclick="showScreen('ia')"><span>✦</span> Vera IA</div>
+    <div class="hChip" onclick="showScreen('prestamos')"><span>⏱</span> Préstamos</div>
     <div class="hChip" onclick="openSearch()"><span>＋</span> <span data-i18n="add">Añadir</span></div>
     <div class="hChip" onclick="showScreen('impuestos')"><span>◫</span> <span data-i18n="navTax">Fiscal</span></div>
   </div>
@@ -3639,7 +3639,7 @@ table.an-corr-mtx{border-collapse:separate;border-spacing:4px}
   <div class="tab-row tab-row-extra" id="tabExtraRow">
     <div style="flex:1"></div>
     <div style="flex:1"></div>
-    <button data-screen="ia" onclick="closeExtraTabRow()"><b>✦</b><span>Vera IA</span></button>
+    <div style="flex:1"></div>
     <button data-screen="prestamos" onclick="closeExtraTabRow()"><b>⏱</b><span>Préstamos</span></button>
     <button data-screen="impuestos" onclick="closeExtraTabRow()"><b>◫</b><span>Impuestos</span></button>
   </div>
@@ -3647,8 +3647,8 @@ table.an-corr-mtx{border-collapse:separate;border-spacing:4px}
     <button class="active" data-screen="home"><b>⌂</b><span data-i18n="tabHome">Inicio</span></button>
     <button data-screen="analysis"><b>◈</b><span data-i18n="tabAnalysis">Análisis</span></button>
     <button data-screen="comunidad"><b>❖</b><span>Foro</span></button>
-    <button data-screen="dividends"><b>◎</b><span>Divid.</span></button>
     <button data-screen="myinvestor"><b>◐</b><span>MY</span></button>
+    <button data-screen="dividends"><b>◎</b><span>Divid.</span></button>
     <button class="tab-more-btn" id="tabMoreBtn" onclick="toggleExtraTabRow(event)"><b>⊞</b><span>Más</span></button>
   </div>
 </div>
