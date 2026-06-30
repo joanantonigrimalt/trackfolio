@@ -6,7 +6,7 @@
   (served no-cache, version-bumped each deploy). Works even where SW/no-store
   are ignored, because it is plain page JS. */
 (function(){try{
-  var FA_BUILD=window.FA_BUILD='274';
+  var FA_BUILD=window.FA_BUILD='275';
   var s=location.search;
   if(s.indexOf('vchk')>-1||s.indexOf('_v=')>-1){history.replaceState(null,'',location.pathname+(location.hash||''));return;}
   fetch('/sw.js?_='+Date.now(),{cache:'no-store'}).then(function(r){return r.text();}).then(function(t){
@@ -4245,24 +4245,25 @@ html,body{height:100%;overflow:hidden;font-family:-apple-system,BlinkMacSystemFo
 
   window.MiLoad=function(force){
     var MI_API='/api/myinvestor/catalog?v=268';
-    // Check cache (1 week)
+    // Check cache (24h)
     var cached=localStorage.getItem('mi_cache'); var cachedAt=parseInt(localStorage.getItem('mi_cache_at')||'0');
     if(!force && cached && (Date.now()-cachedAt)<24*3600*1000){ try{_miData=JSON.parse(cached);}catch(_){} MiRender(); return; }
     document.getElementById('miReloadBtn').textContent='⏳';
     document.getElementById('miError').textContent='';
     fetch(MI_API).then(r=>r.json()).then(function(json){
       var arr=json.products||json.data||json||[];
-      if(!Array.isArray(arr)) throw new Error('Sin datos del catálogo');
+      if(!Array.isArray(arr)) throw new Error(currentLang==='es'?'Sin datos del catálogo':'No catalog data');
       _miData=arr;
       localStorage.setItem('mi_cache',JSON.stringify(_miData));
       localStorage.setItem('mi_cache_at',String(Date.now()));
-      var upd=json.updated?new Date(json.updated).toLocaleDateString('es-ES'):'—';
-      document.getElementById('miUpdated').textContent='Actualizado: '+upd+(json.count?' · '+json.count+' productos':'');
+      var _miLocale=currentLang==='es'?'es-ES':'en-GB';
+      var upd=json.updated?new Date(json.updated).toLocaleDateString(_miLocale):'—';
+      document.getElementById('miUpdated').textContent=(currentLang==='es'?'Actualizado: ':'Updated: ')+upd+(json.count?' · '+json.count+(currentLang==='es'?' productos':' products'):'');
       MiRender();
     }).catch(function(e){
-      document.getElementById('miError').textContent='Error cargando catálogo: '+e.message;
+      document.getElementById('miError').textContent=(currentLang==='es'?'Error cargando catálogo: ':'Error loading catalog: ')+e.message;
     }).finally(function(){
-      document.getElementById('miReloadBtn').textContent='↻ Actualizar';
+      document.getElementById('miReloadBtn').textContent=(currentLang==='es'?'↻ Actualizar':'↻ Refresh');
     });
   };
 
@@ -4293,9 +4294,10 @@ html,body{height:100%;overflow:hidden;font-family:-apple-system,BlinkMacSystemFo
     var start=_miPage*_miPageSize;
     var pageRows=rows.slice(start,start+_miPageSize);
     var end=Math.min(start+_miPageSize,total);
-    document.getElementById('miCount').textContent=total+' productos'+(total>_miPageSize?' (mostrando '+(start+1)+'–'+end+')':'');
+    var _isEsMR=currentLang==='es';
+    document.getElementById('miCount').textContent=total+(_isEsMR?' productos':' products')+(total>_miPageSize?(_isEsMR?' (mostrando ':(  ' (showing ')+(start+1)+'–'+end+')':'');
     var body=document.getElementById('miTableBody'); if(!body) return;
-    if(!total){ body.innerHTML='<tr><td colspan="13" class="mi-empty">Sin resultados. '+(q?'Prueba otra búsqueda.':'Carga el catálogo con ↻ Actualizar.')+'</td></tr>'; }
+    if(!total){ body.innerHTML='<tr><td colspan="13" class="mi-empty">'+(_isEsMR?'Sin resultados. '+(q?'Prueba otra búsqueda.':'Carga el catálogo con ↻ Actualizar.'):'No results. '+(q?'Try another search.':'Load the catalog with ↻ Refresh.'))+'</td></tr>'; }
     else { body.innerHTML=pageRows.map(function(r){ var cachedRet=_miReturns[r.isin]; if(cachedRet){ if(cachedRet.rent1a!==null) r=Object.assign({},r,{rent1a:cachedRet.rent1a}); if(cachedRet.rent3a!==null) r=Object.assign({},r,{rent3a:cachedRet.rent3a}); if(cachedRet.rent5a!==null) r=Object.assign({},r,{rent5a:cachedRet.rent5a}); }
       var tipo=String(r.tipo||'').toUpperCase()==='ETF'?'ETF':'Fondo';
       var badge=tipo==='ETF'?'<span class="mi-badge mi-badge-etf">ETF</span>':'<span class="mi-badge mi-badge-fund">Fondo</span>';
@@ -4311,9 +4313,10 @@ html,body{height:100%;overflow:hidden;font-family:-apple-system,BlinkMacSystemFo
     if(pag){
       if(totalPages<=1){ pag.innerHTML=''; }
       else {
-        var prev=_miPage>0?'<button class="btn-sm" onclick="MiGotoPage('+(_miPage-1)+')">← Anterior</button>':'<button class="btn-sm" disabled style="opacity:.4">← Anterior</button>';
-        var next=_miPage<totalPages-1?'<button class="btn-sm" onclick="MiGotoPage('+(_miPage+1)+')">Siguiente →</button>':'<button class="btn-sm" disabled style="opacity:.4">Siguiente →</button>';
-        var info='<span style="font-size:12px;color:var(--muted);padding:0 8px">Pág. '+(_miPage+1)+' / '+totalPages+'</span>';
+        var _prevLbl=_isEsMR?'← Anterior':'← Previous'; var _nextLbl=_isEsMR?'Siguiente →':'Next →';
+        var prev=_miPage>0?'<button class="btn-sm" onclick="MiGotoPage('+(_miPage-1)+')">'+_prevLbl+'</button>':'<button class="btn-sm" disabled style="opacity:.4">'+_prevLbl+'</button>';
+        var next=_miPage<totalPages-1?'<button class="btn-sm" onclick="MiGotoPage('+(_miPage+1)+')">'+_nextLbl+'</button>':'<button class="btn-sm" disabled style="opacity:.4">'+_nextLbl+'</button>';
+        var info='<span style="font-size:12px;color:var(--muted);padding:0 8px">'+(_isEsMR?'Pág.':'Page')+' '+(_miPage+1)+' / '+totalPages+'</span>';
         pag.innerHTML=prev+info+next;
       }
     }
@@ -5096,7 +5099,7 @@ function renderTxHistory(){
     return`<div style="display:flex;align-items:center;gap:10px;padding:9px 10px;background:${bg};border-radius:12px;margin-bottom:6px">
       <div style="font-size:11px;font-weight:800;color:${color};min-width:40px">${label}</div>
       <div style="flex:1;min-width:0">
-        <div style="font-size:13px;font-weight:700;color:#142018">${fn(tx.qty||0)} ${isEs?'acc.':'shr.'} @ ${sym}${(tx.price||0).toFixed(2)}</div>
+        <div style="font-size:13px;font-weight:700;color:#142018">${fn(tx.qty||0)} ${isEs?'acc.':'units'} @ ${sym}${(tx.price||0).toFixed(2)}</div>
         <div style="font-size:11px;color:#8fa090;margin-top:1px">${tx.date||'—'} · ${sym}${((tx.qty||0)*(tx.price||0)).toFixed(2)} total</div>
       </div>
       <button onclick="deleteTx(${i})" style="background:rgba(185,28,28,.08);border:none;width:28px;height:28px;border-radius:8px;font-size:14px;cursor:pointer;color:#b91c1c;display:flex;align-items:center;justify-content:center;flex-shrink:0">✕</button>
@@ -6260,7 +6263,7 @@ function _renderDivHoldings(divItems, liqWithRate){
       </td>
       <td>
         <div class="div-tbl-amt">${fe(d.annualIncome)}</div>
-        <div class="div-tbl-yoc">${fe(d.annualIncome/12)}/mes</div>
+        <div class="div-tbl-yoc">${fe(d.annualIncome/12)}/${_isEsDH?'mes':'mo'}</div>
       </td>
     </tr>`;
   }).join('');
@@ -6409,7 +6412,7 @@ function _renderDivGoal(totalAnnual){
   const isEsGoal=currentLang==='es';
   document.getElementById('divGoalRemains').textContent=remains>0?(isEsGoal?`Faltan ${fe(remains)}`:`${fe(remains)} remaining`):(isEsGoal?'Meta alcanzada!':'Goal reached!');
   document.getElementById('divGoalDeadline').textContent=isEsGoal?`${daysLeft} días para fin de año`:`${daysLeft} days to year end`;
-  const yrsAtRate=remains>0&&totalAnnual>0?(remains/totalAnnual).toFixed(1)+' años':'—';
+  const yrsAtRate=remains>0&&totalAnnual>0?(remains/totalAnnual).toFixed(1)+(isEsGoal?' años':' yrs'):'—';
   document.getElementById('divGoalRate').textContent=yrsAtRate;
   // With DRIP reinvestment estimate
   const drip10=totalAnnual*(((Math.pow(1.05,10)-1)/0.05));
@@ -6475,9 +6478,9 @@ function _calcAndRenderFV(){
     portData.push(Math.round(port*100)/100);
   }
   const finalDiv=divData[divData.length-1]||0;
-  const lbl=`en ${years} año${years===1?'':'s'}`;
-  document.getElementById('divFVValue').textContent=fe(finalDiv);
   const _isEsFV=currentLang==='es';
+  const lbl=_isEsFV?`en ${years} año${years===1?'':'s'}`:`in ${years} year${years===1?'':'s'}`;
+  document.getElementById('divFVValue').textContent=fe(finalDiv);
   document.getElementById('divFVLabel').textContent=_isEsFV?(lbl+'/año en dividendos'):(lbl+'/year in dividends');
   // Chart
   const canvas=document.getElementById('divFVChart');
@@ -7715,13 +7718,13 @@ async function onSearchInput(){
       renderSearchResults(data.results||[]);
     }catch(e){
       if(reqId!==_searchReqId)return;
-      document.getElementById('searchResultsList').innerHTML=`<div class="searchHint" style="color:#b91c1c">Error al buscar</div>`;
+      document.getElementById('searchResultsList').innerHTML=`<div class="searchHint" style="color:#b91c1c">${currentLang==='es'?'Error al buscar':'Search error'}</div>`;
     }
   },380);
 }
 
 function renderSearchResults(results){
-  if(!results.length){document.getElementById('searchResultsList').innerHTML=`<div class="searchHint">Sin resultados para esa búsqueda.</div>`;return;}
+  if(!results.length){document.getElementById('searchResultsList').innerHTML=`<div class="searchHint">${currentLang==='es'?'Sin resultados para esa búsqueda.':'No results found.'}</div>`;return;}
   document.getElementById('searchResultsList').innerHTML=results.map((r,i)=>{
     const bg=TYPE_COLORS[r.type]||TYPE_COLORS.unknown;
     const lbl=TYPE_LABELS[r.type]||r.type;
@@ -7844,7 +7847,7 @@ async function loadUserPlan() {
   try {
     const tok = localStorage.getItem('fa_token');
     if (!tok) { _userPlan = 'free'; _updatePlanUI(); return; }
-    const r = await fetch('/auth/v1/plan', {
+    const r = await fetch('/api/auth/plan', {
       headers: { 'Authorization': 'Bearer ' + tok }
     });
     if (!r.ok) return;
@@ -7897,7 +7900,7 @@ function _updateIACreditsBar() {
   } else if (_userCredits && _userCredits.limit > 0) {
     const pct = Math.max(0, Math.min(100, (_userCredits.remaining / _userCredits.limit) * 100));
     const color = pct > 30 ? '#4ade80' : pct > 10 ? '#f5b731' : '#f87171';
-    bar.innerHTML = `<span style="color:#8fa090;font-size:.7rem">${_userCredits.remaining} msgs restantes</span><div style="flex:1;height:4px;background:#e8ebe9;border-radius:4px;overflow:hidden"><div style="height:100%;width:${pct}%;background:${color};border-radius:4px;transition:width .4s"></div></div>`;
+    bar.innerHTML = `<span style="color:#8fa090;font-size:.7rem">${_userCredits.remaining} ${currentLang==='es'?'msgs restantes':'msgs remaining'}</span><div style="flex:1;height:4px;background:#e8ebe9;border-radius:4px;overflow:hidden"><div style="height:100%;width:${pct}%;background:${color};border-radius:4px;transition:width .4s"></div></div>`;
     bar.style.display = 'flex';
   } else {
     bar.style.display = 'none';
@@ -7916,6 +7919,7 @@ function _showUpgradeModal(reason) {
     topinvestors: { es: 'Top Inversores', en: 'Top Investors' },
     dividends:    { es: 'Detalle de dividendos', en: 'Dividend detail' },
     ia:           { es: 'Más conversaciones con Vera', en: 'More Vera AI conversations' },
+    alerts:       { es: 'Alertas de precio', en: 'Price alerts' },
   };
   const descs = {
     assets:       { es: 'El plan Free está limitado a <b>7 activos</b>. Con Premium tienes posiciones ilimitadas.', en: 'Free plan is limited to <b>7 assets</b>. Premium has unlimited positions.' },
@@ -7924,6 +7928,7 @@ function _showUpgradeModal(reason) {
     topinvestors: { es: 'Accede a las carteras de los mejores inversores con el plan <b>Premium</b>.', en: 'Access top investor portfolios with the <b>Premium</b> plan.' },
     dividends:    { es: 'El detalle completo de dividendos está disponible con el plan <b>Premium</b>.', en: 'Full dividend detail is available with the <b>Premium</b> plan.' },
     ia:           { es: 'La IA Vera está disponible en el plan <b>Premium</b>. Pregunta todo lo que quieras sobre tu cartera.', en: 'Vera AI is available in the <b>Premium</b> plan. Ask anything about your portfolio.' },
+    alerts:       { es: 'Las alertas de precio están disponibles en el plan <b>Premium</b>. Recibe notificaciones cuando un activo alcance tu precio objetivo.', en: 'Price alerts are available in the <b>Premium</b> plan. Get notified when an asset reaches your target price.' },
   };
   const isEs = typeof currentLang !== 'undefined' ? currentLang === 'es' : true;
   const lang = isEs ? 'es' : 'en';
@@ -8078,12 +8083,13 @@ function renderAccountSection(){
   const sec=document.getElementById('accountSection');if(!sec)return;
   if(_sbUser){
     const ts=localStorage.getItem('tf_last_sync');
-    const ago=ts?'Sync '+new Date(ts).toLocaleDateString('es-ES',{day:'2-digit',month:'2-digit'}):'Sin sync';
+    const _rsLocale=currentLang==='es'?'es-ES':'en-GB';
+    const ago=ts?'Sync '+new Date(ts).toLocaleDateString(_rsLocale,{day:'2-digit',month:'2-digit'}):(currentLang==='es'?'Sin sync':'No sync');
     sec.innerHTML=`<div class="accountRow">
       <div style="min-width:0"><div class="accountEmail">${_sbUser.email}</div><div class="accountSub">${ago}</div></div>
       <div style="display:flex;gap:6px;flex-shrink:0">
         <button class="accountBtn green" id="btnSyncCloud">↑↓</button>
-        <button class="accountBtn" id="btnLogout">Salir</button>
+        <button class="accountBtn" id="btnLogout">${currentLang==='es'?'Salir':'Sign out'}</button>
       </div>
     </div>`;
     document.getElementById('btnSyncCloud').onclick=async()=>{
@@ -8321,9 +8327,10 @@ async function _submitAuth(){
     if(!email){_showAuthMsg(currentLang==='es'?'Introduce tu email.':'Enter your email.','err');return;}
     btn.textContent='…';btn.disabled=true;
     try{
-      await fetch('/auth/v1/recover',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email})});
+      const{error}=await _sb.auth.resetPasswordForEmail(email,{redirectTo:'https://finasset.app/desktop'});
+      if(error)throw error;
       _showAuthMsg(currentLang==='es'?'Si existe esa cuenta, recibirás un email en breve.':'If that account exists, check your email.','ok');
-    }catch(e){_showAuthMsg('Error de red.','err');}
+    }catch(e){_showAuthMsg(currentLang==='es'?'Error de red.':'Network error.','err');}
     btn.textContent=currentLang==='es'?'Enviar enlace':'Send reset link';btn.disabled=false;
     return;
   }
@@ -8549,13 +8556,13 @@ async function authSubmit() {
   if (!_sb) {
     try { await initSupabase(); } catch(_) {}
   }
-  if (!_sb) { showAuthErr('Error: '+(_sbInitErr||'supabase no cargado')); return; }
+  if (!_sb) { showAuthErr('Error: '+(_sbInitErr||(currentLang==='es'?'supabase no cargado':'supabase not loaded'))); return; }
   let emailOrUser = document.getElementById('auth-email').value.trim();
   const pass  = document.getElementById('auth-pass').value;
   const name  = document.getElementById('auth-name')?.value?.trim() || '';
   const isEs  = currentLang === 'es';
   if (!emailOrUser || !pass) { showAuthErr(isEs ? 'Completa email/usuario y contraseña.' : 'Enter email/username and password.'); return; }
-  if (pass.length < 8) { showAuthErr(isEs ? 'Contraseña mínimo 8 caracteres.' : 'Password must be at least 8 characters.'); return; }
+  if (_authMode === 'register' && pass.length < 6) { showAuthErr(isEs ? 'Contraseña mínimo 6 caracteres.' : 'Password must be at least 6 characters.'); return; }
   // Resolve username → email if no @ present (login mode only)
   let email = emailOrUser;
   if (_authMode === 'login' && !emailOrUser.includes('@')) {
@@ -8750,16 +8757,17 @@ function saveAlert(){
 }
 
 function saveAlertFromScreen(){
-  if(!_alertsAssetISIN){showToast('Selecciona un activo');return;}
+  const _isEsAF=currentLang==='es';
+  if(!_alertsAssetISIN){showToast(_isEsAF?'Selecciona un activo':'Select an asset');return;}
   const priceVal=parseFloat(document.getElementById('alertsPriceInput').value);
-  if(!priceVal||priceVal<=0){showToast('Introduce un precio válido');return;}
+  if(!priceVal||priceVal<=0){showToast(_isEsAF?'Introduce un precio válido':'Enter a valid price');return;}
   const asset=assets.find(a=>a.isin===_alertsAssetISIN);if(!asset)return;
   const alerts=getAlerts();
   alerts.push({id:Date.now().toString(),isin:_alertsAssetISIN,name:asset.shortName||asset.name,targetPrice:priceVal,cond:_alertsCond,notif:document.getElementById('alertsNotifCk').checked,emailNotif:document.getElementById('alertsEmailCk')?.checked??false,triggered:false,createdAt:new Date().toISOString()});
   saveAlerts(alerts);
   hideAlertForm();
   _renderAlertsListScreen();
-  showToast('Alerta creada ✓');
+  showToast(_isEsAF?'Alerta creada ✓':'Alert created ✓');
   if('Notification'in window&&Notification.permission==='default') Notification.requestPermission();
 }
 
@@ -8775,9 +8783,10 @@ function _renderAlertsListScreen(){
   const alerts=getAlerts();
   if(!alerts.length){list.innerHTML='';if(empty)empty.style.display='';return;}
   if(empty)empty.style.display='none';
+  const _isEsAL=currentLang==='es';
   list.innerHTML=alerts.map(a=>{
     const isTriggered=a.triggered;
-    const condLabel=a.cond==='above'?'▲ Por encima de':'▼ Por debajo de';
+    const condLabel=a.cond==='above'?(_isEsAL?'▲ Por encima de':'▲ Above'):(_isEsAL?'▼ Por debajo de':'▼ Below');
     const condColor=a.cond==='above'?'#15803d':'#dc2626';
     const asset=assets.find(x=>x.isin===a.isin);
     const curPrice=asset?(asset.currentPrice||(asset.value/(asset.quantity||1))):null;
@@ -8785,26 +8794,26 @@ function _renderAlertsListScreen(){
       <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:8px">
         <div>
           <div style="font-size:14px;font-weight:800;color:#142018">${escapeHtml(a.name)}</div>
-          <div style="font-size:11px;color:#8fa090;margin-top:2px">${new Date(a.createdAt).toLocaleDateString(currentLang==='es'?'es-ES':'en-GB')}</div>
+          <div style="font-size:11px;color:#8fa090;margin-top:2px">${new Date(a.createdAt).toLocaleDateString(_isEsAL?'es-ES':'en-GB')}</div>
         </div>
         <div style="display:flex;align-items:center;gap:8px">
-          ${isTriggered?'<span style="font-size:10px;font-weight:700;background:#e6faf3;color:#15803d;border-radius:6px;padding:2px 7px">✓ Alcanzada</span>':''}
+          ${isTriggered?`<span style="font-size:10px;font-weight:700;background:#e6faf3;color:#15803d;border-radius:6px;padding:2px 7px">✓ ${_isEsAL?'Alcanzada':'Triggered'}</span>`:''}
           <button onclick="deleteAlertFromScreen('${a.id}')" style="background:rgba(20,32,24,.06);border:none;width:28px;height:28px;border-radius:8px;cursor:pointer;font-size:12px;color:#8fa090">✕</button>
         </div>
       </div>
       <div style="display:flex;align-items:center;gap:10px">
         <div style="flex:1;background:#f7faf8;border-radius:10px;padding:8px 12px">
-          <div style="font-size:10px;color:#8fa090;font-weight:600;margin-bottom:2px">Precio objetivo</div>
+          <div style="font-size:10px;color:#8fa090;font-weight:600;margin-bottom:2px">${_isEsAL?'Precio objetivo':'Target price'}</div>
           <div style="font-size:16px;font-weight:800;color:#142018">${fe(a.targetPrice)}</div>
           <div style="font-size:10px;font-weight:700;color:${condColor};margin-top:2px">${condLabel}</div>
         </div>
         ${curPrice!=null?`<div style="flex:1;background:#f7faf8;border-radius:10px;padding:8px 12px">
-          <div style="font-size:10px;color:#8fa090;font-weight:600;margin-bottom:2px">Precio actual</div>
+          <div style="font-size:10px;color:#8fa090;font-weight:600;margin-bottom:2px">${_isEsAL?'Precio actual':'Current price'}</div>
           <div style="font-size:16px;font-weight:800;color:#142018">${fe(curPrice)}</div>
-          <div style="font-size:10px;font-weight:700;color:#8fa090;margin-top:2px">${curPrice>0?((a.targetPrice-curPrice)/curPrice*100).toFixed(1):'—'}% ${currentLang==='es'?'al objetivo':'to target'}</div>
+          <div style="font-size:10px;font-weight:700;color:#8fa090;margin-top:2px">${curPrice>0?((a.targetPrice-curPrice)/curPrice*100).toFixed(1):'—'}% ${_isEsAL?'al objetivo':'to target'}</div>
         </div>`:''}
       </div>
-      ${a.notif?'<div style="font-size:10px;color:#8fa090;margin-top:8px;display:flex;align-items:center;gap:4px">◉ Notificación activada</div>':''}
+      ${a.notif?`<div style="font-size:10px;color:#8fa090;margin-top:8px;display:flex;align-items:center;gap:4px">◉ ${_isEsAL?'Notificación activada':'Notifications on'}</div>`:''}
     </div>`;
   }).join('');
 }
@@ -8844,19 +8853,18 @@ function checkAlertsTrigger(){
       a.triggered=true;changed=true;
       (()=>{const tok=localStorage.getItem('fa_token');if(tok)fetch('/api/alerts/notify',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+tok},body:JSON.stringify({alertName:a.name,condition:a.cond,targetPrice:a.targetPrice,currentPrice:price,sendEmail:!!a.emailNotif,currency:'EUR'})}).catch(()=>{});})();
       if(a.notif){
-        const msg=`${a.name} ha ${a.cond==='above'?'superado':'bajado de'} ${fe(a.targetPrice)}`;
+        const _isEsAT=currentLang==='es';
+        const msg=_isEsAT?`${a.name} ha ${a.cond==='above'?'superado':'bajado de'} ${fe(a.targetPrice)}`:`${a.name} has ${a.cond==='above'?'risen above':'dropped below'} ${fe(a.targetPrice)}`;
         if('Notification'in window&&Notification.permission==='granted'){
-          new Notification('◉ Alerta de precio',{body:msg,icon:'/icons/icon-192.png'});
+          new Notification(_isEsAT?'◉ Alerta de precio':'◉ Price alert',{body:msg,icon:'/icons/icon-192.png'});
         } else { showToast(msg,5000); }
       }
     }
   });
   if(changed){saveAlerts(alerts);_renderAlertsListScreen();}
 }
-setInterval(checkAlertsTrigger,60000);
-
 // Check alerts every 60 seconds when app is open
-_alertCheckInterval = setInterval(checkAlertsTrigger, 60000);
+let _alertCheckInterval = setInterval(checkAlertsTrigger, 60000);
 
 // ══════════════════════════════════════════════════════════════════
 // LIQUIDITY
@@ -8932,7 +8940,7 @@ function openLiqModal(id) {
   const liq = getLiquidity();
   const item = id ? liq.find(x=>x.id===id) : null;
   _liqType = item?.type || 'savings';
-  document.getElementById('liqSheetTitle').textContent = item ? 'Editar Liquidez' : 'Añadir Liquidez';
+  document.getElementById('liqSheetTitle').textContent = currentLang==='es'?(item?'Editar Liquidez':'Añadir Liquidez'):(item?'Edit Cash Position':'Add Cash Position');
   document.getElementById('liqName').value = item?.name || '';
   document.getElementById('liqBroker').value = item?.broker || '';
   document.getElementById('liqAmount').value = item?.amount || '';
@@ -8986,10 +8994,11 @@ function setLiqType(type) {
   const isFP = type === 'fondoprivado';
   const fpFields = document.getElementById('liqFPFields');
   if(fpFields) fpFields.style.display = isFP ? '' : 'none';
+  const _isEsLT=currentLang==='es';
   const amtLbl = document.getElementById('liqAmountLbl');
-  if(amtLbl) amtLbl.textContent = isFP ? 'Capital actual' : 'Importe';
+  if(amtLbl) amtLbl.textContent = isFP ? (_isEsLT?'Capital actual':'Current capital') : (_isEsLT?'Importe':'Amount');
   const rateLbl = document.getElementById('liqRateLbl');
-  if(rateLbl) rateLbl.textContent = isFP ? 'Rendimiento anual esperado (%)' : 'Tipo de interés anual (%)';
+  if(rateLbl) rateLbl.textContent = isFP ? (_isEsLT?'Rendimiento anual esperado (%)':'Expected annual return (%)') : (_isEsLT?'Tipo de interés anual (%)':'Annual interest rate (%)');
 }
 function saveLiqItem() {
   const name = document.getElementById('liqName').value.trim();
@@ -9075,9 +9084,12 @@ async function startApp() {
       history.replaceState(null, '', window.location.pathname);
     }
     const _err = _ap.get('error');
-    const _errMsgs = { expired: 'El enlace ha expirado. Solicita uno nuevo.', invalid: 'Enlace inválido.', used: 'Este enlace ya fue usado.' };
+    const _isEsStart = (localStorage.getItem('tf_lang')||'es') === 'es';
+    const _errMsgs = _isEsStart
+      ? { expired: 'El enlace ha expirado. Solicita uno nuevo.', invalid: 'Enlace inválido.', used: 'Este enlace ya fue usado.' }
+      : { expired: 'The link has expired. Request a new one.', invalid: 'Invalid link.', used: 'This link has already been used.' };
     if (_err) {
-      localStorage.setItem('fa_pending_error', _errMsgs[_err] || 'Error al procesar el enlace.');
+      localStorage.setItem('fa_pending_error', _errMsgs[_err] || (_isEsStart ? 'Error al procesar el enlace.' : 'Error processing the link.'));
       history.replaceState(null, '', window.location.pathname);
     }
   } catch(_) {}
@@ -9726,7 +9738,8 @@ function _taxComputeInterest(){
 function renderImpuestos(){
   const year = _taxYear;
   const _tby1=document.getElementById('taxBracketsYear');if(_tby1)_tby1.textContent=year;
-  document.getElementById('taxHeroSup').textContent = 'Estimación fiscal · Año '+year;
+  const _isEsImp = currentLang === 'es';
+  document.getElementById('taxHeroSup').textContent = _isEsImp ? ('Estimación fiscal · Año '+year) : ('Tax estimate · Year '+year);
 
   // Compute all sources
   const gains = _taxComputeGains(year);
@@ -9750,7 +9763,7 @@ function renderImpuestos(){
 
   // Hero
   document.getElementById('taxHeroAmount').textContent = _taxEuro(cuota);
-  document.getElementById('taxHeroSub').textContent = 'Cuota íntegra estimada · Base '+_taxEuro(base);
+  document.getElementById('taxHeroSub').textContent = _isEsImp ? ('Cuota íntegra estimada · Base '+_taxEuro(base)) : ('Estimated gross tax · Base '+_taxEuro(base));
   document.getElementById('taxHDiv').textContent  = grossDiv>0 ? _taxEuro(grossDiv) : '—';
   document.getElementById('taxHInt').textContent  = grossInt>0 ? _taxEuro(grossInt) : '—';
   document.getElementById('taxHGain').textContent = _taxEuro(grossGain);
@@ -9764,10 +9777,10 @@ function renderImpuestos(){
   // Breakdown card
   const bd = document.getElementById('taxBreakdown');
   bd.innerHTML = [
-    {icon:'💰',bg:'#dcfce7',name:'Dividendos recibidos',desc: divs.length+' activos con dividendos',amt:grossDiv,taxStr:'Retención 19% → -'+_taxEuro(retDiv),taxCls:grossDiv>0?'neg':''},
-    {icon:'🏦',bg:'#dbeafe',name:'Intereses de cuentas',desc: ints.length+' cuenta'+(ints.length!==1?'s':'')+' remunerada'+(ints.length!==1?'s':''),amt:grossInt,taxStr:'Retención 19% → -'+_taxEuro(retInt),taxCls:grossInt>0?'neg':''},
-    {icon:'📈',bg:'#f3e8ff',name:'Ganancias patrimoniales',desc:gains.filter(t=>t.gain>0).length+' ventas con ganancia',amt:posGains,taxStr:'Sin retención · A declarar',taxCls:''},
-    negGains<0?{icon:'📉',bg:'#fee2e2',name:'Pérdidas a compensar',desc:gains.filter(t=>t.gain<0).length+' ventas con pérdida',amt:negGains,taxStr:'Reduce base imponible',taxCls:'pos',amtColor:'#e03636'}:null
+    {icon:'💰',bg:'#dcfce7',name:_isEsImp?'Dividendos recibidos':'Dividends received',desc:_isEsImp?(divs.length+' activos con dividendos'):(divs.length+' assets with dividends'),amt:grossDiv,taxStr:_isEsImp?('Retención 19% → -'+_taxEuro(retDiv)):('19% withholding → -'+_taxEuro(retDiv)),taxCls:grossDiv>0?'neg':''},
+    {icon:'🏦',bg:'#dbeafe',name:_isEsImp?'Intereses de cuentas':'Account interest',desc:_isEsImp?(ints.length+' cuenta'+(ints.length!==1?'s':'')+' remunerada'+(ints.length!==1?'s':'')):(ints.length+' interest account'+(ints.length!==1?'s':'')),amt:grossInt,taxStr:_isEsImp?('Retención 19% → -'+_taxEuro(retInt)):('19% withholding → -'+_taxEuro(retInt)),taxCls:grossInt>0?'neg':''},
+    {icon:'📈',bg:'#f3e8ff',name:_isEsImp?'Ganancias patrimoniales':'Capital gains',desc:_isEsImp?(gains.filter(t=>t.gain>0).length+' ventas con ganancia'):(gains.filter(t=>t.gain>0).length+' sales with gain'),amt:posGains,taxStr:_isEsImp?'Sin retención · A declarar':'No withholding · To declare',taxCls:''},
+    negGains<0?{icon:'📉',bg:'#fee2e2',name:_isEsImp?'Pérdidas a compensar':'Losses to offset',desc:_isEsImp?(gains.filter(t=>t.gain<0).length+' ventas con pérdida'):(gains.filter(t=>t.gain<0).length+' sales with loss'),amt:negGains,taxStr:_isEsImp?'Reduce base imponible':'Reduces taxable base',taxCls:'pos',amtColor:'#e03636'}:null
   ].filter(Boolean).map(r=>`
     <div class="src-row">
       <div class="src-icon" style="background:${r.bg}">${r.icon}</div>
@@ -9782,7 +9795,7 @@ function renderImpuestos(){
   _renderTaxChart('taxBaseChart', {
     type:'bar',
     data:{
-      labels:['Ganancias','Dividendos','Intereses','Pérdidas'],
+      labels:_isEsImp?['Ganancias','Dividendos','Intereses','Pérdidas']:['Gains','Dividends','Interest','Losses'],
       datasets:[{
         data:[posGains, grossDiv, grossInt, negGains||0],
         backgroundColor:['rgba(29,179,106,.8)','rgba(37,99,235,.75)','rgba(245,158,11,.75)','rgba(224,54,54,.75)'],
@@ -9800,23 +9813,23 @@ function renderImpuestos(){
   });
 
   // Brackets
-  const BRACKETS=[{range:'Hasta 6.000 €',pct:'19%',bar:40,col:'#1db36a'},{range:'6.001 – 50.000 €',pct:'21%',bar:65,col:'#f5b731'},{range:'50.001 – 200.000 €',pct:'23%',bar:85,col:'#f97316'},{range:'200.001 – 300.000 €',pct:'27%',bar:95,col:'#e03636'},{range:'Más de 300.000 €',pct:'28%',bar:100,col:'#b3001b'}];
+  const BRACKETS=_isEsImp?[{range:'Hasta 6.000 €',pct:'19%',bar:40,col:'#1db36a'},{range:'6.001 – 50.000 €',pct:'21%',bar:65,col:'#f5b731'},{range:'50.001 – 200.000 €',pct:'23%',bar:85,col:'#f97316'},{range:'200.001 – 300.000 €',pct:'27%',bar:95,col:'#e03636'},{range:'Más de 300.000 €',pct:'28%',bar:100,col:'#b3001b'}]:[{range:'Up to €6,000',pct:'19%',bar:40,col:'#1db36a'},{range:'€6,001 – €50,000',pct:'21%',bar:65,col:'#f5b731'},{range:'€50,001 – €200,000',pct:'23%',bar:85,col:'#f97316'},{range:'€200,001 – €300,000',pct:'27%',bar:95,col:'#e03636'},{range:'Over €300,000',pct:'28%',bar:100,col:'#b3001b'}];
   const myBracket = base<=6000?0:base<=50000?1:base<=200000?2:3;
-  document.getElementById('taxBrackets').innerHTML = '<div style="font-size:12px;font-weight:700;color:#0f1c15;margin-bottom:12px">Escala del ahorro · España 2025</div>'
+  document.getElementById('taxBrackets').innerHTML = '<div style="font-size:12px;font-weight:700;color:#0f1c15;margin-bottom:12px">'+(_isEsImp?'Escala del ahorro · España 2025':'Savings tax scale · Spain 2025')+'</div>'
     + BRACKETS.map((b,i)=>`
     <div class="brk-row">
       <div class="brk-range">${b.range}</div>
       <div class="brk-bar"><div class="brk-fill" style="width:${b.bar}%;background:${b.col}"></div></div>
       <div class="brk-pct">${b.pct}</div>
-      <div>${i===myBracket?'<span class="tx-badge pos">Tu tramo</span>':'<span class="tx-badge neu">—</span>'}</div>
+      <div>${i===myBracket?'<span class="tx-badge pos">'+(_isEsImp?'Tu tramo':'Your bracket')+'</span>':'<span class="tx-badge neu">—</span>'}</div>
     </div>`).join('')
-    + (base>0?`<div style="margin-top:10px;background:rgba(29,179,106,.09);border-radius:9px;padding:10px 12px;border-left:2px solid #16924f"><div style="font-size:11px;color:#3d5248;line-height:1.55">Tu base de ahorro de <strong style="color:#0f1c15">${_taxEuro(base)}</strong> tributa principalmente al <strong style="color:#16924f">${BRACKETS[myBracket].pct}</strong>. Cuota estimada: <strong style="font-family:inherit">${_taxEuro(cuota)}</strong> antes de retenciones.</div></div>`:'');
+    + (base>0?`<div style="margin-top:10px;background:rgba(29,179,106,.09);border-radius:9px;padding:10px 12px;border-left:2px solid #16924f"><div style="font-size:11px;color:#3d5248;line-height:1.55">${_isEsImp?('Tu base de ahorro de <strong style="color:#0f1c15">'+_taxEuro(base)+'</strong> tributa principalmente al <strong style="color:#16924f">'+BRACKETS[myBracket].pct+'</strong>. Cuota estimada: <strong style="font-family:inherit">'+_taxEuro(cuota)+'</strong> antes de retenciones.'):('Your savings base of <strong style="color:#0f1c15">'+_taxEuro(base)+'</strong> is mainly taxed at <strong style="color:#16924f">'+BRACKETS[myBracket].pct+'</strong>. Estimated tax: <strong style="font-family:inherit">'+_taxEuro(cuota)+'</strong> before withholdings.')}</div></div>`:'');
 
   // Sell rows
   const sellEl = document.getElementById('taxSellRows');
   const COLORS=['#1d4ed8','#0f4c81','#6d28d9','#be123c','#374151','#166534','#854d0e','#1e40af'];
   if(!gains.length){
-    sellEl.innerHTML='<div class="tx-empty">No hay ventas registradas para '+year+'.<br><small>Registra transacciones de venta en cada activo.</small></div>';
+    sellEl.innerHTML='<div class="tx-empty">'+(_isEsImp?('No hay ventas registradas para '+year+'.<br><small>Registra transacciones de venta en cada activo.</small>'):('No sales recorded for '+year+'.<br><small>Register sell transactions on each asset.</small>'))+'</div>';
   } else {
     sellEl.innerHTML = gains.map((t,i)=>{
       const isPos=t.gain>=0;
@@ -9824,29 +9837,29 @@ function renderImpuestos(){
       const irpf = isPos ? _taxIRPF(t.gain) : 0;
       return`<div class="tx-row-item">
         <div class="tx-logo" style="background:${COLORS[i%COLORS.length]}">${initials}</div>
-        <div class="tx-inf"><div class="tx-nm">${escapeHtml(t.shortName||t.name)}</div><div class="tx-mt">Vendido ${t.date} · ${t.qty} part. @ ${_taxEuro(t.sellPrice)}</div></div>
+        <div class="tx-inf"><div class="tx-nm">${escapeHtml(t.shortName||t.name)}</div><div class="tx-mt">${_isEsImp?'Vendido':'Sold'} ${t.date} · ${t.qty} ${_isEsImp?'part.':'units'} @ ${_taxEuro(t.sellPrice)}</div></div>
         <div class="tx-rt">
           <div class="tx-gn ${isPos?'pos':'neg'}">${isPos?'+':''}${_taxEuro(t.gain)}</div>
-          <div class="tx-tx ${isPos?'':'comp'}">${isPos?'IRPF: ~'+_taxEuro(irpf):'Compensa ganancia'}</div>
+          <div class="tx-tx ${isPos?'':'comp'}">${isPos?('IRPF: ~'+_taxEuro(irpf)):(_isEsImp?'Compensa ganancia':'Offsets gains')}</div>
         </div>
       </div>`;
     }).join('');
   }
   const neto = gains.reduce((s,t)=>s+t.gain,0);
   document.getElementById('taxSellSummary').innerHTML = `
-    <div style="display:flex;justify-content:space-between;align-items:center"><span style="font-size:11px;font-weight:600;color:#3d5248">Ganancia neta transmisiones</span><span class="tx-badge ${neto>=0?'pos':'neg'}">${neto>=0?'+':''}${_taxEuro(neto)}</span></div>
+    <div style="display:flex;justify-content:space-between;align-items:center"><span style="font-size:11px;font-weight:600;color:#3d5248">${_isEsImp?'Ganancia neta transmisiones':'Net capital gains'}</span><span class="tx-badge ${neto>=0?'pos':'neg'}">${neto>=0?'+':''}${_taxEuro(neto)}</span></div>
   `;
 
   // Dividend rows
   const divEl = document.getElementById('taxDivRows');
   if(!divs.length){
     divEl.innerHTML=(_divDataCache&&_divDataCache.length)
-      ? '<div class="tx-empty">Tu cartera no tiene activos que repartan dividendos.<br><small>Los fondos de acumulación reinvierten los dividendos automáticamente — no tributan hasta que vendes.</small></div>'
-      : '<div class="tx-empty">Aún no se han cargado los dividendos.<br><small>Abre la pestaña Dividendos para cargarlos y vuelve aquí.</small></div>';
+      ? '<div class="tx-empty">'+(_isEsImp?'Tu cartera no tiene activos que repartan dividendos.<br><small>Los fondos de acumulación reinvierten los dividendos automáticamente — no tributan hasta que vendes.</small>':'Your portfolio has no assets that pay dividends.<br><small>Accumulation funds reinvest dividends automatically — they are not taxed until you sell.</small>')+'</div>'
+      : '<div class="tx-empty">'+(_isEsImp?'Aún no se han cargado los dividendos.<br><small>Abre la pestaña Dividendos para cargarlos y vuelve aquí.</small>':'Dividends have not been loaded yet.<br><small>Open the Dividends tab to load them and come back here.</small>')+'</div>';
   } else {
     divEl.innerHTML = divs.slice(0,6).map((d,i)=>{
       const initials=(d.shortName||'').slice(0,4).toUpperCase();
-      const freq=d.payMonths.length>0?d.payMonths.length+' pagos/año':'Anual';
+      const freq=d.payMonths.length>0?(d.payMonths.length+(_isEsImp?' pagos/año':' payments/year')):(_isEsImp?'Anual':'Annual');
       return`<div class="tx-row-item">
         <div class="tx-logo" style="background:${COLORS[i%COLORS.length]}">${initials}</div>
         <div class="tx-inf"><div class="tx-nm">${escapeHtml(d.shortName||d.name)}</div><div class="tx-mt">${freq}</div></div>
@@ -9884,7 +9897,7 @@ function renderImpuestos(){
   // Interest rows
   const intEl = document.getElementById('taxIntRows');
   if(!ints.length){
-    intEl.innerHTML='<div class="tx-empty">No hay cuentas remuneradas con tasa registrada.<br><small>Añade liquidez con tasa de interés para calcular este apartado.</small></div>';
+    intEl.innerHTML='<div class="tx-empty">'+(_isEsImp?'No hay cuentas remuneradas con tasa registrada.<br><small>Añade liquidez con tasa de interés para calcular este apartado.</small>':'No interest accounts with a registered rate.<br><small>Add a cash position with an interest rate to calculate this section.</small>')+'</div>';
   } else {
     intEl.innerHTML = ints.map((it,i)=>`
       <div class="tx-row-item">
@@ -9896,11 +9909,11 @@ function renderImpuestos(){
         </div>
       </div>`).join('')
       + `<div style="display:flex;justify-content:space-between;align-items:center;padding-top:9px;margin-top:4px;border-top:1px solid rgba(0,0,0,.06)">
-        <span style="font-size:11px;font-weight:600;color:#3d5248">Total intereses</span>
+        <span style="font-size:11px;font-weight:600;color:#3d5248">${_isEsImp?'Total intereses':'Total interest'}</span>
         <span class="tx-badge pos">+${_taxEuro(grossInt)}</span>
       </div>
       <div style="display:flex;justify-content:space-between;align-items:center;margin-top:5px">
-        <span style="font-size:11px;font-weight:600;color:#3d5248">Retenciones aplicadas</span>
+        <span style="font-size:11px;font-weight:600;color:#3d5248">${_isEsImp?'Retenciones aplicadas':'Withholdings applied'}</span>
         <span class="tx-badge neg">-${_taxEuro(retInt)}</span>
       </div>`;
   }
@@ -9940,7 +9953,7 @@ function _renderTaxChart(id, config){
 }
 
 function exportTaxPDF(){
-  showToast('Exportación PDF próximamente');
+  showToast(currentLang==='es'?'Exportación PDF próximamente':'PDF export coming soon');
 }
 
 
@@ -10009,7 +10022,7 @@ function _insCard(r) {
   const isSell = /^S/i.test(r.transactionType||'');
   const color   = isBuy ? '#15803d' : isSell ? '#dc2626' : '#8fa090';
   const bgBadge = isBuy ? '#e6faf3' : isSell ? '#fef2f2' : '#f0f4f2';
-  const label   = isBuy ? '▲ COMPRA' : isSell ? '▼ VENTA' : (r.transactionType||'—');
+  const label   = isBuy ? (currentLang==='es'?'▲ COMPRA':'▲ BUY') : isSell ? (currentLang==='es'?'▼ VENTA':'▼ SELL') : (r.transactionType||'—');
   const sym     = ((r.symbol||r.ticker||'')+'').toUpperCase()||'??';
   const co      = r.companyName||'';
   const shares  = Number(r.securitiesTransacted)||0;
@@ -10034,7 +10047,7 @@ function _insCard(r) {
     +'<div style="font-size:12px;color:#3d4f41;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+insider+'</div>'
     +(role?'<div style="font-size:10px;color:#8fa090;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+role+'</div>':'')
     +'<div style="display:flex;align-items:center;gap:8px;margin-top:5px;flex-wrap:wrap">'
-    +'<span style="font-size:11px;font-weight:700;color:#142018">'+sharesStr+' acc.</span>'
+    +'<span style="font-size:11px;font-weight:700;color:#142018">'+sharesStr+' '+(currentLang==='es'?'acc.':'sh.')+'</span>'
     +'<span style="font-size:11px;color:#8fa090">@ '+priceStr+'</span>'
     +(valueStr?'<span style="font-size:11px;font-weight:700;color:'+color+'">'+valueStr+'</span>':'')
     +'<span style="font-size:11px;color:#b0bfb5;margin-left:auto">'+date+'</span>'
@@ -10163,22 +10176,23 @@ function _insClearSearch() {
 
 // ── Desktop sidebar navigation ──────────────────────────────────────────
 (function(){
+  const _isEsNav = currentLang === 'es';
   const SCREEN_META = {
-    home:      { title:'Inicio' },
-    portfolio: { title:'Cartera' },
-    analysis:  { title:'Análisis' },
-    dividends: { title:'Dividendos' },
-    prestamos: { title:'Préstamos' },
-    referidos: { title:'Referidos' },
+    home:      { title:_isEsNav?'Inicio':'Home' },
+    portfolio: { title:_isEsNav?'Cartera':'Portfolio' },
+    analysis:  { title:_isEsNav?'Análisis':'Analysis' },
+    dividends: { title:_isEsNav?'Dividendos':'Dividends' },
+    prestamos: { title:_isEsNav?'Préstamos':'Loans' },
+    referidos: { title:_isEsNav?'Referidos':'Referrals' },
     ia:        { title:'IA — Vera' },
-    impuestos: { title:'Fiscal' },
+    impuestos: { title:_isEsNav?'Fiscal':'Tax' },
     topinvestors:{ title:'Insiders' },
-    alerts:    { title:'Alertas' },
-    asset:     { title:'Detalle de activo' },
-    privacy:   { title:'Privacidad' },
-    terms:     { title:'Términos' },
-    comunidad: { title:'Foro comunidad' },
-    foro:      { title:'Foro comunidad' },
+    alerts:    { title:_isEsNav?'Alertas':'Alerts' },
+    asset:     { title:_isEsNav?'Detalle de activo':'Asset detail' },
+    privacy:   { title:_isEsNav?'Privacidad':'Privacy' },
+    terms:     { title:_isEsNav?'Términos':'Terms' },
+    comunidad: { title:_isEsNav?'Foro comunidad':'Community forum' },
+    foro:      { title:_isEsNav?'Foro comunidad':'Community forum' },
   };
 
   // Wire sidebar buttons
@@ -10227,7 +10241,7 @@ function _insClearSearch() {
     const av = (email.split('@')[0] || displayName).slice(0,2).toUpperCase() || '?';
     const set = (id, val) => { const el = document.getElementById(id); if (el) el.textContent = val; };
     set('deskUserName', email || displayName);
-    set('deskUserPlan', 'Plan Free');
+    set('deskUserPlan', (typeof _userPlan !== 'undefined' && _userPlan === 'pro') ? 'Plan Pro' : 'Plan Free');
     set('deskUserAv', av);
     set('deskMenuAv', av);
     set('deskMenuEmail', email || displayName);
@@ -10275,24 +10289,25 @@ function _insClearSearch() {
     const showMsg = (txt, ok) => { msgEl.textContent = txt; msgEl.style.color = ok ? '#2d7a4f' : '#e05252'; msgEl.style.display = ''; };
     const payload = {};
     if (nameVal) payload.full_name = nameVal;
+    const _isEsDSP = currentLang === 'es';
     if (newPwd) {
-      if (newPwd.length < 6) return showMsg('Mínimo 6 caracteres para la nueva contraseña.', false);
-      if (!pwd) return showMsg('Introduce tu contraseña actual.', false);
+      if (newPwd.length < 6) return showMsg(_isEsDSP ? 'Mínimo 6 caracteres para la nueva contraseña.' : 'New password must be at least 6 characters.', false);
+      if (!pwd) return showMsg(_isEsDSP ? 'Introduce tu contraseña actual.' : 'Enter your current password.', false);
       payload.password = pwd;
       payload.new_password = newPwd;
     }
-    if (!Object.keys(payload).length) return showMsg('Sin cambios.', true);
+    if (!Object.keys(payload).length) return showMsg(_isEsDSP ? 'Sin cambios.' : 'No changes.', true);
     try {
       const token = localStorage.getItem('fa_token') || '';
       const r = await fetch('/auth/v1/user', { method: 'PATCH', headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token }, body: JSON.stringify(payload) });
       const d = await r.json();
-      if (!r.ok) return showMsg(d.message || 'Error al guardar.', false);
-      showMsg('¡Guardado!', true);
+      if (!r.ok) return showMsg(d.message || (_isEsDSP ? 'Error al guardar.' : 'Error saving.'), false);
+      showMsg(_isEsDSP ? '¡Guardado!' : 'Saved!', true);
       document.getElementById('deskMenuPwdCurrent').value = '';
       document.getElementById('deskMenuPwdNew').value = '';
       document.getElementById('deskMenuPwdFields').style.display = 'none';
       if (nameVal) { document.getElementById('deskMenuName').value = nameVal; }
-    } catch(e) { showMsg('Error de red.', false); }
+    } catch(e) { showMsg(_isEsDSP ? 'Error de red.' : 'Network error.', false); }
   }
   async function _deskLogout() {
     ['tf_positions','tf_custom_assets','tf_last_sync','fa_liquidity','_rawCustomAssets','fa_active_user_id','fa_token'].forEach(k=>localStorage.removeItem(k));
@@ -10327,7 +10342,7 @@ function _insClearSearch() {
       const all   = window.assets ? window.assets.length : 0;
       const badge = document.getElementById('dBadgeOk');
       if (badge && all > 0) {
-        badge.textContent = total + '/' + all + ' activos OK';
+        badge.textContent = total + '/' + all + (currentLang==='es'?' activos OK':' assets OK');
         badge.style.display = 'flex';
       }
     }, 3000);
@@ -10618,9 +10633,10 @@ function _comLoad() {
 async function _comLoadFeed() {
   const el = document.getElementById('comFeed');
   if (!el) return;
-  if (!_sb) { el.innerHTML = '<div class="com-empty">Inicia sesión para ver la comunidad</div>'; return; }
+  const _isEsCom = currentLang === 'es';
+  if (!_sb) { el.innerHTML = '<div class="com-empty">'+(_isEsCom?'Inicia sesión para ver la comunidad':'Sign in to view the community')+'</div>'; return; }
 
-  el.innerHTML = '<div class="com-loading">Cargando…</div>';
+  el.innerHTML = '<div class="com-loading">'+(_isEsCom?'Cargando…':'Loading…')+'</div>';
   try {
     let query = _sb.from('community_posts').select('*').order('created_at', { ascending: false }).limit(30);
     if (_comFilter_active !== 'all') query = query.eq('post_type', _comFilter_active);
@@ -10638,8 +10654,8 @@ async function _comLoadFeed() {
     if (!_comPosts.length) {
       el.innerHTML = `<div class="com-empty">
         <div style="font-size:32px;margin-bottom:12px">🌱</div>
-        <div style="font-weight:700;color:#7a9e88;margin-bottom:6px">La comunidad está creciendo</div>
-        <div>¡Sé el primero en publicar!</div>
+        <div style="font-weight:700;color:#7a9e88;margin-bottom:6px">${_isEsCom?'La comunidad está creciendo':'The community is growing'}</div>
+        <div>${_isEsCom?'¡Sé el primero en publicar!':'Be the first to post!'}</div>
       </div>`;
       return;
     }
@@ -10648,7 +10664,7 @@ async function _comLoadFeed() {
   } catch (e) {
     const isNew = e.message?.includes('relation') || e.message?.includes('does not exist');
     el.innerHTML = isNew
-      ? `<div class="com-empty"><div style="font-size:28px;margin-bottom:10px">🛠️</div><div>Comunidad en configuración.<br>Crea las tablas en Supabase para activarla.</div></div>`
+      ? `<div class="com-empty"><div style="font-size:28px;margin-bottom:10px">🛠️</div><div>${_isEsCom?'Comunidad en configuración.<br>Crea las tablas en Supabase para activarla.':'Community being set up.<br>Create the Supabase tables to enable it.'}</div></div>`
       : `<div class="com-empty" style="color:#e74c3c">Error: ${e.message}</div>`;
   }
 }
@@ -10670,42 +10686,45 @@ function _comRenderPost(p) {
     if(!_txMeta&&p.tx_asset)_txMeta={a:p.tx_asset,ty:p.tx_type,dt:p.tx_date,q:p.tx_qty,pr:p.tx_price,d:p.tx_comment||'',k:p.tags||''};
   }
 
+  const _isEsPost = currentLang === 'es';
   let widget = '';
   if (p.post_type === 'portfolio' && _pfMeta) {
     const gain = Number(_pfMeta.g || 0);
     const gainStr = (gain >= 0 ? '▲ +' : '▼ ') + Math.abs(gain).toFixed(2) + '%';
     const gainClass = gain >= 0 ? 'pos' : 'neg';
+    const _pfLocale = _isEsPost ? 'es-ES' : 'en-GB';
     widget = `
       <div class="com-pf-widget">
         <div class="com-pf-hd">
           <div>
-            <div style="font-size:9px;text-transform:uppercase;letter-spacing:.8px;color:#4a6b55;margin-bottom:4px">Valor total</div>
-            <div class="com-pf-total">${Number(_pfMeta.t||0).toLocaleString('es-ES', {minimumFractionDigits:2,maximumFractionDigits:2})} €</div>
+            <div style="font-size:9px;text-transform:uppercase;letter-spacing:.8px;color:#4a6b55;margin-bottom:4px">${_isEsPost?'Valor total':'Total value'}</div>
+            <div class="com-pf-total">${Number(_pfMeta.t||0).toLocaleString(_pfLocale, {minimumFractionDigits:2,maximumFractionDigits:2})} €</div>
           </div>
           <div style="text-align:right">
             <div class="com-pf-gain ${gainClass}">${gainStr}</div>
-            <div style="font-size:11px;color:#4a6b55;margin-top:2px">${_pfMeta.p || 0} posiciones</div>
+            <div style="font-size:11px;color:#4a6b55;margin-top:2px">${_pfMeta.p || 0} ${_isEsPost?'posiciones':'positions'}</div>
           </div>
         </div>
         <div class="com-pf-stats">
-          <div class="com-pf-stat"><div class="com-pf-stat-lbl">Invertido</div><div class="com-pf-stat-val">${Number(_pfMeta.i||0).toLocaleString('es-ES',{maximumFractionDigits:0})} €</div></div>
-          <div class="com-pf-stat"><div class="com-pf-stat-lbl">Posiciones</div><div class="com-pf-stat-val">${_pfMeta.p||0}</div></div>
-          <div class="com-pf-stat"><div class="com-pf-stat-lbl">Rentab.</div><div class="com-pf-stat-val" style="color:#2ecc71">${gain>=0?'+':''}${gain.toFixed(2)}%</div></div>
+          <div class="com-pf-stat"><div class="com-pf-stat-lbl">${_isEsPost?'Invertido':'Invested'}</div><div class="com-pf-stat-val">${Number(_pfMeta.i||0).toLocaleString(_pfLocale,{maximumFractionDigits:0})} €</div></div>
+          <div class="com-pf-stat"><div class="com-pf-stat-lbl">${_isEsPost?'Posiciones':'Positions'}</div><div class="com-pf-stat-val">${_pfMeta.p||0}</div></div>
+          <div class="com-pf-stat"><div class="com-pf-stat-lbl">${_isEsPost?'Rentab.':'Return'}</div><div class="com-pf-stat-val" style="color:#2ecc71">${gain>=0?'+':''}${gain.toFixed(2)}%</div></div>
         </div>
       </div>`;
   } else if (p.post_type === 'transaccion' && _txMeta) {
     const isBuy = (_txMeta.ty || 'Compra') === 'Compra';
-    const txTotal = (Number(_txMeta.q||0) * Number(_txMeta.pr||0)).toLocaleString('es-ES',{minimumFractionDigits:2,maximumFractionDigits:2});
+    const _txLocale = _isEsPost ? 'es-ES' : 'en-GB';
+    const txTotal = (Number(_txMeta.q||0) * Number(_txMeta.pr||0)).toLocaleString(_txLocale,{minimumFractionDigits:2,maximumFractionDigits:2});
     const txDate = _txMeta.dt ? new Date(_txMeta.dt) : null;
     const day = txDate ? txDate.getDate() : '—';
-    const mon = txDate ? txDate.toLocaleString('es-ES',{month:'short'}) : '';
+    const mon = txDate ? txDate.toLocaleString(_txLocale,{month:'short'}) : '';
     widget = `
       <div class="com-tx-widget">
         <div class="com-tx-date-col"><strong>${day}</strong><span>${mon}</span><span style="font-size:10px;color:#4a6b55">${isBuy?'▼':'▲'}</span></div>
         <div class="com-tx-logo">📈</div>
         <div class="com-tx-info">
           <div class="com-tx-asset">${_comEsc(_txMeta.a||'')}</div>
-          <div class="com-tx-detail">${isBuy?'Compra':'Venta'} × ${_txMeta.q||0} acc · ${Number(_txMeta.pr||0).toFixed(2)} €/acc</div>
+          <div class="com-tx-detail">${_isEsPost?(isBuy?'Compra':'Venta'):(isBuy?'Buy':'Sell')} × ${_txMeta.q||0} ${_isEsPost?'acc':'sh'} · ${Number(_txMeta.pr||0).toFixed(2)} €/${_isEsPost?'acc':'sh'}</div>
         </div>
         <div class="com-tx-amount ${isBuy?'buy':'sell'}">${isBuy?'+':'-'}€${txTotal}</div>
       </div>`;
@@ -10738,7 +10757,7 @@ function _comRenderPost(p) {
       ${_sbUser && p.user_id === _sbUser.id ? `<button class="com-action-btn" onclick="_comDeletePost('${p.id}',this)" title="Eliminar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/></svg></button>` : ''}
     </div>
     <div class="com-comments" id="comComments-${p.id}">
-      <div id="comCommentsList-${p.id}"><div class="com-loading" style="padding:12px 0">Cargando comentarios…</div></div>
+      <div id="comCommentsList-${p.id}"><div class="com-loading" style="padding:12px 0">${_isEsPost?'Cargando comentarios…':'Loading comments…'}</div></div>
       <div class="com-comment-input">
         <div class="com-av" style="width:28px;height:28px;font-size:11px">${_sbUser?(_sbUser.email||'?').slice(0,2).toUpperCase():'?'}</div>
         <input type="text" class="com-comment-field" placeholder="Escribe un comentario…" id="comCF-${p.id}" onkeydown="if(event.key==='Enter')_comAddComment('${p.id}')">
@@ -10773,18 +10792,18 @@ async function _comLoadComments(postId) {
           <div class="com-comment-text">${_comEsc(c.content)}</div>
         </div>
       </div>`;
-    }).join('') : '<div style="font-size:12px;color:#4a6b55;padding:8px 0">Sin comentarios aún.</div>';
+    }).join('') : '<div style="font-size:12px;color:#4a6b55;padding:8px 0">'+(currentLang==='es'?'Sin comentarios aún.':'No comments yet.')+'</div>';
   } catch(e) { el.innerHTML = ''; }
 }
 
 async function _comAddComment(postId) {
-  if (!_sb || !_sbUser) { alert('Inicia sesión para comentar'); return; }
+  if (!_sb || !_sbUser) { alert(currentLang==='es'?'Inicia sesión para comentar':'Sign in to comment'); return; }
   const input = document.getElementById(`comCF-${postId}`);
   if (!input) return;
   const text = input.value.trim();
   if (!text) return;
   input.value = '';
-  const displayName = _sbUser.user_metadata?.full_name || _sbUser.email?.split('@')[0] || 'Usuario';
+  const displayName = _sbUser.user_metadata?.full_name || _sbUser.email?.split('@')[0] || (currentLang==='es'?'Usuario':'User');
   try {
     await _sb.from('community_comments').insert({ post_id: postId, user_id: _sbUser.id, display_name: displayName, content: text });
     await _sb.rpc('increment_comments_count', { post_id: postId }).catch(() => {
@@ -10798,7 +10817,7 @@ async function _comAddComment(postId) {
 }
 
 async function _comToggleLike(postId, btn) {
-  if (!_sb || !_sbUser) { alert('Inicia sesión para dar me gusta'); return; }
+  if (!_sb || !_sbUser) { alert(currentLang==='es'?'Inicia sesión para dar me gusta':'Sign in to like'); return; }
   const liked = _comMyLikes.has(postId);
   const span = btn.querySelector('span');
   const svg = btn.querySelector('svg');
@@ -10825,7 +10844,7 @@ async function _comToggleLike(postId, btn) {
 }
 
 async function _comDeletePost(postId, btn) {
-  if (!_sb || !_sbUser || !confirm('¿Eliminar esta publicación?')) return;
+  if (!_sb || !_sbUser || !confirm(currentLang==='es'?'¿Eliminar esta publicación?':'Delete this post?')) return;
   try {
     await _sb.from('community_posts').delete().eq('id', postId).eq('user_id', _sbUser.id);
     btn.closest('.com-post')?.remove();
@@ -10840,7 +10859,7 @@ function _comFilter(btn, type) {
 }
 
 function _comOpenModal(tab) {
-  if (!_sb || !_sbUser) { alert('Inicia sesión para publicar'); return; }
+  if (!_sb || !_sbUser) { alert(currentLang==='es'?'Inicia sesión para publicar':'Sign in to post'); return; }
   document.getElementById('comModal').classList.add('open');
   _comSwitchTab(tab);
   document.getElementById('comPostMsg').style.display = 'none';
@@ -10884,7 +10903,7 @@ async function _comPublish() {
     else { alert(currentLang==='es'?'Inicia sesión para publicar en el foro.':'Sign in to post in the forum.'); }
     return;
   }
-  const displayName = _sbUser.user_metadata?.full_name || _sbUser.email?.split('@')[0] || 'Usuario';
+  const displayName = _sbUser.user_metadata?.full_name || _sbUser.email?.split('@')[0] || (currentLang==='es'?'Usuario':'User');
 
   let payload = { user_id: _sbUser.id, display_name: displayName, post_type: _comModalTab };
 
@@ -11004,7 +11023,7 @@ async function _comLoadTopMembers() {
       byUser[p.user_id].likes += (p.likes_count||0);
     });
     const sorted = Object.entries(byUser).sort((a,b) => b[1].likes - a[1].likes).slice(0,4);
-    if (!sorted.length) { el.innerHTML = '<div style="font-size:12px;color:#4a6b55">Aún no hay miembros activos</div>'; return; }
+    if (!sorted.length) { el.innerHTML = '<div style="font-size:12px;color:#4a6b55">'+(currentLang==='es'?'Aún no hay miembros activos':'No active members yet')+'</div>'; return; }
     const colors = ['#1a7a43,#2ecc71','#1a4a6a,#3498db','#4a3a1a,#d4af37','#6a1a4a,#c39bd3'];
     el.innerHTML = sorted.map(([uid, u], i) => `
       <div class="com-top-user" onclick="_comShowProfile('${uid}','${_comEsc(u.name)}')">
@@ -11018,10 +11037,11 @@ async function _comLoadTopMembers() {
 function _comTimeAgo(ts) {
   if (!ts) return '';
   const diff = (Date.now() - new Date(ts).getTime()) / 1000;
-  if (diff < 60) return 'ahora';
-  if (diff < 3600) return `hace ${Math.floor(diff/60)}m`;
-  if (diff < 86400) return `hace ${Math.floor(diff/3600)}h`;
-  return `hace ${Math.floor(diff/86400)}d`;
+  const _isEsTA = currentLang === 'es';
+  if (diff < 60) return _isEsTA ? 'ahora' : 'now';
+  if (diff < 3600) return _isEsTA ? `hace ${Math.floor(diff/60)}m` : `${Math.floor(diff/60)}m ago`;
+  if (diff < 86400) return _isEsTA ? `hace ${Math.floor(diff/3600)}h` : `${Math.floor(diff/3600)}h ago`;
+  return _isEsTA ? `hace ${Math.floor(diff/86400)}d` : `${Math.floor(diff/86400)}d ago`;
 }
 
 function _comEsc(str) {

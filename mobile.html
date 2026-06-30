@@ -10,7 +10,7 @@
   no-store headers are ignored (in-app webviews) because it is plain page JS.
   Source of truth = sw.js (always served no-cache, version-bumped each deploy). */
 (function(){try{
-  var FA_BUILD='274';
+  var FA_BUILD='275';
   var s=location.search;
   if(s.indexOf('vchk')>-1||s.indexOf('_v=')>-1){
     // Clean the ugly ?vchk= / ?_v= from the URL silently
@@ -6806,7 +6806,7 @@ function _updateIACreditsBar() {
   } else if (_userCredits && _userCredits.limit > 0) {
     const pct = Math.max(0, Math.min(100, (_userCredits.remaining / _userCredits.limit) * 100));
     const color = pct > 30 ? '#4ade80' : pct > 10 ? '#f5b731' : '#f87171';
-    bar.innerHTML = `<span style="color:#8fa090;font-size:.7rem">${_userCredits.remaining} msgs restantes</span><div style="flex:1;height:4px;background:#e8ebe9;border-radius:4px;overflow:hidden"><div style="height:100%;width:${pct}%;background:${color};border-radius:4px;transition:width .4s"></div></div>`;
+    bar.innerHTML = `<span style="color:#8fa090;font-size:.7rem">${_userCredits.remaining} ${currentLang==='es'?'msgs restantes':'msgs remaining'}</span><div style="flex:1;height:4px;background:#e8ebe9;border-radius:4px;overflow:hidden"><div style="height:100%;width:${pct}%;background:${color};border-radius:4px;transition:width .4s"></div></div>`;
     bar.style.display = 'flex';
   } else {
     bar.style.display = 'none';
@@ -6944,7 +6944,7 @@ function renderAccountSection(){
           <div style="font-size:13px;font-weight:600;color:#142018;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${_sbUser.email}</div>
           <div style="display:flex;align-items:center;gap:6px;margin-top:1px">
             <div class="js-plan-badge" style="font-size:11px">Plan Free</div>
-            <div style="font-size:10px;color:#8fa090;font-weight:700">· v199</div>
+            <div style="font-size:10px;color:#8fa090;font-weight:700">· v${typeof FA_BUILD!=='undefined'?FA_BUILD:''}</div>
           </div>
         </div>
       </div>
@@ -7306,7 +7306,7 @@ function _setAuthMode(mode){
 }
 async function _submitAuth(){
   if(!_sb){try{await initSupabase();}catch(e){_showAuthMsg((e&&e.message)||'Error de conexión','err');return;}}
-  if(!_sb){_showAuthMsg(_sbInitErr||currentLang==='es'?'Error al conectar con el servidor.':'Server connection error.','err');return;}
+  if(!_sb){_showAuthMsg(_sbInitErr||(currentLang==='es'?'Error al conectar con el servidor.':'Server connection error.'),'err');return;}
   const btn=document.getElementById('authSubmitBtn');
   // Handle forgot password
   if(_authMode==='forgotpass'){
@@ -7547,7 +7547,7 @@ async function authSubmit() {
   const name  = document.getElementById('auth-name')?.value?.trim() || '';
   const isEs  = currentLang === 'es';
   if (!emailOrUser || !pass) { showAuthErr(isEs ? 'Completa email/usuario y contraseña.' : 'Enter email/username and password.'); return; }
-  if (pass.length < 8) { showAuthErr(isEs ? 'Contraseña mínimo 8 caracteres.' : 'Password must be at least 8 characters.'); return; }
+  if (_authMode === 'register' && pass.length < 6) { showAuthErr(isEs ? 'Contraseña mínimo 6 caracteres.' : 'Password must be at least 6 characters.'); return; }
   // Resolve username → email if no @ present (login mode only)
   let email = emailOrUser;
   if (_authMode === 'login' && !emailOrUser.includes('@')) {
@@ -7658,10 +7658,6 @@ function handleAlertNotifToggle(el){
 function requestAlertNotifPerms(){
   requestAlertPushPerms().then(perm=>{
     if(perm==='granted'){const b=document.getElementById('alertsNotifBanner');if(b)b.style.display='none';}
-  });
-  return;
-  if('Notification'in window) Notification.requestPermission().then(p=>{
-    if(p==='granted'){document.getElementById('alertsNotifBanner').style.display='none';showToast('Notificaciones activadas ✓');}
   });
 }
 
@@ -7878,7 +7874,7 @@ function checkAlertsTrigger(){
   if(changed){saveAlerts(alerts);_renderAlertsListScreen();}
 }
 // Check alerts every 60 seconds when app is open
-_alertCheckInterval = setInterval(checkAlertsTrigger, 60000);
+let _alertCheckInterval = setInterval(checkAlertsTrigger, 60000);
 
 // ══════════════════════════════════════════════════════════════════
 // LIQUIDITY
