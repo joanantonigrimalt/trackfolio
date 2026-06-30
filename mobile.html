@@ -10,7 +10,7 @@
   no-store headers are ignored (in-app webviews) because it is plain page JS.
   Source of truth = sw.js (always served no-cache, version-bumped each deploy). */
 (function(){try{
-  var FA_BUILD='283';
+  var FA_BUILD='284';
   var s=location.search;
   if(s.indexOf('vchk')>-1||s.indexOf('_v=')>-1){
     // Clean the ugly ?vchk= / ?_v= from the URL silently
@@ -1531,7 +1531,18 @@ table.an-corr-mtx{border-collapse:separate;border-spacing:4px}
       <span style="font-size:12px;font-weight:700;color:#8fa090;text-transform:uppercase;letter-spacing:.06em">Total</span>
       <span id="homeLiqTotalAmt" style="font-size:16px;font-weight:800;color:#142018"></span>
     </div>
-
+  </div>
+  <div class="card" id="homeDebtCard" style="display:none">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+      <div class="sectionTitle" style="margin-bottom:0">🏦 Deuda</div>
+      <button onclick="navTo('screen-prestamos')" style="background:none;border:none;font-size:12px;font-weight:700;color:#b91c1c;cursor:pointer;padding:4px 8px">Ver todo →</button>
+    </div>
+    <div id="homeDebtList"></div>
+    <div style="display:flex;justify-content:space-between;align-items:center;padding-top:10px;margin-top:6px;border-top:1px solid rgba(20,32,24,.06)">
+      <span style="font-size:12px;font-weight:700;color:#8fa090;text-transform:uppercase;letter-spacing:.06em">Total deuda</span>
+      <span id="homeDebtTotalAmt" style="font-size:16px;font-weight:800;color:#b91c1c"></span>
+    </div>
+  </div>
 
 <div style="margin:0 0 16px">
   <a href="https://t.me/finassetes" target="_blank" rel="noopener noreferrer" style="display:flex;align-items:center;justify-content:center;gap:9px;width:100%;padding:13px 16px;background:rgba(0,136,204,.07);border:1.5px solid rgba(0,136,204,.18);border-radius:16px;font-family:inherit;font-size:14px;font-weight:700;color:#0088cc;text-decoration:none;box-sizing:border-box">
@@ -1587,6 +1598,17 @@ table.an-corr-mtx{border-collapse:separate;border-spacing:4px}
     <div style="display:flex;justify-content:space-between;align-items:center;padding-top:10px;margin-top:6px;border-top:1px solid rgba(20,32,24,.06)">
       <span style="font-size:12px;font-weight:700;color:#8fa090;text-transform:uppercase;letter-spacing:.06em">Total</span>
       <span id="portfolioLiqTotalAmt" style="font-size:16px;font-weight:800;color:#142018"></span>
+    </div>
+  </div>
+  <div class="card" id="portfolioDebtCard" style="display:none">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+      <div class="sectionTitle" style="margin-bottom:0">🏦 Deuda</div>
+      <button onclick="navTo('screen-prestamos')" style="background:none;border:none;font-size:12px;font-weight:700;color:#b91c1c;cursor:pointer;padding:4px 8px">Ver todo →</button>
+    </div>
+    <div id="portfolioDebtList"></div>
+    <div style="display:flex;justify-content:space-between;align-items:center;padding-top:10px;margin-top:6px;border-top:1px solid rgba(20,32,24,.06)">
+      <span style="font-size:12px;font-weight:700;color:#8fa090;text-transform:uppercase;letter-spacing:.06em">Total deuda</span>
+      <span id="portfolioDebtTotalAmt" style="font-size:16px;font-weight:800;color:#b91c1c"></span>
     </div>
   </div>
 </div>
@@ -3358,7 +3380,7 @@ table.an-corr-mtx{border-collapse:separate;border-spacing:4px}
       const r=await fetch(_sb.supabaseUrl+'/rest/v1/user_loans?user_id=eq.'+encodeURIComponent(_sbUser.id)+'&select=data&limit=1',{
         headers:{'apikey':_sb.supabaseKey,'Authorization':'Bearer '+(localStorage.getItem('fa_token')||(_sbUser&&_sbUser.access_token)||''),'Accept':'application/vnd.pgrst.object+json'}
       });
-      if(r.ok){const j=await r.json();if(j&&Array.isArray(j.data)){localStorage.setItem('fa_loans',JSON.stringify(j.data));window.LnRenderPrestamos();if(typeof renderLists==='function')renderLists();}}
+      if(r.ok){const j=await r.json();if(j&&Array.isArray(j.data)){localStorage.setItem('fa_loans',JSON.stringify(j.data));window.LnRenderPrestamos();if(typeof renderDebt==='function')renderDebt();if(typeof renderLists==='function')renderLists();}}
     }catch(e){console.warn('ln-sync-sb',e);}
   };
   window.LnDelete=function(id){ if(!confirm('¿Eliminar este producto?')) return; LnSave(LnGetLoans().filter(x=>x.id!==id)); LnRenderPrestamos(); };
@@ -3521,12 +3543,12 @@ table.an-corr-mtx{border-collapse:separate;border-spacing:4px}
   // Override MiLoad to also trigger mobile render
   var _origMiLoad=window.MiLoad;
   window.MiLoad=function(force){
-    var MI_API='/api/myinvestor/catalog?v=283';
-    var cached=localStorage.getItem('mi_cache'); var cachedAt=parseInt(localStorage.getItem('mi_cache_at')||'0');
+    var MI_API='/api/myinvestor/catalog?v=284';
+    var cached=localStorage.getItem('mi_cache_283'); var cachedAt=parseInt(localStorage.getItem('mi_cache_283_at')||'0');
     if(!force && cached && (Date.now()-cachedAt)<7*24*3600*1000){
       try{_miMData=JSON.parse(cached);}catch(_){}
       if(_miMData.length>0){
-        var upd=localStorage.getItem('mi_cache_updated');
+        var upd=localStorage.getItem('mi_cache_283_updated');
         if(upd){var ue=document.getElementById('miMUpdated');if(ue)ue.textContent=upd;}
         MiMRender(); return;
       }
@@ -3537,11 +3559,11 @@ table.an-corr-mtx{border-collapse:separate;border-spacing:4px}
       var arr=json.products||json.data||json||[];
       if(!Array.isArray(arr))throw new Error('Sin datos del catálogo');
       _miMData=arr;
-      localStorage.setItem('mi_cache',JSON.stringify(_miMData));
-      localStorage.setItem('mi_cache_at',String(Date.now()));
+      localStorage.setItem('mi_cache_283',JSON.stringify(_miMData));
+      localStorage.setItem('mi_cache_283_at',String(Date.now()));
       var upd=json.updated?new Date(json.updated).toLocaleDateString('es-ES'):'—';
       var updTxt='Actualizado: '+upd+(json.count?' · '+json.count+' productos':'');
-      localStorage.setItem('mi_cache_updated',updTxt);
+      localStorage.setItem('mi_cache_283_updated',updTxt);
       var ue=document.getElementById('miMUpdated');if(ue)ue.textContent=updTxt;
       MiMRender();
     }).catch(function(e){
@@ -3555,7 +3577,7 @@ table.an-corr-mtx{border-collapse:separate;border-spacing:4px}
 
   window.MiMRender=function(){
     // Sync data from cache if not loaded yet
-    if(!_miMData.length){ try{var c=localStorage.getItem('mi_cache');if(c){_miMData=JSON.parse(c)||[];}}catch(_){} }
+    if(!_miMData.length){ try{var c=localStorage.getItem('mi_cache_283');if(c){_miMData=JSON.parse(c)||[];}}catch(_){} }
     var q=(document.getElementById('miMSearch')?.value||'').toLowerCase();
     var rows=_miMData.filter(function(r){
       if(_miMTipo==='ETF' && String(r.tipo).toUpperCase()!=='ETF') return false;
@@ -6320,42 +6342,10 @@ function renderLists(){
       </div>
     </div>`;
   }).join('');
-  // Append loan cards to home/portfolio list
-  const _loans=typeof LnGetLoans==='function'?LnGetLoans():[];
-  let loanHtml='';
-  if(_loans.length>0){
-    function _lnPending(l){
-      if(l.tipo==='credito') return (l.disp||0);
-      try{
-        const r=l.tin/100/12,m=l.meses,c=l.cap;
-        const cuo=r===0?c/m:c*r*Math.pow(1+r,m)/(Math.pow(1+r,m)-1);
-        const el=Math.min((()=>{if(!l.fecha)return 0;const d=new Date(l.fecha+'T00:00:00'),now=new Date();return Math.max(0,(now.getFullYear()-d.getFullYear())*12+(now.getMonth()-d.getMonth()));})(),m);
-        const sched=(()=>{let s=c;const rows=[];for(let i=1;i<=m;i++){const intv=s*r,cap=cuo-intv;s=Math.max(0,s-cap);rows.push(s);}return rows;})();
-        return l.saldoPendiente!==undefined?l.saldoPendiente:(el>0?(sched[el-1]??c):c);
-      }catch(_){return l.cap||0;}
-    }
-    function _lnFmt(n){return new Intl.NumberFormat('es-ES',{style:'currency',currency:'EUR',maximumFractionDigits:0}).format(n||0);}
-    loanHtml=_loans.map(l=>{
-      const pending=_lnPending(l);
-      const isCredito=l.tipo==='credito';
-      const label=isCredito?'Crédito':'Préstamo';
-      const sublabel=isCredito?`Dispuesto: ${_lnFmt(l.disp||0)}`:`${l.meses} meses · TIN ${(l.tin||0).toFixed(2)}%`;
-      return`<div class="asset" style="cursor:pointer" onclick="navTo('screen-prestamos')">
-        <div class="icon" style="background:#fee2e2;color:#b91c1c;font-size:14px;font-weight:800">🏦</div>
-        <div style="min-width:0;flex:1">
-          <div class="name">${(l.nombre||label).replace(/</g,'&lt;')}</div>
-          <div class="meta">${label}${l.entidad?' · '+l.entidad.replace(/</g,'&lt;'):''}</div>
-          <div class="meta" style="font-size:9.5px">${sublabel}</div>
-        </div>
-        <div class="right">
-          <div class="money" style="color:#b91c1c">-${_lnFmt(pending)}</div>
-          <div class="pct" style="font-size:10px;color:#8fa090">deuda</div>
-        </div>
-      </div>`;
-    }).join('');
-  }
-  document.getElementById('list').innerHTML=html+loanHtml;
-  document.getElementById('portfolioList').innerHTML=html+loanHtml;
+  document.getElementById('list').innerHTML=html;
+  document.getElementById('portfolioList').innerHTML=html;
+  // Render debt section separately
+  if(typeof renderDebt==='function') renderDebt();
   document.querySelectorAll('#list .asset, #portfolioList .asset').forEach(el=>{
     if(el.dataset.isin){el.addEventListener('click',()=>{const a=assets.find(x=>x.isin===el.dataset.isin);if(a)showAssetDetail(a,document.querySelector('.tab button.active')?.dataset?.screen||'home');});}
   });
@@ -8288,6 +8278,49 @@ function deleteLiqItem() {
   closeLiqModal();
   renderLiquidity();
   syncToCloud().catch(()=>{});
+}
+
+function _lnPendingAmt(l){
+  if(l.tipo==='credito') return (l.disp||0);
+  try{
+    const r=l.tin/100/12,m=l.meses,c=l.cap;
+    const cuo=r===0?c/m:c*r*Math.pow(1+r,m)/(Math.pow(1+r,m)-1);
+    const el=Math.min((()=>{if(!l.fecha)return 0;const d=new Date(l.fecha+'T00:00:00'),now=new Date();return Math.max(0,(now.getFullYear()-d.getFullYear())*12+(now.getMonth()-d.getMonth()));})(),m);
+    const sched=(()=>{let s=c;const rows=[];for(let i=1;i<=m;i++){const intv=s*r,cap=cuo-intv;s=Math.max(0,s-cap);rows.push(s);}return rows;})();
+    return l.saldoPendiente!==undefined?l.saldoPendiente:(el>0?(sched[el-1]??c):c);
+  }catch(_){return l.cap||0;}
+}
+function _lnFmtAmt(n){return new Intl.NumberFormat('es-ES',{style:'currency',currency:'EUR',maximumFractionDigits:0}).format(n||0);}
+
+function renderDebt(){
+  const loans=typeof LnGetLoans==='function'?LnGetLoans():[];
+  const hasDebt=loans.length>0;
+  ['homeDebtCard','portfolioDebtCard'].forEach(id=>{
+    const el=document.getElementById(id);if(el)el.style.display=hasDebt?'':'none';
+  });
+  if(!hasDebt) return;
+  let total=0;
+  const rows=loans.map(l=>{
+    const pending=_lnPendingAmt(l);
+    total+=pending;
+    const isCredito=l.tipo==='credito';
+    const label=isCredito?'Crédito':'Préstamo';
+    const sublabel=isCredito?`Dispuesto: ${_lnFmtAmt(l.disp||0)}`:`${l.meses||'?'} meses · TIN ${(l.tin||0).toFixed(2)}%`;
+    return`<div class="liqRow" style="cursor:pointer" onclick="navTo('screen-prestamos')">
+      <div class="liqIcon" style="background:#fee2e2;color:#b91c1c">🏦</div>
+      <div style="min-width:0;flex:1">
+        <div class="liqName">${(l.nombre||label).replace(/</g,'&lt;')}</div>
+        <div class="liqMeta">${label}${l.entidad?' · '+l.entidad.replace(/</g,'&lt;'):''}</div>
+        <div class="liqMeta">${sublabel}</div>
+      </div>
+      <div class="liqRight">
+        <div class="liqAmt" style="color:#b91c1c">-${_lnFmtAmt(pending)}</div>
+        <div class="liqRate" style="color:#b91c1c">${(l.tin||0).toFixed(2)}% TIN</div>
+      </div>
+    </div>`;
+  }).join('');
+  ['homeDebtList','portfolioDebtList'].forEach(id=>{const el=document.getElementById(id);if(el)el.innerHTML=rows;});
+  ['homeDebtTotalAmt','portfolioDebtTotalAmt'].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent='-'+_lnFmtAmt(total);});
 }
 
 function renderLiquidity() {

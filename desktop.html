@@ -6,7 +6,7 @@
   (served no-cache, version-bumped each deploy). Works even where SW/no-store
   are ignored, because it is plain page JS. */
 (function(){try{
-  var FA_BUILD=window.FA_BUILD='283';
+  var FA_BUILD=window.FA_BUILD='284';
   var s=location.search;
   if(s.indexOf('vchk')>-1||s.indexOf('_v=')>-1){history.replaceState(null,'',location.pathname+(location.hash||''));return;}
   fetch('/sw.js?_='+Date.now(),{cache:'no-store'}).then(function(r){return r.text();}).then(function(t){
@@ -4271,14 +4271,14 @@ html,body{height:100%;overflow:hidden;font-family:-apple-system,BlinkMacSystemFo
   window.MiPage=function(p){ _miPage=p; };
 
   window.MiLoad=function(force){
-    var MI_API='/api/myinvestor/catalog?v=283';
+    var MI_API='/api/myinvestor/catalog?v=284';
     // Check cache (7 days). Also skip cache if it's empty (0 items — failed previous load)
-    var cached=localStorage.getItem('mi_cache'); var cachedAt=parseInt(localStorage.getItem('mi_cache_at')||'0');
+    var cached=localStorage.getItem('mi_cache_283'); var cachedAt=parseInt(localStorage.getItem('mi_cache_283_at')||'0');
     if(!force && cached && (Date.now()-cachedAt)<7*24*3600*1000){
       try{_miData=JSON.parse(cached);}catch(_){}
       if(_miData.length>0){
         // Restore last update display from cache
-        var cachedUpd=localStorage.getItem('mi_cache_updated');
+        var cachedUpd=localStorage.getItem('mi_cache_283_updated');
         if(cachedUpd&&document.getElementById('miUpdated')){
           document.getElementById('miUpdated').textContent=cachedUpd;
         }
@@ -4291,12 +4291,12 @@ html,body{height:100%;overflow:hidden;font-family:-apple-system,BlinkMacSystemFo
       var arr=json.products||json.data||json||[];
       if(!Array.isArray(arr)) throw new Error(currentLang==='es'?'Sin datos del catálogo':'No catalog data');
       _miData=arr;
-      localStorage.setItem('mi_cache',JSON.stringify(_miData));
-      localStorage.setItem('mi_cache_at',String(Date.now()));
+      localStorage.setItem('mi_cache_283',JSON.stringify(_miData));
+      localStorage.setItem('mi_cache_283_at',String(Date.now()));
       var _miLocale=currentLang==='es'?'es-ES':'en-GB';
       var upd=json.updated?new Date(json.updated).toLocaleDateString(_miLocale):'—';
       var updTxt=(currentLang==='es'?'Actualizado: ':'Updated: ')+upd+(json.count?' · '+json.count+(currentLang==='es'?' productos':' products'):'');
-      localStorage.setItem('mi_cache_updated',updTxt);
+      localStorage.setItem('mi_cache_283_updated',updTxt);
       var updEl=document.getElementById('miUpdated'); if(updEl)updEl.textContent=updTxt;
       MiRender();
     }).catch(function(e){
