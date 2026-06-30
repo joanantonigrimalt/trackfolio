@@ -6,7 +6,7 @@
   (served no-cache, version-bumped each deploy). Works even where SW/no-store
   are ignored, because it is plain page JS. */
 (function(){try{
-  var FA_BUILD=window.FA_BUILD='276';
+  var FA_BUILD=window.FA_BUILD='277';
   var s=location.search;
   if(s.indexOf('vchk')>-1||s.indexOf('_v=')>-1){history.replaceState(null,'',location.pathname+(location.hash||''));return;}
   fetch('/sw.js?_='+Date.now(),{cache:'no-store'}).then(function(r){return r.text();}).then(function(t){
@@ -3276,7 +3276,7 @@ html,body{height:100%;overflow:hidden;font-family:-apple-system,BlinkMacSystemFo
         <div style="font-size:.75rem;font-weight:700;color:#8fa090;text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px">Free</div>
         <div style="font-size:1.6rem;font-weight:800;color:#142018;margin-bottom:14px">0€<span style="font-size:.75rem;color:#8fa090;font-weight:400">/mes</span></div>
         <div style="display:flex;flex-direction:column;gap:8px;font-size:.82rem;color:#4a5f4e">
-          <div>✓ Hasta <b>7 activos</b></div>
+          <div>✓ Hasta <b>10 activos</b></div>
           <div>✓ Dividendos básicos</div>
           <div>✓ Préstamos y impuestos</div>
           <div style="color:#c0c0c0">✗ IA — Vera</div>
@@ -7842,7 +7842,7 @@ function saveNewAsset(){
 // ═══════════════════════════════════════════════════════════
 // PLAN SYSTEM
 // ═══════════════════════════════════════════════════════════
-const FREE_ASSET_LIMIT = 7; // Free plan: max 7 assets
+const FREE_ASSET_LIMIT = 10; // Free plan: max 10 assets
 let _userPlan = 'free'; // 'free' | 'pro'  (pro = Premium 9,99€/mes)
 let _userCredits = { used: 0, limit: 0, remaining: 0, month: '' };
 
@@ -7925,7 +7925,7 @@ function _showUpgradeModal(reason) {
     alerts:       { es: 'Alertas de precio', en: 'Price alerts' },
   };
   const descs = {
-    assets:       { es: 'El plan Free está limitado a <b>7 activos</b>. Con Premium tienes posiciones ilimitadas.', en: 'Free plan is limited to <b>7 assets</b>. Premium has unlimited positions.' },
+    assets:       { es: 'El plan Free está limitado a <b>10 activos</b>. Con Premium tienes posiciones ilimitadas.', en: 'Free plan is limited to <b>10 assets</b>. Premium has unlimited positions.' },
     analysis:     { es: 'El análisis de portfolio completo está disponible en el plan <b>Premium</b>.', en: 'Full portfolio analysis is available in the <b>Premium</b> plan.' },
     impuestos:    { es: 'El informe de impuestos (IRPF) está disponible en el plan <b>Premium</b>.', en: 'The tax report is available in the <b>Premium</b> plan.' },
     topinvestors: { es: 'Accede a las carteras de los mejores inversores con el plan <b>Premium</b>.', en: 'Access top investor portfolios with the <b>Premium</b> plan.' },
