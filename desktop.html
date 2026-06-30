@@ -4245,6 +4245,7 @@ html,body{height:100%;overflow:hidden;font-family:-apple-system,BlinkMacSystemFo
       .then(function(r){ return r.json(); })
       .then(function(json){
         var ret=json.returns||{};
+        var gotNewRent=false;
         Object.keys(ret).forEach(function(isin){
           var d=ret[isin];
           _miReturns[isin]=d;
@@ -4258,11 +4259,13 @@ html,body{height:100%;overflow:hidden;font-family:-apple-system,BlinkMacSystemFo
           // Update _miData so sorting works after load
           var item=_miData.find(function(p){ return p.isin===isin; });
           if(item){
-            if(d.rent1a!==null) item.rent1a=d.rent1a;
-            if(d.rent3a!==null) item.rent3a=d.rent3a;
-            if(d.rent5a!==null) item.rent5a=d.rent5a;
+            if(d.rent1a!==null && item.rent1a!==d.rent1a){ item.rent1a=d.rent1a; gotNewRent=true; }
+            if(d.rent3a!==null && item.rent3a!==d.rent3a){ item.rent3a=d.rent3a; gotNewRent=true; }
+            if(d.rent5a!==null && item.rent5a!==d.rent5a){ item.rent5a=d.rent5a; gotNewRent=true; }
           }
         });
+        // Re-sort after data arrives if user is sorting by rent
+        if(gotNewRent && (_miSort==='rent1a'||_miSort==='rent3a'||_miSort==='rent5a')) MiRender();
       })
       .catch(function(e){ console.warn('[MiLoadReturns]',e.message); });
   }
