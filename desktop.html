@@ -4092,7 +4092,8 @@ html,body{height:100%;overflow:hidden;font-family:-apple-system,BlinkMacSystemFo
     </div>
     <div class="mi-sort">
       <span class="mi-sort-lbl">Ordenar:</span>
-      <button class="mi-sortbtn active" data-sort="rent1a" onclick="MiSetSort('rent1a')">1A ↓</button>
+      <button class="mi-sortbtn active" data-sort="nombre" onclick="MiSetSort('nombre')">Nombre ↑</button>
+      <button class="mi-sortbtn" data-sort="rent1a" onclick="MiSetSort('rent1a')">1A ↓</button>
       <button class="mi-sortbtn" data-sort="rent3a" onclick="MiSetSort('rent3a')">3A ↓</button>
       <button class="mi-sortbtn" data-sort="rent5a" onclick="MiSetSort('rent5a')">5A ↓</button>
       <button class="mi-sortbtn" data-sort="ter" onclick="MiSetSort('ter')">TER ↑</button>
@@ -4134,7 +4135,7 @@ html,body{height:100%;overflow:hidden;font-family:-apple-system,BlinkMacSystemFo
 
 <script>
 (function(){
-  var _miData=[], _miTipo='todos', _miSort='rent1a', _miPage=0, _miPageSize=100;
+  var _miData=[], _miTipo='todos', _miSort='nombre', _miPage=0, _miPageSize=100;
   var _miReturns={}; // session cache: isin → {rent1a,rent3a,rent5a}
 
   function MiFmt(v){ if(v===''||v===null||v===undefined) return '<span style="color:var(--muted)">—</span>'; var n=parseFloat(v); if(isNaN(n)) return '<span style="color:var(--muted)">—</span>'; var cls=n>0?'pos':n<0?'neg':'neu'; return '<span class="mi-pct '+cls+'">'+(n>0?'+':'')+n.toFixed(2)+'%</span>'; }
@@ -4172,19 +4173,24 @@ html,body{height:100%;overflow:hidden;font-family:-apple-system,BlinkMacSystemFo
   window.MiRender=function(){
     var q=(document.getElementById('miSearch')?.value||'').toLowerCase();
     var rows=_miData.filter(function(r){
-      if(_miTipo!=='todos' && String(r.tipo).toLowerCase()!==_miTipo.toLowerCase()) return false;
+      if(_miTipo==='ETF' && String(r.tipo).toUpperCase()!=='ETF') return false;
+      if(_miTipo==='Fondo' && String(r.tipo).toUpperCase()==='ETF') return false;
       if(q && !String(r.nombre).toLowerCase().includes(q) && !String(r.isin).toLowerCase().includes(q) && !String(r.categoria).toLowerCase().includes(q)) return false;
       return true;
     });
     // Sort
-    var sortKey=_miSort==='ter'?'ter':_miSort;
-    var asc=_miSort==='ter';
-    rows.sort(function(a,b){
-      var av=parseFloat(a[sortKey]); var bv=parseFloat(b[sortKey]);
-      var an=isNaN(av), bn=isNaN(bv);
-      if(an&&bn) return 0; if(an) return 1; if(bn) return -1;
-      return asc?(av-bv):(bv-av);
-    });
+    if(_miSort==='nombre'){
+      rows.sort(function(a,b){ return String(a.nombre||'').localeCompare(String(b.nombre||''),'es'); });
+    } else {
+      var sortKey=_miSort; var asc=_miSort==='ter';
+      rows.sort(function(a,b){
+        var av=parseFloat(a[sortKey]); var bv=parseFloat(b[sortKey]);
+        var an=isNaN(av), bn=isNaN(bv);
+        if(an&&bn) return String(a.nombre||'').localeCompare(String(b.nombre||''),'es');
+        if(an) return 1; if(bn) return -1;
+        return asc?(av-bv):(bv-av);
+      });
+    }
     var total=rows.length;
     var totalPages=Math.max(1,Math.ceil(total/_miPageSize));
     if(_miPage>=totalPages) _miPage=Math.max(0,totalPages-1);
