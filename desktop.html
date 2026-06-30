@@ -6,7 +6,7 @@
   (served no-cache, version-bumped each deploy). Works even where SW/no-store
   are ignored, because it is plain page JS. */
 (function(){try{
-  var FA_BUILD=window.FA_BUILD='269';
+  var FA_BUILD=window.FA_BUILD='270';
   var s=location.search;
   if(s.indexOf('vchk')>-1||s.indexOf('_v=')>-1){history.replaceState(null,'',location.pathname+(location.hash||''));return;}
   fetch('/sw.js?_='+Date.now(),{cache:'no-store'}).then(function(r){return r.text();}).then(function(t){
@@ -1767,7 +1767,7 @@ html,body{height:100%;overflow:hidden;font-family:-apple-system,BlinkMacSystemFo
     <div class="valueSub">
       <div class="pill pos" id="totalGainPill">—</div>
       <div class="pill info" id="heroDivPill" style="display:none"></div>
-      <div class="pill info" id="coveragePill">loading...</div>
+      <div class="pill info" id="coveragePill">Cargando...</div>
     </div>
   </div>
 
@@ -2147,7 +2147,7 @@ html,body{height:100%;overflow:hidden;font-family:-apple-system,BlinkMacSystemFo
         <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:14px">
           <div>
             <div style="font-size:9px;font-weight:700;color:#8fa090;text-transform:uppercase;letter-spacing:.1em;margin-bottom:3px">Rendimiento 6 meses</div>
-            <div style="font-size:16px;font-weight:800;color:#142018;letter-spacing:-.02em">Trend Analysis vs MSCI World</div>
+            <div style="font-size:16px;font-weight:800;color:#142018;letter-spacing:-.02em" data-i18n="trendVsMsci">Trend Analysis vs MSCI World</div>
           </div>
           <div style="background:#f0f5f2;border-radius:8px;padding:4px 10px"><span style="font-size:10px;font-weight:700;color:#8fa090">2021–2026</span></div>
         </div>
@@ -3537,6 +3537,7 @@ html,body{height:100%;overflow:hidden;font-family:-apple-system,BlinkMacSystemFo
   #screen-prestamos .pign-summary{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;padding:14px 16px}
   #screen-prestamos .pign-cov-bar{height:5px;background:var(--surf3);border-radius:3px;overflow:hidden;margin:8px 16px 0}
   #screen-prestamos .pign-cov-fill{height:100%;border-radius:3px}
+  #screen-prestamos .pfKpiGrid{grid-template-columns:repeat(3,1fr)}
   #screen-prestamos .pign-status-row{display:flex;align-items:center;gap:8px;padding:8px 16px 14px}
   .pign-status{font-size:9px;font-weight:800;display:inline-block;padding:2px 8px;border-radius:5px}
   .pign-status.ok{background:#dcfce7;color:#15803d}
@@ -3623,7 +3624,7 @@ html,body{height:100%;overflow:hidden;font-family:-apple-system,BlinkMacSystemFo
       <div class="ln-fg"><label class="ln-fl">Nombre</label><input class="ln-fi" type="text" id="lnf-nombre" placeholder="Coche, personal…"/></div>
       <div class="ln-frow">
         <div class="ln-fg"><label class="ln-fl">Capital / Garantía (€)</label><input class="ln-fi" type="number" id="lnf-cap" oninput="LnUpdateModalPrev()"/></div>
-        <div class="ln-fg"><label class="ln-fl">TAE (%)</label><input class="ln-fi" type="number" step="any" id="lnf-tin" oninput="LnUpdateModalPrev()"/></div>
+        <div class="ln-fg"><label class="ln-fl">TIN / Interés (%)</label><input class="ln-fi" type="number" step="any" id="lnf-tin" oninput="LnUpdateModalPrev()"/></div>
       </div>
       <div class="ln-fg"><label class="ln-fl">Plazo (meses)</label><input class="ln-fi" type="number" id="lnf-plazo" oninput="LnUpdateModalPrev()"/></div>
       <div class="ln-fg"><label class="ln-fl">Saldo pendiente actual (€) <span style="font-weight:400;color:var(--muted);font-size:10px">— opcional, si has amortizado extra</span></label><input class="ln-fi" type="number" id="lnf-pen" placeholder="Calculado automáticamente si vacío"/></div>
@@ -3642,7 +3643,7 @@ html,body{height:100%;overflow:hidden;font-family:-apple-system,BlinkMacSystemFo
       <div class="ln-fg"><label class="ln-fl">Nombre</label><input class="ln-fi" type="text" id="lnfh-nombre" placeholder="Mi hipoteca…"/></div>
       <div class="ln-frow">
         <div class="ln-fg"><label class="ln-fl">Capital (€)</label><input class="ln-fi" type="number" id="lnfh-cap" oninput="LnUpdateModalHipPrev()"/></div>
-        <div class="ln-fg"><label class="ln-fl">TAE (%)</label><input class="ln-fi" type="number" step="any" id="lnfh-tin" oninput="LnUpdateModalHipPrev()"/></div>
+        <div class="ln-fg"><label class="ln-fl">TIN / Interés (%)</label><input class="ln-fi" type="number" step="any" id="lnfh-tin" oninput="LnUpdateModalHipPrev()"/></div>
       </div>
       <div class="ln-frow">
         <div class="ln-fg"><label class="ln-fl">Plazo (años)</label><input class="ln-fi" type="number" id="lnfh-plazo" placeholder="25" oninput="LnUpdateModalHipPrev()"/></div>
@@ -3684,7 +3685,7 @@ html,body{height:100%;overflow:hidden;font-family:-apple-system,BlinkMacSystemFo
     <!-- PIGNORACIÓN -->
     <div style="margin-top:16px;padding-top:14px;border-top:1px solid var(--border)">
       <div class="pign-toggle" id="lnPignToggle" onclick="LnTogglePign()">
-        <div class="pign-chk" id="lnPignChk">✓</div>
+        <div class="pign-chk" id="lnPignChk"></div>
         <div style="flex:1">
           <div style="font-size:13px;font-weight:700;color:var(--text)">🔒 Deuda pignorada</div>
           <div style="font-size:11px;color:var(--muted)">Activos de cartera como garantía</div>
@@ -3786,6 +3787,7 @@ html,body{height:100%;overflow:hidden;font-family:-apple-system,BlinkMacSystemFo
     window._lnPignActive=!window._lnPignActive;
     document.getElementById('lnPignToggle').classList.toggle('active',window._lnPignActive);
     document.getElementById('lnPignBody').style.display=window._lnPignActive?'':'none';
+    const _chk=document.getElementById('lnPignChk');if(_chk)_chk.textContent=window._lnPignActive?'✓':'';
     LnUpdatePignCalc();
   };
 
@@ -3892,7 +3894,7 @@ html,body{height:100%;overflow:hidden;font-family:-apple-system,BlinkMacSystemFo
     const l=LnGetLoans().find(x=>x.id===id); if(!l) return;
     window._lnEditId=id;
     LnOpenAdd();
-    LnSetTipo(l.tipo==='credito'?'credito':'prestamo');
+    LnSetTipo(l.tipo==='credito'?'credito':l.tipo==='hipoteca'?'hipoteca':'prestamo');
     if(l.tipo==='credito'){
       const set=(eid,v)=>{const e=document.getElementById(eid);if(e&&v!==undefined)e.value=v;};
       set('lnfc-nombre',l.nombre); set('lnfc-lim',l.lim); set('lnfc-disp',l.disp);
@@ -3900,6 +3902,12 @@ html,body{height:100%;overflow:hidden;font-family:-apple-system,BlinkMacSystemFo
       const perEl=document.getElementById('lnfc-per');if(perEl)perEl.value=l.periodicidad||'mensual';
       const tipoEl=document.getElementById('lnfc-tipo');if(tipoEl)tipoEl.value=l.kind||'Línea de crédito';
       LnUpdateModalCredPrev();
+    } else if(l.tipo==='hipoteca'){
+      const set=(eid,v)=>{const e=document.getElementById(eid);if(e&&v!==undefined)e.value=v;};
+      set('lnfh-nombre',l.nombre); set('lnfh-cap',l.cap); set('lnfh-tin',l.tin);
+      set('lnfh-plazo',l.meses?Math.round(l.meses/12):l.plazo); set('lnfh-ent',l.entidad); set('lnfh-fecha',l.fecha||'');
+      const tipoEl=document.getElementById('lnfh-tipo');if(tipoEl)tipoEl.value=l.kind||'Fija';
+      LnUpdateModalHipPrev();
     } else {
       const set=(eid,v)=>{const e=document.getElementById(eid);if(e&&v!==undefined)e.value=v;};
       set('lnf-nombre',l.nombre); set('lnf-cap',l.cap); set('lnf-tin',l.tin);
@@ -3918,7 +3926,7 @@ html,body{height:100%;overflow:hidden;font-family:-apple-system,BlinkMacSystemFo
   };
 
   // ── Amortización table ────────────────────────────────────
-  window.LnShowAmort=function(id){ const loan=LnGetLoans().find(x=>x.id===id); if(!loan||loan.tipo!=='prestamo') return; document.getElementById('lnAmortTitle').textContent='Tabla amortización · '+loan.nombre; const sched=LnBuildSchedule(loan.cap,loan.tin,loan.meses); const elapsed=Math.min(LnMonthsElapsed(loan.fecha),loan.meses); document.getElementById('lnAmortMeta').innerHTML=`<div class="lm" style="flex:1"><div class="lm-l">Capital</div><div class="lm-v">${LnFmt(loan.cap)}</div></div><div class="lm" style="flex:1"><div class="lm-l">TIN</div><div class="lm-v">${LnFmtPctPlain(loan.tin)}</div></div><div class="lm" style="flex:1"><div class="lm-l">Plazo</div><div class="lm-v">${loan.meses} meses</div></div><div class="lm" style="flex:1"><div class="lm-l">Cuota</div><div class="lm-v">${LnFmt(LnCalcCuota(loan.cap,loan.tin,loan.meses))}</div></div>`; const slice=sched.slice(elapsed,elapsed+12); const body=document.getElementById('lnAmortBody'); body.innerHTML=slice.map(r=>`<tr><td>${r.mes}</td><td>${LnFmt(r.cuota)}</td><td style="color:var(--green)">${LnFmt(r.capital)}</td><td style="color:var(--red)">${LnFmt(r.interes)}</td><td>${LnFmt(r.saldo)}</td></tr>`).join(''); LnOpenM('lnm-amort'); };
+  window.LnShowAmort=function(id){ const loan=LnGetLoans().find(x=>x.id===id); if(!loan||loan.tipo!=='prestamo') return; document.getElementById('lnAmortTitle').textContent='Tabla amortización · '+loan.nombre; const sched=LnBuildSchedule(loan.cap,loan.tin,loan.meses); const elapsed=Math.min(LnMonthsElapsed(loan.fecha),loan.meses); document.getElementById('lnAmortMeta').innerHTML=`<div class="lm" style="flex:1"><div class="lm-l">Capital</div><div class="lm-v">${LnFmt(loan.cap)}</div></div><div class="lm" style="flex:1"><div class="lm-l">TIN</div><div class="lm-v">${LnFmtPctPlain(loan.tin)}</div></div><div class="lm" style="flex:1"><div class="lm-l">Plazo</div><div class="lm-v">${loan.meses} meses</div></div><div class="lm" style="flex:1"><div class="lm-l">Cuota</div><div class="lm-v">${LnFmt(LnCalcCuota(loan.cap,loan.tin,loan.meses))}</div></div>`; const remaining=sched.length-elapsed; const slice=sched.slice(elapsed,elapsed+12); const body=document.getElementById('lnAmortBody'); body.innerHTML=slice.map(r=>`<tr><td>${r.mes}</td><td>${LnFmt(r.cuota)}</td><td style="color:var(--green)">${LnFmt(r.capital)}</td><td style="color:var(--red)">${LnFmt(r.interes)}</td><td>${LnFmt(r.saldo)}</td></tr>`).join('')+(remaining>12?`<tr><td colspan="5" style="text-align:center;font-size:11px;color:var(--muted);padding:10px">Mostrando próximas 12 cuotas de ${remaining} restantes</td></tr>`:''); LnOpenM('lnm-amort'); };
 
   // ── Render pignoration section ────────────────────────────
   function LnPignCards(loans){
@@ -4381,7 +4389,7 @@ const I18N = {
     tabHome:'Inicio',tabPortfolio:'Cartera',tabAnalysis:'Análisis',tabDividends:'Dividendos',tabIA:'IA',
     account:'Cuenta',add:'Añadir',costBasis:'base coste',navDividends:'Dividendos',navIA:'Analíticas IA',navTax:'Fiscal',newPosition:'Nueva posición',sumValue:'Valor total',
     portfolioSub:'Detalle completo de posiciones',positions:'Posiciones',
-    analysisSub:'Salud, distribución y rendimiento',healthScore:'Score de salud',distribution:'Distribución por tipo',performance:'Rentabilidad por activo',vsWorld:'Portfolio vs MSCI World',
+    analysisSub:'Salud, distribución y rendimiento',healthScore:'Score de salud',distribution:'Distribución por tipo',performance:'Rentabilidad por activo',vsWorld:'Portfolio vs MSCI World',trendVsMsci:'Comparativa vs MSCI World',
     dividendsSub:'Ingresos pasivos reales del portfolio',annualDividends:'al año',perYear:'al año',monthly:'Mensual',daily:'Diario',hourly:'Por hora',assets:'Activos',upcoming:'Próximos pagos',pastPayments:'Pagos recibidos',annualCalendar:'Calendario anual',loadingDiv:'Cargando dividendos reales…',divHoldings:'Holdings con dividendos',exDiv:'Ex-Dividendo',payDate:'Pago',divDetailTitle:'Historial detallado',loadingDivDetail:'Cargando historial…',divDetailSource:'Fuente',divDetailYear:'Año',divDetailPerShare:'€/acción',divDetailTotal:'Total',divDetailPayments:'Pagos',divNoDetail:'Sin historial disponible.',nextPay:'Próx. cobro',divAnnualChartTitle:'Total cobrado por año',divDelisted:'Sin pagos recientes — posiblemente liquidado o fusionado',verDetalle:'Ver detalle',validated:'Validado',partially_validated:'Parcial',inconsistent:'Inconsistente',
     iaSub:'Análisis inteligente de tu portfolio',iaAssistant:'Asistente Finasset',iaInsights:'Insights del portfolio',iaBased:'Basado en tus posiciones actuales',
     priceEvolution:'Evolución del precio',noHistory:'Sin histórico disponible.',addPosition:'+ Añadir posición',
@@ -4402,7 +4410,7 @@ const I18N = {
     tabHome:'Home',tabPortfolio:'Portfolio',tabAnalysis:'Analysis',tabDividends:'Dividends',tabIA:'AI',tabFinX:'FinX',
     account:'Account',add:'Add',costBasis:'cost basis',navDividends:'Dividends',navIA:'AI Analytics',navTax:'Tax',newPosition:'New position',sumValue:'Total value',
     portfolioSub:'Full position details',positions:'Positions',
-    analysisSub:'Health, distribution & performance',healthScore:'Health score',distribution:'Distribution by type',performance:'Performance by asset',vsWorld:'Portfolio vs MSCI World',
+    analysisSub:'Health, distribution & performance',healthScore:'Health score',distribution:'Distribution by type',performance:'Performance by asset',vsWorld:'Portfolio vs MSCI World',trendVsMsci:'Trend Analysis vs MSCI World',
     dividendsSub:'Real passive income from portfolio',annualDividends:'per year',perYear:'per year',monthly:'Monthly',daily:'Daily',hourly:'Hourly',assets:'Assets',upcoming:'Upcoming payments',pastPayments:'Past payments',annualCalendar:'Annual calendar',loadingDiv:'Loading real dividends…',divHoldings:'Dividend holdings',exDiv:'Ex-Dividend',payDate:'Payment',divDetailTitle:'Detailed history',loadingDivDetail:'Loading history…',divDetailSource:'Source',divDetailYear:'Year',divDetailPerShare:'€/share',divDetailTotal:'Total',divDetailPayments:'Payments',divNoDetail:'No history available.',nextPay:'Next payment',divAnnualChartTitle:'Total received per year',divDelisted:'No recent payments — possibly delisted or merged',verDetalle:'See detail',validated:'Validated',partially_validated:'Partial',inconsistent:'Inconsistent',
     iaSub:'Smart analysis of your portfolio',iaAssistant:'Finasset Assistant',iaInsights:'Portfolio Insights',iaBased:'Based on your current positions',
     priceEvolution:'Price evolution',noHistory:'No history available.',addPosition:'+ Add position',
@@ -4599,7 +4607,7 @@ function showScreen(name,keepTab=false){
   document.querySelectorAll('.screen').forEach(el=>el.classList.remove('active'));
   const _s=document.getElementById('screen-'+name);if(_s)_s.classList.add('active');
   if(!keepTab)document.querySelectorAll('.tab button').forEach(b=>b.classList.toggle('active',b.dataset.screen===name));
-  if(name==='analysis'&&dataReady)renderAnalysisCharts();
+  if(name==='analysis'&&dataReady){renderAnalysisCharts();if(typeof renderIA==='function')renderIA();}
   if(name==='dividends'&&dataReady)renderDividends();
   if(name==='ia'&&dataReady)renderIA();
   if(name==='alerts')renderAlertsScreen();
@@ -5690,7 +5698,7 @@ function _anRenderTrendVsWorld(){
   const inv=assets.reduce((s,a)=>s+toDisplay(a.invested,costCcy(a)),0);
   const totalPct=inv>0?((total-inv)/inv)*100:0;
   const _pts=buildPortfolioTimeSeries();
-  let portAnnual;
+  let portAnnual;let _portAnnualFabricated=false;
   if(_pts&&_pts.length>5){
     portAnnual=years.map(y=>{
       const yStart=_pts.find(p=>p.date>=(y+'-01-01'));
@@ -5700,6 +5708,7 @@ function _anRenderTrendVsWorld(){
     });
   }else{
     portAnnual=msciAnnual.map(m=>totalPct/Math.max(years.length,1)+(m>0?m*0.1:m*0.05));
+    _portAnnualFabricated=true;
   }
 
   // Cumulative index (start = 0)
@@ -5749,6 +5758,9 @@ function _anRenderTrendVsWorld(){
       }
     }
   });
+  // Show disclaimer when portfolio annual data is estimated (not from real history)
+  const _vsNote=document.getElementById('vsWorldNote');
+  if(_vsNote){_vsNote.style.display=_portAnnualFabricated?'':'none';if(_portAnnualFabricated)_vsNote.textContent='* Estimación basada en rentabilidad total — sin historial de precio suficiente';}
 }
 
 // ── Asset Correlation ─────────────────────────────────────────────────────────
@@ -5836,6 +5848,8 @@ function _anRenderCorrelation(){
       <div class="an-corr-tip"><span>💡</span><span>Alta correlaci&oacute;n entre activos reduce la diversificaci&oacute;n real de tu cartera. Considera activos descorrelacionados como oro, bonos o mercados emergentes.</span></div>
     </div>`;
   }
+
+  h+=`<div style="font-size:10px;color:#8fa090;text-align:center;margin-top:8px;font-style:italic">* Correlaciones estimadas por categor&iacute;a de activo</div>`;
 
   el.innerHTML=h;
 }
@@ -6125,12 +6139,13 @@ function _renderDivHoldings(divItems, liqWithRate){
   const palette=['#3b82f6','#f97316','#22c55e','#ef4444','#a855f7','#eab308','#06b6d4','#ec4899'];
   const sorted=[...divItems].sort((a,b)=>(b.annualIncome||0)-(a.annualIncome||0));
   const wrap=document.getElementById('divHoldingsList');
+  const _isEsDH=currentLang==='es';
   wrap.innerHTML=`<table class="div-tbl" style="width:100%">
     <thead><tr>
-      <th style="width:38%">Activo</th>
-      <th style="width:16%">Trimestral</th>
+      <th style="width:38%">${_isEsDH?'Activo':'Asset'}</th>
+      <th style="width:16%">${_isEsDH?'Trimestral':'Quarterly'}</th>
       <th style="width:22%">Yield / YoC</th>
-      <th style="width:24%">Anual</th>
+      <th style="width:24%">${_isEsDH?'Anual':'Annual'}</th>
     </tr></thead>
     <tbody id="divHoldingsTbody"></tbody>
   </table>`;
@@ -6303,7 +6318,8 @@ function _renderDivGoal(totalAnnual){
   document.getElementById('divGoalLabel').textContent=`${fe(totalAnnual)} de ${fe(target)}`;
   document.getElementById('divGoalPct').textContent=pct+'%';
   document.getElementById('divGoalFill').style.width=pct+'%';
-  document.getElementById('divGoalRemains').textContent=remains>0?`Faltan ${fe(remains)}`:'Meta alcanzada!';
+  const isEsGoal=currentLang==='es';
+  document.getElementById('divGoalRemains').textContent=remains>0?(isEsGoal?`Faltan ${fe(remains)}`:`${fe(remains)} remaining`):(isEsGoal?'Meta alcanzada!':'Goal reached!');
   document.getElementById('divGoalDeadline').textContent=`${daysLeft} días para fin de año`;
   const yrsAtRate=remains>0&&totalAnnual>0?(remains/totalAnnual).toFixed(1)+' años':'—';
   document.getElementById('divGoalRate').textContent=yrsAtRate;
@@ -6373,7 +6389,8 @@ function _calcAndRenderFV(){
   const finalDiv=divData[divData.length-1]||0;
   const lbl=`en ${years} año${years===1?'':'s'}`;
   document.getElementById('divFVValue').textContent=fe(finalDiv);
-  document.getElementById('divFVLabel').textContent=lbl+'/año en dividendos';
+  const _isEsFV=currentLang==='es';
+  document.getElementById('divFVLabel').textContent=_isEsFV?(lbl+'/año en dividendos'):(lbl+'/year in dividends');
   // Chart
   const canvas=document.getElementById('divFVChart');
   if(!canvas)return;
@@ -6583,7 +6600,7 @@ async function loadDividendDetail(isins){
   }
 
   // ── Refresh holdings sparklines now that detail cache is available ─────────
-  if(_divItems&&_divItems.length)_renderDivHoldings(_divItems);
+  if(_divItems&&_divItems.length)_renderDivHoldings(_divItems,(typeof getLiquidity==='function'?getLiquidity().filter(x=>x.rate>0):[]));
 
   // ── Refresh year tabs with new detail data ─────────────────────────────────
   if(document.getElementById('divChartCard').style.display!=='none'){
@@ -6829,11 +6846,16 @@ function renderIA(){
 
 // ========== Lists ==========
 function getDayPct(a){
-  if(!a.hasRealHistory||!a.history?.length||a.history.length<2)return null;
-  const lastDate=a.history[a.history.length-1].date;
-  if(lastDate&&(Date.now()-new Date(lastDate+'T00:00:00').getTime())>15*86400000)return null;
-  const last=a.history[a.history.length-1].close,prev=a.history[a.history.length-2].close;
-  return prev>0?(last-prev)/prev*100:null;
+  if(a.hasRealHistory&&a.history?.length>=2){
+    const lastDate=a.history[a.history.length-1].date;
+    if(!lastDate||(Date.now()-new Date(lastDate+'T00:00:00').getTime())<=15*86400000){
+      const last=a.history[a.history.length-1].close,prev=a.history[a.history.length-2].close;
+      if(prev>0)return(last-prev)/prev*100;
+    }
+  }
+  // Fallback: use intraday change from API response if available
+  if(a.changePercent1d!=null)return a.changePercent1d;
+  return null;
 }
 let _activeBrokerFilter=null;
 function renderBrokerFilter(){
@@ -6870,8 +6892,8 @@ function renderLists(){
       <div style="font-size:15px;font-weight:700;color:#142018;margin-bottom:6px">${isEs?'Tu cartera está vacía':'Your portfolio is empty'}</div>
       <div style="font-size:13px;color:#8fa090;line-height:1.5;margin-bottom:16px">${isEs?'Añade tu primera posición buscando un activo por nombre o ISIN.':'Add your first position by searching for an asset by name or ISIN.'}</div>
     </div>`;
-    document.getElementById('list').innerHTML=emptyHtml;
-    document.getElementById('portfolioList').innerHTML=emptyHtml;
+    const _emptyListEl=document.getElementById('list');if(_emptyListEl)_emptyListEl.innerHTML=emptyHtml;
+    const _emptyPfEl=document.getElementById('portfolioList');if(_emptyPfEl)_emptyPfEl.innerHTML=emptyHtml;
     return;
   }
   const visible=[...assets].filter(a=>a.quantity>0&&(_activeBrokerFilter===null||a.broker===_activeBrokerFilter)).sort((a,b)=>{const d=toDisplay(b.value,assetCcy(b))-toDisplay(a.value,assetCcy(a));return isNaN(d)?0:d;});
@@ -6969,8 +6991,8 @@ function renderLists(){
 
   const thHtml=`<th>${isEs?'Activo':'Asset'}</th>`+visCols.map(c=>`<th>${lbl(c)}</th>`).join('');
   const html=`<div style="display:flex;justify-content:flex-end;margin-bottom:8px">${colPanelHtml}</div><div style="overflow-x:auto"><table class="pf-tbl"><thead><tr>${thHtml}</tr></thead><tbody>${rows}${_liqRows}${_debtRows}</tbody></table></div>${_fxNote}`;
-  document.getElementById('list').innerHTML=html;
-  document.getElementById('portfolioList').innerHTML=html;
+  const _listEl=document.getElementById('list');if(_listEl)_listEl.innerHTML=html;
+  const _pfListEl=document.getElementById('portfolioList');if(_pfListEl)_pfListEl.innerHTML=html;
   document.querySelectorAll('#list tr[data-isin], #portfolioList tr[data-isin]').forEach(el=>{
     el.addEventListener('click',()=>{const a=assets.find(x=>x.isin===el.dataset.isin);if(a)showAssetDetail(a,document.querySelector('.tab button.active')?.dataset?.screen||'home');});
   });
@@ -6983,7 +7005,7 @@ function _rerenderActive(){
   try{
     const as=document.querySelector('.screen.active'); const id=as&&as.id;
     if(id==='screen-ia'){ if(typeof renderIA==='function')renderIA(); }
-    else if(id==='screen-analysis'){ if(typeof renderAnalysisCharts==='function')renderAnalysisCharts(); if(typeof renderAnalysisV2==='function')renderAnalysisV2(); }
+    else if(id==='screen-analysis'){ if(typeof renderAnalysisCharts==='function')renderAnalysisCharts(); if(typeof renderAnalysisV2==='function')renderAnalysisV2(); if(typeof renderIA==='function')renderIA(); }
     else if(id==='screen-dividends'){ if(typeof renderDividends==='function')renderDividends(); }
   }catch(_){}
 }
@@ -7325,6 +7347,8 @@ async function boot(){
   // Background: cloud sync (non-blocking — runs after first render)
   if(_sbUser)syncFromCloud().catch(()=>{});
 
+  const _COV_CK = 'finasset_cov_ck';
+
   // Phase 2: fetch live coverage + fresh seed in parallel — then re-render with live prices
   (async()=>{
     try{
@@ -7570,7 +7594,7 @@ function showAddForm(result,price,currency,history){
   document.getElementById('addFxRow').style.display = 'none';
   document.getElementById('addFxConvertedHint').textContent = '';
   document.getElementById('addFxAssetCcy').textContent = _addAssetCcy;
-  document.getElementById('addCostHint').textContent = `Current price: ${document.getElementById('addAssetPrice').textContent}`;
+  document.getElementById('addCostHint').textContent = (currentLang==='es'?'Precio actual: ':'Current price: ')+document.getElementById('addAssetPrice').textContent;
 
   // Pre-fill avg cost with current price
   document.getElementById('addAvgCost').value=price>0?price.toFixed(2):'';
@@ -7587,7 +7611,7 @@ async function onSearchInput(){
   if(q.length<2){document.getElementById('searchResultsList').innerHTML='';document.getElementById('searchHint').style.display='';if(_sc)_sc.style.display='';return;}
   if(_sc)_sc.style.display='none';
   document.getElementById('searchHint').style.display='none';
-  document.getElementById('searchResultsList').innerHTML=`<div class="searchHint">Buscando…</div>`;
+  document.getElementById('searchResultsList').innerHTML=`<div class="searchHint">${currentLang==='es'?'Buscando…':'Searching…'}</div>`;
   const reqId=++_searchReqId;
   // Check client cache first — avoids repeat API calls for same query
   if(_searchCache.has(q)){renderSearchResults(_searchCache.get(q));return;}
@@ -7663,7 +7687,7 @@ function setAddFormMode(mode){
   const isEs=currentLang==='es';
   if(lbl)lbl.textContent=mode==='transactions'
     ?(isEs?'Precio por accion (en esa fecha)':'Price per share (at that date)')
-    :'Avg cost per share';
+    :(isEs?'Precio medio por participación':'Avg cost per share');
 }
 function saveNewAsset(){
   if(!_searchResult)return;
@@ -7799,11 +7823,11 @@ function _showUpgradeModal(reason) {
       <div style="font-size:1.2rem;font-weight:800;color:#142018;margin-bottom:8px;padding-right:24px">${title}</div>
       <div style="font-size:.85rem;color:#4a5f4e;line-height:1.6;margin-bottom:22px">${desc}</div>
       <div style="display:flex;flex-direction:column;gap:10px">
-        <button onclick="_goPricing('starter')" style="width:100%;padding:14px;background:#142018;color:#f5fbf6;border:none;border-radius:12px;font-size:.95rem;font-weight:700;cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:space-between">
+        <button onclick="_goPricing('starter',event)" style="width:100%;padding:14px;background:#142018;color:#f5fbf6;border:none;border-radius:12px;font-size:.95rem;font-weight:700;cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:space-between">
           <span>${isEs ? 'Starter — 4,99€/mes' : 'Starter — €4.99/month'}</span>
           <span style="color:#4ade80;font-size:.8rem">${isEs ? 'Activos ilimitados + IA' : 'Unlimited assets + AI'}</span>
         </button>
-        <button onclick="_goPricing('pro')" style="width:100%;padding:14px;background:linear-gradient(135deg,#142018,#1e3a2a);color:#4ade80;border:2px solid rgba(74,222,128,.3);border-radius:12px;font-size:.95rem;font-weight:700;cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:space-between">
+        <button onclick="_goPricing('pro',event)" style="width:100%;padding:14px;background:linear-gradient(135deg,#142018,#1e3a2a);color:#4ade80;border:2px solid rgba(74,222,128,.3);border-radius:12px;font-size:.95rem;font-weight:700;cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:space-between">
           <span>⭐ Pro — 9,99€/mes</span>
           <span style="font-size:.8rem;color:#a8d5b5">${isEs ? 'IA sin límites' : 'Full AI access'}</span>
         </button>
@@ -7814,7 +7838,7 @@ function _showUpgradeModal(reason) {
   document.body.appendChild(overlay);
 }
 
-async function _goPricing(plan) {
+async function _goPricing(plan, evt) {
   document.getElementById('upgradeModalOverlay')?.remove();
   // Both starter and pro go through Stripe Checkout
   const tok = localStorage.getItem('fa_token');
@@ -7822,7 +7846,7 @@ async function _goPricing(plan) {
     alert('Debes iniciar sesión para suscribirte.');
     return;
   }
-  const btn = event?.target;
+  const btn = evt?.target;
   const btnLabel = btn?.querySelector('span')?.textContent || btn?.textContent || '';
   if (btn) { btn.disabled = true; btn.textContent = 'Redirigiendo…'; }
   try {
@@ -9005,7 +9029,7 @@ function switchLang(lang) {
   var _ab=[['auth-b1',isEs?'Precios reales e historial de 5 a\u00f1os':'Real prices &amp; 5-year history, auto-updated'],['auth-b2',isEs?'Dividendos registrados y pr\u00f3ximos pagos':'Dividends tracked &amp; upcoming payments'],['auth-b3',isEs?'IA analiza concentraci\u00f3n, riesgo y comisiones':'AI analyses concentration, risk &amp; fees'],['auth-b4',isEs?'Alertas, benchmarks y resumen fiscal':'Alerts, benchmarks &amp; tax overview']];
   _ab.forEach(function(b){var el=document.getElementById(b[0]);if(el)el.innerHTML=b[1];});
   var _dl=document.getElementById('auth-demo-label');if(_dl)_dl.textContent=isEs?'Ver demo \u2014 sin cuenta':'Try the demo \u2014 no account needed';
-  var _cpEl=document.getElementById('coveragePill');if(_cpEl&&(_cpEl.textContent==='loading...'||_cpEl.textContent==='cargando...'))_cpEl.textContent=isEs?'cargando...':'loading...';
+  var _cpEl=document.getElementById('coveragePill');if(_cpEl&&(_cpEl.textContent==='loading...'||_cpEl.textContent==='Cargando...'||_cpEl.textContent==='cargando...'))_cpEl.textContent=isEs?'Cargando...':'Loading...';
   var _dgt=document.getElementById('divGoalTitle');if(_dgt)_dgt.textContent=isEs?'Meta anual':'Annual goal';
   var _dgb=document.getElementById('divGoalEditBtn');if(_dgb)_dgb.textContent=isEs?'Editar objetivo':'Edit goal';
   var _dbe=document.getElementById('demoBannerExitBtn');if(_dbe)_dbe.textContent=isEs?'Salir':'Exit';

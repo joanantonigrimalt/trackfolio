@@ -9,7 +9,7 @@ function dateBack(years) {
 }
 
 const YF_HEADERS = {
-  'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36',
+  'User-Agent': 'Mozilla/5.0 (compatible; Finasset/1.0; +https://finasset.app)',
   'Accept': 'application/json',
   'Accept-Language': 'es-ES,es;q=0.9,en;q=0.8',
 };
@@ -170,10 +170,10 @@ module.exports = async (req, res) => {
     })(),
   ]);
 
-  // Step 2: find ISINs with no justETF data → try Yahoo Finance
+  // Step 2: find ISINs with any missing justETF data → try Yahoo Finance to fill gaps
   const noData = isins.filter(isin =>
-    (returns1y[isin] == null) &&
-    (multiYear.r3[isin] == null) &&
+    (returns1y[isin] == null) ||
+    (multiYear.r3[isin] == null) ||
     (multiYear.r5[isin] == null)
   );
 
@@ -192,18 +192,15 @@ module.exports = async (req, res) => {
     }
   }
 
-  // Step 3: merge results (Yahoo Finance takes priority for funds)
+  // Step 3: merge results — justETF data takes priority; Yahoo Finance fills gaps only
   const output = {};
   for (const isin of isins) {
-    if (yfResults[isin] && (yfResults[isin].rent1a != null || yfResults[isin].rent3a != null)) {
-      output[isin] = yfResults[isin];
-    } else {
-      output[isin] = {
-        rent1a: returns1y[isin] ?? null,
-        rent3a: multiYear.r3[isin] ?? null,
-        rent5a: multiYear.r5[isin] ?? null,
-      };
-    }
+    const yf = yfResults[isin] || {};
+    output[isin] = {
+      rent1a: returns1y[isin] ?? yf.rent1a ?? null,
+      rent3a: multiYear.r3[isin] ?? yf.rent3a ?? null,
+      rent5a: multiYear.r5[isin] ?? yf.rent5a ?? null,
+    };
   }
 
   res.setHeader('Content-Type', 'application/json');
