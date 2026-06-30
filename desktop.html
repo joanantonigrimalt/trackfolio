@@ -6,7 +6,7 @@
   (served no-cache, version-bumped each deploy). Works even where SW/no-store
   are ignored, because it is plain page JS. */
 (function(){try{
-  var FA_BUILD=window.FA_BUILD='273';
+  var FA_BUILD=window.FA_BUILD='274';
   var s=location.search;
   if(s.indexOf('vchk')>-1||s.indexOf('_v=')>-1){history.replaceState(null,'',location.pathname+(location.hash||''));return;}
   fetch('/sw.js?_='+Date.now(),{cache:'no-store'}).then(function(r){return r.text();}).then(function(t){
@@ -1560,6 +1560,7 @@ html,body{height:100%;overflow:hidden;font-family:-apple-system,BlinkMacSystemFo
     <button class="d-nav-item" data-screen="myinvestor"><span class="d-nav-ico">◐</span>MyInvestor</button>
     <div class="d-nav-section">REFERIDOS</div>
     <button class="d-nav-item" data-screen="referidos"><span class="d-nav-ico">◇</span>Referidos</button>
+    <button class="d-nav-item" id="navBtnPlan" data-screen="plan" style="margin-top:8px;background:linear-gradient(135deg,rgba(20,32,24,.06),rgba(74,222,128,.1));border:1px solid rgba(74,222,128,.25);border-radius:10px"><span class="d-nav-ico">⭐</span><span id="navPlanLabel">Premium</span> <span style="font-size:10px;background:#4ade80;color:#0f1f0f;border-radius:4px;padding:1px 5px;font-weight:700;margin-left:2px">9,99€</span></button>
   </nav>
   <!-- User dropdown menu -->
   <div id="deskUserMenu" style="display:none;position:absolute;bottom:76px;left:10px;right:10px;background:#fff;border-radius:14px;box-shadow:0 4px 24px rgba(0,0,0,.13);z-index:1000;overflow:hidden;border:1px solid rgba(20,32,24,.07)">
@@ -3249,6 +3250,93 @@ html,body{height:100%;overflow:hidden;font-family:-apple-system,BlinkMacSystemFo
   <div class="legal-footer" style="margin-bottom:0">
     <button class="legal-footer-link" onclick="showScreen('privacy')">Pol&iacute;tica de Privacidad</button>
     <div class="legal-footer-copy">&copy; 2026 Finasset &middot; Solo estimaciones orientativas</div>
+  </div>
+</div>
+
+<!-- ============ PLAN ============ -->
+<div id="screen-plan" class="screen">
+  <div class="top">
+    <div>
+      <div class="title">Tu Plan</div>
+      <div class="sub" id="planCurrentBadge">Cargando...</div>
+    </div>
+  </div>
+  <div style="max-width:480px;margin:0 auto;padding:0 0 40px">
+    <!-- Hero -->
+    <div style="text-align:center;padding:28px 0 20px">
+      <div style="font-size:2.2rem;margin-bottom:6px">⭐</div>
+      <div style="font-size:1.4rem;font-weight:800;color:#142018;margin-bottom:6px">Finasset Premium</div>
+      <div style="font-size:.9rem;color:#4a5f4e">Todo lo que necesitas para gestionar tu cartera sin límites</div>
+    </div>
+
+    <!-- Free vs Premium comparison -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px">
+      <!-- Free card -->
+      <div id="planFreeCard" style="background:#f7faf8;border-radius:16px;padding:18px 16px;border:2px solid transparent">
+        <div style="font-size:.75rem;font-weight:700;color:#8fa090;text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px">Free</div>
+        <div style="font-size:1.6rem;font-weight:800;color:#142018;margin-bottom:14px">0€<span style="font-size:.75rem;color:#8fa090;font-weight:400">/mes</span></div>
+        <div style="display:flex;flex-direction:column;gap:8px;font-size:.82rem;color:#4a5f4e">
+          <div>✓ Hasta <b>7 activos</b></div>
+          <div>✓ Dividendos básicos</div>
+          <div>✓ Préstamos y impuestos</div>
+          <div style="color:#c0c0c0">✗ IA — Vera</div>
+          <div style="color:#c0c0c0">✗ Activos ilimitados</div>
+          <div style="color:#c0c0c0">✗ Análisis avanzado</div>
+        </div>
+      </div>
+      <!-- Premium card -->
+      <div id="planPremiumCard" style="background:linear-gradient(135deg,#0f1a14,#1a3024);border-radius:16px;padding:18px 16px;border:2px solid rgba(74,222,128,.4);position:relative;overflow:hidden">
+        <div style="position:absolute;top:10px;right:10px;background:#4ade80;color:#0f1f0f;font-size:.65rem;font-weight:800;padding:2px 7px;border-radius:20px">POPULAR</div>
+        <div style="font-size:.75rem;font-weight:700;color:#4ade80;text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px">Premium</div>
+        <div style="font-size:1.6rem;font-weight:800;color:#fff;margin-bottom:14px">9,99€<span style="font-size:.75rem;color:#7aab8a;font-weight:400">/mes</span></div>
+        <div style="display:flex;flex-direction:column;gap:8px;font-size:.82rem;color:#a8d5b5">
+          <div>✓ <b>Activos ilimitados</b></div>
+          <div>✓ <b>IA — Vera</b> sin límites</div>
+          <div>✓ Análisis avanzado</div>
+          <div>✓ Informe fiscal IRPF</div>
+          <div>✓ Detalle dividendos completo</div>
+          <div>✓ Top inversores</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CTA -->
+    <div id="planCTAWrap" style="display:flex;flex-direction:column;gap:10px">
+      <button id="planUpgradeBtn" onclick="_goPricing('pro',event)" style="width:100%;padding:16px;background:linear-gradient(135deg,#142018,#1e3a2a);color:#4ade80;border:2px solid rgba(74,222,128,.35);border-radius:14px;font-size:1rem;font-weight:800;cursor:pointer;font-family:inherit">
+        ⭐ Activar Premium — 9,99€/mes
+      </button>
+      <div style="text-align:center;font-size:.75rem;color:#8fa090">Cancela cuando quieras · Pago seguro con Stripe</div>
+      <button id="planManageBtn" onclick="_manageSubscription()" style="display:none;width:100%;padding:13px;background:#f0f5f2;color:#142018;border:none;border-radius:12px;font-size:.9rem;font-weight:700;cursor:pointer;font-family:inherit">
+        Gestionar suscripción
+      </button>
+    </div>
+
+    <!-- Feature list -->
+    <div style="margin-top:28px;border-top:1px solid rgba(20,32,24,.07);padding-top:20px">
+      <div style="font-size:.8rem;font-weight:700;color:#8fa090;text-transform:uppercase;letter-spacing:.06em;margin-bottom:14px">¿Qué incluye Premium?</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+        <div style="background:#f7faf8;border-radius:12px;padding:12px 14px">
+          <div style="font-size:1.2rem;margin-bottom:4px">🤖</div>
+          <div style="font-size:.82rem;font-weight:700;color:#142018">IA Vera sin límites</div>
+          <div style="font-size:.75rem;color:#8fa090;margin-top:2px">Pregunta lo que quieras sobre tu cartera</div>
+        </div>
+        <div style="background:#f7faf8;border-radius:12px;padding:12px 14px">
+          <div style="font-size:1.2rem;margin-bottom:4px">📊</div>
+          <div style="font-size:.82rem;font-weight:700;color:#142018">Activos ilimitados</div>
+          <div style="font-size:.75rem;color:#8fa090;margin-top:2px">Sin límite de posiciones en tu cartera</div>
+        </div>
+        <div style="background:#f7faf8;border-radius:12px;padding:12px 14px">
+          <div style="font-size:1.2rem;margin-bottom:4px">🧾</div>
+          <div style="font-size:.82rem;font-weight:700;color:#142018">Informe IRPF</div>
+          <div style="font-size:.75rem;color:#8fa090;margin-top:2px">Calcula plusvalías y dividendos para Hacienda</div>
+        </div>
+        <div style="background:#f7faf8;border-radius:12px;padding:12px 14px">
+          <div style="font-size:1.2rem;margin-bottom:4px">💰</div>
+          <div style="font-size:.82rem;font-weight:700;color:#142018">Dividendos detallados</div>
+          <div style="font-size:.75rem;color:#8fa090;margin-top:2px">Historial completo y próximos pagos</div>
+        </div>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -7694,6 +7782,16 @@ function setAddFormMode(mode){
 }
 function saveNewAsset(){
   if(!_searchResult)return;
+  // Enforce free plan asset limit (7 max)
+  if(_userPlan==='free'){
+    const ov=getOverrides();
+    const activeCount=Object.values(ov).filter(v=>Number(v.quantity||0)>0).length;
+    if(activeCount>=FREE_ASSET_LIMIT){
+      closeSearch();
+      setTimeout(()=>_showUpgradeModal('assets'),200);
+      return;
+    }
+  }
   const qty=parseNum('addQty');
   const avgCost=parseNum('addAvgCost');
   if(qty<=0){document.getElementById('addQty').focus();return;}
@@ -7738,7 +7836,8 @@ function saveNewAsset(){
 // ═══════════════════════════════════════════════════════════
 // PLAN SYSTEM
 // ═══════════════════════════════════════════════════════════
-let _userPlan = 'free'; // 'free' | 'starter' | 'pro'
+const FREE_ASSET_LIMIT = 7; // Free plan: max 7 assets
+let _userPlan = 'free'; // 'free' | 'pro'  (pro = Premium 9,99€/mes)
 let _userCredits = { used: 0, limit: 0, remaining: 0, month: '' };
 
 async function loadUserPlan() {
@@ -7757,10 +7856,24 @@ async function loadUserPlan() {
 }
 
 function _updatePlanUI() {
-  const labels = { free: 'Free', starter: 'Starter', pro: 'Pro' };
-  const colors = { free: '#8fa090', starter: '#60a5fa', pro: '#4ade80' };
+  const labels = { free: 'Free', starter: 'Premium', pro: 'Premium' };
+  const colors = { free: '#8fa090', starter: '#4ade80', pro: '#4ade80' };
   const lbl = 'Plan ' + (labels[_userPlan] || 'Free');
   const col = colors[_userPlan] || '#8fa090';
+  // Update Plan screen CTA
+  const isPremium = _userPlan !== 'free';
+  const upgradeBtn = document.getElementById('planUpgradeBtn');
+  const manageBtn = document.getElementById('planManageBtn');
+  const planBadge = document.getElementById('planCurrentBadge');
+  const freeCard = document.getElementById('planFreeCard');
+  const premiumCard = document.getElementById('planPremiumCard');
+  if (planBadge) planBadge.textContent = isPremium ? '⭐ Plan Premium activo' : 'Plan Free activo';
+  if (upgradeBtn) upgradeBtn.style.display = isPremium ? 'none' : '';
+  if (manageBtn) manageBtn.style.display = isPremium ? '' : 'none';
+  if (freeCard) freeCard.style.borderColor = isPremium ? 'transparent' : '#142018';
+  if (premiumCard) premiumCard.style.borderColor = isPremium ? '#4ade80' : 'rgba(74,222,128,.4)';
+  const navPlanLabel = document.getElementById('navPlanLabel');
+  if (navPlanLabel) navPlanLabel.textContent = isPremium ? 'Premium ✓' : 'Premium';
   // Update all plan-badge elements
   document.querySelectorAll('.js-plan-badge').forEach(el => {
     el.textContent = lbl;
@@ -7805,12 +7918,12 @@ function _showUpgradeModal(reason) {
     ia:           { es: 'Más conversaciones con Vera', en: 'More Vera AI conversations' },
   };
   const descs = {
-    assets:       { es: 'El plan Free está limitado a <b>5 activos</b>. Con Starter o Pro tienes posiciones ilimitadas.', en: 'Free plan is limited to <b>5 assets</b>. Starter and Pro have unlimited positions.' },
-    analysis:     { es: 'El análisis de portfolio completo está disponible a partir del plan <b>Starter</b>.', en: 'Full portfolio analysis is available from the <b>Starter</b> plan.' },
-    impuestos:    { es: 'El informe de impuestos (IRPF) está disponible en los planes <b>Starter</b> y <b>Pro</b>.', en: 'The tax report is available in <b>Starter</b> and <b>Pro</b> plans.' },
-    topinvestors: { es: 'Accede a las carteras de los mejores inversores con el plan <b>Starter</b>.', en: 'Access top investor portfolios with the <b>Starter</b> plan.' },
-    dividends:    { es: 'El detalle completo de dividendos está disponible con el plan <b>Starter</b>.', en: 'Full dividend detail is available with the <b>Starter</b> plan.' },
-    ia:           { es: 'Con el plan <b>Pro</b> tienes €5/mes de créditos de IA Vera (~4.000 msgs). Con <b>Starter</b>, €0,50/mes (~400 msgs).', en: 'With <b>Pro</b> you get €5/month in Vera AI credits (~4,000 msgs). With <b>Starter</b>, €0.50/month (~400 msgs).' },
+    assets:       { es: 'El plan Free está limitado a <b>7 activos</b>. Con Premium tienes posiciones ilimitadas.', en: 'Free plan is limited to <b>7 assets</b>. Premium has unlimited positions.' },
+    analysis:     { es: 'El análisis de portfolio completo está disponible en el plan <b>Premium</b>.', en: 'Full portfolio analysis is available in the <b>Premium</b> plan.' },
+    impuestos:    { es: 'El informe de impuestos (IRPF) está disponible en el plan <b>Premium</b>.', en: 'The tax report is available in the <b>Premium</b> plan.' },
+    topinvestors: { es: 'Accede a las carteras de los mejores inversores con el plan <b>Premium</b>.', en: 'Access top investor portfolios with the <b>Premium</b> plan.' },
+    dividends:    { es: 'El detalle completo de dividendos está disponible con el plan <b>Premium</b>.', en: 'Full dividend detail is available with the <b>Premium</b> plan.' },
+    ia:           { es: 'La IA Vera está disponible en el plan <b>Premium</b>. Pregunta todo lo que quieras sobre tu cartera.', en: 'Vera AI is available in the <b>Premium</b> plan. Ask anything about your portfolio.' },
   };
   const isEs = typeof currentLang !== 'undefined' ? currentLang === 'es' : true;
   const lang = isEs ? 'es' : 'en';
@@ -7826,14 +7939,11 @@ function _showUpgradeModal(reason) {
       <div style="font-size:1.2rem;font-weight:800;color:#142018;margin-bottom:8px;padding-right:24px">${title}</div>
       <div style="font-size:.85rem;color:#4a5f4e;line-height:1.6;margin-bottom:22px">${desc}</div>
       <div style="display:flex;flex-direction:column;gap:10px">
-        <button onclick="_goPricing('starter',event)" style="width:100%;padding:14px;background:#142018;color:#f5fbf6;border:none;border-radius:12px;font-size:.95rem;font-weight:700;cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:space-between">
-          <span>${isEs ? 'Starter — 4,99€/mes' : 'Starter — €4.99/month'}</span>
-          <span style="color:#4ade80;font-size:.8rem">${isEs ? 'Activos ilimitados + IA' : 'Unlimited assets + AI'}</span>
+        <button onclick="_goPricing('pro',event)" style="width:100%;padding:16px;background:linear-gradient(135deg,#142018,#1e3a2a);color:#4ade80;border:2px solid rgba(74,222,128,.35);border-radius:14px;font-size:1rem;font-weight:800;cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:space-between">
+          <span>⭐ ${isEs ? 'Premium — 9,99€/mes' : 'Premium — €9.99/month'}</span>
+          <span style="font-size:.8rem;color:#a8d5b5">${isEs ? 'Activos ilimitados + IA' : 'Unlimited assets + AI'}</span>
         </button>
-        <button onclick="_goPricing('pro',event)" style="width:100%;padding:14px;background:linear-gradient(135deg,#142018,#1e3a2a);color:#4ade80;border:2px solid rgba(74,222,128,.3);border-radius:12px;font-size:.95rem;font-weight:700;cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:space-between">
-          <span>⭐ Pro — 9,99€/mes</span>
-          <span style="font-size:.8rem;color:#a8d5b5">${isEs ? 'IA sin límites' : 'Full AI access'}</span>
-        </button>
+        <div style="text-align:center;font-size:.72rem;color:#8fa090">${isEs ? 'Cancela cuando quieras · Pago seguro con Stripe' : 'Cancel anytime · Secure payment with Stripe'}</div>
         <button onclick="document.getElementById('upgradeModalOverlay').remove()" style="width:100%;padding:10px;background:none;border:none;font-size:.8rem;color:#8fa090;cursor:pointer;font-family:inherit">${isEs ? 'Continuar con plan Free' : 'Continue with Free plan'}</button>
       </div>
     </div>`;
@@ -7870,6 +7980,27 @@ async function _goPricing(plan, evt) {
   } catch (e) {
     alert('Error de conexión. Inténtalo de nuevo.');
     if (btn) { btn.disabled = false; btn.textContent = btnLabel; }
+  }
+}
+
+// Manage existing subscription via Stripe portal
+async function _manageSubscription() {
+  const tok = localStorage.getItem('fa_token');
+  if (!tok) return;
+  const btn = document.getElementById('planManageBtn');
+  if (btn) { btn.disabled = true; btn.textContent = 'Abriendo portal…'; }
+  try {
+    const r = await fetch('/api/stripe/portal', {
+      method: 'POST',
+      headers: { 'Authorization': 'Bearer ' + tok, 'Content-Type': 'application/json' },
+    });
+    const d = await r.json();
+    if (d.url) { window.location.href = d.url; }
+    else { alert('Error al abrir portal: ' + (d.error || 'Unknown')); }
+  } catch(e) {
+    alert('Error de conexión. Inténtalo de nuevo.');
+  } finally {
+    if (btn) { btn.disabled = false; btn.textContent = 'Gestionar suscripción'; }
   }
 }
 
@@ -10931,6 +11062,11 @@ function closeAlertSheet() {
 
 // ── Vera IA persistent panel toggle ──────────────────────────────────────────
 function toggleIaPanel() {
+  // Gate IA behind premium plan
+  if(_userPlan==='free'){
+    _showUpgradeModal('ia');
+    return;
+  }
   const panel = document.getElementById('dIaPanel');
   const btn   = document.getElementById('navBtnIa');
   if (!panel) return;
