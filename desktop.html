@@ -6,7 +6,7 @@
   (served no-cache, version-bumped each deploy). Works even where SW/no-store
   are ignored, because it is plain page JS. */
 (function(){try{
-  var FA_BUILD=window.FA_BUILD='284';
+  var FA_BUILD=window.FA_BUILD='285';
   var s=location.search;
   if(s.indexOf('vchk')>-1||s.indexOf('_v=')>-1){history.replaceState(null,'',location.pathname+(location.hash||''));return;}
   fetch('/sw.js?_='+Date.now(),{cache:'no-store'}).then(function(r){return r.text();}).then(function(t){
@@ -10707,6 +10707,23 @@ let _comPosts = [];
 let _comMyLikes = new Set();
 let _comModalTab = 'texto';
 
+// REST helper for community (avoids Supabase JS client hang)
+async function _comF(method, table, query='', body=null) {
+  if (!_sb?.supabaseUrl) throw new Error('no supabase');
+  const tok = localStorage.getItem('fa_token') || (_sbUser&&_sbUser.access_token) || _sb.supabaseKey;
+  const h = { 'apikey': _sb.supabaseKey, 'Authorization': 'Bearer ' + tok };
+  if (body !== null) h['Content-Type'] = 'application/json';
+  if (method === 'POST') h['Prefer'] = 'return=minimal';
+  const url = _sb.supabaseUrl + '/rest/v1/' + table + (query ? '?' + query : '');
+  const r = await Promise.race([
+    fetch(url, { method, headers: h, ...(body !== null ? {body: JSON.stringify(body)} : {}) }),
+    new Promise((_,rej) => setTimeout(() => rej(new Error('timeout')), 8000))
+  ]);
+  if (!r.ok) { const t = await r.text().catch(()=>''); throw new Error(t || 'HTTP ' + r.status); }
+  if (r.status === 204 || method === 'DELETE') return null;
+  return r.json();
+}
+
 function _comLoad() {
   // Update avatar
   const av = document.getElementById('comAvatar');
@@ -10727,18 +10744,14 @@ async function _comLoadFeed() {
 
   el.innerHTML = '<div class="com-loading">'+(_isEsCom?'Cargando…':'Loading…')+'</div>';
   try {
-    let query = _sb.from('community_posts').select('*').order('created_at', { ascending: false }).limit(30);
-    if (_comFilter_active !== 'all') query = query.eq('post_type', _comFilter_active);
-    const { data: posts, error } = await query;
-    if (error) throw error;
-
+    let qs = 'select=*&order=created_at.desc&limit=30';
+    if (_comFilter_active !== 'all') qs += '&post_type=eq.' + encodeURIComponent(_comFilter_active);
+    const [posts, likes] = await Promise.all([
+      _comF('GET', 'community_posts', qs),
+      _sbUser ? _comF('GET', 'community_likes', 'select=post_id&user_id=eq.' + encodeURIComponent(_sbUser.id)) : Promise.resolve([])
+    ]);
     _comPosts = posts || [];
-
-    // Load user's likes
-    if (_sbUser) {
-      const { data: likes } = await _sb.from('community_likes').select('post_id').eq('user_id', _sbUser.id);
-      _comMyLikes = new Set((likes || []).map(l => l.post_id));
-    }
+    _comMyLikes = new Set((likes || []).map(l => l.post_id));
 
     if (!_comPosts.length) {
       el.innerHTML = `<div class="com-empty">
@@ -10868,7 +10881,7 @@ async function _comLoadComments(postId) {
   const el = document.getElementById(`comCommentsList-${postId}`);
   if (!el || !_sb) return;
   try {
-    const { data: comments } = await _sb.from('community_comments').select('*').eq('post_id', postId).order('created_at', { ascending: true });
+    const comments = await _comF('GET', 'community_comments', 'select=*&post_id=eq.' + postId + '&order=created_at.asc');
     const list = comments || [];
     el.innerHTML = list.length ? list.map(c => {
       const ini = (c.display_name||'?').slice(0,2).toUpperCase();
@@ -10894,11 +10907,9 @@ async function _comAddComment(postId) {
   input.value = '';
   const displayName = _sbUser.user_metadata?.full_name || _sbUser.email?.split('@')[0] || (currentLang==='es'?'Usuario':'User');
   try {
-    await _sb.from('community_comments').insert({ post_id: postId, user_id: _sbUser.id, display_name: displayName, content: text });
-    await _sb.rpc('increment_comments_count', { post_id: postId }).catch(() => {
-      // Fallback: direct update
-      _sb.from('community_posts').update({ comments_count: (_comPosts.find(p=>p.id===postId)?.comments_count||0)+1 }).eq('id', postId).catch(()=>{});
-    });
+    await _comF('POST', 'community_comments', '', { post_id: postId, user_id: _sbUser.id, display_name: displayName, content: text });
+    const _newCnt = (_comPosts.find(p=>p.id===postId)?.comments_count||0)+1;
+    _comF('PATCH', 'community_posts', 'id=eq.'+postId, { comments_count: _newCnt }).catch(()=>{});
     const cntEl = document.getElementById(`comCnt-${postId}`);
     if (cntEl) cntEl.textContent = Number(cntEl.textContent||0) + 1;
     await _comLoadComments(postId);
@@ -10913,16 +10924,16 @@ async function _comToggleLike(postId, btn) {
   const post = _comPosts.find(p => p.id === postId);
   try {
     if (liked) {
-      await _sb.from('community_likes').delete().eq('user_id', _sbUser.id).eq('post_id', postId);
-      await _sb.from('community_posts').update({ likes_count: Math.max(0, (post?.likes_count||1)-1) }).eq('id', postId);
+      await _comF('DELETE', 'community_likes', 'user_id=eq.'+encodeURIComponent(_sbUser.id)+'&post_id=eq.'+postId);
+      _comF('PATCH', 'community_posts', 'id=eq.'+postId, { likes_count: Math.max(0, (post?.likes_count||1)-1) }).catch(()=>{});
       _comMyLikes.delete(postId);
       btn.classList.remove('liked');
       if (svg) svg.setAttribute('fill','none');
       if (span) span.textContent = Math.max(0, Number(span.textContent||1)-1);
       if (post) post.likes_count = Math.max(0, (post.likes_count||1)-1);
     } else {
-      await _sb.from('community_likes').insert({ user_id: _sbUser.id, post_id: postId });
-      await _sb.from('community_posts').update({ likes_count: (post?.likes_count||0)+1 }).eq('id', postId);
+      await _comF('POST', 'community_likes', '', { user_id: _sbUser.id, post_id: postId });
+      _comF('PATCH', 'community_posts', 'id=eq.'+postId, { likes_count: (post?.likes_count||0)+1 }).catch(()=>{});
       _comMyLikes.add(postId);
       btn.classList.add('liked');
       if (svg) svg.setAttribute('fill','currentColor');
@@ -10935,7 +10946,7 @@ async function _comToggleLike(postId, btn) {
 async function _comDeletePost(postId, btn) {
   if (!_sb || !_sbUser || !confirm(currentLang==='es'?'¿Eliminar esta publicación?':'Delete this post?')) return;
   try {
-    await _sb.from('community_posts').delete().eq('id', postId).eq('user_id', _sbUser.id);
+    await _comF('DELETE', 'community_posts', 'id=eq.'+postId+'&user_id=eq.'+encodeURIComponent(_sbUser.id));
     btn.closest('.com-post')?.remove();
   } catch(e) { console.warn('[com delete]', e.message); }
 }
@@ -11029,10 +11040,7 @@ async function _comPublish() {
   payload.comments_count = 0;
   btn.textContent = '…'; btn.disabled = true;
   try {
-    const insertPromise = _sb.from('community_posts').insert(payload);
-    const timeoutPromise = new Promise((_,reject)=>setTimeout(()=>reject(new Error('Tiempo de espera agotado — reintenta')),15000));
-    const { error } = await Promise.race([insertPromise, timeoutPromise]);
-    if (error) throw error;
+    await _comF('POST', 'community_posts', '', payload);
     _comCloseModal();
     // Reset form fields
     ['comTextContent','comTextTags','comPfContent','comPfTotal','comPfInvested','comPfGain','comPfPositions','comPfTags','comTxAsset','comTxQty','comTxPrice','comTxComment'].forEach(id => { const el=document.getElementById(id); if(el) el.value=''; });
@@ -11055,8 +11063,7 @@ async function _comShowProfile(userId, displayName) {
   content.innerHTML = '<div class="com-loading">Cargando perfil…</div>';
 
   try {
-    const { data: posts } = await _sb.from('community_posts').select('*').eq('user_id', userId).order('created_at', { ascending: false }).limit(20);
-    const userPosts = posts || [];
+    const userPosts = (await _comF('GET', 'community_posts', 'select=*&user_id=eq.'+encodeURIComponent(userId)+'&order=created_at.desc&limit=20')) || [];
     const totalLikes = userPosts.reduce((s,p) => s + (p.likes_count||0), 0);
     const initials = (displayName||'?').slice(0,2).toUpperCase();
     const colors = ['#1a7a43,#2ecc71','#1a4a6a,#3498db','#6a1a4a,#c39bd3','#4a3a1a,#d4af37'];
@@ -11104,7 +11111,7 @@ async function _comLoadTopMembers() {
   const el = document.getElementById('comTopMembers');
   if (!el || !_sb) return;
   try {
-    const { data } = await _sb.from('community_posts').select('user_id,display_name,likes_count');
+    const data = await _comF('GET', 'community_posts', 'select=user_id,display_name,likes_count');
     const byUser = {};
     (data||[]).forEach(p => {
       if (!byUser[p.user_id]) byUser[p.user_id] = { name: p.display_name, posts: 0, likes: 0 };
