@@ -6,7 +6,7 @@
   (served no-cache, version-bumped each deploy). Works even where SW/no-store
   are ignored, because it is plain page JS. */
 (function(){try{
-  var FA_BUILD=window.FA_BUILD='278';
+  var FA_BUILD=window.FA_BUILD='279';
   var s=location.search;
   if(s.indexOf('vchk')>-1||s.indexOf('_v=')>-1){history.replaceState(null,'',location.pathname+(location.hash||''));return;}
   fetch('/sw.js?_='+Date.now(),{cache:'no-store'}).then(function(r){return r.text();}).then(function(t){
@@ -3825,7 +3825,26 @@ html,body{height:100%;overflow:hidden;font-family:-apple-system,BlinkMacSystemFo
 
   // ── Storage ───────────────────────────────────────────────
   window.LnGetLoans=function(){ try{ const a=JSON.parse(localStorage.getItem('fa_loans')||'[]'); return Array.isArray(a)?a:[]; }catch(_){ return []; } };
-  function LnSave(arr){ localStorage.setItem('fa_loans',JSON.stringify(arr)); }
+  function LnSave(arr){ localStorage.setItem('fa_loans',JSON.stringify(arr)); _LnSaveToSB(arr); }
+  async function _LnSaveToSB(arr){
+    try{
+      if(!_sb||!_sbUser) return;
+      await fetch(_sb.supabaseUrl+'/rest/v1/user_loans',{
+        method:'POST',
+        headers:{'apikey':_sb.supabaseKey,'Authorization':'Bearer '+_comGetTok(),'Content-Type':'application/json','Prefer':'resolution=merge-duplicates,return=minimal'},
+        body:JSON.stringify({user_id:_sbUser.id,data:arr,updated_at:new Date().toISOString()})
+      });
+    }catch(e){console.warn('ln-save-sb',e);}
+  }
+  window.LnSyncFromSB=async function(){
+    try{
+      if(!_sb||!_sbUser) return;
+      const r=await fetch(_sb.supabaseUrl+'/rest/v1/user_loans?user_id=eq.'+encodeURIComponent(_sbUser.id)+'&select=data&limit=1',{
+        headers:{'apikey':_sb.supabaseKey,'Authorization':'Bearer '+_comGetTok(),'Accept':'application/vnd.pgrst.object+json'}
+      });
+      if(r.ok){const j=await r.json();if(j&&Array.isArray(j.data)){localStorage.setItem('fa_loans',JSON.stringify(j.data));window.LnRenderPrestamos();}}
+    }catch(e){console.warn('ln-sync-sb',e);}
+  };
   window.LnDelete=function(id){ if(!confirm('¿Eliminar este producto?')) return; LnSave(LnGetLoans().filter(x=>x.id!==id)); LnRenderPrestamos(); };
 
   // ── Modal helpers ─────────────────────────────────────────
@@ -4244,12 +4263,22 @@ html,body{height:100%;overflow:hidden;font-family:-apple-system,BlinkMacSystemFo
   window.MiPage=function(p){ _miPage=p; };
 
   window.MiLoad=function(force){
-    var MI_API='/api/myinvestor/catalog?v=268';
-    // Check cache (24h)
+    var MI_API='/api/myinvestor/catalog?v=279';
+    // Check cache (7 days). Also skip cache if it's empty (0 items — failed previous load)
     var cached=localStorage.getItem('mi_cache'); var cachedAt=parseInt(localStorage.getItem('mi_cache_at')||'0');
-    if(!force && cached && (Date.now()-cachedAt)<24*3600*1000){ try{_miData=JSON.parse(cached);}catch(_){} MiRender(); return; }
-    document.getElementById('miReloadBtn').textContent='⏳';
-    document.getElementById('miError').textContent='';
+    if(!force && cached && (Date.now()-cachedAt)<7*24*3600*1000){
+      try{_miData=JSON.parse(cached);}catch(_){}
+      if(_miData.length>0){
+        // Restore last update display from cache
+        var cachedUpd=localStorage.getItem('mi_cache_updated');
+        if(cachedUpd&&document.getElementById('miUpdated')){
+          document.getElementById('miUpdated').textContent=cachedUpd;
+        }
+        MiRender(); return;
+      }
+    }
+    var reloadBtn=document.getElementById('miReloadBtn'); if(reloadBtn)reloadBtn.textContent='⏳';
+    var errEl=document.getElementById('miError'); if(errEl)errEl.textContent='';
     fetch(MI_API).then(r=>r.json()).then(function(json){
       var arr=json.products||json.data||json||[];
       if(!Array.isArray(arr)) throw new Error(currentLang==='es'?'Sin datos del catálogo':'No catalog data');
@@ -4258,12 +4287,14 @@ html,body{height:100%;overflow:hidden;font-family:-apple-system,BlinkMacSystemFo
       localStorage.setItem('mi_cache_at',String(Date.now()));
       var _miLocale=currentLang==='es'?'es-ES':'en-GB';
       var upd=json.updated?new Date(json.updated).toLocaleDateString(_miLocale):'—';
-      document.getElementById('miUpdated').textContent=(currentLang==='es'?'Actualizado: ':'Updated: ')+upd+(json.count?' · '+json.count+(currentLang==='es'?' productos':' products'):'');
+      var updTxt=(currentLang==='es'?'Actualizado: ':'Updated: ')+upd+(json.count?' · '+json.count+(currentLang==='es'?' productos':' products'):'');
+      localStorage.setItem('mi_cache_updated',updTxt);
+      var updEl=document.getElementById('miUpdated'); if(updEl)updEl.textContent=updTxt;
       MiRender();
     }).catch(function(e){
-      document.getElementById('miError').textContent=(currentLang==='es'?'Error cargando catálogo: ':'Error loading catalog: ')+e.message;
+      if(errEl)errEl.textContent=(currentLang==='es'?'Error cargando catálogo: ':'Error loading catalog: ')+e.message;
     }).finally(function(){
-      document.getElementById('miReloadBtn').textContent=(currentLang==='es'?'↻ Actualizar':'↻ Refresh');
+      if(reloadBtn)reloadBtn.textContent=(currentLang==='es'?'↻ Actualizar':'↻ Refresh');
     });
   };
 
@@ -4369,12 +4400,9 @@ html,body{height:100%;overflow:hidden;font-family:-apple-system,BlinkMacSystemFo
       .catch(function(e){ console.warn('[MiLoadReturns]',e.message); });
   }
 
-  // Auto-load on init
+  // Auto-load on init — MiLoad handles cache logic (7-day TTL, empty-cache fallback)
   (function init(){
-    var cached=localStorage.getItem('mi_cache');
-    if(cached){ try{_miData=JSON.parse(cached);}catch(_){} MiRender(); }
-    var at=parseInt(localStorage.getItem('mi_cache_at')||'0');
-    if(!at||(Date.now()-at)>7*24*3600*1000){ MiLoad(true); }
+    MiLoad(false);
   })();
 })();
 </script>
@@ -4703,7 +4731,7 @@ function showScreen(name,keepTab=false){
   if(name==='ia'&&dataReady)renderIA();
   if(name==='alerts')renderAlertsScreen();
   if(name==='impuestos'&&dataReady)renderImpuestos();
-  if(name==='prestamos')LnRenderPrestamos();
+  if(name==='prestamos'){LnRenderPrestamos();setTimeout(()=>window.LnSyncFromSB&&window.LnSyncFromSB(),300);}
   if(name==='myinvestor')try{MiLoad();}catch(_){}
   if(name==='topinvestors')_insLoad(_insCurrentSymbol);
 }

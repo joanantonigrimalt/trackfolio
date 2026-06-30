@@ -87,6 +87,7 @@ const STATIC_CATALOG = [
   {isin:'LU1273543585',nombre:'Amundi Index MSCI World EUR Hedged AHE-C',tipo:'Fondo',categoria:'Renta Variable Global (Eur Hdg)',mercado:'',ter:0.25,divisa:'EUR',replica:'Física',distribucion:'Acumulación',rent1a:22.5,rent3a:10.9,rent5a:13.4,rating:'4',url:'https://app.myinvestor.es/fondos/LU1273543585'},
   {isin:'ES0174199000',nombre:'Baelo Patrimonio FI',tipo:'Fondo',categoria:'Multi-Activo Conservador',mercado:'',ter:0.44,divisa:'EUR',replica:'Física',distribucion:'Acumulación',rent1a:12.8,rent3a:7.4,rent5a:8.9,rating:'4',url:'https://app.myinvestor.es/fondos/ES0174199000'},
   {isin:'ES0125057001',nombre:'Cobas Global FI',tipo:'Fondo',categoria:'Renta Variable Global Value',mercado:'',ter:1.50,divisa:'EUR',replica:'Física',distribucion:'Acumulación',rent1a:15.3,rent3a:12.4,rent5a:9.8,rating:'3',url:'https://app.myinvestor.es/fondos/ES0125057001'},
+  {isin:'LU1223083087',nombre:'Schroder ISF Global Gold EUR Hedged A Acc',tipo:'Fondo',categoria:'Materias Primas - Minería Oro',mercado:'',ter:2.65,divisa:'EUR',replica:'Física',distribucion:'Acumulación',rent1a:58.0,rent3a:46.3,rent5a:20.7,rating:'3',url:'https://app.myinvestor.es/fondos/LU1223083087'},
 ];
 
 // In-memory cache (6h)

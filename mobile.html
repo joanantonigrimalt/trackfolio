@@ -10,7 +10,7 @@
   no-store headers are ignored (in-app webviews) because it is plain page JS.
   Source of truth = sw.js (always served no-cache, version-bumped each deploy). */
 (function(){try{
-  var FA_BUILD='278';
+  var FA_BUILD='279';
   var s=location.search;
   if(s.indexOf('vchk')>-1||s.indexOf('_v=')>-1){
     // Clean the ugly ?vchk= / ?_v= from the URL silently
@@ -3341,7 +3341,26 @@ table.an-corr-mtx{border-collapse:separate;border-spacing:4px}
   function LnMonthsElapsed(fecha){ if(!fecha) return 0; try{ const d=new Date(fecha+'T00:00:00'); const now=new Date(); let m=(now.getFullYear()-d.getFullYear())*12+(now.getMonth()-d.getMonth()); return Math.max(0,m); }catch(_){ return 0; } }
 
   window.LnGetLoans=function(){ try{ const a=JSON.parse(localStorage.getItem('fa_loans')||'[]'); return Array.isArray(a)?a:[]; }catch(_){ return []; } };
-  function LnSave(arr){ localStorage.setItem('fa_loans',JSON.stringify(arr)); }
+  function LnSave(arr){ localStorage.setItem('fa_loans',JSON.stringify(arr)); _LnSaveToSB(arr); }
+  async function _LnSaveToSB(arr){
+    try{
+      if(!_sb||!_sbUser) return;
+      await fetch(_sb.supabaseUrl+'/rest/v1/user_loans',{
+        method:'POST',
+        headers:{'apikey':_sb.supabaseKey,'Authorization':'Bearer '+_comGetTok(),'Content-Type':'application/json','Prefer':'resolution=merge-duplicates,return=minimal'},
+        body:JSON.stringify({user_id:_sbUser.id,data:arr,updated_at:new Date().toISOString()})
+      });
+    }catch(e){console.warn('ln-save-sb',e);}
+  }
+  window.LnSyncFromSB=async function(){
+    try{
+      if(!_sb||!_sbUser) return;
+      const r=await fetch(_sb.supabaseUrl+'/rest/v1/user_loans?user_id=eq.'+encodeURIComponent(_sbUser.id)+'&select=data&limit=1',{
+        headers:{'apikey':_sb.supabaseKey,'Authorization':'Bearer '+_comGetTok(),'Accept':'application/vnd.pgrst.object+json'}
+      });
+      if(r.ok){const j=await r.json();if(j&&Array.isArray(j.data)){localStorage.setItem('fa_loans',JSON.stringify(j.data));window.LnRenderPrestamos();}}
+    }catch(e){console.warn('ln-sync-sb',e);}
+  };
   window.LnDelete=function(id){ if(!confirm('¿Eliminar este producto?')) return; LnSave(LnGetLoans().filter(x=>x.id!==id)); LnRenderPrestamos(); };
   window.LnOpenM=function(id){ document.getElementById(id).classList.add('on'); };
   window.LnCloseM=function(id){ document.getElementById(id).classList.remove('on'); };
@@ -3735,7 +3754,7 @@ function showScreen(name,keepTab=false){
   if(name==='ia'&&dataReady)renderIA();
   if(name==='alerts')renderAlertsScreen();
   if(name==='impuestos'&&dataReady)renderImpuestos();
-  if(name==='prestamos')LnRenderPrestamos();
+  if(name==='prestamos'){LnRenderPrestamos();setTimeout(()=>window.LnSyncFromSB&&window.LnSyncFromSB(),300);}
   if(name==='topinvestors')_insLoad(_insCurrentSymbol);
 }
 function normalizeHistory(h){const _all=(Array.isArray(h)?h:[]).map(p=>({date:String(p.date).slice(0,10),close:Number(p.close)})).filter(p=>p.date&&Number.isFinite(p.close)&&p.close>0).sort((a,b)=>a.date.localeCompare(b.date));if(_all.length>=4){const _s=[..._all].sort((a,b)=>a.close-b.close);const _m=_s[Math.floor(_s.length/2)].close;const _c=_all.filter(p=>p.close<=_m*10&&p.close>=_m/10);if(_c.length>=4){return _c.length>1260?_c.slice(-1260):_c;}}return _all.length>1260?_all.slice(-1260):_all;} // cap at 5Y; outlier filter removes bad data points >10x median
