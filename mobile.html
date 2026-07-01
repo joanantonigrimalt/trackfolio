@@ -3374,8 +3374,15 @@ table.an-corr-mtx{border-collapse:separate;border-spacing:4px}
   window.LnSyncFromSB=async function(){
     try{
       if(!_sb||!_sbUser) return;
+      // Always get a fresh token (stored token may be expired)
+      let tok = localStorage.getItem('fa_token') || '';
+      try {
+        const sess = await _sb.auth.getSession();
+        const freshTok = sess?.data?.session?.access_token;
+        if (freshTok) { tok = freshTok; localStorage.setItem('fa_token', freshTok); }
+      } catch(_) {}
       const r=await fetch(_sb.supabaseUrl+'/rest/v1/user_loans?user_id=eq.'+encodeURIComponent(_sbUser.id)+'&select=data&limit=1',{
-        headers:{'apikey':_sb.supabaseKey,'Authorization':'Bearer '+(localStorage.getItem('fa_token')||(_sbUser&&_sbUser.access_token)||''),'Accept':'application/vnd.pgrst.object+json'}
+        headers:{'apikey':_sb.supabaseKey,'Authorization':'Bearer '+tok,'Accept':'application/vnd.pgrst.object+json'}
       });
       if(r.ok){const j=await r.json();if(j&&Array.isArray(j.data)){localStorage.setItem('fa_loans',JSON.stringify(j.data));window.LnRenderPrestamos();if(typeof renderDebt==='function')renderDebt();if(typeof renderLists==='function')renderLists();}}
     }catch(e){console.warn('ln-sync-sb',e);}
