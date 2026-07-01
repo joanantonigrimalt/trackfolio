@@ -10,7 +10,7 @@
   no-store headers are ignored (in-app webviews) because it is plain page JS.
   Source of truth = sw.js (always served no-cache, version-bumped each deploy). */
 (function(){try{
-  var FA_BUILD='292';
+  var FA_BUILD='293';
   var s=location.search;
   if(s.indexOf('vchk')>-1||s.indexOf('_v=')>-1){
     // Clean the ugly ?vchk= / ?_v= from the URL silently
@@ -7150,6 +7150,7 @@ async function initSupabase(){
       if(event==='TOKEN_REFRESHED'||event==='INITIAL_SESSION'){
         if(session?.access_token)localStorage.setItem('fa_token',session.access_token);
         if(_sbUser&&!_syncDone){syncFromCloud().catch(()=>{});_syncDone=true;}
+        if(_sbUser) loadUserPlan().catch(()=>{});
       }
       if(event==='PASSWORD_RECOVERY'){setTimeout(()=>{openAuthModal();_setAuthMode('resetpass');},300);}
       if(event==='SIGNED_OUT'){
@@ -7174,6 +7175,7 @@ async function initSupabase(){
       _sbUser=session?.user||null;
       renderAccountSection();
       if(_sbUser&&!_syncDone){syncFromCloud();_syncDone=true;}
+      if(_sbUser) loadUserPlan().catch(()=>{});
     }).catch(e=>{_sbInitErr=e.message;console.warn('[auth getSession]',e.message);});
   }catch(e){_sb=null;_sbInitErr=e.message;console.warn('[auth]',e.message);}
 }
@@ -7209,6 +7211,8 @@ function renderAccountSection(){
       </div>
       <button id="btnLogout" style="width:100%;padding:9px;background:none;border:1.5px solid rgba(20,32,24,.12);border-radius:9px;font-size:13px;color:#5a8f6a;font-weight:600;cursor:pointer;font-family:inherit">${currentLang==='es'?'Cerrar sesión':'Sign out'}</button>`;
     document.getElementById('btnUpgradePlan').onclick=()=>{ closeSettings(); _showUpgradeModal('assets'); };
+    // Apply current plan badge immediately after rebuilding HTML
+    if(typeof _updatePlanUI==='function') _updatePlanUI();
     document.getElementById('btnLogout').onclick=()=>{
       ['tf_positions','tf_custom_assets','tf_last_sync','fa_liquidity','_rawCustomAssets','fa_active_user_id','fa_token','fa_user'].forEach(k=>localStorage.removeItem(k));
       _sb.auth.signOut().catch(()=>{}); // fire-and-forget: no esperar red
