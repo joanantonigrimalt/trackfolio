@@ -1,13 +1,5 @@
 {
   "version": 2,
-  "redirects": [
-    {
-      "source": "/:path*",
-      "has": [{ "type": "host", "value": "www.finasset.app" }],
-      "destination": "https://finasset.app/:path*",
-      "permanent": true
-    }
-  ],
   "rewrites": [
     { "source": "/mobile", "destination": "/mobile.html" },
     { "source": "/mobile/", "destination": "/mobile.html" },
