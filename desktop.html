@@ -8182,9 +8182,11 @@ async function initSupabase(){
         if(document.querySelector('.cover-screen.cs-active')){try{localStorage.setItem('fa_ob_done','1');if(typeof closeAuthModal==='function')closeAuthModal();enterMainApp();}catch(_){}}
         await syncFromCloud(); loadUserPlan().catch(()=>{}); syncSnapshotsFromCloud();
         _startPriceRefreshLoop();
+        _startRealtimeSync();
       }
       if(event==='SIGNED_OUT'){
         _stopPriceRefreshLoop();
+        _stopRealtimeSync();
         // Clear ALL user-specific data on logout — prevents next user seeing stale portfolio
         ['fa_token','fa_user','tf_positions','tf_custom_assets','tf_last_sync','fa_liquidity','_rawCustomAssets','fa_value_snapshots','fa_active_user_id'].forEach(k=>localStorage.removeItem(k));
         // If we're in the main app, redirect to login
@@ -8205,7 +8207,7 @@ async function initSupabase(){
       const session=res?.data?.session||null;
       _sbUser=session?.user||null;
       renderAccountSection();
-      if(_sbUser){syncFromCloud();syncSnapshotsFromCloud();loadUserPlan().catch(()=>{});}
+      if(_sbUser){syncFromCloud();syncSnapshotsFromCloud();loadUserPlan().catch(()=>{});_startRealtimeSync();}
     }).catch(e=>{_sbInitErr=e.message;console.warn('[auth getSession]',e.message);});
   }catch(e){_sb=null;_sbInitErr=e.message;console.warn('[auth]',e.message);}
 }
@@ -8414,6 +8416,34 @@ function _debouncedSync(immediate=false){
   clearTimeout(_syncTimer);
   if(immediate){syncToCloud().catch(()=>{});return;}
   _syncTimer=setTimeout(()=>syncToCloud().catch(()=>{}),1000);
+}
+
+// ── Realtime cross-device sync ──────────────────────────────────────────────
+// Subscribe to this user's rows so a change on one device propagates to the
+// other within seconds. Handlers only call the existing pull functions, which
+// already resolve conflicts by timestamp — an echo of our own write is a no-op.
+let _realtimeChan=null, _realtimePullTimer=null;
+function _realtimePull(){
+  clearTimeout(_realtimePullTimer);
+  _realtimePullTimer=setTimeout(()=>{
+    try{ syncFromCloud().catch(()=>{}); }catch(_){}
+    try{ if(typeof syncSnapshotsFromCloud==='function') syncSnapshotsFromCloud(); }catch(_){}
+  },500);
+}
+function _startRealtimeSync(){
+  if(!_sb||!_sbUser)return;
+  try{
+    if(_realtimeChan){ _sb.removeChannel(_realtimeChan); _realtimeChan=null; }
+    const uid=_sbUser.id;
+    _realtimeChan=_sb.channel('fa-sync-'+uid)
+      .on('postgres_changes',{event:'*',schema:'public',table:'user_positions',filter:'user_id=eq.'+uid},_realtimePull)
+      .on('postgres_changes',{event:'*',schema:'public',table:'user_loans',    filter:'user_id=eq.'+uid},()=>{ try{ if(typeof window.LnSyncFromSB==='function') window.LnSyncFromSB().catch(()=>{}); }catch(_){} })
+      .subscribe();
+  }catch(e){ console.warn('[realtime]',e.message); }
+}
+function _stopRealtimeSync(){
+  try{ if(_realtimeChan&&_sb) _sb.removeChannel(_realtimeChan); }catch(_){}
+  _realtimeChan=null;
 }
 
 function _togglePwd(inputId, btn) {
