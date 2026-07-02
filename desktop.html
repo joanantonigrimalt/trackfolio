@@ -3824,12 +3824,19 @@ html,body{height:100%;overflow:hidden;font-family:-apple-system,BlinkMacSystemFo
   // ── Storage ───────────────────────────────────────────────
   window.LnGetLoans=function(){ try{ const a=JSON.parse(localStorage.getItem('fa_loans')||'[]'); return Array.isArray(a)?a:[]; }catch(_){ return []; } };
   function LnSave(arr){ localStorage.setItem('fa_loans',JSON.stringify(arr)); _LnSaveToSB(arr); }
+  // Always resolve a *fresh* Supabase JWT — the stored fa_token may be expired (1h TTL),
+  // which makes user_loans writes/reads fail with 401 and drop loans silently.
+  async function _freshTok(){
+    let tok = localStorage.getItem('fa_token') || (_sbUser&&_sbUser.access_token) || '';
+    try{ const s=await _sb.auth.getSession(); const f=s?.data?.session?.access_token; if(f){ tok=f; localStorage.setItem('fa_token',f); } }catch(_){}
+    return tok || (_sb&&_sb.supabaseKey) || '';
+  }
   async function _LnSaveToSB(arr){
     try{
       if(!_sb||!_sbUser) return;
       await fetch(_sb.supabaseUrl+'/rest/v1/user_loans',{
         method:'POST',
-        headers:{'apikey':_sb.supabaseKey,'Authorization':'Bearer '+_comGetTok(),'Content-Type':'application/json','Prefer':'resolution=merge-duplicates,return=minimal'},
+        headers:{'apikey':_sb.supabaseKey,'Authorization':'Bearer '+(await _freshTok()),'Content-Type':'application/json','Prefer':'resolution=merge-duplicates,return=minimal'},
         body:JSON.stringify({user_id:_sbUser.id,data:arr,updated_at:new Date().toISOString()})
       });
     }catch(e){console.warn('ln-save-sb',e);}
@@ -3838,9 +3845,9 @@ html,body{height:100%;overflow:hidden;font-family:-apple-system,BlinkMacSystemFo
     try{
       if(!_sb||!_sbUser) return;
       const r=await fetch(_sb.supabaseUrl+'/rest/v1/user_loans?user_id=eq.'+encodeURIComponent(_sbUser.id)+'&select=data&limit=1',{
-        headers:{'apikey':_sb.supabaseKey,'Authorization':'Bearer '+_comGetTok(),'Accept':'application/vnd.pgrst.object+json'}
+        headers:{'apikey':_sb.supabaseKey,'Authorization':'Bearer '+(await _freshTok()),'Accept':'application/vnd.pgrst.object+json'}
       });
-      if(r.ok){const j=await r.json();if(j&&Array.isArray(j.data)){localStorage.setItem('fa_loans',JSON.stringify(j.data));window.LnRenderPrestamos();}}
+      if(r.ok){const j=await r.json();if(j&&Array.isArray(j.data)){localStorage.setItem('fa_loans',JSON.stringify(j.data));window.LnRenderPrestamos();if(typeof renderDebt==='function')renderDebt();if(typeof renderLists==='function')renderLists();}}
     }catch(e){console.warn('ln-sync-sb',e);}
   };
   window.LnDelete=function(id){ if(!confirm('¿Eliminar este producto?')) return; LnSave(LnGetLoans().filter(x=>x.id!==id)); LnRenderPrestamos(); };
@@ -4722,6 +4729,8 @@ function assetCategory(a){if(['IE00B4ND3602','IE00B579F325'].includes(a.isin))re
 
 function showScreen(name,keepTab=false){
   if(name==='foro')name='comunidad';
+  // Plan gate: Fiscal & MyInvestor are Premium-only
+  if((name==='impuestos'||name==='myinvestor')&&typeof _isPremium==='function'&&!_isPremium()){ _showUpgradeModal(name==='impuestos'?'impuestos':'myinvestor'); return; }
   if(name==='comunidad')_comLoad();
   if(name==='referidos')_loadReferralScreen();
   if(name==='privacy'||name==='terms'){
@@ -5686,10 +5695,15 @@ function renderAnalysisCharts(){
     }
   }catch(_){}
   try{_anRenderBestWorst();}catch(e){console.warn('_anRenderBestWorst',e);}
-  try{_anRenderTreemap();}catch(e){console.warn('_anRenderTreemap',e);}
+  try{if(_isPremium())_anRenderTreemap();}catch(e){console.warn('_anRenderTreemap',e);}
   try{_anRenderTrendVsWorld();}catch(e){console.warn('_anRenderTrendVsWorld',e);}
-  try{_anRenderCorrelation();}catch(e){console.warn('_anRenderCorrelation',e);}
+  try{if(_isPremium())_anRenderCorrelation();}catch(e){console.warn('_anRenderCorrelation',e);}
   try{_anRenderCoverage();}catch(e){console.warn('_anRenderCoverage',e);}
+  // Plan gate: treemap & correlation are Premium-only (basic summary stays free)
+  try{
+    _planLockCard('anTreemapCard', currentLang==='es'?'Mapa de la cartera':'Portfolio treemap', !_isPremium(), 'analysis');
+    _planLockCard('anCorrCard',    currentLang==='es'?'Correlación de activos':'Asset correlation', !_isPremium(), 'analysis');
+  }catch(_){}
 }
 
 // ── Portfolio Weight Donut ───────────────────────────────────────────────────
@@ -6252,14 +6266,15 @@ async function renderDividends(){
   // ── DRIP ─────────────────────────────────────────────────────────────────
   if(divItems.length){
     const _dc2=document.getElementById('divDripCard');if(_dc2)_dc2.style.display='';
-    _renderDivDrip(totalAnnual);
+    if(_isPremium()){ _renderDivDrip(totalAnnual); }
+    _planLockCard('divDripCard', currentLang==='es'?'Reinversión (DRIP)':'Reinvestment (DRIP)', !_isPremium(), 'dividends');
   }
 
   // ── Future Value ──────────────────────────────────────────────────────────
   if(divItems.length){
     const _fc2=document.getElementById('divFVCard');if(_fc2)_fc2.style.display='';
-    _divFVTotalAnnual=totalAnnual;
-    _initDivFV(totalAnnual);
+    if(_isPremium()){ _divFVTotalAnnual=totalAnnual; _initDivFV(totalAnnual); }
+    _planLockCard('divFVCard', currentLang==='es'?'Valor futuro':'Future value', !_isPremium(), 'dividends');
   }
 
   // Asset allocation donut (hidden compat canvas, still build chart for other references)
@@ -7176,7 +7191,7 @@ function render(){
   }
   document.getElementById('investedTotal').textContent=fe(invested);
   document.getElementById('profitPercent').textContent=`${gainPct>=0?'+':''}${gainPct.toFixed(2)}%`;
-  const _cp=document.getElementById('coveragePill');if(_cp)_cp.textContent=`${c.total} ${t('assets')}`;
+  const _cp=document.getElementById('coveragePill');if(_cp)_cp.textContent=`${c.total} ${t('assets')}${_lastPriceTs?' · '+_freshLabel():''}`;
   // coverageBadge replaced by FAB button — no-op
   document.getElementById('count').textContent=c.total;
   document.getElementById('summaryInvested').textContent=fe(invested);
@@ -7517,13 +7532,13 @@ async function boot(){
       _rawSeedAssets=buildAssets(_cvMap);
       assets=applyOverridesToAssets(_rawSeedAssets);
       loadCustomIntoAssets(_cvMap);
-      _pricesLive=true; // live prices ready — show real totals
+      _pricesLive=true; _lastPriceTs=Date.now(); // live prices ready — show real totals
       _recordValueSnapshot();
       render(); _rerenderActive();
     }catch(e){
       console.warn('[boot] live prices fetch:',e.message);
       // Coverage API failed (timeout / network error) — show seed/cached prices rather than spinning forever
-      _pricesLive=true;
+      _pricesLive=true; _lastPriceTs=Date.now();
       _recordValueSnapshot();
       render(); _rerenderActive();
       // Retry coverage once after 4s — helps when Yahoo had a transient timeout or Vercel cold start
@@ -7904,6 +7919,34 @@ function saveNewAsset(){
 const FREE_ASSET_LIMIT = 10; // Free plan: max 10 assets
 let _userPlan = 'free'; // 'free' | 'pro'  (pro = Premium 9,99€/mes)
 let _userCredits = { used: 0, limit: 0, remaining: 0, month: '' };
+// Any paid tier (starter/pro) counts as Premium for feature gating.
+function _isPremium(){ return _userPlan !== 'free'; }
+// Price freshness indicator: timestamp of last live-price load + a short label.
+let _lastPriceTs = 0;
+function _freshLabel(){
+  if(!_lastPriceTs) return '';
+  const isEs=(typeof currentLang!=='undefined'?currentLang:'es')==='es';
+  const m=Math.floor((Date.now()-_lastPriceTs)/60000);
+  if(m<1) return isEs?'actualizado ahora':'updated now';
+  if(m<60) return isEs?('actualizado hace '+m+'m'):('updated '+m+'m ago');
+  const h=Math.floor(m/60);
+  return isEs?('actualizado hace '+h+'h'):('updated '+h+'h ago');
+}
+// Non-destructive per-card lock: overlays a "Premium" CTA on top of a card
+// (removed automatically when locked=false, so upgrading restores the card).
+function _planLockCard(cardId, title, locked, reason){
+  const card=document.getElementById(cardId); if(!card) return;
+  const prev=card.querySelector(':scope > .plan-lock-ov'); if(prev) prev.remove();
+  if(!locked) return;
+  try{ if(getComputedStyle(card).position==='static') card.style.position='relative'; }catch(_){ card.style.position='relative'; }
+  const isEs=(typeof currentLang!=='undefined'?currentLang:'es')==='es';
+  const ov=document.createElement('div');
+  ov.className='plan-lock-ov';
+  ov.style.cssText='position:absolute;inset:0;z-index:5;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;text-align:center;padding:16px;background:rgba(255,255,255,.74);backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px);border-radius:inherit;cursor:pointer';
+  ov.innerHTML='<div style="font-size:20px">🔒</div><div style="font-weight:800;color:#142018;font-size:.9rem">'+title+'</div><div style="font-size:.72rem;color:#4a5f4e">'+(isEs?'Función Premium':'Premium feature')+'</div><button style="margin-top:4px;padding:8px 14px;background:linear-gradient(135deg,#142018,#1e3a2a);color:#4ade80;border:none;border-radius:10px;font-weight:800;font-size:.75rem;cursor:pointer;font-family:inherit">'+(isEs?'Desbloquear':'Unlock')+'</button>';
+  ov.onclick=()=>{ try{ _showUpgradeModal(reason||'analysis'); }catch(_){} };
+  card.appendChild(ov);
+}
 
 async function loadUserPlan() {
   try {
@@ -7969,7 +8012,8 @@ function _updateIACreditsBar() {
   const bar = document.getElementById('iaCreditsBar');
   if (!bar) return;
   if (_userPlan === 'free') {
-    bar.innerHTML = `<span style="color:#8fa090;font-size:.7rem">Plan Free · 3 msgs/día</span><button onclick="_showUpgradeModal('ia')" style="font-size:.68rem;background:#142018;color:#4ade80;border:none;border-radius:6px;padding:3px 8px;cursor:pointer;font-weight:700;font-family:inherit">Mejorar plan</button>`;
+    { const _rem=(_userCredits&&_userCredits.limit>0)?_userCredits.remaining:10; const _lim=(_userCredits&&_userCredits.limit>0)?_userCredits.limit:10;
+    bar.innerHTML = `<span style="color:#8fa090;font-size:.7rem">Plan Free · ${_rem}/${_lim} ${currentLang==='es'?'msgs Vera este mes':'Vera msgs this month'}</span><button onclick="_showUpgradeModal('ia')" style="font-size:.68rem;background:#142018;color:#4ade80;border:none;border-radius:6px;padding:3px 8px;cursor:pointer;font-weight:700;font-family:inherit">${currentLang==='es'?'Mejorar plan':'Upgrade plan'}</button>`; }
     bar.style.display = 'flex';
   } else if (_userCredits && _userCredits.limit > 0) {
     const pct = Math.max(0, Math.min(100, (_userCredits.remaining / _userCredits.limit) * 100));
@@ -7994,6 +8038,7 @@ function _showUpgradeModal(reason) {
     dividends:    { es: 'Detalle de dividendos', en: 'Dividend detail' },
     ia:           { es: 'Más conversaciones con Vera', en: 'More Vera AI conversations' },
     alerts:       { es: 'Alertas de precio', en: 'Price alerts' },
+    myinvestor:   { es: 'Fondos MyInvestor', en: 'MyInvestor funds' },
   };
   const descs = {
     assets:       { es: 'El plan Free está limitado a <b>10 activos</b>. Con Premium tienes posiciones ilimitadas.', en: 'Free plan is limited to <b>10 assets</b>. Premium has unlimited positions.' },
@@ -8003,6 +8048,7 @@ function _showUpgradeModal(reason) {
     dividends:    { es: 'El detalle completo de dividendos está disponible con el plan <b>Premium</b>.', en: 'Full dividend detail is available with the <b>Premium</b> plan.' },
     ia:           { es: 'La IA Vera está disponible en el plan <b>Premium</b>. Pregunta todo lo que quieras sobre tu cartera.', en: 'Vera AI is available in the <b>Premium</b> plan. Ask anything about your portfolio.' },
     alerts:       { es: 'Las alertas de precio están disponibles en el plan <b>Premium</b>. Recibe notificaciones cuando un activo alcance tu precio objetivo.', en: 'Price alerts are available in the <b>Premium</b> plan. Get notified when an asset reaches your target price.' },
+    myinvestor:   { es: 'El buscador de fondos MyInvestor y sus rentabilidades están disponibles en el plan <b>Premium</b>.', en: 'The MyInvestor fund explorer and returns are available in the <b>Premium</b> plan.' },
   };
   const isEs = typeof currentLang !== 'undefined' ? currentLang === 'es' : true;
   const lang = isEs ? 'es' : 'en';
@@ -8119,6 +8165,8 @@ async function initSupabase(){
     _sb.auth.onAuthStateChange(async(event,session)=>{
       _sbUser=session?.user||null;
       renderAccountSection();
+      // Keep plan/badge correct on every session event (TOKEN_REFRESHED, INITIAL_SESSION, USER_UPDATED…)
+      if(_sbUser && event!=='SIGNED_IN') loadUserPlan().catch(()=>{});
       if(event==='SIGNED_IN'){
         if(session?.access_token)localStorage.setItem('fa_token',session.access_token);
         // Returning from Google OAuth while a login/cover screen is showing → enter the app
@@ -9555,19 +9603,66 @@ function iaShowTyping(question) {
   // Add to history
   if (!window._veraChatHistory) window._veraChatHistory = [];
   window._veraChatHistory.push({ role: 'user', content: question });
-  // Call real AI
-  fetch('/ai/chat', {
+  // Call real AI (streaming SSE)
+  fetch('/api/ai/chat', {
     method: 'POST',
     headers: Object.assign({'Content-Type':'application/json'}, _tok ? {'Authorization':'Bearer '+_tok} : {}),
     body: JSON.stringify({ messages: window._veraChatHistory.slice(-14), portfolio: _pf })
   })
-  .then(r => r.ok ? r.json() : r.json().then(d => { throw new Error(d.error || 'Error '+r.status); }))
-  .then(data => {
-    document.getElementById('iaTypingIndicator')?.remove();
-    const reply = data.content || 'Sin respuesta.';
-    window._veraChatHistory.push({ role: 'assistant', content: reply });
-    iaAddVeraMsg(_veraMarkdown(reply), 93);
-    if (data.credits) { _userCredits = data.credits; _updateIACreditsBar(); }
+  .then(r => {
+    if (!r.ok) {
+      document.getElementById('iaTypingIndicator')?.remove();
+      return r.json().then(d => { iaAddVeraMsg('⚠️ ' + (d?.error || 'Error '+r.status), 0); })
+                     .catch(() => { iaAddVeraMsg('⚠️ Error '+r.status, 0); });
+    }
+    const reader = r.body.getReader();
+    const decoder = new TextDecoder();
+    let buffer = '', fullReply = '', credits = null;
+    async function processStream(){
+      try {
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) break;
+          buffer += decoder.decode(value, { stream: true });
+          const lines = buffer.split('\n');
+          buffer = lines.pop() || '';
+          for (const line of lines) {
+            const trimmed = line.trim();
+            if (!trimmed || trimmed.startsWith('event:')) continue;
+            if (!trimmed.startsWith('data:')) continue;
+            const jsonStr = trimmed.slice(5).trim();
+            if (jsonStr === '[DONE]') continue;
+            let parsed; try { parsed = JSON.parse(jsonStr); } catch(_) { continue; }
+            if (parsed.credits) credits = parsed.credits;
+            if (parsed.text) {
+              fullReply += parsed.text;
+              document.getElementById('iaTypingIndicator')?.remove();
+              let se = document.getElementById('iaStreamingText');
+              if (!se) {
+                const div = document.createElement('div');
+                div.className = 'ia-msg'; div.id = 'iaStreamingMsg';
+                div.innerHTML = `<div class="ia-msg-av av-vera2"><svg viewBox="0 0 16 16" fill="none"><rect x="2" y="4" width="12" height="8" rx="2" fill="rgba(255,255,255,0.12)" stroke="rgba(255,255,255,0.5)" stroke-width="1"/><circle cx="6" cy="8" r="1.3" fill="#2dc98a"/><circle cx="10" cy="8" r="1.3" fill="#2dc98a"/></svg></div><div class="ia-bubble vera" id="iaStreamingText"></div>`;
+                msgs.appendChild(div);
+                se = document.getElementById('iaStreamingText');
+              }
+              if (se) se.innerHTML = _veraMarkdown(fullReply);
+              msgs.scrollTop = msgs.scrollHeight;
+            }
+          }
+        }
+      } catch(_) {
+        document.getElementById('iaTypingIndicator')?.remove();
+      }
+      document.getElementById('iaStreamingMsg')?.remove();
+      if (fullReply) {
+        window._veraChatHistory.push({ role: 'assistant', content: fullReply });
+        iaAddVeraMsg(_veraMarkdown(fullReply), 93);
+      } else {
+        iaAddVeraMsg('⚠️ Sin respuesta de Vera. Inténtalo de nuevo.', 0);
+      }
+      if (credits) { _userCredits = credits; _updateIACreditsBar(); }
+    }
+    return processStream();
   })
   .catch(err => {
     document.getElementById('iaTypingIndicator')?.remove();
@@ -11183,11 +11278,8 @@ function closeAlertSheet() {
 
 // ── Vera IA persistent panel toggle ──────────────────────────────────────────
 function toggleIaPanel() {
-  // Gate IA behind premium plan
-  if(_userPlan==='free'){
-    _showUpgradeModal('ia');
-    return;
-  }
+  // Free plan can use Vera with a limited monthly quota (enforced server-side);
+  // the backend returns a 402 with an upgrade message when the quota runs out.
   const panel = document.getElementById('dIaPanel');
   const btn   = document.getElementById('navBtnIa');
   if (!panel) return;

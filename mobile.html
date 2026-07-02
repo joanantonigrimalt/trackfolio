@@ -3361,12 +3361,19 @@ table.an-corr-mtx{border-collapse:separate;border-spacing:4px}
 
   window.LnGetLoans=function(){ try{ const a=JSON.parse(localStorage.getItem('fa_loans')||'[]'); return Array.isArray(a)?a:[]; }catch(_){ return []; } };
   function LnSave(arr){ localStorage.setItem('fa_loans',JSON.stringify(arr)); _LnSaveToSB(arr); }
+  // Always resolve a *fresh* Supabase JWT — the stored fa_token may be expired (1h TTL),
+  // which makes user_loans writes fail with 401 and drop loans silently.
+  async function _freshTok(){
+    let tok = localStorage.getItem('fa_token') || (_sbUser&&_sbUser.access_token) || '';
+    try{ const s=await _sb.auth.getSession(); const f=s?.data?.session?.access_token; if(f){ tok=f; localStorage.setItem('fa_token',f); } }catch(_){}
+    return tok || (_sb&&_sb.supabaseKey) || '';
+  }
   async function _LnSaveToSB(arr){
     try{
       if(!_sb||!_sbUser) return;
       await fetch(_sb.supabaseUrl+'/rest/v1/user_loans',{
         method:'POST',
-        headers:{'apikey':_sb.supabaseKey,'Authorization':'Bearer '+(localStorage.getItem('fa_token')||(_sbUser&&_sbUser.access_token)||''),'Content-Type':'application/json','Prefer':'resolution=merge-duplicates,return=minimal'},
+        headers:{'apikey':_sb.supabaseKey,'Authorization':'Bearer '+(await _freshTok()),'Content-Type':'application/json','Prefer':'resolution=merge-duplicates,return=minimal'},
         body:JSON.stringify({user_id:_sbUser.id,data:arr,updated_at:new Date().toISOString()})
       });
     }catch(e){console.warn('ln-save-sb',e);}
@@ -3953,6 +3960,8 @@ function iconInitials(a){return(a.name||a.isin).replace(/^i([A-Z])/,'I$1').slice
 function assetCategory(a){if(['IE00B4ND3602','IE00B579F325'].includes(a.isin))return'Oro';if(['IE00B43VDT70'].includes(a.isin))return'Plata';if(a.mapping?.type==='etf')return'ETFs';if(a.mapping?.type==='etc'){return(a.isin==='IE00B43VDT70')?'Plata':'Oro';}if(a.mapping?.type==='stock')return currentLang==='es'?'Acciones':'Stocks';return'Fondos';}
 
 function showScreen(name,keepTab=false){
+  // Plan gate: Fiscal & MyInvestor are Premium-only
+  if((name==='impuestos'||name==='myinvestor')&&typeof _isPremium==='function'&&!_isPremium()){ _showUpgradeModal(name==='impuestos'?'impuestos':'myinvestor'); return; }
   if(name==='comunidad')_comLoad();
   if(name==='privacy'||name==='terms'){
     document.querySelectorAll('.screen').forEach(el=>el.classList.remove('active'));
@@ -4957,10 +4966,15 @@ function renderAnalysisCharts(){
     }
   }catch(_){}
   try{_anRenderBestWorst();}catch(e){console.warn('_anRenderBestWorst',e);}
-  try{_anRenderTreemap();}catch(e){console.warn('_anRenderTreemap',e);}
+  try{if(_isPremium())_anRenderTreemap();}catch(e){console.warn('_anRenderTreemap',e);}
   try{_anRenderTrendVsWorld();}catch(e){console.warn('_anRenderTrendVsWorld',e);}
-  try{_anRenderCorrelation();}catch(e){console.warn('_anRenderCorrelation',e);}
+  try{if(_isPremium())_anRenderCorrelation();}catch(e){console.warn('_anRenderCorrelation',e);}
   try{_anRenderCoverage();}catch(e){console.warn('_anRenderCoverage',e);}
+  // Plan gate: treemap & correlation are Premium-only (basic summary stays free)
+  try{
+    _planLockCard('anTreemapCard', currentLang==='es'?'Mapa de la cartera':'Portfolio treemap', !_isPremium(), 'analysis');
+    _planLockCard('anCorrCard',    currentLang==='es'?'Correlación de activos':'Asset correlation', !_isPremium(), 'analysis');
+  }catch(_){}
 }
 
 // ── Portfolio Weight Donut ───────────────────────────────────────────────────
@@ -5526,14 +5540,15 @@ async function renderDividends(){
   // ── DRIP ─────────────────────────────────────────────────────────────────
   if(divItems.length){
     const _dc2=document.getElementById('divDripCard');if(_dc2)_dc2.style.display='';
-    _renderDivDrip(totalAnnual);
+    if(_isPremium()){ _renderDivDrip(totalAnnual); }
+    _planLockCard('divDripCard', currentLang==='es'?'Reinversión (DRIP)':'Reinvestment (DRIP)', !_isPremium(), 'dividends');
   }
 
   // ── Future Value ──────────────────────────────────────────────────────────
   if(divItems.length){
     const _fc2=document.getElementById('divFVCard');if(_fc2)_fc2.style.display='';
-    _divFVTotalAnnual=totalAnnual;
-    _initDivFV(totalAnnual);
+    if(_isPremium()){ _divFVTotalAnnual=totalAnnual; _initDivFV(totalAnnual); }
+    _planLockCard('divFVCard', currentLang==='es'?'Valor futuro':'Future value', !_isPremium(), 'dividends');
   }
 
   // Asset allocation donut (hidden compat canvas, still build chart for other references)
@@ -6388,7 +6403,7 @@ function _doRender(){
   }
   document.getElementById('investedTotal').textContent=fe(invested);
   document.getElementById('profitPercent').textContent=`${gainPct>=0?'+':''}${gainPct.toFixed(2)}%`;
-  const _cp=document.getElementById('coveragePill');if(_cp)_cp.textContent=`${c.total} ${t('assets')}`;
+  const _cp=document.getElementById('coveragePill');if(_cp)_cp.textContent=`${c.total} ${t('assets')}${_lastPriceTs?' · '+_freshLabel():''}`;
   // coverageBadge replaced by FAB button — no-op
   document.getElementById('count').textContent=c.total;
   document.getElementById('summaryInvested').textContent=fe(invested);
@@ -6609,14 +6624,14 @@ async function boot(){
       _rawSeedAssets=buildAssets(_cvMap);
       assets=applyOverridesToAssets(_rawSeedAssets);
       loadCustomIntoAssets(_cvMap);
-      _pricesLive=true; // live prices ready — show real total
+      _pricesLive=true; _lastPriceTs=Date.now(); // live prices ready — show real total
       _recordValueSnapshot();
       render(); _rerenderActive();
       _startLiveRefresh(); // start 60s ETF/ETC/stock live price refresh
     }catch(e){
       console.warn('[boot] live prices fetch:',e.message);
       // Coverage API failed (timeout / network error) — show seed/cached prices rather than spinning forever
-      _pricesLive=true;
+      _pricesLive=true; _lastPriceTs=Date.now();
       _recordValueSnapshot();
       render(); _rerenderActive();
       // Retry coverage once after 4s — helps when Yahoo had a transient timeout or Vercel cold start
@@ -6954,6 +6969,16 @@ function setAddFormMode(mode){
 }
 function saveNewAsset(){
   if(!_searchResult)return;
+  // Enforce free plan asset limit
+  if(_userPlan==='free'){
+    const ov=getOverrides();
+    const activeCount=Object.values(ov).filter(v=>Number(v.quantity||0)>0).length;
+    if(activeCount>=FREE_ASSET_LIMIT){
+      if(typeof closeSearch==='function')closeSearch();
+      setTimeout(()=>_showUpgradeModal('assets'),200);
+      return;
+    }
+  }
   const qty=parseNum('addQty');
   const avgCost=parseNum('addAvgCost');
   if(qty<=0){document.getElementById('addQty').focus();return;}
@@ -7000,6 +7025,35 @@ function saveNewAsset(){
 // PLAN SYSTEM
 // ═══════════════════════════════════════════════════════════
 let _userPlan = 'free'; // 'free' | 'starter' | 'pro'
+// Any paid tier (starter/pro) counts as Premium for feature gating.
+function _isPremium(){ return _userPlan !== 'free'; }
+const FREE_ASSET_LIMIT = 10; // Free plan: max 10 assets (mirrors desktop)
+// Price freshness indicator: timestamp of last live-price load + a short label.
+let _lastPriceTs = 0;
+function _freshLabel(){
+  if(!_lastPriceTs) return '';
+  const isEs=(typeof currentLang!=='undefined'?currentLang:'es')==='es';
+  const m=Math.floor((Date.now()-_lastPriceTs)/60000);
+  if(m<1) return isEs?'actualizado ahora':'updated now';
+  if(m<60) return isEs?('actualizado hace '+m+'m'):('updated '+m+'m ago');
+  const h=Math.floor(m/60);
+  return isEs?('actualizado hace '+h+'h'):('updated '+h+'h ago');
+}
+// Non-destructive per-card lock: overlays a "Premium" CTA on top of a card
+// (removed automatically when locked=false, so upgrading restores the card).
+function _planLockCard(cardId, title, locked, reason){
+  const card=document.getElementById(cardId); if(!card) return;
+  const prev=card.querySelector(':scope > .plan-lock-ov'); if(prev) prev.remove();
+  if(!locked) return;
+  try{ if(getComputedStyle(card).position==='static') card.style.position='relative'; }catch(_){ card.style.position='relative'; }
+  const isEs=(typeof currentLang!=='undefined'?currentLang:'es')==='es';
+  const ov=document.createElement('div');
+  ov.className='plan-lock-ov';
+  ov.style.cssText='position:absolute;inset:0;z-index:5;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;text-align:center;padding:16px;background:rgba(255,255,255,.74);backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px);border-radius:inherit;cursor:pointer';
+  ov.innerHTML='<div style="font-size:20px">🔒</div><div style="font-weight:800;color:#142018;font-size:.9rem">'+title+'</div><div style="font-size:.72rem;color:#4a5f4e">'+(isEs?'Función Premium':'Premium feature')+'</div><button style="margin-top:4px;padding:8px 14px;background:linear-gradient(135deg,#142018,#1e3a2a);color:#4ade80;border:none;border-radius:10px;font-weight:800;font-size:.75rem;cursor:pointer;font-family:inherit">'+(isEs?'Desbloquear':'Unlock')+'</button>';
+  ov.onclick=()=>{ try{ _showUpgradeModal(reason||'analysis'); }catch(_){} };
+  card.appendChild(ov);
+}
 let _userCredits = { used: 0, limit: 0, remaining: 0, month: '' };
 
 async function loadUserPlan() {
@@ -7050,7 +7104,8 @@ function _updateIACreditsBar() {
   const bar = document.getElementById('iaCreditsBar');
   if (!bar) return;
   if (_userPlan === 'free') {
-    bar.innerHTML = `<span style="color:#8fa090;font-size:.7rem">Plan Free · 3 msgs/${currentLang==='es'?'día':'day'}</span><button onclick="_showUpgradeModal('ia')" style="font-size:.68rem;background:#142018;color:#4ade80;border:none;border-radius:6px;padding:3px 8px;cursor:pointer;font-weight:700;font-family:inherit">${currentLang==='es'?'Mejorar plan':'Upgrade plan'}</button>`;
+    { const _rem=(_userCredits&&_userCredits.limit>0)?_userCredits.remaining:10; const _lim=(_userCredits&&_userCredits.limit>0)?_userCredits.limit:10;
+    bar.innerHTML = `<span style="color:#8fa090;font-size:.7rem">Plan Free · ${_rem}/${_lim} ${currentLang==='es'?'msgs Vera este mes':'Vera msgs this month'}</span><button onclick="_showUpgradeModal('ia')" style="font-size:.68rem;background:#142018;color:#4ade80;border:none;border-radius:6px;padding:3px 8px;cursor:pointer;font-weight:700;font-family:inherit">${currentLang==='es'?'Mejorar plan':'Upgrade plan'}</button>`; }
     bar.style.display = 'flex';
   } else if (_userCredits && _userCredits.limit > 0) {
     const pct = Math.max(0, Math.min(100, (_userCredits.remaining / _userCredits.limit) * 100));
@@ -7075,15 +7130,17 @@ function _showUpgradeModal(reason) {
     dividends:    { es: 'Detalle de dividendos', en: 'Dividend detail' },
     ia:           { es: 'Más conversaciones con Vera', en: 'More Vera AI conversations' },
     alerts:       { es: 'Alertas de precio Premium', en: 'Premium price alerts' },
+    myinvestor:   { es: 'Fondos MyInvestor', en: 'MyInvestor funds' },
   };
   const descs = {
-    assets:       { es: 'El plan Free está limitado a <b>5 activos</b>. Con <b>Premium</b> tienes posiciones ilimitadas.', en: 'Free plan is limited to <b>5 assets</b>. <b>Premium</b> gives you unlimited positions.' },
+    assets:       { es: 'El plan Free está limitado a <b>10 activos</b>. Con <b>Premium</b> tienes posiciones ilimitadas.', en: 'Free plan is limited to <b>10 assets</b>. <b>Premium</b> gives you unlimited positions.' },
     analysis:     { es: 'El análisis de portfolio completo está disponible con el plan <b>Premium</b>.', en: 'Full portfolio analysis is available with the <b>Premium</b> plan.' },
     impuestos:    { es: 'El informe de impuestos (IRPF) está disponible con el plan <b>Premium</b>.', en: 'The tax report is available with the <b>Premium</b> plan.' },
     topinvestors: { es: 'Accede a las carteras de los mejores inversores con el plan <b>Premium</b>.', en: 'Access top investor portfolios with the <b>Premium</b> plan.' },
     dividends:    { es: 'El detalle completo de dividendos está disponible con el plan <b>Premium</b>.', en: 'Full dividend detail is available with the <b>Premium</b> plan.' },
     ia:           { es: 'Con el plan <b>Premium</b> tienes conversaciones ilimitadas con Vera IA.', en: 'With the <b>Premium</b> plan you get unlimited Vera AI conversations.' },
     alerts:       { es: 'Las alertas de precio son una función <b>Premium</b>. Actualiza tu plan para activarlas.', en: 'Price alerts are a <b>Premium</b> feature. Upgrade your plan to activate them.' },
+    myinvestor:   { es: 'El buscador de fondos MyInvestor y sus rentabilidades están disponibles con el plan <b>Premium</b>.', en: 'The MyInvestor fund explorer and returns are available with the <b>Premium</b> plan.' },
   };
   const isEs = typeof currentLang !== 'undefined' ? currentLang === 'es' : true;
   const lang = isEs ? 'es' : 'en';
@@ -8833,6 +8890,7 @@ function iaShowTyping(question) {
             
             try {
               const parsed = JSON.parse(jsonStr);
+              if (parsed.credits) { _userCredits = parsed.credits; if(typeof _updateIACreditsBar==='function') _updateIACreditsBar(); }
               if (parsed.text) {
                 fullReply += parsed.text;
                 // Update UI in real-time with streaming text
