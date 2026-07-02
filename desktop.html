@@ -4227,6 +4227,8 @@ html,body{height:100%;overflow:hidden;font-family:-apple-system,BlinkMacSystemFo
       <button class="mi-sortbtn" data-sort="ter" onclick="MiSetSort('ter')">TER ↑</button>
     </div>
     <button class="btn-sm" onclick="MiLoad(true)" id="miReloadBtn">↻ Actualizar</button>
+    <input type="file" id="miImportInput" accept=".csv,text/csv,text/plain" style="display:none" onchange="_miImportFile(this)">
+    <button class="btn-sm" onclick="document.getElementById('miImportInput').click()" title="Importar tu cartera desde un CSV exportado de MyInvestor">⬆ Importar CSV</button>
   </div>
   <div class="mi-count" id="miCount" style="margin-bottom:10px"></div>
 
@@ -4282,6 +4284,69 @@ html,body{height:100%;overflow:hidden;font-family:-apple-system,BlinkMacSystemFo
     MiRender();
   };
   window.MiPage=function(p){ _miPage=p; };
+
+  // ── Import portfolio from a MyInvestor CSV export ─────────────────────────
+  window._miNum=function(s){
+    if(s==null) return 0;
+    let t=String(s).trim().replace(/[€$%\s]/g,'');
+    if(!t) return 0;
+    if(t.indexOf(',')>-1 && t.indexOf('.')>-1) t=t.replace(/\./g,'').replace(',','.'); // 1.234,56
+    else if(t.indexOf(',')>-1) t=t.replace(',','.');                                    // 1234,56
+    const n=parseFloat(t); return Number.isFinite(n)?n:0;
+  };
+  window._miSplitCsvLine=function(line,delim){
+    const out=[]; let cur='', q=false;
+    for(let i=0;i<line.length;i++){ const c=line[i];
+      if(q){ if(c==='"'){ if(line[i+1]==='"'){cur+='"';i++;} else q=false; } else cur+=c; }
+      else { if(c==='"') q=true; else if(c===delim){ out.push(cur); cur=''; } else cur+=c; }
+    }
+    out.push(cur); return out.map(s=>s.trim());
+  };
+  window._miParseCsv=function(text){
+    const lines=String(text).split(/\r?\n/).filter(l=>l.trim().length);
+    if(!lines.length) return [];
+    const delim=(lines[0].split(';').length > lines[0].split(',').length) ? ';' : ',';
+    const header=_miSplitCsvLine(lines[0],delim).map(h=>h.toLowerCase());
+    const find=(...names)=>header.findIndex(h=>names.some(n=>h.includes(n)));
+    const iIsin=find('isin');
+    if(iIsin<0) return [];
+    let iName=find('nombre','fondo','descrip','producto','activo','name');
+    let iQty =find('participacion','particip','títulos','titulos','acciones','unidad','cantidad','shares');
+    let iCost=find('precio medio'); if(iCost<0)iCost=find('coste medio'); if(iCost<0)iCost=find('precio de coste'); if(iCost<0)iCost=find('medio'); if(iCost<0)iCost=find('coste');
+    const rows=[];
+    for(let li=1; li<lines.length; li++){
+      const cols=_miSplitCsvLine(lines[li],delim);
+      const isin=(cols[iIsin]||'').toUpperCase().replace(/[^A-Z0-9]/g,'');
+      if(!/^[A-Z]{2}[A-Z0-9]{9}[0-9]$/.test(isin)) continue; // valid ISIN only
+      const qty=iQty>=0?_miNum(cols[iQty]):0;
+      if(qty<=0) continue;
+      rows.push({ isin, name:(iName>=0?(cols[iName]||isin):isin), qty, avgCost:(iCost>=0?_miNum(cols[iCost]):0) });
+    }
+    return rows;
+  };
+  window._miImportFile=async function(input){
+    const f=input.files&&input.files[0]; if(!f) return;
+    input.value='';
+    const isEs=currentLang==='es';
+    let text; try{ text=await f.text(); }catch(_){ alert(isEs?'No se pudo leer el archivo.':'Could not read the file.'); return; }
+    const rows=_miParseCsv(text);
+    if(!rows.length){ alert(isEs?'No se encontraron posiciones válidas. Exporta el CSV desde MyInvestor (columnas ISIN, Participaciones y Precio medio).':'No valid positions found. Export the CSV from MyInvestor (ISIN, Shares and Avg price columns).'); return; }
+    if(!confirm(isEs?`Se importarán ${rows.length} posiciones a tu cartera. ¿Continuar?`:`${rows.length} positions will be imported into your portfolio. Continue?`)) return;
+    const ca=getCustomAssets(), ov=getOverrides();
+    rows.forEach(r=>{
+      if(!ca[r.isin]) ca[r.isin]={ isin:r.isin, symbol:r.isin, name:r.name, shortName:(r.name||r.isin).split(' ').slice(0,3).join(' '), type:'fund', currency:'EUR' };
+      ov[r.isin]={ ...(ov[r.isin]||{}), quantity:r.qty, avgCost:r.avgCost, costCurrency:'EUR', broker:'MyInvestor' };
+    });
+    saveCustomAssets(ca); saveOverrides(ov);
+    if(typeof _debouncedSync==='function') _debouncedSync(true);
+    try{
+      const nc=await getJson('/api/portfolio/coverage?isin='+encodeURIComponent(rows.map(r=>r.isin).join(',')),12000);
+      (nc.results||[]).forEach(e=>{ if(typeof _cvMap!=='undefined') _cvMap[e.isin]=e; });
+    }catch(_){}
+    if(typeof reapplyAndRender==='function') reapplyAndRender();
+    if(typeof showToast==='function') showToast(isEs?`✓ ${rows.length} posiciones importadas`:`✓ ${rows.length} positions imported`);
+    else alert(isEs?`${rows.length} posiciones importadas`:`${rows.length} imported`);
+  };
 
   window.MiLoad=function(force){
     var MI_API='/api/myinvestor/catalog?v=284';
