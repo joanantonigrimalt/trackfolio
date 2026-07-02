@@ -2996,9 +2996,9 @@ table.an-corr-mtx{border-collapse:separate;border-spacing:4px}
   </div>
 
   <!-- Export -->
-  <button class="tx-export-btn" onclick="exportTaxPDF()">
+  <button class="tx-export-btn" onclick="exportTaxCSV()">
     <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-    Exportar resumen fiscal PDF
+    <span data-i18n="taxExportCsv">Exportar plusvalías (CSV)</span>
   </button>
 
   <div class="legal-footer" style="margin-bottom:0">
@@ -4470,6 +4470,7 @@ function saveTransaction(){
   existing.avgCost=existing.quantity>0?totalCost/existing.quantity:0;
   ov[currentModalIsin]=existing;
   saveOverrides(ov);
+  if(typeof _debouncedSync==='function')_debouncedSync(true);
   reapplyAndRender();
   // Reset form fields but keep modal open to show updated history
   document.getElementById('txQty').value='0';
@@ -9102,32 +9103,38 @@ function _taxIRPF(base){
 }
 
 function _taxComputeGains(year){
+  // Spanish IRPF requires FIFO (primero en entrar, primero en salir) for securities.
+  // All prices normalized to EUR.
   const ov = getOverrides();
   const results = [];
   for(const isin in ov){
     const entry = ov[isin];
-    const txs = (entry.transactions||[]).filter(t=>t.type==='sell'&&t.date&&String(t.date).startsWith(String(year)));
-    if(!txs.length) continue;
-    const asset = assets.find(a=>a.isin===isin)||{name:isin,shortName:isin};
-    // Compute avg cost at time of sell by replaying buys
     const allTxs = [...(entry.transactions||[])].sort((a,b)=>String(a.date).localeCompare(String(b.date)));
-    const cc=entry.costCurrency||'EUR';
-    let runQty = asset._rawQty||asset.quantity||0;
-    let runCost = toEur(asset._rawBuyPrice||asset.buyPrice||0, cc);
-    // Replay transactions in order up to each sell (all prices normalized to EUR)
+    if(!allTxs.some(t=>t.type==='sell'&&t.date&&String(t.date).startsWith(String(year)))) continue;
+    const asset = assets.find(a=>a.isin===isin)||{name:isin,shortName:isin};
+    const cc = entry.costCurrency||'EUR';
+    // FIFO lot queue (EUR). Seed the pre-transaction holding as the opening lot.
+    const lots = [];
+    const baseQty = Number(asset._rawQty)||0;
+    if(baseQty>0) lots.push({qty:baseQty, price:toEur(Number(asset._rawBuyPrice)||0, cc)});
     for(const tx of allTxs){
+      const q = Number(tx.qty)||0, p = toEur(Number(tx.price)||0, cc);
+      if(q<=0) continue;
       if(tx.type==='buy'){
-        const txEur=toEur(tx.price,cc);
-        const totalCost = runCost*runQty + txEur*tx.qty;
-        runQty += tx.qty;
-        runCost = runQty>0 ? totalCost/runQty : txEur;
+        lots.push({qty:q, price:p});
       } else if(tx.type==='sell'){
-        const txEur=toEur(tx.price,cc);
-        const gain = (txEur - runCost) * tx.qty;
-        if(String(tx.date).startsWith(String(year))){
-          results.push({isin,name:asset.name||isin,shortName:asset.shortName||(asset.name||isin).split(' ').slice(0,2).join(' '),date:tx.date,qty:tx.qty,sellPrice:txEur,avgCost:runCost,gain});
+        // Consume oldest lots first (FIFO)
+        let remaining=q, costBasis=0, matched=0;
+        while(remaining>1e-9 && lots.length){
+          const lot=lots[0];
+          const take=Math.min(lot.qty,remaining);
+          costBasis+=take*lot.price; matched+=take;
+          lot.qty-=take; remaining-=take;
+          if(lot.qty<=1e-9) lots.shift();
         }
-        runQty = Math.max(0, runQty - tx.qty);
+        if(matched>0 && String(tx.date).startsWith(String(year))){
+          results.push({isin,name:asset.name||isin,shortName:asset.shortName||(asset.name||isin).split(' ').slice(0,2).join(' '),date:tx.date,qty:matched,sellPrice:p,avgCost:costBasis/matched,gain:p*matched-costBasis});
+        }
       }
     }
   }
@@ -9369,6 +9376,27 @@ function _renderTaxChart(id, config){
   _taxCharts[id]=new Chart(canvas,config);
 }
 
+// Export the FIFO capital-gains table for the selected year as a CSV
+// (UTF-8 BOM + ';' separator → opens cleanly in Spanish Excel).
+function exportTaxCSV(){
+  const year=_taxYear;
+  const isEs=currentLang==='es';
+  const gains=(typeof _taxComputeGains==='function')?_taxComputeGains(year):[];
+  if(!gains.length){ showToast(isEs?('No hay ventas registradas en '+year):('No sales recorded in '+year)); return; }
+  const esc=v=>{ const s=String(v==null?'':v); return /[";\n]/.test(s)?'"'+s.replace(/"/g,'""')+'"':s; };
+  const head=isEs?['Fecha','Activo','ISIN','Participaciones','Precio venta (EUR)','Coste FIFO (EUR)','Plusvalía (EUR)']
+                 :['Date','Asset','ISIN','Units','Sell price (EUR)','FIFO cost (EUR)','Gain (EUR)'];
+  const rows=gains.map(g=>[g.date,g.name,g.isin,g.qty,(g.sellPrice||0).toFixed(4),(g.avgCost||0).toFixed(4),(g.gain||0).toFixed(2)]);
+  const total=gains.reduce((s,g)=>s+(g.gain||0),0);
+  rows.push([]); rows.push(['TOTAL','','','','','',total.toFixed(2)]);
+  const csv=[head,...rows].map(r=>r.map(esc).join(';')).join('\r\n');
+  const blob=new Blob(['﻿'+csv],{type:'text/csv;charset=utf-8'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a'); a.href=url; a.download='finasset-fiscal-'+year+'.csv';
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(()=>URL.revokeObjectURL(url),1000);
+  showToast(isEs?'CSV fiscal exportado':'Tax CSV exported');
+}
 function exportTaxPDF(){
   showToast(currentLang==='es'?'Exportación PDF próximamente':'PDF export coming soon');
 }
