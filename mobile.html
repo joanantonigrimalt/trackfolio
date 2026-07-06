@@ -10,7 +10,7 @@
   no-store headers are ignored (in-app webviews) because it is plain page JS.
   Source of truth = sw.js (always served no-cache, version-bumped each deploy). */
 (function(){try{
-  var FA_BUILD='310';
+  var FA_BUILD='311';
   var s=location.search;
   if(s.indexOf('vchk')>-1||s.indexOf('_v=')>-1){
     // Clean the ugly ?vchk= / ?_v= from the URL silently
@@ -6465,6 +6465,79 @@ function render(){
   if(_renderRafId)return; // already scheduled — skip duplicate
   _renderRafId=requestAnimationFrame(()=>{_renderRafId=null;_doRender();});
 }
+// ── Perfil de usuario (avatar, nombre, sobre mí, contraseña) ───────────────
+let _profileAvatarFile=null;
+function openProfileModal(){
+  if(!_sb||!_sbUser){ alert(currentLang==='es'?'Inicia sesión para editar tu perfil.':'Sign in to edit your profile.'); return; }
+  _profileAvatarFile=null;
+  let ov=document.getElementById('profileOverlay'); if(ov) ov.remove();
+  const m=_sbUser.user_metadata||{};
+  const name=escapeHtml(m.full_name||m.name||'');
+  const about=escapeHtml(m.about||'');
+  const av=m.avatar_url||'';
+  const ini=((_sbUser.email||'?').slice(0,2)).toUpperCase();
+  const inS='width:100%;padding:11px 12px;border:1.5px solid var(--border);border-radius:10px;font-size:.9rem;background:var(--surf2);color:var(--text);font-family:inherit;box-sizing:border-box';
+  const avHtml=av?('<img src="'+av+'" style="width:72px;height:72px;border-radius:50%;object-fit:cover">')
+    :('<div style="width:72px;height:72px;border-radius:50%;background:#142018;color:#4ade80;display:flex;align-items:center;justify-content:center;font-size:26px;font-weight:800">'+ini+'</div>');
+  const lbl=t=>'<div style="font-size:.72rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin:14px 0 5px">'+t+'</div>';
+  ov=document.createElement('div'); ov.id='profileOverlay';
+  ov.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:10000;display:flex;align-items:flex-end;justify-content:center';
+  ov.innerHTML='<div style="background:var(--surf);border-radius:20px 20px 0 0;max-width:520px;width:100%;padding:22px 18px 32px;position:relative;max-height:92vh;overflow:auto">'
+    +'<button onclick="document.getElementById(\'profileOverlay\').remove()" style="position:absolute;top:14px;right:16px;background:rgba(20,32,24,.07);border:none;width:30px;height:30px;border-radius:50%;font-size:16px;cursor:pointer;color:var(--text)">×</button>'
+    +'<div style="font-size:1.1rem;font-weight:800;color:var(--text);margin-bottom:16px">Perfil</div>'
+    +'<div style="display:flex;align-items:center;gap:14px;margin-bottom:6px">'
+      +'<div id="profAvWrap">'+avHtml+'</div>'
+      +'<div><input type="file" id="profAvInput" accept="image/png,image/jpeg,image/webp" style="display:none" onchange="_profilePickAvatar(this)">'
+      +'<button onclick="document.getElementById(\'profAvInput\').click()" style="padding:8px 14px;background:var(--surf2);border:1.5px solid var(--border);border-radius:10px;font-size:.82rem;font-weight:700;color:var(--text);cursor:pointer;font-family:inherit">Cambiar foto</button>'
+      +'<div style="font-size:.7rem;color:var(--muted);margin-top:4px">JPG, PNG o WebP · máx 3 MB</div></div></div>'
+    +lbl('Nombre')+'<input id="profName" value="'+name+'" placeholder="Tu nombre" style="'+inS+'">'
+    +lbl('Sobre mí')+'<textarea id="profAbout" rows="3" placeholder="Cuéntale a la comunidad sobre ti…" style="'+inS+';resize:vertical;min-height:64px">'+about+'</textarea>'
+    +lbl('Nueva contraseña (opcional)')+'<input id="profPwd" type="password" placeholder="Mínimo 6 caracteres" style="'+inS+'">'
+    +'<div id="profMsg" style="display:none;font-size:.8rem;margin:8px 0"></div>'
+    +'<button onclick="_profileSave()" id="profSaveBtn" style="width:100%;margin-top:10px;padding:13px;background:linear-gradient(135deg,#142018,#1e3a2a);color:#4ade80;border:none;border-radius:12px;font-size:.95rem;font-weight:800;cursor:pointer;font-family:inherit">Guardar</button>'
+    +'<button onclick="document.getElementById(\'profileOverlay\').remove();openShareModal()" style="width:100%;margin-top:10px;padding:11px;background:none;border:1.5px solid var(--border);border-radius:12px;font-size:.88rem;font-weight:700;color:var(--text);cursor:pointer;font-family:inherit">🔗 Compartir cartera</button>'
+    +'</div>';
+  ov.addEventListener('click',e=>{ if(e.target===ov) ov.remove(); });
+  document.body.appendChild(ov);
+}
+function _profilePickAvatar(input){
+  const f=input.files&&input.files[0]; if(!f) return;
+  if(!/^image\/(png|jpe?g|webp)$/i.test(f.type)){ alert(currentLang==='es'?'Formato no admitido (JPG, PNG o WebP).':'Unsupported format.'); input.value=''; return; }
+  if(f.size>3*1024*1024){ alert(currentLang==='es'?'La imagen supera 3 MB.':'Image over 3 MB.'); input.value=''; return; }
+  _profileAvatarFile=f;
+  const wrap=document.getElementById('profAvWrap'); if(wrap) wrap.innerHTML='<img src="'+URL.createObjectURL(f)+'" style="width:72px;height:72px;border-radius:50%;object-fit:cover">';
+}
+async function _profileSave(){
+  const btn=document.getElementById('profSaveBtn'); const msg=document.getElementById('profMsg');
+  const show=(t,ok)=>{ if(msg){ msg.textContent=t; msg.style.color=ok?'#2d7a4f':'#e05252'; msg.style.display=''; } };
+  const isEs=currentLang==='es';
+  const name=(document.getElementById('profName')&&document.getElementById('profName').value.trim())||'';
+  const about=(document.getElementById('profAbout')&&document.getElementById('profAbout').value.trim())||'';
+  const pwd=(document.getElementById('profPwd')&&document.getElementById('profPwd').value)||'';
+  if(pwd && pwd.length<6) return show(isEs?'La contraseña debe tener al menos 6 caracteres.':'Password must be at least 6 characters.',false);
+  if(btn){ btn.textContent=isEs?'Guardando…':'Saving…'; btn.disabled=true; }
+  try{
+    const meta=Object.assign({}, _sbUser.user_metadata||{});
+    if(_profileAvatarFile){
+      const ext=((_profileAvatarFile.name.split('.').pop()||'jpg').toLowerCase().replace(/[^a-z0-9]/g,''))||'jpg';
+      const path=_sbUser.id+'/avatar.'+ext;
+      const { error:upErr } = await _sb.storage.from('avatars').upload(path, _profileAvatarFile, { contentType:_profileAvatarFile.type, upsert:true });
+      if(upErr) throw upErr;
+      const { data } = _sb.storage.from('avatars').getPublicUrl(path);
+      meta.avatar_url=((data&&data.publicUrl)||'')+'?t='+Date.now();
+    }
+    meta.full_name=name; meta.about=about;
+    const upd={ data:meta }; if(pwd) upd.password=pwd;
+    const { error } = await _sb.auth.updateUser(upd);
+    if(error) throw error;
+    try{ const g=await _sb.auth.getUser(); if(g&&g.data&&g.data.user) _sbUser=g.data.user; }catch(_){}
+    _profileAvatarFile=null;
+    show(isEs?'¡Guardado! ✓':'Saved! ✓',true);
+    if(typeof renderAccountSection==='function') renderAccountSection();
+    setTimeout(()=>{ const o=document.getElementById('profileOverlay'); if(o) o.remove(); },800);
+  }catch(e){ show((e&&e.message)||(isEs?'Error al guardar.':'Error saving.'),false); }
+  finally{ if(btn){ btn.textContent=isEs?'Guardar':'Save'; btn.disabled=false; } }
+}
 // ── Compartir cartera (enlace público read-only) ──────────────────────────
 function openShareModal(){
   if(!_sb||!_sbUser){ alert(currentLang==='es'?'Inicia sesión para compartir tu cartera.':'Sign in to share your portfolio.'); return; }
@@ -7422,17 +7495,23 @@ function renderAccountSection(){
   const sec=document.getElementById('accountSection');if(!sec)return;
   if(_sbUser){
     const av=(_sbUser.email||'?').slice(0,2).toUpperCase();
+    const _pm=_sbUser.user_metadata||{};
+    const _pdn=(_pm.full_name||_pm.name||((_sbUser.email||'').split('@')[0])||'Inversor');
+    const _pau=_pm.avatar_url||'';
+    const _pAvEl=_pau?`<img src="${_pau}" alt="" style="width:44px;height:44px;border-radius:50%;object-fit:cover;flex-shrink:0">`:`<div style="width:44px;height:44px;border-radius:50%;background:#142018;color:#f5fbf6;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:700;flex-shrink:0">${av}</div>`;
     sec.innerHTML=`
-      <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px">
-        <div style="width:40px;height:40px;border-radius:50%;background:#142018;color:#f5fbf6;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;flex-shrink:0">${av}</div>
+      <div style="display:flex;align-items:center;gap:11px;margin-bottom:12px">
+        ${_pAvEl}
         <div style="min-width:0;flex:1">
-          <div style="font-size:13px;font-weight:600;color:#142018;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${_sbUser.email}</div>
-          <div style="display:flex;align-items:center;gap:6px;margin-top:1px">
+          <div style="font-size:15px;font-weight:700;color:#142018;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${escapeHtml(_pdn)}</div>
+          <div style="font-size:11px;color:#8fa090;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;margin-top:1px">${_sbUser.email}</div>
+          <div style="display:flex;align-items:center;gap:6px;margin-top:2px">
             <div class="js-plan-badge" style="font-size:11px">Plan Free</div>
             <div style="font-size:10px;color:#8fa090;font-weight:700">· v${typeof FA_BUILD!=='undefined'?FA_BUILD:''}</div>
           </div>
         </div>
       </div>
+      <button id="btnEditProfile" style="width:100%;padding:11px;background:rgba(20,32,24,.04);border:1.5px solid rgba(20,32,24,.1);border-radius:10px;font-size:13px;color:#142018;font-weight:700;cursor:pointer;font-family:inherit;margin-bottom:10px">${currentLang==='es'?'Editar perfil':'Edit profile'}</button>
       <div id="upgradeCardSection" style="background:linear-gradient(135deg,#142018 0%,#1e3a2a 100%);border-radius:14px;padding:16px;margin-bottom:10px;${_userPlan!=='free'?'display:none':''}">
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
           <div>
@@ -7449,6 +7528,7 @@ function renderAccountSection(){
       </div>
       <button id="btnLogout" style="width:100%;padding:9px;background:none;border:1.5px solid rgba(20,32,24,.12);border-radius:9px;font-size:13px;color:#5a8f6a;font-weight:600;cursor:pointer;font-family:inherit">${currentLang==='es'?'Cerrar sesión':'Sign out'}</button>`;
     document.getElementById('btnUpgradePlan').onclick=()=>{ closeSettings(); _showUpgradeModal('assets'); };
+    { const _ep=document.getElementById('btnEditProfile'); if(_ep) _ep.onclick=()=>openProfileModal(); }
     // Apply current plan badge immediately after rebuilding HTML
     if(typeof _updatePlanUI==='function') _updatePlanUI();
     document.getElementById('btnLogout').onclick=()=>{
