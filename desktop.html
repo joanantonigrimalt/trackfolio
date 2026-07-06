@@ -6,7 +6,7 @@
   (served no-cache, version-bumped each deploy). Works even where SW/no-store
   are ignored, because it is plain page JS. */
 (function(){try{
-  var FA_BUILD=window.FA_BUILD='316';
+  var FA_BUILD=window.FA_BUILD='317';
   var s=location.search;
   if(s.indexOf('vchk')>-1||s.indexOf('_v=')>-1){history.replaceState(null,'',location.pathname+(location.hash||''));return;}
   fetch('/sw.js?_='+Date.now(),{cache:'no-store'}).then(function(r){return r.text();}).then(function(t){
@@ -1731,7 +1731,7 @@ html,body{height:100%;overflow:hidden;font-family:-apple-system,BlinkMacSystemFo
   .hChips{display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap}
   .hChip{background:var(--surf);border:1px solid var(--border);border-radius:10px;padding:9px 14px;cursor:pointer;display:flex;align-items:center;gap:7px;box-shadow:0 1px 4px rgba(0,0,0,.04);font-size:12px;font-weight:600;color:var(--text)}
   .hChip.green{background:var(--ga);border-color:rgba(26,122,66,.2);color:var(--green);font-weight:700}
-  .hSplit{display:grid;grid-template-columns:1.7fr 1fr;gap:12px;margin-bottom:12px}
+  .hSplit{display:grid;grid-template-columns:1.35fr 1fr;gap:12px;margin-bottom:12px}
   @media(max-width:920px){.hSplit{grid-template-columns:1fr}}
   .hChartTitle{font-size:14px;font-weight:700;color:var(--text)}
   .hChartCard .chartMeta{color:var(--muted);font-size:12px;font-weight:600}
