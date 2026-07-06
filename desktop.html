@@ -6,7 +6,7 @@
   (served no-cache, version-bumped each deploy). Works even where SW/no-store
   are ignored, because it is plain page JS. */
 (function(){try{
-  var FA_BUILD=window.FA_BUILD='327';
+  var FA_BUILD=window.FA_BUILD='328';
   var s=location.search;
   if(s.indexOf('vchk')>-1||s.indexOf('_v=')>-1){history.replaceState(null,'',location.pathname+(location.hash||''));return;}
   fetch('/sw.js?_='+Date.now(),{cache:'no-store'}).then(function(r){return r.text();}).then(function(t){
@@ -7247,13 +7247,42 @@ window.toggleColPanel=function(e){if(e){e.stopPropagation();e.preventDefault();}
 window.toggleCol=function(id,checked){let cols=_getVisCols();if(checked&&!cols.includes(id))cols.push(id);else if(!checked)cols=cols.filter(c=>c!==id);cols=_COL_ALL.filter(c=>cols.includes(c));_setVisCols(cols);renderLists();document.querySelectorAll('.fa-col-panel').forEach(p=>p.style.display='block');};
 document.addEventListener('click',function(e){if(!e.target.closest('.fa-col-wrap'))document.querySelectorAll('.fa-col-panel').forEach(p=>p.style.display='none');});
 
+// ── Ordenación de la tabla de posiciones (clic en cabeceras) ──
+let _posSort=(()=>{try{const s=JSON.parse(localStorage.getItem('fa_pos_sort'));if(s&&s.col)return s;}catch(_){}return{col:'valor',dir:'desc'};})();
+function _posSortVal(a,col){
+  switch(col){
+    case 'activo': return (a.name||'').toLowerCase();
+    case 'precio': return Number(a.currentPrice)||0;
+    case 'hoy': { const d=(typeof getDayPct==='function')?getDayPct(a):null; return d==null?-Infinity:d; }
+    case 'cant': return Number(a.quantity)||0;
+    case 'valor':
+    case 'peso': return toDisplay(a.value,assetCcy(a))||0;
+    case 'pmedio': return Number(a.buyPrice)||0;
+    case 'rentab': { const av=toDisplay(a.value,assetCcy(a)),ai=toDisplay(a.invested,costCcy(a)); return ai>0?((av-ai)/ai)*100:(a.gainPct||0); }
+    case 'tipo': return (a.mapping?.type||'');
+    case 'broker': return (a.broker||'').toLowerCase();
+    default: return 0;
+  }
+}
+function _posSortCmp(a,b){
+  const s=_posSort.dir==='asc'?1:-1;
+  const va=_posSortVal(a,_posSort.col), vb=_posSortVal(b,_posSort.col);
+  if(typeof va==='string'||typeof vb==='string') return s*String(va).localeCompare(String(vb),currentLang==='es'?'es':'en');
+  const d=va-vb; return isNaN(d)?0:s*d;
+}
+function setPosSort(col){
+  if(_posSort.col===col) _posSort.dir=_posSort.dir==='asc'?'desc':'asc';
+  else _posSort={col, dir:(col==='activo'||col==='tipo'||col==='broker')?'asc':'desc'};
+  try{localStorage.setItem('fa_pos_sort',JSON.stringify(_posSort));}catch(_){}
+  renderLists();
+}
 function renderLists(){
   renderBrokerFilter();
   // NOTE: liquidity & debt rows are rendered below inside this function, so we must
   // NOT early-return when there are 0 positions — otherwise liquidity/loans vanish
   // from Home even though the user still has them. The empty-positions message is
   // shown as a table row instead (see _emptyRow below).
-  const visible=[...assets].filter(a=>a.quantity>0&&(_activeBrokerFilter===null||a.broker===_activeBrokerFilter)).sort((a,b)=>{const d=toDisplay(b.value,assetCcy(b))-toDisplay(a.value,assetCcy(a));return isNaN(d)?0:d;});
+  const visible=[...assets].filter(a=>a.quantity>0&&(_activeBrokerFilter===null||a.broker===_activeBrokerFilter)).sort(_posSortCmp);
   const _totVal=visible.reduce((s,a)=>s+(toDisplay(a.value,assetCcy(a))||0),0);
   const isEs=currentLang==='es';
   const visCols=_getVisCols();
@@ -7349,7 +7378,9 @@ function renderLists(){
     </div>
   </div>`;
 
-  const thHtml=`<th>${isEs?'Activo':'Asset'}</th>`+visCols.map(c=>`<th>${lbl(c)}</th>`).join('');
+  const _sortArrow=c=>_posSort.col===c?`<span style="font-size:9px;margin-left:3px;color:#15803d">${_posSort.dir==='asc'?'▲':'▼'}</span>`:'<span style="font-size:9px;margin-left:3px;color:var(--muted2);opacity:.35">⇅</span>';
+  const _thSort='cursor:pointer;user-select:none;white-space:nowrap';
+  const thHtml=`<th onclick="setPosSort('activo')" style="${_thSort}" title="${isEs?'Ordenar':'Sort'}">${isEs?'Activo':'Asset'}${_sortArrow('activo')}</th>`+visCols.map(c=>`<th onclick="setPosSort('${c}')" style="${_thSort}" title="${isEs?'Ordenar':'Sort'}">${lbl(c)}${_sortArrow(c)}</th>`).join('');
   const _emptyRow=visible.length===0?`<tr><td colspan="${colCount}" style="padding:26px 16px;text-align:center"><div style="font-size:30px;margin-bottom:8px">📊</div><div style="font-size:14px;font-weight:700;color:var(--text);margin-bottom:4px">${isEs?'Tu cartera está vacía':'Your portfolio is empty'}</div><div style="font-size:12px;color:var(--muted);line-height:1.5">${isEs?'Añade tu primera posición buscando un activo por nombre o ISIN.':'Add your first position by searching for an asset by name or ISIN.'}</div></td></tr>`:'';
   const html=`<div style="display:flex;justify-content:flex-end;margin-bottom:8px">${colPanelHtml}</div><div style="overflow-x:auto"><table class="pf-tbl"><thead><tr>${thHtml}</tr></thead><tbody>${rows}${_emptyRow}${_liqRows}${_debtRows}</tbody></table></div>${_fxNote}`;
   const _listEl=document.getElementById('list');if(_listEl)_listEl.innerHTML=html;
