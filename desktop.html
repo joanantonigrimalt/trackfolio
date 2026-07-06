@@ -6,7 +6,7 @@
   (served no-cache, version-bumped each deploy). Works even where SW/no-store
   are ignored, because it is plain page JS. */
 (function(){try{
-  var FA_BUILD=window.FA_BUILD='334';
+  var FA_BUILD=window.FA_BUILD='335';
   var s=location.search;
   if(s.indexOf('vchk')>-1||s.indexOf('_v=')>-1){history.replaceState(null,'',location.pathname+(location.hash||''));return;}
   fetch('/sw.js?_='+Date.now(),{cache:'no-store'}).then(function(r){return r.text();}).then(function(t){
@@ -8125,6 +8125,24 @@ document.querySelectorAll('.langBtn').forEach(btn=>btn.addEventListener('click',
 // ========== Custom Assets (localStorage) ==========
 function getCustomAssets(){try{const o=JSON.parse(localStorage.getItem('tf_custom_assets')||'{}');return o!==null&&typeof o==='object'&&!Array.isArray(o)?o:{};}catch{return {};}}
 function saveCustomAssets(o){localStorage.setItem('tf_custom_assets',JSON.stringify(o));_debouncedSync();}
+// Quita el sufijo de mercado de un ISIN (p.ej. IE00B43VDT70.SG → IE00B43VDT70). Un ISIN válido son 12 caracteres.
+function cleanIsin(s){ const m=String(s||'').match(/^([A-Z]{2}[A-Z0-9]{10})\.[A-Za-z0-9]+$/i); return m?m[1].toUpperCase():String(s||''); }
+// Migra activos guardados con ISIN sufijado (.SG, .MI, .L…) al ISIN limpio → arregla histórico/categoría/precio
+function _migrateIsinSuffixes(){
+  let changed=false;
+  const ca=getCustomAssets(), ov=getOverrides();
+  Object.keys(ca).forEach(k=>{
+    const ck=cleanIsin(k);
+    if(ck!==k){ if(!ca[ck]) ca[ck]={...ca[k],isin:ck,symbol:cleanIsin(ca[k].symbol||ck)}; delete ca[k]; changed=true; }
+    else if(ca[k]&&ca[k].isin&&cleanIsin(ca[k].isin)!==ca[k].isin){ ca[k].isin=cleanIsin(ca[k].isin); changed=true; }
+  });
+  Object.keys(ov).forEach(k=>{
+    const ck=cleanIsin(k);
+    if(ck!==k){ if(!ov[ck]) ov[ck]=ov[k]; delete ov[k]; changed=true; }
+  });
+  if(changed){ saveCustomAssets(ca); saveOverrides(ov); }
+  return changed;
+}
 
 // Type → icon style
 const TYPE_COLORS={stock:'linear-gradient(135deg,#1d6fa8,#38bdf8)',etf:'linear-gradient(135deg,#1d6fa8,#38bdf8)',fund:'linear-gradient(135deg,#7c3aed,#a78bfa)',crypto:'linear-gradient(135deg,#d97706,#fbbf24)',index:'linear-gradient(135deg,#475569,#94a3b8)',fx:'linear-gradient(135deg,#059669,#34d399)',unknown:'linear-gradient(135deg,#475569,#64748b)'};
@@ -8138,6 +8156,7 @@ function buildCustomAssetObj(ca,pos){
 }
 
 function loadCustomIntoAssets(cvMap){
+  _migrateIsinSuffixes(); // normaliza ISINs sufijados (.SG…) antes de construir los activos
   const ca=getCustomAssets(),ov=getOverrides();
   const customs=Object.entries(ca).map(([sym,info])=>{
     const pos=ov[sym]||{quantity:0,avgCost:0};
@@ -8387,10 +8406,10 @@ function saveNewAsset(){
   const avgCostCurrency=_addInputCcy||'EUR';
   const broker=(document.getElementById('addBroker')?.value||'').trim();
 
-  const sym=_searchResult.isin||_searchResult.symbol;
+  const sym=cleanIsin(_searchResult.isin||_searchResult.symbol);
   // Save custom asset metadata
   const ca=getCustomAssets();
-  ca[sym]={symbol:_searchResult.symbol,isin:_searchResult.isin||sym,name:_searchResult.name,shortName:_searchResult.shortName||_searchResult.name,type:_searchResult.type,exchange:_searchResult.exchange,currency:_searchResult.currency,currentPrice:_searchResult.currentPrice,history:(_searchResult.history||[]),priceTs:new Date().toISOString()};
+  ca[sym]={symbol:_searchResult.symbol,isin:cleanIsin(_searchResult.isin||sym),name:_searchResult.name,shortName:_searchResult.shortName||_searchResult.name,type:_searchResult.type,exchange:_searchResult.exchange,currency:_searchResult.currency,currentPrice:_searchResult.currentPrice,history:(_searchResult.history||[]),priceTs:new Date().toISOString()};
   saveCustomAssets(ca);
 
   // Save position
