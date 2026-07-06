@@ -6,7 +6,7 @@
   (served no-cache, version-bumped each deploy). Works even where SW/no-store
   are ignored, because it is plain page JS. */
 (function(){try{
-  var FA_BUILD=window.FA_BUILD='317';
+  var FA_BUILD=window.FA_BUILD='318';
   var s=location.search;
   if(s.indexOf('vchk')>-1||s.indexOf('_v=')>-1){history.replaceState(null,'',location.pathname+(location.hash||''));return;}
   fetch('/sw.js?_='+Date.now(),{cache:'no-store'}).then(function(r){return r.text();}).then(function(t){
@@ -8502,14 +8502,25 @@ function renderAccountSection(){
 async function syncToCloud(){
   if(!_sb||!_sbUser)return;
   try{
-    const payload={user_id:_sbUser.id,overrides:getOverrides(),custom_assets:getCustomAssets(),liquidity:getLiquidity(),updated_at:new Date().toISOString()};
-    let{error}=await _sb.from('user_positions').upsert(payload,{onConflict:'user_id'});
-    // Fallback: if liquidity column doesn't exist yet, sync without it
-    if(error&&(error.message?.includes('liquidity')||error.code==='42703')){
-      const{user_id,overrides,custom_assets,updated_at}=payload;
-      ({error}=await _sb.from('user_positions').upsert({user_id,overrides,custom_assets,updated_at},{onConflict:'user_id'}));
+    // REST directo: el query-builder _sb.from().upsert() se cuelga cuando supabase-js
+    // intenta refrescar un token expirado, y el borrado nunca llegaba a la nube.
+    const base=_shareBase(), tok=await _shareTok();
+    const _post=async(payload)=>{
+      const ctrl=new AbortController(); const to=setTimeout(()=>ctrl.abort(),8000);
+      const r=await fetch(base+'/rest/v1/user_positions?on_conflict=user_id',{method:'POST',headers:{apikey:_sb.supabaseKey,Authorization:'Bearer '+tok,'Content-Type':'application/json','Prefer':'resolution=merge-duplicates,return=minimal'},body:JSON.stringify(payload),signal:ctrl.signal});
+      clearTimeout(to); return r;
+    };
+    const full={user_id:_sbUser.id,overrides:getOverrides(),custom_assets:getCustomAssets(),liquidity:getLiquidity(),updated_at:new Date().toISOString()};
+    let r=await _post(full);
+    if(!r.ok){
+      const body=await r.text().catch(()=>'');
+      // Fallback: la columna liquidity puede no existir todavía → reintenta sin ella
+      if(/liquidit/i.test(body)){
+        const{user_id,overrides,custom_assets,updated_at}=full;
+        r=await _post({user_id,overrides,custom_assets,updated_at});
+      }
+      if(!r.ok)throw new Error('HTTP '+r.status+(body?' '+body.slice(0,80):''));
     }
-    if(error)throw error;
     localStorage.setItem('tf_last_sync',new Date().toISOString());
     renderAccountSection();
   }catch(e){
@@ -8626,8 +8637,14 @@ async function syncFromCloud(){
   }
   localStorage.setItem('fa_active_user_id', _sbUser.id);
   try{
-    const{data,error}=await _sb.from('user_positions').select('overrides,custom_assets,liquidity,updated_at').eq('user_id',_sbUser.id).single();
-    if(error&&error.code!=='PGRST116')throw error; // PGRST116 = no rows found
+    // REST directo (el query-builder _sb.from() se cuelga al refrescar token)
+    const _base=_shareBase(), _tok=await _shareTok();
+    const _ctrl=new AbortController(); const _to=setTimeout(()=>_ctrl.abort(),8000);
+    const _r=await fetch(_base+'/rest/v1/user_positions?user_id=eq.'+encodeURIComponent(_sbUser.id)+'&select=overrides,custom_assets,liquidity,updated_at&limit=1',{headers:{apikey:_sb.supabaseKey,Authorization:'Bearer '+_tok},signal:_ctrl.signal});
+    clearTimeout(_to);
+    if(!_r.ok)throw new Error('HTTP '+_r.status);
+    const _rows=await _r.json();
+    const data=(Array.isArray(_rows)&&_rows[0])?_rows[0]:null;
     if(!data){
       // No cloud row yet — only push if we have real local data (prevents empty desktop session from overwriting Supabase)
       const _hasLocal=Object.keys(getOverrides()).length>0||Object.keys(getCustomAssets()).length>0;
