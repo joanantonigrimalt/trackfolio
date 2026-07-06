@@ -10,7 +10,7 @@
   no-store headers are ignored (in-app webviews) because it is plain page JS.
   Source of truth = sw.js (always served no-cache, version-bumped each deploy). */
 (function(){try{
-  var FA_BUILD='301';
+  var FA_BUILD='302';
   var s=location.search;
   if(s.indexOf('vchk')>-1||s.indexOf('_v=')>-1){
     // Clean the ugly ?vchk= / ?_v= from the URL silently
@@ -1479,7 +1479,8 @@ table.an-corr-mtx{border-collapse:separate;border-spacing:4px}
   <div class="card hero" style="padding:14px">
     <div class="sectionEyebrow" data-i18n="heroTitle">Valor total del portfolio</div>
     <div class="valueLarge" id="total" style="font-size:32px">—</div>
-    <div class="valueSub">
+    <div id="heroStats" style="margin-top:8px;display:flex;flex-direction:column;gap:4px"></div>
+    <div class="valueSub" style="margin-top:8px">
       <div class="pill pos" id="totalGainPill">—</div>
       <div class="pill info" id="heroDivPill" style="display:none"></div>
       <div class="pill info" id="coveragePill">loading...</div>
@@ -6463,6 +6464,31 @@ function render(){
   if(_renderRafId)return; // already scheduled — skip duplicate
   _renderRafId=requestAnimationFrame(()=>{_renderRafId=null;_doRender();});
 }
+// Total realized capital gains (FIFO) across all sells, all time — EUR-normalized.
+function _realizedTotal(){
+  const ov=(typeof getOverrides==='function')?getOverrides():{};
+  let sum=0;
+  for(const isin in ov){
+    const entry=ov[isin];
+    const allTxs=[...((entry&&entry.transactions)||[])].sort((a,b)=>String(a.date).localeCompare(String(b.date)));
+    if(!allTxs.some(t=>t.type==='sell')) continue;
+    const asset=assets.find(a=>a.isin===isin)||{};
+    const cc=(entry&&entry.costCurrency)||'EUR';
+    const lots=[]; const baseQty=Number(asset._rawQty)||0;
+    if(baseQty>0) lots.push({qty:baseQty, price:toEur(Number(asset._rawBuyPrice)||0, cc)});
+    for(const tx of allTxs){
+      const q=Number(tx.qty)||0, p=toEur(Number(tx.price)||0, cc);
+      if(q<=0) continue;
+      if(tx.type==='buy'){ lots.push({qty:q, price:p}); }
+      else if(tx.type==='sell'){
+        let remaining=q, costBasis=0, matched=0;
+        while(remaining>1e-9 && lots.length){ const lot=lots[0]; const take=Math.min(lot.qty,remaining); costBasis+=take*lot.price; matched+=take; lot.qty-=take; remaining-=take; if(lot.qty<=1e-9) lots.shift(); }
+        if(matched>0) sum += p*matched - costBasis;
+      }
+    }
+  }
+  return sum;
+}
 function _doRender(){
   const total=assets.reduce((s,a)=>s+toDisplay(a.value,assetCcy(a)),0),invested=assets.reduce((s,a)=>s+toDisplay(a.invested,costCcy(a)),0),gain=total-invested,gainPct=invested>0?gain/invested*100:0,c=counts();
   const _totalEl=document.getElementById('total');
@@ -6476,6 +6502,21 @@ function _doRender(){
     _totalEl.textContent=fe(total+_liqTot);_totalEl.removeAttribute('style');
     ge.textContent=`${gain>=0?'+':''}${fe(gain)} · ${gainPct>=0?'+':''}${gainPct.toFixed(2)}%`;ge.className=`pill ${gain>=0?'pos':'neg'}`;ge.style.opacity='';
   }
+  // Hero stats: Hoy / P/G abierto / Total (abierto + realizadas FIFO)
+  (function(){
+    const hs=document.getElementById('heroStats'); if(!hs) return;
+    const pill=document.getElementById('totalGainPill');
+    if(!_pricesLive){ hs.innerHTML=''; if(pill) pill.style.display=''; return; }
+    const isEs=currentLang==='es';
+    let today=0;
+    assets.forEach(a=>{ if(a.quantity<=0) return; const dp=getDayPct(a); if(dp==null||!isFinite(dp)) return; const v=toDisplay(a.value,assetCcy(a)); if(!isFinite(v)) return; today+=v-v/(1+dp/100); });
+    const todayBase=total-today; const todayPct=todayBase>0?today/todayBase*100:0;
+    const realized=(typeof _realizedTotal==='function')?_realizedTotal():0;
+    const totRet=gain+realized; const totPct=invested>0?totRet/invested*100:0;
+    const line=(eur,pct,label)=>{ const pos=eur>=0; const col=pos?'var(--green)':'var(--red)'; return `<div style="display:flex;align-items:baseline;gap:8px;font-size:13px"><span style="font-weight:700;color:${col}">${pos?'+':''}${fe(eur)}</span><span style="font-weight:700;color:${col}">${pct>=0?'+':''}${pct.toFixed(2)}%</span><span style="color:var(--muted);font-size:12px">${label}</span></div>`; };
+    hs.innerHTML = line(today,todayPct,isEs?'Hoy':'Today') + line(gain,gainPct,isEs?'P/G abierto':'Open P/L') + line(totRet,totPct,isEs?'Total':'Total');
+    if(pill) pill.style.display='none';
+  })();
   document.getElementById('investedTotal').textContent=fe(invested);
   document.getElementById('profitPercent').textContent=`${gainPct>=0?'+':''}${gainPct.toFixed(2)}%`;
   const _cp=document.getElementById('coveragePill');if(_cp)_cp.textContent=`${c.total} ${t('assets')}${_lastPriceTs?' · '+_freshLabel():''}`;
