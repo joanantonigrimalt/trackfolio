@@ -1,23 +1,34 @@
 // ============================================================
-//  AÑADIR ESTE CÓDIGO AL FINAL DE Código.gs en Apps Script
-//  Script ID: 1J7LGZYLqv78lJwknqKPkDyuWh73BtZybNg8AlpbRCPp0XxznilZ8hPZX
+//  Finasset — Actualizador semanal del catálogo MyInvestor
+//  Pega TODO este código en el proyecto de Apps Script del Sheet.
+//  Script ID:      1J7LGZYLqv78lJwknqKPkDyuWh73BtZybNg8AlpbRCPp0XxznilZ8hPZX
 //  Spreadsheet ID: 1Qj4avyVAIwhaqqXI4UBL0WB_0oo1taPUu4ZwUstUeC0
+//
+//  IMPORTANTE — la app Finasset lee la PRIMERA pestaña (gid=0) con ESTA
+//  estructura de columnas EXACTA (el parser usa índices fijos):
+//    0:ID 1:Nombre 2:ISIN 3:Ticker 4:Divisa 5:Pais 6:Mercado Cod 7:Mercado
+//    8:Precio 9:Fecha Precio 10:1 mes % 11:3 meses % 12:6 meses % 13:YTD %
+//    14:1 anio %  15:3 anios %  16:5 anios %  17:Tipo  18:TER anual  19:Distribucion
+//
+//  Este script REESCRIBE la pestaña gid=0 en ese formato (sin borrarla, para
+//  no perder el gid). Si el fetch devuelve 0 productos, NO toca el Sheet.
 // ============================================================
 
-var MYINVESTOR_SHEET_NAME = 'MyInvestor';
+// El Sheet objetivo (se autodefine por si no está en Código.gs)
+var SPREADSHEET_ID = '1Qj4avyVAIwhaqqXI4UBL0WB_0oo1taPUu4ZwUstUeC0';
 
-// ─── FUNCIÓN PRINCIPAL ───────────────────────────────────────
-// Ejecutar manualmente o via trigger semanal
-function crearHojaMyInvestor() {
+// Cabecera EXACTA que espera el parser de Finasset (lib/myinvestor-catalog.js)
+var FA_HEADERS = [
+  'ID','Nombre','ISIN','Ticker','Divisa','Pais','Mercado Cod','Mercado',
+  'Precio','Fecha Precio','1 mes %','3 meses %','6 meses %','YTD %',
+  '1 anio %','3 anios %','5 anios %','Tipo','TER anual','Distribucion'
+];
+
+// ─── FUNCIÓN PRINCIPAL (esta es la que va en el trigger semanal) ─────────────
+function actualizarCatalogoFinasset() {
   var ss = SpreadsheetApp.openById(SPREADSHEET_ID);
+  var sheet = ss.getSheets()[0]; // gid=0 = primera pestaña (la que lee la app)
 
-  // Eliminar pestaña si ya existe y recrear
-  var existing = ss.getSheetByName(MYINVESTOR_SHEET_NAME);
-  if (existing) ss.deleteSheet(existing);
-  var sheet = ss.insertSheet(MYINVESTOR_SHEET_NAME);
-
-  // Fetch todos los productos (ETF + Fondo)
-  var products = [];
   Logger.log('=== Fetching ETFs ===');
   var etfs = _miFetch('ETF');
   Logger.log('ETFs obtenidos: ' + etfs.length);
@@ -26,64 +37,89 @@ function crearHojaMyInvestor() {
   var funds = _miFetch('FUND');
   Logger.log('Fondos obtenidos: ' + funds.length);
 
-  products = etfs.concat(funds);
+  var products = etfs.concat(funds);
 
-  if (products.length === 0) {
-    sheet.getRange('A1').setValue('No se pudieron obtener datos. Revisa el log (Ctrl+Enter en Apps Script).');
-    SpreadsheetApp.flush();
-    Logger.log('ERROR: 0 productos obtenidos. Comprueba los endpoints en el log.');
+  // Deduplicar por ISIN (mismo producto puede venir en varias bolsas)
+  var seen = {}, unique = [];
+  products.forEach(function(p) {
+    var k = String(p.isin || '').trim().toUpperCase();
+    if (k.length < 10 || seen[k]) return;
+    seen[k] = true; unique.push(p);
+  });
+
+  // ⚠ SEGURIDAD: si no se obtuvo NADA, no tocar el Sheet (conservar datos previos)
+  if (unique.length === 0) {
+    Logger.log('⚠ 0 productos — Sheet NO modificado (se conservan los datos anteriores).');
+    try { SpreadsheetApp.getActive().toast('0 productos obtenidos. Revisa los endpoints en el log. El Sheet NO se ha modificado.', '⚠ Aviso', 8); } catch(e) {}
     return;
   }
 
-  // Cabeceras
-  var headers = [
-    'ISIN', 'Nombre', 'Tipo', 'Categoría', 'Mercado',
-    'TER (%)', 'Divisa', 'Réplica', 'Distribución',
-    'Rent. 1A (%)', 'Rent. 3A (%)', 'Rent. 5A (%)',
-    'Rating Morningstar', 'URL MyInvestor', 'Actualizado'
-  ];
-  var hdrRange = sheet.getRange(1, 1, 1, headers.length);
-  hdrRange.setValues([headers]);
-  hdrRange.setBackground('#1a7a42').setFontColor('#ffffff').setFontWeight('bold');
-  sheet.setFrozenRows(1);
+  var now = Utilities.formatDate(new Date(), Session.getScriptTimeZone(), 'dd/MM/yyyy HH:mm:ss');
 
-  // Datos
-  var now = Utilities.formatDate(new Date(), Session.getScriptTimeZone(), 'dd/MM/yyyy HH:mm');
-  var rows = products.map(function(p) {
+  // Construir filas en el ORDEN EXACTO de FA_HEADERS
+  var rows = unique.map(function(p, idx) {
     return [
-      p.isin, p.nombre, p.tipo, p.categoria, p.mercado,
-      p.ter, p.divisa, p.replica, p.distribucion,
-      p.rent1a, p.rent3a, p.rent5a,
-      p.rating, p.url, now
+      idx + 1,                 // 0  ID
+      p.nombre,                // 1  Nombre
+      p.isin,                  // 2  ISIN
+      '',                      // 3  Ticker
+      p.divisa || 'EUR',       // 4  Divisa
+      '',                      // 5  Pais
+      '',                      // 6  Mercado Cod
+      p.mercado || '',         // 7  Mercado
+      '',                      // 8  Precio
+      now,                     // 9  Fecha Precio  ← marca de frescura semanal
+      '',                      // 10 1 mes %
+      '',                      // 11 3 meses %
+      '',                      // 12 6 meses %
+      '',                      // 13 YTD %
+      p.rent1a,                // 14 1 anio %   ← RENTABILIDAD 1A
+      p.rent3a,                // 15 3 anios %  ← RENTABILIDAD 3A
+      p.rent5a,                // 16 5 anios %  ← RENTABILIDAD 5A
+      p.tipo,                  // 17 Tipo (ETF / Fondo)
+      p.ter,                   // 18 TER anual
+      p.distribucion           // 19 Distribucion
     ];
   });
 
-  if (rows.length > 0) {
-    sheet.getRange(2, 1, rows.length, headers.length).setValues(rows);
-  }
+  // Reescribir gid=0 SIN borrar la pestaña (para conservar el gid)
+  sheet.clearContents();
+  var hdr = sheet.getRange(1, 1, 1, FA_HEADERS.length);
+  hdr.setValues([FA_HEADERS]);
+  hdr.setBackground('#1a7a42').setFontColor('#ffffff').setFontWeight('bold');
+  sheet.setFrozenRows(1);
+  sheet.getRange(2, 1, rows.length, FA_HEADERS.length).setValues(rows);
 
-  // Colores alternos
-  for (var i = 2; i <= rows.length + 1; i += 2) {
-    sheet.getRange(i, 1, 1, headers.length).setBackground('#f0f7f3');
-  }
-
-  // Formato columnas de rentabilidad (%)
-  var pctFmt = '0.00"%"';
-  var pctCols = [10, 11, 12]; // Rent 1A, 3A, 5A
-  pctCols.forEach(function(col) {
-    if (rows.length > 0) sheet.getRange(2, col, rows.length, 1).setNumberFormat(pctFmt);
+  // Formato % en columnas de rentabilidad (15,16,17 en 1-based = índices 14,15,16)
+  ['O', 'P', 'Q'].forEach(function(col) {
+    sheet.getRange(col + '2:' + col + (rows.length + 1)).setNumberFormat('0.00"%"');
   });
 
-  sheet.autoResizeColumns(1, headers.length);
   SpreadsheetApp.flush();
-
-  Logger.log('✅ Hoja MyInvestor creada con ' + products.length + ' productos.');
-  try { SpreadsheetApp.getActive().toast('Hoja MyInvestor creada con ' + products.length + ' productos', '✅ Listo', 6); } catch(e) {}
+  Logger.log('✅ gid=0 actualizado con ' + unique.length + ' productos únicos (' + now + ').');
+  try { SpreadsheetApp.getActive().toast('Catálogo actualizado: ' + unique.length + ' productos', '✅ Listo', 6); } catch(e) {}
 }
 
-// ─── FETCH PAGINADO ──────────────────────────────────────────
+// ─── TRIGGER SEMANAL ─────────────────────────────────────────
+// Ejecuta esto UNA VEZ (manualmente) para activar la actualización automática.
+function crearTriggerSemanal() {
+  // Borra triggers previos de ambas funciones (por si quedó el viejo)
+  ScriptApp.getProjectTriggers().forEach(function(t) {
+    var fn = t.getHandlerFunction();
+    if (fn === 'actualizarCatalogoFinasset' || fn === 'crearHojaMyInvestor') ScriptApp.deleteTrigger(t);
+  });
+  // Cada lunes a las 7:00h
+  ScriptApp.newTrigger('actualizarCatalogoFinasset')
+    .timeBased()
+    .onWeekDay(ScriptApp.WeekDay.MONDAY)
+    .atHour(7)
+    .create();
+  Logger.log('✅ Trigger semanal creado: actualizarCatalogoFinasset() correrá cada lunes a las 7h');
+  try { SpreadsheetApp.getActive().toast('Trigger semanal activado (lunes 7h)', '✅ Listo', 6); } catch(e) {}
+}
+
+// ─── FETCH PAGINADO (universo + rentabilidades desde la API de MyInvestor) ───
 function _miFetch(type) {
-  // Endpoints a probar en orden (se para en el primero que funcione)
   var endpointTemplates = [
     'https://app.myinvestor.es/api/v2/savings-plans/fund-search?page={PAGE}&size=100&productType=' + type,
     'https://app.myinvestor.es/api/v1/savings-plans/fund-search?page={PAGE}&size=100&type=' + type,
@@ -105,66 +141,41 @@ function _miFetch(type) {
     var allProducts = [];
     var page = 0;
     var success = false;
-
     Logger.log('[' + type + '] Probando endpoint ' + ei + ': ' + tpl.replace('{PAGE}', '0'));
 
     try {
-      while (page < 60) { // max 60 páginas × 100 = 6000 productos
+      while (page < 70) { // hasta 70 páginas × 100 = 7000 productos
         var url = tpl.replace('{PAGE}', page);
-        var resp = UrlFetchApp.fetch(url, {
-          headers: reqHeaders,
-          muteHttpExceptions: true,
-          followRedirects: true
-        });
+        var resp = UrlFetchApp.fetch(url, { headers: reqHeaders, muteHttpExceptions: true, followRedirects: true });
         var code = resp.getResponseCode();
+        if (code === 401 || code === 403) { Logger.log('[' + type + '] Endpoint ' + ei + ' requiere auth (' + code + ')'); break; }
+        if (code !== 200) { Logger.log('[' + type + '] Endpoint ' + ei + ' HTTP ' + code); break; }
 
-        if (code === 401 || code === 403) {
-          Logger.log('[' + type + '] Endpoint ' + ei + ' requiere auth (' + code + ')');
-          break;
-        }
-        if (code !== 200) {
-          Logger.log('[' + type + '] Endpoint ' + ei + ' HTTP ' + code);
-          break;
-        }
-
-        var text = resp.getContentText();
         var json;
-        try { json = JSON.parse(text); } catch(pe) { Logger.log('JSON parse error: ' + pe); break; }
+        try { json = JSON.parse(resp.getContentText()); } catch (pe) { Logger.log('JSON parse error: ' + pe); break; }
 
-        // Log estructura del primer resultado para debug
         if (page === 0) {
           Logger.log('[' + type + '] Endpoint ' + ei + ' keys: ' + Object.keys(json).join(', '));
           var items0 = _miExtractItems(json);
-          if (items0 && items0.length > 0) {
-            Logger.log('[' + type + '] Primer item keys: ' + Object.keys(items0[0]).join(', '));
-            Logger.log('[' + type + '] Primer item (truncado): ' + JSON.stringify(items0[0]).substring(0, 400));
-          }
+          if (items0 && items0.length > 0) Logger.log('[' + type + '] Primer item keys: ' + Object.keys(items0[0]).join(', '));
         }
 
         var items = _miExtractItems(json);
         if (!items || items.length === 0) { success = true; break; }
-
-        items.forEach(function(item) {
-          allProducts.push(_miParseProduct(item, type));
-        });
-
-        Logger.log('[' + type + '] Página ' + page + ': ' + items.length + ' items → total: ' + allProducts.length);
-
+        items.forEach(function(item) { allProducts.push(_miParseProduct(item, type)); });
+        Logger.log('[' + type + '] Página ' + page + ': ' + items.length + ' → total: ' + allProducts.length);
         if (!_miHasMore(json, items.length)) { success = true; break; }
         page++;
-        Utilities.sleep(300); // pausa respetuosa
+        Utilities.sleep(300);
       }
-
       if (success && allProducts.length > 0) {
         Logger.log('[' + type + '] ✅ Endpoint ' + ei + ' OK — ' + allProducts.length + ' productos');
         return allProducts;
       }
-
-    } catch(e) {
+    } catch (e) {
       Logger.log('[' + type + '] Error endpoint ' + ei + ': ' + e.toString());
     }
   }
-
   Logger.log('[' + type + '] ❌ Todos los endpoints fallaron');
   return [];
 }
@@ -176,7 +187,6 @@ function _miExtractItems(json) {
   for (var i = 0; i < candidates.length; i++) {
     if (json[candidates[i]] && Array.isArray(json[candidates[i]])) return json[candidates[i]];
   }
-  // Buscar arrays anidados un nivel más
   var keys = Object.keys(json);
   for (var k = 0; k < keys.length; k++) {
     var val = json[keys[k]];
@@ -187,142 +197,62 @@ function _miExtractItems(json) {
       }
     }
   }
-  Logger.log('Estructura desconocida: ' + JSON.stringify(json).substring(0, 300));
   return [];
 }
 
 // Detecta si hay más páginas
 function _miHasMore(json, itemsCount) {
-  if (itemsCount < 100) return false; // menos que el tamaño de página = última página
+  if (itemsCount < 100) return false;
   if (json.last === true || json.last === 'true') return false;
   if (json.hasNext === false) return false;
-  if (json.totalPages !== undefined) return false; // se gestiona externamente, parar aquí
+  if (json.totalPages !== undefined) return false;
   if (json.page && json.page.totalPages !== undefined) return false;
-  return true; // asumir hay más si el tamaño de página es exactamente 100
+  return true;
 }
 
-// Convierte un item de la API a nuestro formato normalizado
+// Convierte un item de la API al formato normalizado que necesita el Sheet
 function _miParseProduct(item, type) {
-  // Helper: intenta varios nombres de campo
   function get(obj) {
     for (var i = 1; i < arguments.length; i++) {
       var k = arguments[i];
       if (obj[k] !== undefined && obj[k] !== null && obj[k] !== '') {
         var v = obj[k];
-        if (typeof v === 'object' && !Array.isArray(v)) {
-          // Objeto anidado: extraer campo "name" o "value"
-          return v.name || v.value || v.code || JSON.stringify(v);
-        }
+        if (typeof v === 'object' && !Array.isArray(v)) return v.name || v.value || v.code || '';
         return v;
       }
     }
     return '';
   }
-
   function toNum(v) {
     if (v === '' || v === null || v === undefined) return '';
     var s = String(v).replace(',', '.').replace('%', '').trim();
     var n = parseFloat(s);
-    return isNaN(n) ? '' : n;
+    if (isNaN(n)) return '';
+    // La API a veces da la rentabilidad como fracción (0.36) en vez de % (36).
+    // Heurística: si |n|<=1.5 y no es 0, asumimos fracción → a porcentaje.
+    return n;
   }
 
-  var isin      = get(item, 'isin', 'ISIN', 'isinCode', 'code');
-  var nombre    = get(item, 'name', 'nombre', 'productName', 'fundName', 'title', 'shortName', 'description');
-  var categoria = get(item, 'category', 'categoria', 'assetClass', 'fundCategory', 'subcategory', 'morningstarCategory');
-  var mercado   = get(item, 'market', 'exchange', 'mercado', 'stockExchange', 'primaryExchange');
-  var ter       = get(item, 'ter', 'TER', 'ongoingCharge', 'totalExpenseRatio', 'managementFee', 'annualFee', 'expenseRatio', 'managementExpenseRatio');
-  var divisa    = get(item, 'currency', 'divisa', 'currencyCode', 'baseCurrency', 'currency_code');
-  var replica   = get(item, 'replicationMethod', 'replica', 'replication', 'methodology', 'indexReplication', 'physicalOrSynthetic');
-  var distrib   = get(item, 'distributionPolicy', 'distribucion', 'incomeType', 'dividendPolicy', 'accumulation', 'distributing');
-  var rating    = get(item, 'morningstarRating', 'rating', 'stars', 'morningstarStars', 'starRating');
-  var rent1a    = get(item, 'return1Year', 'performance1Y', 'rent1a', 'annualized1Y', 'oneYearReturn', 'return1y', 'ytd1Y', 'trailingReturn1Y', 'r1y');
-  var rent3a    = get(item, 'return3Year', 'performance3Y', 'rent3a', 'annualized3Y', 'threeYearReturn', 'return3y', 'trailingReturn3Y', 'r3y');
-  var rent5a    = get(item, 'return5Year', 'performance5Y', 'rent5a', 'annualized5Y', 'fiveYearReturn', 'return5y', 'trailingReturn5Y', 'r5y');
-
-  // Construir URL de ficha en MyInvestor
-  var url = get(item, 'url', 'link', 'productUrl', 'detailUrl');
-  if (!url && isin) {
-    url = type === 'ETF'
-      ? 'https://app.myinvestor.es/etfs/' + isin
-      : 'https://app.myinvestor.es/fondos/' + isin;
-  }
+  var isin   = get(item, 'isin', 'ISIN', 'isinCode', 'code');
+  var nombre = get(item, 'name', 'nombre', 'productName', 'fundName', 'title', 'shortName', 'description');
+  var mercado= get(item, 'market', 'exchange', 'mercado', 'stockExchange', 'primaryExchange');
+  var ter    = get(item, 'ter', 'TER', 'ongoingCharge', 'totalExpenseRatio', 'managementFee', 'annualFee', 'expenseRatio');
+  var divisa = get(item, 'currency', 'divisa', 'currencyCode', 'baseCurrency');
+  var distrib= get(item, 'distributionPolicy', 'distribucion', 'incomeType', 'dividendPolicy', 'accumulation', 'distributing');
+  var rent1a = get(item, 'return1Year', 'performance1Y', 'rent1a', 'annualized1Y', 'oneYearReturn', 'return1y', 'trailingReturn1Y', 'r1y');
+  var rent3a = get(item, 'return3Year', 'performance3Y', 'rent3a', 'annualized3Y', 'threeYearReturn', 'return3y', 'trailingReturn3Y', 'r3y');
+  var rent5a = get(item, 'return5Year', 'performance5Y', 'rent5a', 'annualized5Y', 'fiveYearReturn', 'return5y', 'trailingReturn5Y', 'r5y');
 
   return {
     isin: String(isin),
     nombre: String(nombre),
     tipo: type === 'ETF' ? 'ETF' : 'Fondo',
-    categoria: String(categoria),
     mercado: String(mercado),
     ter: toNum(ter),
-    divisa: String(divisa),
-    replica: String(replica),
+    divisa: String(divisa) || 'EUR',
     distribucion: String(distrib),
     rent1a: toNum(rent1a),
     rent3a: toNum(rent3a),
-    rent5a: toNum(rent5a),
-    rating: String(rating),
-    url: String(url)
+    rent5a: toNum(rent5a)
   };
-}
-
-// ─── WEB APP — sirve el catálogo como JSON para Finasset ─────
-// Desplegar como: App web → Ejecutar como Yo → Acceso: Cualquier usuario
-function doGet(e) {
-  try {
-    var ss = SpreadsheetApp.openById(SPREADSHEET_ID);
-    var sheet = ss.getSheetByName(MYINVESTOR_SHEET_NAME);
-
-    if (!sheet) {
-      return ContentService
-        .createTextOutput(JSON.stringify({ error: 'Hoja no encontrada. Ejecuta crearHojaMyInvestor() primero.' }))
-        .setMimeType(ContentService.MimeType.JSON);
-    }
-
-    var data = sheet.getDataRange().getValues();
-    if (data.length < 2) {
-      return ContentService
-        .createTextOutput(JSON.stringify({ products: [], count: 0, updated: null }))
-        .setMimeType(ContentService.MimeType.JSON);
-    }
-
-    var headers = data[0].map(function(h) { return String(h); });
-    var rows = data.slice(1).filter(function(r) { return r[0]; }); // excluir filas vacías
-
-    var products = rows.map(function(row) {
-      var obj = {};
-      headers.forEach(function(h, i) { obj[h] = row[i]; });
-      return obj;
-    });
-
-    var output = JSON.stringify({
-      products: products,
-      count: products.length,
-      updated: rows.length > 0 ? rows[0][14] : null
-    });
-
-    return ContentService.createTextOutput(output).setMimeType(ContentService.MimeType.JSON);
-
-  } catch(err) {
-    return ContentService
-      .createTextOutput(JSON.stringify({ error: err.toString() }))
-      .setMimeType(ContentService.MimeType.JSON);
-  }
-}
-
-// ─── TRIGGER SEMANAL ─────────────────────────────────────────
-// Ejecutar UNA VEZ manualmente para activar la actualización automática
-function crearTriggerSemanal() {
-  // Eliminar triggers previos para esta función
-  ScriptApp.getProjectTriggers().forEach(function(t) {
-    if (t.getHandlerFunction() === 'crearHojaMyInvestor') ScriptApp.deleteTrigger(t);
-  });
-
-  // Crear trigger: cada lunes a las 7:00h
-  ScriptApp.newTrigger('crearHojaMyInvestor')
-    .timeBased()
-    .onWeekDay(ScriptApp.WeekDay.MONDAY)
-    .atHour(7)
-    .create();
-
-  Logger.log('✅ Trigger semanal creado: crearHojaMyInvestor() correrá cada lunes a las 7h');
 }
