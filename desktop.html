@@ -6,7 +6,7 @@
   (served no-cache, version-bumped each deploy). Works even where SW/no-store
   are ignored, because it is plain page JS. */
 (function(){try{
-  var FA_BUILD=window.FA_BUILD='332';
+  var FA_BUILD=window.FA_BUILD='333';
   var s=location.search;
   if(s.indexOf('vchk')>-1||s.indexOf('_v=')>-1){history.replaceState(null,'',location.pathname+(location.hash||''));return;}
   fetch('/sw.js?_='+Date.now(),{cache:'no-store'}).then(function(r){return r.text();}).then(function(t){
@@ -5212,19 +5212,62 @@ function divValidBadge(status){
 
 // ── ETF profile (extraETF enrichment) ────────────────────────────────────────────
 const _etfProfileCache={};
+// Domicilio a partir del prefijo del ISIN (siempre disponible)
+function _isinDomicile(isin){
+  const cc=(String(isin||'').slice(0,2)).toUpperCase();
+  const es={IE:'Irlanda',LU:'Luxemburgo',DE:'Alemania',FR:'Francia',ES:'España',US:'EE.UU.',GB:'Reino Unido',NL:'Países Bajos',CH:'Suiza',AT:'Austria',IT:'Italia',JE:'Jersey',KY:'Islas Caimán',CA:'Canadá',BE:'Bélgica',PT:'Portugal',SE:'Suecia',DK:'Dinamarca',FI:'Finlandia',NO:'Noruega',JP:'Japón',AU:'Australia',HK:'Hong Kong',SG:'Singapur',CN:'China'};
+  const en={IE:'Ireland',LU:'Luxembourg',DE:'Germany',FR:'France',ES:'Spain',US:'USA',GB:'United Kingdom',NL:'Netherlands',CH:'Switzerland',AT:'Austria',IT:'Italy',JE:'Jersey',KY:'Cayman Islands',CA:'Canada',BE:'Belgium',PT:'Portugal',SE:'Sweden',DK:'Denmark',FI:'Finland',NO:'Norway',JP:'Japan',AU:'Australia',HK:'Hong Kong',SG:'Singapore',CN:'China'};
+  return (currentLang==='es'?es:en)[cc]||null;
+}
+function _miCatalogLookup(isin){
+  try{ const arr=JSON.parse(localStorage.getItem('mi_cache_283')||'[]'); if(Array.isArray(arr)) return arr.find(x=>x.isin===isin)||null; }catch(_){}
+  return null;
+}
+function _typeLabelForProfile(a){
+  const t=a?.mapping?.type||'', isEs=currentLang==='es';
+  return t==='fund'?(isEs?'Fondo':'Fund'):t==='etf'?'ETF':t==='etc'?(isEs?'ETC / Materia prima':'ETC'):t==='stock'?(isEs?'Acción':'Stock'):null;
+}
+// Ficha básica con datos locales (cuando el proveedor no cubre el ISIN)
+function _buildBasicProfile(isin){
+  const a=selectedAsset; if(!a)return null;
+  const cat=_miCatalogLookup(isin);
+  const ov={
+    ter: (cat&&Number.isFinite(Number(cat.ter)))?Number(cat.ter):null,
+    category: _typeLabelForProfile(a),
+    distribution: (cat&&cat.distribucion)?cat.distribucion:null,
+    currency: assetCcy(a)||null,
+    domicile: _isinDomicile(isin),
+  };
+  if(!Object.values(ov).some(v=>v!=null&&v!==''))return null;
+  return { overview:ov, holdings:[], source:(currentLang==='es'?'datos locales':'local data'), fetchedAt:new Date().toISOString(), _basic:true };
+}
+// Rellena huecos de la ficha del proveedor con datos locales
+function _enrichProfile(r,isin){
+  if(!r||!r.overview)return r;
+  const ov=r.overview, cat=_miCatalogLookup(isin);
+  if(ov.ter==null&&cat&&Number.isFinite(Number(cat.ter)))ov.ter=Number(cat.ter);
+  if(!ov.currency&&selectedAsset)ov.currency=assetCcy(selectedAsset)||null;
+  if(!ov.domicile)ov.domicile=_isinDomicile(isin);
+  if(!ov.distribution&&cat&&cat.distribucion)ov.distribution=cat.distribucion;
+  return r;
+}
 async function loadETFProfile(isin){
-  if(_etfProfileCache[isin]){renderETFProfile(_etfProfileCache[isin]);return;}
   const isFundAsset=selectedAsset?.mapping?.type==='fund';
+  if(_etfProfileCache[isin]){renderETFProfile(_etfProfileCache[isin],isFundAsset);return;}
   const endpoint=isFundAsset?`/api/fund/profile?isin=${isin}`:`/api/etf/profile?isin=${isin}`;
+  let r=null;
   try{
     const data=await getJson(endpoint);
-    const r=(data.results||[])[0];
-    const hasOv=r?.overview&&Object.values(r.overview).some(v=>v!=null&&v!==false);
-    const hasHoldings=r?.holdings?.length>0;
-    if(!r||r.error||(!hasOv&&!hasHoldings))return;
-    _etfProfileCache[isin]=r;
-    renderETFProfile(r,isFundAsset);
+    const rr=(data.results||[])[0];
+    const hasOv=rr?.overview&&Object.values(rr.overview).some(v=>v!=null&&v!==false);
+    const hasHoldings=rr?.holdings?.length>0;
+    if(rr&&!rr.error&&(hasOv||hasHoldings)) r=_enrichProfile(rr,isin);
   }catch(e){console.warn('[etfProfile] failed for '+isin+':',e.message);}
+  // Fallback: si el proveedor no cubre el ISIN, ficha básica con datos locales → siempre se muestra algo
+  if(!r) r=_buildBasicProfile(isin);
+  if(!r)return;
+  _etfProfileCache[isin]=r;
+  renderETFProfile(r,isFundAsset);
 }
 
 function renderETFProfile(r,isFundAsset){
