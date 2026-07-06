@@ -6,7 +6,7 @@
   (served no-cache, version-bumped each deploy). Works even where SW/no-store
   are ignored, because it is plain page JS. */
 (function(){try{
-  var FA_BUILD=window.FA_BUILD='335';
+  var FA_BUILD=window.FA_BUILD='336';
   var s=location.search;
   if(s.indexOf('vchk')>-1||s.indexOf('_v=')>-1){history.replaceState(null,'',location.pathname+(location.hash||''));return;}
   fetch('/sw.js?_='+Date.now(),{cache:'no-store'}).then(function(r){return r.text();}).then(function(t){
@@ -8167,8 +8167,15 @@ function loadCustomIntoAssets(cvMap){
     const coverageQuotePrice=_cov?.data?.quote?.price;   // crudo en divisa nativa
     // Si el quote no trae divisa, es un precio no fiable/mal escalado → usa el precio EUR de position
     const _brokenQuote = coveragePosPrice>0 && !coverageCurrency;
-    const coveragePrice = _brokenQuote ? coveragePosPrice : coverageQuotePrice;
-    const _priceCcy = _brokenQuote ? 'EUR' : coverageCurrency;
+    let coveragePrice, _priceCcy;
+    if(_brokenQuote){
+      // pos.currentPrice viene en EUR (quote sin divisa). Si el COSTE está en divisa extranjera
+      // (p.ej. USD), expresa el precio en ESA divisa para que precio y coste coincidan
+      // → el % de ganancia sale correcto (mismo tipo de cambio para ambos).
+      const _costCcy = pos.costCurrency || 'EUR';
+      if(_costCcy!=='EUR' && _fxRates[_costCcy]>0){ coveragePrice = coveragePosPrice*_fxRates[_costCcy]; _priceCcy = _costCcy; }
+      else { coveragePrice = coveragePosPrice; _priceCcy = 'EUR'; }
+    } else { coveragePrice = coverageQuotePrice; _priceCcy = coverageCurrency; }
     const coverageHistory=_cov?.data?.history; // get full history from coverage API
     const coverageApiStatus=_cov?.data?.coverage?.status; // trust API's OK/PARTIAL/MISSING
     // Enrich custom asset with coverage data: price, currency, history, AND coverage status from API
