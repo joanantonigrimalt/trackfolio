@@ -10,7 +10,7 @@
   no-store headers are ignored (in-app webviews) because it is plain page JS.
   Source of truth = sw.js (always served no-cache, version-bumped each deploy). */
 (function(){try{
-  var FA_BUILD='330';
+  var FA_BUILD='331';
   var s=location.search;
   if(s.indexOf('vchk')>-1||s.indexOf('_v=')>-1){
     // Clean the ugly ?vchk= / ?_v= from the URL silently
@@ -4138,18 +4138,21 @@ function getPriceOnOrBefore(s,date){if(!s.length)return null;let lo=0,hi=s.lengt
 function _strHash(s){let h=5381;for(let i=0;i<s.length;i++)h=((h<<5)+h+s.charCodeAt(i))>>>0;return h.toString(36);}
 
 let _tsCache=null,_tsCacheKey='';
-function buildPortfolioTimeSeries(){
+function buildPortfolioTimeSeries(src){
+  // src = subconjunto opcional (p.ej. filtrado por broker). Por defecto, toda la cartera.
+  const _src = src || assets;
+  const _bkTag=(src&&_activeBrokerFilter)?('BK:'+_activeBrokerFilter+'|'):'';
   // Memoize: reuse result if assets haven't changed (#6 fix: O(assets×dates) runs once per data change)
-  const _k=assets.map(a=>a.isin+'|'+a.currentPrice+'|'+(a.history?.length||0)).join(',');
+  const _k=_bkTag+_src.map(a=>a.isin+'|'+a.currentPrice+'|'+(a.history?.length||0)).join(',');
   if(_k===_tsCacheKey&&_tsCache!==undefined)return _tsCache;
   _tsCacheKey=_k;
-  const real=assets.filter(a=>a.hasRealHistory&&a.history?.length>0);if(!real.length){_tsCache=null;return null;}
+  const real=_src.filter(a=>a.hasRealHistory&&a.history?.length>0);if(!real.length){_tsCache=null;return null;}
   const scaled=real.map(a=>{const lc=a.history[a.history.length-1]?.close||0;return{asset:a,factor:(lc>0&&a.currentPrice>0)?a.currentPrice/lc:1};});
   const ds=new Set();real.forEach(a=>a.history.forEach(p=>ds.add(p.date)));
   const dates=[...ds].sort();if(dates.length<2)return null;
   const full=dates.map(date=>{let rv=0;for(const{asset,factor}of scaled){const p=getPriceOnOrBefore(asset.history,date);if(p!=null){const v=toDisplay(asset.quantity*p*factor,assetCcy(asset));if(Number.isFinite(v))rv+=v;}}return{date,realValue:rv};}).filter(p=>p.realValue>0);
   if(full.length<2){_tsCache=null;return null;}
-  const fr=full[0].realValue,approx=assets.filter(a=>!a.hasRealHistory),aC=approx.reduce((s,a)=>s+toDisplay(a.value,assetCcy(a)),0),tC=assets.reduce((s,a)=>s+toDisplay(a.value,assetCcy(a)),0);
+  const fr=full[0].realValue,approx=_src.filter(a=>!a.hasRealHistory),aC=approx.reduce((s,a)=>s+toDisplay(a.value,assetCcy(a)),0),tC=_src.reduce((s,a)=>s+toDisplay(a.value,assetCcy(a)),0);
   _tsCache=full.map(p=>{const ratio=fr>0?p.realValue/fr:1;const av=approx.reduce((s,a)=>{const b=toDisplay(a.buyPrice>0?a.invested:a.value,a.buyPrice>0?costCcy(a):assetCcy(a));const sc=b*ratio;return s+Math.min(Math.max(b,toDisplay(a.value,assetCcy(a))),Math.max(Math.min(b,toDisplay(a.value,assetCcy(a))),sc));},0);return{date:p.date,totalValue:p.realValue+av,realValue:p.realValue,approximatedValue:av,totalCurrent:tC,approximateCurrent:aC};});
   // Always inject today's current value as last point when live prices are ready and history is stale
   if(_pricesLive&&_tsCache.length){const _today=new Date().toISOString().slice(0,10);if(_tsCache[_tsCache.length-1].date<_today)_tsCache.push({date:_today,totalValue:tC,realValue:tC-aC,approximatedValue:aC,totalCurrent:tC,approximateCurrent:aC});}
@@ -4246,17 +4249,21 @@ async function renderChart(){
   }
 
   // ── Multi-day historical mode ─────────────────────────────────────────────
-  let full=buildPortfolioTimeSeries();
-  if(!full) full=buildSnapshotTimeSeries(); // fall back to the user's own daily value snapshots
-  if(!full){canvas.style.display='none';fallback.style.display='flex';if(fallback)fallback.textContent=_pricesLive?(_snapshotCount()>0?(currentLang==='es'?'Registrando el valor de tu cartera — la curva aparecerá en cuanto haya varios días de datos.':'Recording your portfolio value — the curve will appear once there are a few days of data.'):(currentLang==='es'?'Histórico insuficiente para construir una curva.':'Insufficient history to build a chart.')):(currentLang==='es'?'Cargando histórico…':'Loading history…');meta.textContent='';rv.textContent=_pricesLive?fe(assets.reduce((s,a)=>s+toDisplay(a.value,assetCcy(a)),0)):'—';return;}
+  // Filtrar por broker si hay uno seleccionado → el gráfico refleja solo sus posiciones
+  const _bkActive=_activeBrokerFilter!==null;
+  const _src=_bkActive?assets.filter(a=>a.broker===_activeBrokerFilter):assets;
+  let full=buildPortfolioTimeSeries(_src);
+  // Los snapshots guardados son del total agregado: solo se usan como fallback en "Agregado"
+  if(!full&&!_bkActive) full=buildSnapshotTimeSeries();
+  if(!full){canvas.style.display='none';fallback.style.display='flex';if(fallback)fallback.textContent=_pricesLive?(_bkActive?(currentLang==='es'?'Sin histórico suficiente para este broker.':'Not enough history for this broker.'):(_snapshotCount()>0?(currentLang==='es'?'Registrando el valor de tu cartera — la curva aparecerá en cuanto haya varios días de datos.':'Recording your portfolio value — the curve will appear once there are a few days of data.'):(currentLang==='es'?'Histórico insuficiente para construir una curva.':'Insufficient history to build a chart.'))):(currentLang==='es'?'Cargando histórico…':'Loading history…');meta.textContent='';rv.textContent=_pricesLive?fe(_src.reduce((s,a)=>s+toDisplay(a.value,assetCcy(a)),0)):'—';return;}
   const series=filterByRange(full,selectedRange),values=series.map(p=>p.totalValue);
   fallback.style.display='none';canvas.style.display='block';
   if(!series.length||!values.some(v=>Number.isFinite(v))){canvas.style.display='none';fallback.style.display='flex';meta.textContent='';return;}
   const lp=series[series.length-1];
   if(!lp){canvas.style.display='none';fallback.style.display='flex';return;}
   const aPct=lp.totalCurrent>0?lp.approximateCurrent/lp.totalCurrent*100:0;
-  const _withHist=assets.filter(a=>a.hasRealHistory&&a.history?.length>0).length;
-  const _activeCount=assets.filter(a=>a.quantity>0).length||assets.length;
+  const _withHist=_src.filter(a=>a.hasRealHistory&&a.history?.length>0).length;
+  const _activeCount=_src.filter(a=>a.quantity>0).length||_src.length;
   const noteText=aPct>0.5?`${_withHist}/${_activeCount} ${currentLang==='es'?'activos · '+aPct.toFixed(0)+'% estimado':'assets · '+aPct.toFixed(0)+'% estimated'}`:currentLang==='es'?`${_withHist}/${_activeCount} activos con histórico`:`${_withHist}/${_activeCount} assets with history`;
   meta.style.color=''; // reset before draw
   _drawChart(canvas,series.map(p=>dateLabel(p.date,selectedRange)),values,note,meta,rv,noteText);
@@ -6502,7 +6509,7 @@ function renderBrokerFilter(){
     ...brokers.map(b=>`<button class="bfBtn${_activeBrokerFilter===b?' active':''}" data-bf="${b.replace(/"/g,'&quot;')}">${b.replace(/</g,'&lt;')}</button>`)
   ].join('');
   bar.querySelectorAll('.bfBtn').forEach(btn=>{
-    btn.onclick=()=>{_activeBrokerFilter=btn.dataset.bf||null;renderBrokerFilter();renderLists();};
+    btn.onclick=()=>{_activeBrokerFilter=btn.dataset.bf||null;renderBrokerFilter();renderLists();if(typeof renderChart==='function')renderChart();};
   });
 }
 function renderLists(){

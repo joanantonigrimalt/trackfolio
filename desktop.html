@@ -6,7 +6,7 @@
   (served no-cache, version-bumped each deploy). Works even where SW/no-store
   are ignored, because it is plain page JS. */
 (function(){try{
-  var FA_BUILD=window.FA_BUILD='330';
+  var FA_BUILD=window.FA_BUILD='331';
   var s=location.search;
   if(s.indexOf('vchk')>-1||s.indexOf('_v=')>-1){history.replaceState(null,'',location.pathname+(location.hash||''));return;}
   fetch('/sw.js?_='+Date.now(),{cache:'no-store'}).then(function(r){return r.text();}).then(function(t){
@@ -4860,14 +4860,16 @@ function showScreen(name,keepTab=false){
 function normalizeHistory(h){const _all=(Array.isArray(h)?h:[]).map(p=>({date:String(p.date).slice(0,10),close:Number(p.close)})).filter(p=>p.date&&Number.isFinite(p.close)&&p.close>0).sort((a,b)=>a.date.localeCompare(b.date));if(_all.length>=4){const _s=[..._all].sort((a,b)=>a.close-b.close);const _m=_s[Math.floor(_s.length/2)].close;const _c=_all.filter(p=>p.close<=_m*10&&p.close>=_m/10);if(_c.length>=4){return _c.length>1260?_c.slice(-1260):_c;}}return _all.length>1260?_all.slice(-1260):_all;} // cap at 5Y; outlier filter removes bad data points >10x median
 function getPriceOnOrBefore(s,date){if(!s.length)return null;let lo=0,hi=s.length-1,best=-1;while(lo<=hi){const m=Math.floor((lo+hi)/2);if(s[m].date<=date){best=m;lo=m+1;}else hi=m-1;}return best>=0?s[best].close:null;}
 
-function buildPortfolioTimeSeries(){
-  const real=assets.filter(a=>a.hasRealHistory&&a.history?.length>0);if(!real.length)return null;
+function buildPortfolioTimeSeries(src){
+  // src = subconjunto opcional (p.ej. filtrado por broker). Por defecto, toda la cartera.
+  const _src = src || assets;
+  const real=_src.filter(a=>a.hasRealHistory&&a.history?.length>0);if(!real.length)return null;
   const scaled=real.map(a=>{const lc=a.history[a.history.length-1]?.close||0;return{asset:a,factor:(lc>0&&a.currentPrice>0)?a.currentPrice/lc:1};});
   const ds=new Set();real.forEach(a=>a.history.forEach(p=>ds.add(p.date)));
   const dates=[...ds].sort();if(dates.length<2)return null;
   const full=dates.map(date=>{let rv=0;for(const{asset,factor}of scaled){const p=getPriceOnOrBefore(asset.history,date);if(p!=null){const v=toDisplay(asset.quantity*p*factor,assetCcy(asset));if(Number.isFinite(v))rv+=v;}}return{date,realValue:rv};}).filter(p=>p.realValue>0);
   if(full.length<2)return null;
-  const fr=full[0].realValue,approx=assets.filter(a=>!a.hasRealHistory),aC=approx.reduce((s,a)=>s+a.value,0),tC=assets.reduce((s,a)=>s+a.value,0);
+  const fr=full[0].realValue,approx=_src.filter(a=>!a.hasRealHistory),aC=approx.reduce((s,a)=>s+a.value,0),tC=_src.reduce((s,a)=>s+a.value,0);
   const result=full.map(p=>{const ratio=fr>0?p.realValue/fr:1;const av=approx.reduce((s,a)=>{const b=a.buyPrice>0?a.invested:a.value;const sc=b*ratio;return s+Math.min(Math.max(b,a.value),Math.max(Math.min(b,a.value),sc));},0);return{date:p.date,totalValue:p.realValue+av,realValue:p.realValue,approximatedValue:av,totalCurrent:tC,approximateCurrent:aC};});
   // Always inject today's current portfolio value as the last point when live prices are ready and history is stale
   if(_pricesLive&&result.length){const _today=new Date().toISOString().slice(0,10);if(result[result.length-1].date<_today)result.push({date:_today,totalValue:tC,realValue:tC-aC,approximatedValue:aC,totalCurrent:tC,approximateCurrent:aC});}
@@ -4950,17 +4952,21 @@ async function renderChart(){
   }
 
   // ── Multi-day historical mode ─────────────────────────────────────────────
-  let full=buildPortfolioTimeSeries();
-  if(!full) full=buildSnapshotTimeSeries(); // fall back to the user's own daily value snapshots
-  if(!full){canvas.style.display='none';fallback.style.display='flex';fallback.textContent=_pricesLive?(_snapshotCount()>0?(currentLang==='es'?'Registrando el valor de tu cartera — la curva aparecerá en cuanto haya varios días de datos.':'Recording your portfolio value — the curve will appear once there are a few days of data.'):t('chartNoData')):(currentLang==='es'?'Cargando histórico…':'Loading history…');meta.textContent='';rv.textContent=_pricesLive?fe(assets.reduce((s,a)=>s+toDisplay(a.value,assetCcy(a)),0)):'—';return;}
+  // Filtrar por broker si hay uno seleccionado → el gráfico refleja solo sus posiciones
+  const _bkActive=_activeBrokerFilter!==null;
+  const _src=_bkActive?assets.filter(a=>a.broker===_activeBrokerFilter):assets;
+  let full=buildPortfolioTimeSeries(_src);
+  // Los snapshots guardados son del total agregado: solo se usan como fallback en "Agregado"
+  if(!full&&!_bkActive) full=buildSnapshotTimeSeries();
+  if(!full){canvas.style.display='none';fallback.style.display='flex';fallback.textContent=_pricesLive?(_bkActive?(currentLang==='es'?'Sin histórico suficiente para este broker.':'Not enough history for this broker.'):(_snapshotCount()>0?(currentLang==='es'?'Registrando el valor de tu cartera — la curva aparecerá en cuanto haya varios días de datos.':'Recording your portfolio value — the curve will appear once there are a few days of data.'):t('chartNoData'))):(currentLang==='es'?'Cargando histórico…':'Loading history…');meta.textContent='';rv.textContent=_pricesLive?fe(_src.reduce((s,a)=>s+toDisplay(a.value,assetCcy(a)),0)):'—';return;}
   const series=filterByRange(full,selectedRange),values=series.map(p=>p.totalValue);
   fallback.style.display='none';canvas.style.display='block';
   if(!series.length||!values.some(v=>Number.isFinite(v))){canvas.style.display='none';fallback.style.display='flex';fallback.textContent=t('chartNoData');meta.textContent='';return;}
   const lp=series[series.length-1];
   if(!lp){canvas.style.display='none';fallback.style.display='flex';return;}
   const aPct=lp.totalCurrent>0?lp.approximateCurrent/lp.totalCurrent*100:0;
-  const _withHist=assets.filter(a=>a.hasRealHistory&&a.history?.length>0).length;
-  const _activeCount=assets.filter(a=>a.quantity>0).length||assets.length;
+  const _withHist=_src.filter(a=>a.hasRealHistory&&a.history?.length>0).length;
+  const _activeCount=_src.filter(a=>a.quantity>0).length||_src.length;
   const noteText=aPct>0.5?`${_withHist}/${_activeCount} ${currentLang==='es'?'activos · '+aPct.toFixed(0)+'% estimado':'assets · '+aPct.toFixed(0)+'% estimated'}`:currentLang==='es'?`${_withHist}/${_activeCount} activos con histórico`:`${_withHist}/${_activeCount} assets with history`;
   _drawChart(canvas,series.map(p=>dateLabel(p.date,selectedRange)),values,note,meta,rv,noteText);
   // Period return for selected range — shown in blue
@@ -7234,7 +7240,7 @@ function renderBrokerFilter(){
     ...brokers.map(b=>`<button class="bfBtn${_activeBrokerFilter===b?' active':''}" data-bf="${b.replace(/"/g,'&quot;')}">${b.replace(/</g,'&lt;')}</button>`)
   ].join('');
   bar.querySelectorAll('.bfBtn').forEach(btn=>{
-    btn.onclick=()=>{_activeBrokerFilter=btn.dataset.bf||null;renderBrokerFilter();renderLists();};
+    btn.onclick=()=>{_activeBrokerFilter=btn.dataset.bf||null;renderBrokerFilter();renderLists();if(typeof renderChart==='function')renderChart();};
   });
 }
 // ── Column management ─────────────────────────────────────────────────────
