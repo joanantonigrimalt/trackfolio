@@ -10,7 +10,7 @@
   no-store headers are ignored (in-app webviews) because it is plain page JS.
   Source of truth = sw.js (always served no-cache, version-bumped each deploy). */
 (function(){try{
-  var FA_BUILD='322';
+  var FA_BUILD='323';
   var s=location.search;
   if(s.indexOf('vchk')>-1||s.indexOf('_v=')>-1){
     // Clean the ugly ?vchk= / ?_v= from the URL silently
@@ -9018,9 +9018,19 @@ document.addEventListener('keydown', e => {
 startApp();
 
 // ── Flush sync on page close ──────────────────────────────────────────────
+let _lastVisPull = 0;
 window.addEventListener('visibilitychange', () => {
-  if (document.visibilityState === 'hidden' && _sbUser) {
+  if (!_sbUser) return;
+  if (document.visibilityState === 'hidden') {
     syncToCloud().catch(() => {});
+  } else {
+    // Al volver a primer plano: traer cambios hechos en otro dispositivo/pestaña
+    const now = Date.now();
+    if (now - _lastVisPull > 3000) {
+      _lastVisPull = now;
+      syncFromCloud().catch(() => {});
+      if (typeof syncSnapshotsFromCloud === 'function') syncSnapshotsFromCloud();
+    }
   }
 });
 

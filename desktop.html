@@ -6,7 +6,7 @@
   (served no-cache, version-bumped each deploy). Works even where SW/no-store
   are ignored, because it is plain page JS. */
 (function(){try{
-  var FA_BUILD=window.FA_BUILD='322';
+  var FA_BUILD=window.FA_BUILD='323';
   var s=location.search;
   if(s.indexOf('vchk')>-1||s.indexOf('_v=')>-1){history.replaceState(null,'',location.pathname+(location.hash||''));return;}
   fetch('/sw.js?_='+Date.now(),{cache:'no-store'}).then(function(r){return r.text();}).then(function(t){
@@ -9787,9 +9787,19 @@ document.addEventListener('keydown', e => {
 startApp();
 
 // ── Flush sync on page close ──────────────────────────────────────────────
+let _lastVisPull = 0;
 window.addEventListener('visibilitychange', () => {
-  if (document.visibilityState === 'hidden' && _sbUser) {
+  if (!_sbUser) return;
+  if (document.visibilityState === 'hidden') {
     syncToCloud().catch(() => {});
+  } else {
+    // Al volver a primer plano: traer cambios hechos en otro dispositivo/pestaña
+    const now = Date.now();
+    if (now - _lastVisPull > 3000) {
+      _lastVisPull = now;
+      syncFromCloud().catch(() => {});
+      if (typeof syncSnapshotsFromCloud === 'function') syncSnapshotsFromCloud();
+    }
   }
 });
 
