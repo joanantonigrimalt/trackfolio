@@ -6,7 +6,7 @@
   (served no-cache, version-bumped each deploy). Works even where SW/no-store
   are ignored, because it is plain page JS. */
 (function(){try{
-  var FA_BUILD=window.FA_BUILD='311';
+  var FA_BUILD=window.FA_BUILD='312';
   var s=location.search;
   if(s.indexOf('vchk')>-1||s.indexOf('_v=')>-1){history.replaceState(null,'',location.pathname+(location.hash||''));return;}
   fetch('/sw.js?_='+Date.now(),{cache:'no-store'}).then(function(r){return r.text();}).then(function(t){
@@ -1581,6 +1581,9 @@ html,body{height:100%;overflow:hidden;font-family:-apple-system,BlinkMacSystemFo
       </div>
       <div id="deskMenuMsg" style="font-size:12px;margin-top:6px;display:none"></div>
       <button onclick="_deskSaveProfile()" style="display:none;margin-top:10px;width:100%;padding:9px;background:#142018;color:#f5fbf6;border:none;border-radius:9px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit">Guardar cambios</button>
+    </div>
+    <div style="padding:10px 16px;border-bottom:1px solid rgba(20,32,24,.06)">
+      <button onclick="openProfileModal()" style="width:100%;padding:9px;background:#f4f7f5;border:1.5px solid rgba(20,32,24,.12);border-radius:9px;font-size:13px;font-weight:700;color:#142018;cursor:pointer;font-family:inherit">Editar perfil</button>
     </div>
     <div style="padding:10px 16px;border-bottom:1px solid rgba(20,32,24,.06)">
       <div style="font-size:11px;color:#8fa090;font-weight:700;letter-spacing:.04em;margin-bottom:7px">IDIOMA</div>
@@ -7316,6 +7319,7 @@ async function _profileSave(){
     _profileAvatarFile=null;
     show(isEs?'¡Guardado! ✓':'Saved! ✓',true);
     if(typeof renderAccountSection==='function') renderAccountSection();
+    if(typeof syncDeskUser==='function') syncDeskUser();
     setTimeout(()=>{ const o=document.getElementById('profileOverlay'); if(o) o.remove(); },800);
   }catch(e){ show((e&&e.message)||(isEs?'Error al guardar.':'Error saving.'),false); }
   finally{ if(btn){ btn.textContent=isEs?'Guardar':'Save'; btn.disabled=false; } }
@@ -8473,6 +8477,7 @@ function renderAccountSection(){
     };
     document.getElementById('btnLogout').onclick=async()=>{await _sb.auth.signOut();renderAccountSection();};
     document.getElementById('btnEditProfile').onclick=()=>openProfileModal();
+    if(typeof syncDeskUser==='function') syncDeskUser();
   }else{
     sec.innerHTML=`<button class="accountLoginBtn" id="btnOpenAuth">${currentLang==='es'?'Entrar o registrarse':'Sign in or create account'}</button>`;
     document.getElementById('btnOpenAuth').onclick=()=>{closeSettings();openAuthModal();};
@@ -10731,22 +10736,27 @@ function _insClearSearch() {
 
   // Sync user info in sidebar from supabase session
   function syncDeskUser(session) {
-    if (!session) return;
-    const email = session.user?.email || '';
-    const meta  = session.user?.user_metadata || {};
+    const user = session && session.user ? session.user : (typeof _sbUser!=='undefined' ? _sbUser : null);
+    if (!user) return;
+    const email = user.email || '';
+    const meta  = user.user_metadata || {};
     const name  = meta.full_name || meta.name || '';
     const displayName = name || email.split('@')[0] || '—';
-    const av = (email.split('@')[0] || displayName).slice(0,2).toUpperCase() || '?';
+    const ini = ((email.split('@')[0] || displayName || '?').slice(0,2)).toUpperCase() || '?';
+    const avUrl = meta.avatar_url || '';
     const set = (id, val) => { const el = document.getElementById(id); if (el) el.textContent = val; };
-    set('deskUserName', email || displayName);
+    const setAv = (id) => { const el = document.getElementById(id); if (!el) return;
+      if (avUrl) { el.innerHTML = '<img src="'+avUrl+'" alt="" style="width:100%;height:100%;border-radius:50%;object-fit:cover">'; el.style.background='transparent'; }
+      else { el.textContent = ini; } };
+    set('deskUserName', displayName);
     set('deskUserPlan', (typeof _userPlan !== 'undefined' && _userPlan !== 'free') ? 'Plan Premium' : 'Plan Free');
-    set('deskUserAv', av);
-    set('deskMenuAv', av);
-    set('deskMenuEmail', email || displayName);
+    setAv('deskUserAv'); setAv('deskMenuAv');
+    set('deskMenuEmail', displayName);
     const ni = document.getElementById('deskMenuName');
     if (ni && !ni.value) ni.value = name;
     _highlightLang();
   }
+  window.syncDeskUser = syncDeskUser;
 
   // Try to hook into supabase session after boot
   function _toggleUserMenu() {
@@ -10758,6 +10768,7 @@ function _insClearSearch() {
     if (!open) {
       const msg = document.getElementById('deskMenuMsg');
       if (msg) msg.style.display = 'none';
+      try { syncDeskUser(); } catch(_) {}
       _highlightLang();
     }
   }
