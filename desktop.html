@@ -6,7 +6,7 @@
   (served no-cache, version-bumped each deploy). Works even where SW/no-store
   are ignored, because it is plain page JS. */
 (function(){try{
-  var FA_BUILD=window.FA_BUILD='300';
+  var FA_BUILD=window.FA_BUILD='301';
   var s=location.search;
   if(s.indexOf('vchk')>-1||s.indexOf('_v=')>-1){history.replaceState(null,'',location.pathname+(location.hash||''));return;}
   fetch('/sw.js?_='+Date.now(),{cache:'no-store'}).then(function(r){return r.text();}).then(function(t){
@@ -7124,17 +7124,10 @@ document.addEventListener('click',function(e){if(!e.target.closest('.fa-col-wrap
 
 function renderLists(){
   renderBrokerFilter();
-  if(_sbUser && assets.length===0){
-    const isEs=currentLang==='es';
-    const emptyHtml=`<div style="padding:32px 16px;text-align:center">
-      <div style="font-size:36px;margin-bottom:12px">📊</div>
-      <div style="font-size:15px;font-weight:700;color:#142018;margin-bottom:6px">${isEs?'Tu cartera está vacía':'Your portfolio is empty'}</div>
-      <div style="font-size:13px;color:#8fa090;line-height:1.5;margin-bottom:16px">${isEs?'Añade tu primera posición buscando un activo por nombre o ISIN.':'Add your first position by searching for an asset by name or ISIN.'}</div>
-    </div>`;
-    const _emptyListEl=document.getElementById('list');if(_emptyListEl)_emptyListEl.innerHTML=emptyHtml;
-    const _emptyPfEl=document.getElementById('portfolioList');if(_emptyPfEl)_emptyPfEl.innerHTML=emptyHtml;
-    return;
-  }
+  // NOTE: liquidity & debt rows are rendered below inside this function, so we must
+  // NOT early-return when there are 0 positions — otherwise liquidity/loans vanish
+  // from Home even though the user still has them. The empty-positions message is
+  // shown as a table row instead (see _emptyRow below).
   const visible=[...assets].filter(a=>a.quantity>0&&(_activeBrokerFilter===null||a.broker===_activeBrokerFilter)).sort((a,b)=>{const d=toDisplay(b.value,assetCcy(b))-toDisplay(a.value,assetCcy(a));return isNaN(d)?0:d;});
   const _totVal=visible.reduce((s,a)=>s+(toDisplay(a.value,assetCcy(a))||0),0);
   const isEs=currentLang==='es';
@@ -7232,7 +7225,8 @@ function renderLists(){
   </div>`;
 
   const thHtml=`<th>${isEs?'Activo':'Asset'}</th>`+visCols.map(c=>`<th>${lbl(c)}</th>`).join('');
-  const html=`<div style="display:flex;justify-content:flex-end;margin-bottom:8px">${colPanelHtml}</div><div style="overflow-x:auto"><table class="pf-tbl"><thead><tr>${thHtml}</tr></thead><tbody>${rows}${_liqRows}${_debtRows}</tbody></table></div>${_fxNote}`;
+  const _emptyRow=visible.length===0?`<tr><td colspan="${colCount}" style="padding:26px 16px;text-align:center"><div style="font-size:30px;margin-bottom:8px">📊</div><div style="font-size:14px;font-weight:700;color:var(--text);margin-bottom:4px">${isEs?'Tu cartera está vacía':'Your portfolio is empty'}</div><div style="font-size:12px;color:var(--muted);line-height:1.5">${isEs?'Añade tu primera posición buscando un activo por nombre o ISIN.':'Add your first position by searching for an asset by name or ISIN.'}</div></td></tr>`:'';
+  const html=`<div style="display:flex;justify-content:flex-end;margin-bottom:8px">${colPanelHtml}</div><div style="overflow-x:auto"><table class="pf-tbl"><thead><tr>${thHtml}</tr></thead><tbody>${rows}${_emptyRow}${_liqRows}${_debtRows}</tbody></table></div>${_fxNote}`;
   const _listEl=document.getElementById('list');if(_listEl)_listEl.innerHTML=html;
   const _pfListEl=document.getElementById('portfolioList');if(_pfListEl)_pfListEl.innerHTML=html;
   document.querySelectorAll('#list tr[data-isin], #portfolioList tr[data-isin]').forEach(el=>{
