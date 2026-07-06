@@ -6,7 +6,7 @@
   (served no-cache, version-bumped each deploy). Works even where SW/no-store
   are ignored, because it is plain page JS. */
 (function(){try{
-  var FA_BUILD=window.FA_BUILD='323';
+  var FA_BUILD=window.FA_BUILD='324';
   var s=location.search;
   if(s.indexOf('vchk')>-1||s.indexOf('_v=')>-1){history.replaceState(null,'',location.pathname+(location.hash||''));return;}
   fetch('/sw.js?_='+Date.now(),{cache:'no-store'}).then(function(r){return r.text();}).then(function(t){
@@ -2652,6 +2652,19 @@ html,body{height:100%;overflow:hidden;font-family:-apple-system,BlinkMacSystemFo
       <div class="icon adIconLg" id="adIcon"></div>
     </div>
   </div>
+  <!-- Evolución del precio — primera tarjeta bajo el hero -->
+  <div class="card">
+    <div class="adChartTop">
+      <div class="sectionTitle" style="margin-bottom:0" data-i18n="priceEvolution">Evolución del precio</div>
+      <div class="adChartMeta" id="adChartMeta"></div>
+    </div>
+    <div class="adTfRow" id="adTfRow" style="margin-top:10px"></div>
+    <div style="position:relative;height:190px">
+      <canvas id="assetChart"></canvas>
+      <div id="assetChartFallback" class="chartPlaceholder" style="display:none;background:#f4f7f5;color:#8fa090;border-color:#dde6de" data-i18n="noHistory">Sin histórico disponible.</div>
+    </div>
+    <div class="note" id="adChartNote" style="color:#9aada0;margin-top:8px"></div>
+  </div>
   <div class="card" id="adPositionCard" style="display:none">
     <div class="adPosHeader">
       <span class="sectionTitle" style="margin-bottom:0" id="adPositionTitle">Mi posición</span>
@@ -2667,18 +2680,6 @@ html,body{height:100%;overflow:hidden;font-family:-apple-system,BlinkMacSystemFo
       <span id="adTxCount" style="font-size:11px;font-weight:700;color:#8fa090"></span>
     </div>
     <div id="adTxList" style="margin-top:12px"></div>
-  </div>
-  <div class="card">
-    <div class="adChartTop">
-      <div class="sectionTitle" style="margin-bottom:0" data-i18n="priceEvolution">Evolución del precio</div>
-      <div class="adChartMeta" id="adChartMeta"></div>
-    </div>
-    <div class="adTfRow" id="adTfRow" style="margin-top:10px"></div>
-    <div style="position:relative;height:190px">
-      <canvas id="assetChart"></canvas>
-      <div id="assetChartFallback" class="chartPlaceholder" style="display:none;background:#f4f7f5;color:#8fa090;border-color:#dde6de" data-i18n="noHistory">Sin histórico disponible.</div>
-    </div>
-    <div class="note" id="adChartNote" style="color:#9aada0;margin-top:8px"></div>
   </div>
   <!-- ETF profile cards — shown only for ETFs with extraETF data -->
   <div id="etfProfileSection" style="display:none">
