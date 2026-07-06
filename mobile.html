@@ -10,7 +10,7 @@
   no-store headers are ignored (in-app webviews) because it is plain page JS.
   Source of truth = sw.js (always served no-cache, version-bumped each deploy). */
 (function(){try{
-  var FA_BUILD='307';
+  var FA_BUILD='308';
   var s=location.search;
   if(s.indexOf('vchk')>-1||s.indexOf('_v=')>-1){
     // Clean the ugly ?vchk= / ?_v= from the URL silently
@@ -1513,6 +1513,7 @@ table.an-corr-mtx{border-collapse:separate;border-spacing:4px}
     <div class="hChip" onclick="showScreen('prestamos')"><span>⏱</span> Préstamos</div>
     <div class="hChip" onclick="openSearch()"><span>＋</span> <span data-i18n="add">Añadir</span></div>
     <div class="hChip" onclick="showScreen('impuestos')"><span>◫</span> <span data-i18n="navTax">Fiscal</span></div>
+    <div class="hChip" onclick="openShareModal()"><span>🔗</span> Compartir</div>
   </div>
 
   <!-- Hidden mirrors to keep render() safe -->
@@ -6463,6 +6464,66 @@ function _rerenderActive(){
 function render(){
   if(_renderRafId)return; // already scheduled — skip duplicate
   _renderRafId=requestAnimationFrame(()=>{_renderRafId=null;_doRender();});
+}
+// ── Compartir cartera (enlace público read-only) ──────────────────────────
+function openShareModal(){
+  if(!_sb||!_sbUser){ alert(currentLang==='es'?'Inicia sesión para compartir tu cartera.':'Sign in to share your portfolio.'); return; }
+  let ov=document.getElementById('shareOverlay'); if(ov) ov.remove();
+  ov=document.createElement('div'); ov.id='shareOverlay';
+  ov.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:10000;display:flex;align-items:flex-end;justify-content:center';
+  ov.innerHTML='<div style="background:var(--surf);border-radius:20px 20px 0 0;max-width:520px;width:100%;padding:22px 18px 32px;position:relative">'
+    +'<button onclick="document.getElementById(\'shareOverlay\').remove()" style="position:absolute;top:14px;right:16px;background:rgba(20,32,24,.07);border:none;width:30px;height:30px;border-radius:50%;font-size:16px;cursor:pointer;color:var(--text)">×</button>'
+    +'<div style="font-size:1.1rem;font-weight:800;color:var(--text);margin-bottom:4px">🔗 Compartir cartera</div>'
+    +'<div style="font-size:.82rem;color:var(--muted);margin-bottom:16px;line-height:1.5">Genera un enlace público de solo lectura. Cualquiera con el enlace verá tu cartera actualizada.</div>'
+    +'<div id="shareBody" style="font-size:.85rem;color:var(--muted)">Cargando…</div></div>';
+  ov.addEventListener('click',e=>{ if(e.target===ov) ov.remove(); });
+  document.body.appendChild(ov);
+  _shareLoad();
+}
+async function _shareLoad(){
+  const body=document.getElementById('shareBody'); if(!body) return;
+  try{
+    const { data } = await _sb.from('portfolio_shares').select('token,hide_amounts').eq('user_id',_sbUser.id).limit(1).maybeSingle();
+    if(data && data.token) _shareRenderActive(data.token, !!data.hide_amounts);
+    else _shareRenderEmpty();
+  }catch(e){ body.innerHTML='<div style="color:#b91c1c">No se pudo cargar. ¿Ejecutaste la migración de Supabase?</div>'; }
+}
+function _shareRenderEmpty(){
+  const body=document.getElementById('shareBody'); if(!body) return;
+  body.innerHTML='<button onclick="_shareCreate()" style="width:100%;padding:13px;background:linear-gradient(135deg,#142018,#1e3a2a);color:#4ade80;border:none;border-radius:12px;font-size:.95rem;font-weight:800;cursor:pointer;font-family:inherit">Crear enlace público</button>';
+}
+function _shareRenderActive(token, hide){
+  const body=document.getElementById('shareBody'); if(!body) return;
+  const url=location.origin+'/p/'+token;
+  body.innerHTML='<div style="display:flex;gap:8px;margin-bottom:12px">'
+    +'<input id="shareUrl" readonly value="'+url+'" style="flex:1;min-width:0;padding:11px 12px;border:1.5px solid var(--border);border-radius:10px;font-size:.82rem;background:var(--surf2);color:var(--text);font-family:inherit">'
+    +'<button onclick="_shareCopy()" style="padding:0 16px;background:#15803d;color:#fff;border:none;border-radius:10px;font-size:.82rem;font-weight:700;cursor:pointer;white-space:nowrap">Copiar</button></div>'
+    +'<label style="display:flex;align-items:center;gap:9px;padding:10px 0;cursor:pointer;font-size:.85rem;color:var(--text)">'
+    +'<input type="checkbox" id="shareHide" '+(hide?'checked':'')+' onchange="_shareToggleHide(this.checked)" style="width:16px;height:16px;accent-color:#15803d;cursor:pointer">'
+    +'Ocultar importes (mostrar solo % y pesos)</label>'
+    +'<button onclick="_shareRevoke()" style="width:100%;margin-top:8px;padding:10px;background:none;border:1.5px solid rgba(185,28,28,.3);border-radius:10px;font-size:.82rem;color:#b91c1c;font-weight:700;cursor:pointer;font-family:inherit">Revocar enlace</button>';
+}
+async function _shareCreate(){
+  const body=document.getElementById('shareBody'); if(body) body.innerHTML='Creando…';
+  try{
+    const token=(crypto.randomUUID?crypto.randomUUID():(String(Date.now())+Math.random())).replace(/[-.]/g,'');
+    const name=(_sbUser.user_metadata&&_sbUser.user_metadata.full_name)||((_sbUser.email||'').split('@')[0])||'Inversor';
+    const { error } = await _sb.from('portfolio_shares').upsert({ token, user_id:_sbUser.id, display_name:name, hide_amounts:false }, { onConflict:'user_id' });
+    if(error) throw error;
+    _shareRenderActive(token, false);
+  }catch(e){ const b=document.getElementById('shareBody'); if(b) b.innerHTML='<div style="color:#b91c1c">Error al crear el enlace.</div>'; }
+}
+async function _shareToggleHide(hide){ try{ await _sb.from('portfolio_shares').update({ hide_amounts:!!hide }).eq('user_id',_sbUser.id); }catch(e){} }
+async function _shareRevoke(){
+  if(!confirm(currentLang==='es'?'¿Revocar el enlace? Dejará de funcionar.':'Revoke the link?')) return;
+  try{ await _sb.from('portfolio_shares').delete().eq('user_id',_sbUser.id); }catch(e){}
+  _shareRenderEmpty();
+}
+function _shareCopy(){
+  const i=document.getElementById('shareUrl'); if(!i) return;
+  i.select();
+  try{ navigator.clipboard.writeText(i.value); }catch(e){ try{document.execCommand('copy');}catch(_){}}
+  if(typeof showToast==='function') showToast(currentLang==='es'?'Enlace copiado ✓':'Link copied ✓');
 }
 // Total realized capital gains (FIFO) across all sells, all time — EUR-normalized.
 function _realizedTotal(){

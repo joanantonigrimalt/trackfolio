@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex">
+<title>Cartera compartida · Finasset</title>
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;background:#f5f5f7;color:#1c1c1e;min-height:100vh}
+  .wrap{max-width:520px;margin:0 auto;padding:0 0 40px;background:#fff;min-height:100vh}
+  .top{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;border-bottom:1px solid #e5e5ea;position:sticky;top:0;background:#fff;z-index:5}
+  .brand{display:flex;align-items:center;gap:8px;font-size:16px;font-weight:800;color:#1c1c1e;text-decoration:none}
+  .brand .dot{width:26px;height:26px;border-radius:8px;background:#166534;display:flex;align-items:center;justify-content:center}
+  .brand .dot svg{width:16px;height:16px}
+  .cta{background:#166534;color:#fff;font-size:12px;font-weight:700;padding:7px 13px;border-radius:20px;text-decoration:none;white-space:nowrap}
+  .hd{padding:20px 16px 4px}
+  .hd .who{font-size:13px;color:#8e8e93;font-weight:600}
+  .hd .lbl{font-size:11px;color:#8e8e93;font-weight:600;text-transform:uppercase;letter-spacing:.6px;margin-top:14px}
+  .hd .total{font-size:34px;font-weight:800;letter-spacing:-1px;line-height:1.05;margin-top:2px}
+  .hd .chg{font-size:14px;font-weight:700;margin-top:6px}
+  .up{color:#166534}.dn{color:#ff3b30}
+  .sec{padding:18px 16px 0}
+  .sec-t{font-size:13px;font-weight:800;color:#8e8e93;text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px}
+  .bar{display:flex;height:9px;border-radius:5px;overflow:hidden;margin:2px 0 12px;background:#f2f2f7}
+  .row{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid #f0f0f0}
+  .row:last-child{border-bottom:none}
+  .ic{width:36px;height:36px;border-radius:10px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;color:#fff;background:#166534}
+  .ic.liq{background:#2563eb}
+  .nm{font-size:15px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .sub{font-size:11px;color:#8e8e93;margin-top:1px}
+  .rt{text-align:right;flex-shrink:0}
+  .val{font-size:15px;font-weight:700}
+  .pct{font-size:12px;font-weight:700;margin-top:2px}
+  .badge{display:inline-block;font-size:9px;font-weight:800;padding:2px 6px;border-radius:5px;background:#e8faf1;color:#166534;margin-left:6px;vertical-align:middle}
+  .foot{margin:26px 16px 0;background:#f5f5f7;border-radius:16px;padding:20px;text-align:center}
+  .foot h3{font-size:17px;font-weight:800;margin-bottom:6px}
+  .foot p{font-size:13px;color:#8e8e93;margin-bottom:14px;line-height:1.5}
+  .foot a{display:inline-block;background:#166534;color:#fff;font-size:14px;font-weight:700;padding:12px 22px;border-radius:22px;text-decoration:none}
+  .msg{padding:60px 24px;text-align:center;color:#8e8e93;font-size:14px;line-height:1.6}
+  .disc{font-size:10px;color:#c7c7cc;text-align:center;padding:18px 16px 0}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top">
+    <a class="brand" href="https://finasset.app">
+      <span class="dot"><svg viewBox="0 0 18 18" fill="none"><polyline points="1,13 5,8 9,10 13,5 17,2" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+      Finasset
+    </a>
+    <a class="cta" href="https://finasset.app">Crea la tuya gratis</a>
+  </div>
+  <div id="content"><div class="msg">Cargando cartera…</div></div>
+</div>
+
+<script>
+(function(){
+  var token = (location.pathname.split('/p/')[1] || new URLSearchParams(location.search).get('t') || '').trim();
+  var C = document.getElementById('content');
+  var esc = function(s){ return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); };
+  var fe = function(n){ return new Intl.NumberFormat('es-ES',{minimumFractionDigits:2,maximumFractionDigits:2}).format(n||0)+' €'; };
+  var pct = function(n){ return (n>=0?'+':'')+Number(n||0).toFixed(2)+'%'; };
+  var TYPE = { fund:'Fondo', etf:'ETF', etc:'Materia prima', stock:'Acción', bond:'Bono' };
+  var CATCOL = ['#166534','#2563eb','#f59e0b','#8b5cf6','#ef4444','#0ea5e9','#14b8a6','#ec4899'];
+
+  if(!token){ C.innerHTML='<div class="msg">Enlace no válido.</div>'; return; }
+
+  fetch('/api/portfolio/shared?token='+encodeURIComponent(token))
+    .then(function(r){ return r.json().then(function(d){ return { ok:r.ok, d:d }; }); })
+    .then(function(res){
+      if(!res.ok){ C.innerHTML='<div class="msg">'+esc(res.d && res.d.error || 'No se pudo cargar la cartera.')+'</div>'; return; }
+      render(res.d);
+    })
+    .catch(function(){ C.innerHTML='<div class="msg">No se pudo cargar la cartera. Inténtalo de nuevo.</div>'; });
+
+  function render(d){
+    var hide = d.hideAmounts;
+    var chgCls = (d.gainPct>=0?'up':'dn');
+    var updated = '';
+    try{ updated = new Date(d.updatedAt).toLocaleString('es-ES',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'}); }catch(e){}
+
+    var items = (d.positions||[]).concat((d.liquidity||[]).map(function(l){ l._liq=true; return l; }));
+    // distribution bar (by weight)
+    var bar = items.map(function(it,i){ return '<div style="width:'+(it.weight||0)+'%;background:'+(it._liq?'#2563eb':CATCOL[i%CATCOL.length])+'"></div>'; }).join('');
+
+    var rows = (d.positions||[]).map(function(p){
+      var ini = (p.name||'?').replace(/[^A-Za-z0-9]/g,'').slice(0,2).toUpperCase()||'—';
+      var tb = p.type&&TYPE[p.type]?'<span class="badge">'+TYPE[p.type]+'</span>':'';
+      var right = hide
+        ? '<div class="val">'+Number(p.weight||0).toFixed(1)+'%</div><div class="pct '+(p.gainPct>=0?'up':'dn')+'">'+pct(p.gainPct)+'</div>'
+        : '<div class="val">'+fe(p.value)+'</div><div class="pct '+(p.gainPct>=0?'up':'dn')+'">'+pct(p.gainPct)+'</div>';
+      return '<div class="row"><div class="ic">'+esc(ini)+'</div><div style="flex:1;min-width:0"><div class="nm">'+esc(p.name)+tb+'</div><div class="sub">'+Number(p.weight||0).toFixed(1)+'% de la cartera</div></div><div class="rt">'+right+'</div></div>';
+    }).join('');
+
+    var liqRows = (d.liquidity||[]).map(function(l){
+      var right = hide ? '<div class="val">'+Number(l.weight||0).toFixed(1)+'%</div>' : '<div class="val">'+fe(l.value)+'</div>';
+      var sub = (l.rate>0? l.rate.toFixed(2)+'% TAE · ':'')+Number(l.weight||0).toFixed(1)+'% de la cartera';
+      return '<div class="row"><div class="ic liq">€</div><div style="flex:1;min-width:0"><div class="nm">'+esc(l.name)+'</div><div class="sub">'+sub+'</div></div><div class="rt">'+right+'</div></div>';
+    }).join('');
+
+    C.innerHTML =
+      '<div class="hd">'+
+        '<div class="who">Cartera de '+esc(d.displayName)+'</div>'+
+        '<div class="lbl">Valor total</div>'+
+        '<div class="total">'+(hide?'· · ·':fe(d.total))+'</div>'+
+        '<div class="chg '+chgCls+'">'+pct(d.gainPct)+' rentabilidad'+(hide?'':' · '+d.count+' posiciones')+'</div>'+
+      '</div>'+
+      (items.length? '<div class="sec"><div class="bar">'+bar+'</div></div>':'')+
+      (rows? '<div class="sec"><div class="sec-t">Posiciones</div>'+rows+'</div>':'<div class="msg">Esta cartera no tiene posiciones.</div>')+
+      (liqRows? '<div class="sec"><div class="sec-t">Liquidez</div>'+liqRows+'</div>':'')+
+      '<div class="foot"><h3>Sigue tu cartera con IA</h3><p>Acciones, ETFs, fondos y dividendos en tiempo real, con análisis de riesgo y asesor IA. Gratis.</p><a href="https://finasset.app">Empezar gratis →</a></div>'+
+      '<div class="disc">'+(updated?'Actualizado '+esc(updated)+' · ':'')+'No constituye asesoramiento financiero.</div>';
+  }
+})();
+</script>
+</body>
+</html>
