@@ -6,7 +6,7 @@
   (served no-cache, version-bumped each deploy). Works even where SW/no-store
   are ignored, because it is plain page JS. */
 (function(){try{
-  var FA_BUILD=window.FA_BUILD='337';
+  var FA_BUILD=window.FA_BUILD='338';
   var s=location.search;
   if(s.indexOf('vchk')>-1||s.indexOf('_v=')>-1){history.replaceState(null,'',location.pathname+(location.hash||''));return;}
   fetch('/sw.js?_='+Date.now(),{cache:'no-store'}).then(function(r){return r.text();}).then(function(t){
@@ -8769,7 +8769,11 @@ function renderAccountSection(){
         Object.keys(localStorage).forEach(k=>{ if(/sb-.*-auth-token/i.test(k)||(k.indexOf('supabase')>=0&&k.indexOf('auth')>=0)) localStorage.removeItem(k); });
       }catch(_){}
       _sbUser=null; try{ window._sbUser=null; }catch(_){}
-      location.reload();
+      assets=[]; _rawSeedAssets=[]; try{ dataReady=false; }catch(_){}
+      try{ closeSettings(); }catch(_){}
+      try{ renderAccountSection(); }catch(_){}
+      // Muestra la pantalla de login (cover screen), no la home en modo local
+      if(typeof showAuthScreen==='function') showAuthScreen(); else location.reload();
     };
     document.getElementById('btnEditProfile').onclick=()=>openProfileModal();
     if(typeof syncDeskUser==='function') syncDeskUser();
