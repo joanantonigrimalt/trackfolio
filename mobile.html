@@ -10,7 +10,7 @@
   no-store headers are ignored (in-app webviews) because it is plain page JS.
   Source of truth = sw.js (always served no-cache, version-bumped each deploy). */
 (function(){try{
-  var FA_BUILD='319';
+  var FA_BUILD='320';
   var s=location.search;
   if(s.indexOf('vchk')>-1||s.indexOf('_v=')>-1){
     // Clean the ugly ?vchk= / ?_v= from the URL silently
@@ -4036,8 +4036,7 @@ function iconInitials(a){return(a.name||a.isin).replace(/^i([A-Z])/,'I$1').slice
 function assetCategory(a){if(['IE00B4ND3602','IE00B579F325'].includes(a.isin))return'Oro';if(['IE00B43VDT70'].includes(a.isin))return'Plata';if(a.mapping?.type==='etf')return'ETFs';if(a.mapping?.type==='etc'){return(a.isin==='IE00B43VDT70')?'Plata':'Oro';}if(a.mapping?.type==='stock')return currentLang==='es'?'Acciones':'Stocks';return'Fondos';}
 
 function showScreen(name,keepTab=false){
-  // Plan gate: Fiscal & MyInvestor are Premium-only
-  if((name==='impuestos'||name==='myinvestor')&&typeof _isPremium==='function'&&!_isPremium()){ _showUpgradeModal(name==='impuestos'?'impuestos':'myinvestor'); return; }
+  // Fiscal y MyInvestor son gratuitas (antes eran Premium)
   if(name==='comunidad')_comLoad();
   if(name==='privacy'||name==='terms'){
     document.querySelectorAll('.screen').forEach(el=>el.classList.remove('active'));

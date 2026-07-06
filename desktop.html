@@ -6,7 +6,7 @@
   (served no-cache, version-bumped each deploy). Works even where SW/no-store
   are ignored, because it is plain page JS. */
 (function(){try{
-  var FA_BUILD=window.FA_BUILD='319';
+  var FA_BUILD=window.FA_BUILD='320';
   var s=location.search;
   if(s.indexOf('vchk')>-1||s.indexOf('_v=')>-1){history.replaceState(null,'',location.pathname+(location.hash||''));return;}
   fetch('/sw.js?_='+Date.now(),{cache:'no-store'}).then(function(r){return r.text();}).then(function(t){
@@ -4807,8 +4807,7 @@ function assetCategory(a){if(['IE00B4ND3602','IE00B579F325'].includes(a.isin))re
 
 function showScreen(name,keepTab=false){
   if(name==='foro')name='comunidad';
-  // Plan gate: Fiscal & MyInvestor are Premium-only
-  if((name==='impuestos'||name==='myinvestor')&&typeof _isPremium==='function'&&!_isPremium()){ _showUpgradeModal(name==='impuestos'?'impuestos':'myinvestor'); return; }
+  // Fiscal y MyInvestor son gratuitas (antes eran Premium)
   if(name==='comunidad')_comLoad();
   if(name==='referidos')_loadReferralScreen();
   if(name==='privacy'||name==='terms'){
