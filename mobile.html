@@ -10,7 +10,7 @@
   no-store headers are ignored (in-app webviews) because it is plain page JS.
   Source of truth = sw.js (always served no-cache, version-bumped each deploy). */
 (function(){try{
-  var FA_BUILD='329';
+  var FA_BUILD='330';
   var s=location.search;
   if(s.indexOf('vchk')>-1||s.indexOf('_v=')>-1){
     // Clean the ugly ?vchk= / ?_v= from the URL silently
@@ -7641,6 +7641,7 @@ function renderAccountSection(){
         </div>
       </div>
       <button id="btnEditProfile" style="width:100%;padding:11px;background:rgba(20,32,24,.04);border:1.5px solid rgba(20,32,24,.1);border-radius:10px;font-size:13px;color:#142018;font-weight:700;cursor:pointer;font-family:inherit;margin-bottom:10px">${currentLang==='es'?'Editar perfil':'Edit profile'}</button>
+      <button id="btnShareCartera" style="width:100%;padding:11px;background:rgba(20,32,24,.04);border:1.5px solid rgba(20,32,24,.1);border-radius:10px;font-size:13px;color:#142018;font-weight:700;cursor:pointer;font-family:inherit;margin-bottom:10px">🔗 ${currentLang==='es'?'Compartir cartera':'Share portfolio'}</button>
       <div id="upgradeCardSection" style="background:linear-gradient(135deg,#142018 0%,#1e3a2a 100%);border-radius:14px;padding:16px;margin-bottom:10px;${_userPlan!=='free'?'display:none':''}">
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
           <div>
@@ -7658,6 +7659,7 @@ function renderAccountSection(){
       <button id="btnLogout" style="width:100%;padding:9px;background:none;border:1.5px solid rgba(20,32,24,.12);border-radius:9px;font-size:13px;color:#5a8f6a;font-weight:600;cursor:pointer;font-family:inherit">${currentLang==='es'?'Cerrar sesión':'Sign out'}</button>`;
     document.getElementById('btnUpgradePlan').onclick=()=>{ closeSettings(); _showUpgradeModal('assets'); };
     { const _ep=document.getElementById('btnEditProfile'); if(_ep) _ep.onclick=()=>openProfileModal(); }
+    { const _sc=document.getElementById('btnShareCartera'); if(_sc) _sc.onclick=()=>{ closeSettings(); openShareModal(); }; }
     // Apply current plan badge immediately after rebuilding HTML
     if(typeof _updatePlanUI==='function') _updatePlanUI();
     document.getElementById('btnLogout').onclick=()=>{
