@@ -15,5 +15,7 @@ export default function handler() {
     runtime: 'edge',
     VERCEL_ENV: process.env.VERCEL_ENV || null,
     commit: (process.env.VERCEL_GIT_COMMIT_SHA || '').slice(0, 7),
+    deployUrl: process.env.VERCEL_URL || null,
+    allKeys: Object.keys(process.env).filter(k => /OPENAI|CRON|ANTHROPIC/i.test(k)),
   }, null, 2), { headers: { 'content-type': 'application/json', 'cache-control': 'no-store' } });
 }
