@@ -10,7 +10,7 @@
   no-store headers are ignored (in-app webviews) because it is plain page JS.
   Source of truth = sw.js (always served no-cache, version-bumped each deploy). */
 (function(){try{
-  var FA_BUILD='320';
+  var FA_BUILD='321';
   var s=location.search;
   if(s.indexOf('vchk')>-1||s.indexOf('_v=')>-1){
     // Clean the ugly ?vchk= / ?_v= from the URL silently
@@ -7389,22 +7389,18 @@ function _showUpgradeModal(reason) {
   const titles = {
     assets:       { es: 'Límite de activos alcanzado', en: 'Asset limit reached' },
     analysis:     { es: 'Análisis completo', en: 'Full analysis' },
-    impuestos:    { es: 'Informe fiscal', en: 'Tax report' },
     topinvestors: { es: 'Top Inversores', en: 'Top Investors' },
     dividends:    { es: 'Detalle de dividendos', en: 'Dividend detail' },
     ia:           { es: 'Más conversaciones con Vera', en: 'More Vera AI conversations' },
     alerts:       { es: 'Alertas de precio Premium', en: 'Premium price alerts' },
-    myinvestor:   { es: 'Fondos MyInvestor', en: 'MyInvestor funds' },
   };
   const descs = {
     assets:       { es: 'El plan Free está limitado a <b>10 activos</b>. Con <b>Premium</b> tienes posiciones ilimitadas.', en: 'Free plan is limited to <b>10 assets</b>. <b>Premium</b> gives you unlimited positions.' },
     analysis:     { es: 'El análisis de portfolio completo está disponible con el plan <b>Premium</b>.', en: 'Full portfolio analysis is available with the <b>Premium</b> plan.' },
-    impuestos:    { es: 'El informe de impuestos (IRPF) está disponible con el plan <b>Premium</b>.', en: 'The tax report is available with the <b>Premium</b> plan.' },
     topinvestors: { es: 'Accede a las carteras de los mejores inversores con el plan <b>Premium</b>.', en: 'Access top investor portfolios with the <b>Premium</b> plan.' },
     dividends:    { es: 'El detalle completo de dividendos está disponible con el plan <b>Premium</b>.', en: 'Full dividend detail is available with the <b>Premium</b> plan.' },
     ia:           { es: 'Con el plan <b>Premium</b> tienes conversaciones ilimitadas con Vera IA.', en: 'With the <b>Premium</b> plan you get unlimited Vera AI conversations.' },
     alerts:       { es: 'Las alertas de precio son una función <b>Premium</b>. Actualiza tu plan para activarlas.', en: 'Price alerts are a <b>Premium</b> feature. Upgrade your plan to activate them.' },
-    myinvestor:   { es: 'El buscador de fondos MyInvestor y sus rentabilidades están disponibles con el plan <b>Premium</b>.', en: 'The MyInvestor fund explorer and returns are available with the <b>Premium</b> plan.' },
   };
   const isEs = typeof currentLang !== 'undefined' ? currentLang === 'es' : true;
   const lang = isEs ? 'es' : 'en';

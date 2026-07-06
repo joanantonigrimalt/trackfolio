@@ -6,7 +6,7 @@
   (served no-cache, version-bumped each deploy). Works even where SW/no-store
   are ignored, because it is plain page JS. */
 (function(){try{
-  var FA_BUILD=window.FA_BUILD='320';
+  var FA_BUILD=window.FA_BUILD='321';
   var s=location.search;
   if(s.indexOf('vchk')>-1||s.indexOf('_v=')>-1){history.replaceState(null,'',location.pathname+(location.hash||''));return;}
   fetch('/sw.js?_='+Date.now(),{cache:'no-store'}).then(function(r){return r.text();}).then(function(t){
@@ -8293,17 +8293,14 @@ function _showUpgradeModal(reason) {
   const titles = {
     assets:       { es: 'Límite de activos alcanzado', en: 'Asset limit reached' },
     analysis:     { es: 'Análisis completo', en: 'Full analysis' },
-    impuestos:    { es: 'Informe fiscal', en: 'Tax report' },
     topinvestors: { es: 'Top Inversores', en: 'Top Investors' },
     dividends:    { es: 'Detalle de dividendos', en: 'Dividend detail' },
     ia:           { es: 'Más conversaciones con Vera', en: 'More Vera AI conversations' },
     alerts:       { es: 'Alertas de precio', en: 'Price alerts' },
-    myinvestor:   { es: 'Fondos MyInvestor', en: 'MyInvestor funds' },
   };
   const descs = {
     assets:       { es: 'El plan Free está limitado a <b>10 activos</b>. Con Premium tienes posiciones ilimitadas.', en: 'Free plan is limited to <b>10 assets</b>. Premium has unlimited positions.' },
     analysis:     { es: 'El análisis de portfolio completo está disponible en el plan <b>Premium</b>.', en: 'Full portfolio analysis is available in the <b>Premium</b> plan.' },
-    impuestos:    { es: 'El informe de impuestos (IRPF) está disponible en el plan <b>Premium</b>.', en: 'The tax report is available in the <b>Premium</b> plan.' },
     topinvestors: { es: 'Accede a las carteras de los mejores inversores con el plan <b>Premium</b>.', en: 'Access top investor portfolios with the <b>Premium</b> plan.' },
     dividends:    { es: 'El detalle completo de dividendos está disponible con el plan <b>Premium</b>.', en: 'Full dividend detail is available with the <b>Premium</b> plan.' },
     ia:           { es: 'La IA Vera está disponible en el plan <b>Premium</b>. Pregunta todo lo que quieras sobre tu cartera.', en: 'Vera AI is available in the <b>Premium</b> plan. Ask anything about your portfolio.' },
