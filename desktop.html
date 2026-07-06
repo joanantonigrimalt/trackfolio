@@ -6,7 +6,7 @@
   (served no-cache, version-bumped each deploy). Works even where SW/no-store
   are ignored, because it is plain page JS. */
 (function(){try{
-  var FA_BUILD=window.FA_BUILD='321';
+  var FA_BUILD=window.FA_BUILD='322';
   var s=location.search;
   if(s.indexOf('vchk')>-1||s.indexOf('_v=')>-1){history.replaceState(null,'',location.pathname+(location.hash||''));return;}
   fetch('/sw.js?_='+Date.now(),{cache:'no-store'}).then(function(r){return r.text();}).then(function(t){
@@ -2660,6 +2660,14 @@ html,body{height:100%;overflow:hidden;font-family:-apple-system,BlinkMacSystemFo
     <div class="adMetricGrid" id="adMetrics" style="margin-top:12px;margin-bottom:0"></div>
     <div id="adDivRow" style="display:none"></div>
   </div>
+  <!-- Historial de transacciones (compras/ventas) -->
+  <div class="card" id="adTxCard" style="display:none">
+    <div class="adPosHeader">
+      <span class="sectionTitle" style="margin-bottom:0" id="adTxTitle">Transacciones</span>
+      <span id="adTxCount" style="font-size:11px;font-weight:700;color:#8fa090"></span>
+    </div>
+    <div id="adTxList" style="margin-top:12px"></div>
+  </div>
   <div class="card">
     <div class="adChartTop">
       <div class="sectionTitle" style="margin-bottom:0" data-i18n="priceEvolution">Evolución del precio</div>
@@ -5036,6 +5044,9 @@ function showAssetDetail(asset,from){
   // Dividend income row (from cache if already loaded)
   _refreshAssetDivRow(asset.isin);
 
+  // Transaction history card
+  renderAssetTxHistory(asset);
+
   // Button: Gestionar vs Añadir
   const btn=document.getElementById('btnOpenModal');
   if(btn){if(_isDemo){btn.style.display='none';}else{btn.style.display='';btn.textContent=hasPos?(isEs?'✎ Gestionar posición':'✎ Manage position'):(isEs?'+ Añadir posición':'+ Add position');}}
@@ -5046,6 +5057,42 @@ function showAssetDetail(asset,from){
   renderAssetChart();
   document.getElementById('etfProfileSection').style.display='none';
   loadETFProfile(asset.isin);
+}
+
+// Transaction history shown directly on the asset detail screen (read-only view)
+function renderAssetTxHistory(asset){
+  const card=document.getElementById('adTxCard');
+  const list=document.getElementById('adTxList');
+  const countEl=document.getElementById('adTxCount');
+  const titleEl=document.getElementById('adTxTitle');
+  if(!card||!list)return;
+  const isEs=currentLang==='es';
+  if(titleEl)titleEl.textContent=isEs?'Transacciones':'Transactions';
+  const ov=getOverrides()[asset.isin]||getOverrides()[asset.symbol]||{};
+  const txs=Array.isArray(ov.transactions)?ov.transactions:[];
+  if(!txs.length){card.style.display='none';return;}
+  card.style.display='';
+  const ccy=costCcy(asset)||'EUR';
+  const sym=ccy==='USD'?'$':ccy==='GBP'?'£':ccy==='CHF'?'Fr':'€';
+  // Orden cronológico ascendente por fecha
+  const sorted=txs.map((tx,i)=>({tx,i})).sort((a,b)=>String(a.tx.date||'').localeCompare(String(b.tx.date||'')));
+  if(countEl)countEl.textContent=txs.length+' '+(isEs?(txs.length===1?'operación':'operaciones'):(txs.length===1?'transaction':'transactions'));
+  list.innerHTML=sorted.map(({tx})=>{
+    const isBuy=tx.type!=='sell';
+    const label=isBuy?(isEs?'Compra':'Buy'):(isEs?'Venta':'Sell');
+    const color=isBuy?'#15803d':'#b91c1c';
+    const bg=isBuy?'rgba(21,128,61,.07)':'rgba(185,28,28,.07)';
+    const _d=tx.date?(()=>{try{return new Date(tx.date+'T00:00:00').toLocaleDateString(isEs?'es-ES':'en-GB',{day:'2-digit',month:'short',year:'numeric'});}catch(_){return tx.date;}})():'—';
+    const _total=(tx.qty||0)*(tx.price||0);
+    return`<div style="display:flex;align-items:center;gap:12px;padding:11px 12px;background:${bg};border-radius:12px;margin-bottom:7px">
+      <div style="font-size:11px;font-weight:800;color:${color};min-width:52px">${isBuy?'▲':'▼'} ${label}</div>
+      <div style="flex:1;min-width:0">
+        <div style="font-size:13px;font-weight:700;color:#142018">${fn(tx.qty||0)} ${isEs?'acc.':'units'} @ ${sym}${(tx.price||0).toFixed(2)}</div>
+        <div style="font-size:11px;color:#8fa090;margin-top:1px">${_d}</div>
+      </div>
+      <div style="font-size:13px;font-weight:800;color:${color};flex-shrink:0">${isBuy?'−':'+'}${sym}${_total.toFixed(2)}</div>
+    </div>`;
+  }).join('');
 }
 
 // Dividend income row inside the position card
