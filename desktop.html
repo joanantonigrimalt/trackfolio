@@ -6,7 +6,7 @@
   (served no-cache, version-bumped each deploy). Works even where SW/no-store
   are ignored, because it is plain page JS. */
 (function(){try{
-  var FA_BUILD=window.FA_BUILD='326';
+  var FA_BUILD=window.FA_BUILD='327';
   var s=location.search;
   if(s.indexOf('vchk')>-1||s.indexOf('_v=')>-1){history.replaceState(null,'',location.pathname+(location.hash||''));return;}
   fetch('/sw.js?_='+Date.now(),{cache:'no-store'}).then(function(r){return r.text();}).then(function(t){
@@ -4983,9 +4983,10 @@ function showAssetDetail(asset,from){
           selectedAsset.history=normalizeHistory(e.data.history);
           selectedAsset.hasRealHistory=true;
           selectedAsset.provider=e.data.provider||selectedAsset.provider;
-          // Update price too
-          const lp=e.data?.quote?.price??e.data?.quote?.close;
-          if(lp&&Number.isFinite(lp)&&lp>0){selectedAsset.currentPrice=lp;}
+          // Update price too — prefer EUR position price cuando el quote no trae divisa (precio crudo no fiable)
+          const _qc=e.data?.quote?.currency;
+          const lp=(!_qc&&e.position?.currentPrice>0)?e.position.currentPrice:(e.data?.quote?.price??e.data?.quote?.close);
+          if(lp&&Number.isFinite(lp)&&lp>0){selectedAsset.currentPrice=lp;if(!_qc&&e.position?.currentPrice>0)selectedAsset.customCurrency='EUR';}
           if(document.getElementById('screen-asset')?.classList.contains('active')){
             try{renderAssetChart();}catch(_){}
           }
@@ -8020,14 +8021,20 @@ function loadCustomIntoAssets(cvMap){
   const customs=Object.entries(ca).map(([sym,info])=>{
     const pos=ov[sym]||{quantity:0,avgCost:0};
     const isin=info.isin||sym;
-    const coverageCurrency=cvMap&&cvMap[isin]?.data?.quote?.currency;
-    const coveragePrice=cvMap&&cvMap[isin]?.data?.quote?.price;
-    const coverageHistory=cvMap&&cvMap[isin]?.data?.history; // get full history from coverage API
-    const coverageApiStatus=cvMap&&cvMap[isin]?.data?.coverage?.status; // trust API's OK/PARTIAL/MISSING
+    const _cov=cvMap&&cvMap[isin];
+    const coverageCurrency=_cov?.data?.quote?.currency;
+    const coveragePosPrice=_cov?.position?.currentPrice; // EUR-converted, autoritativo
+    const coverageQuotePrice=_cov?.data?.quote?.price;   // crudo en divisa nativa
+    // Si el quote no trae divisa, es un precio no fiable/mal escalado → usa el precio EUR de position
+    const _brokenQuote = coveragePosPrice>0 && !coverageCurrency;
+    const coveragePrice = _brokenQuote ? coveragePosPrice : coverageQuotePrice;
+    const _priceCcy = _brokenQuote ? 'EUR' : coverageCurrency;
+    const coverageHistory=_cov?.data?.history; // get full history from coverage API
+    const coverageApiStatus=_cov?.data?.coverage?.status; // trust API's OK/PARTIAL/MISSING
     // Enrich custom asset with coverage data: price, currency, history, AND coverage status from API
     const enrichedInfo={
       ...info,
-      ...(coverageCurrency&&{currency:coverageCurrency}),
+      ...(_priceCcy&&{currency:_priceCcy}),
       ...(coveragePrice>0&&{currentPrice:coveragePrice}),
       ...(coverageHistory?.length>1&&{history:normalizeHistory(coverageHistory)}),
       ...(coverageApiStatus&&{_apiCoverageStatus:coverageApiStatus}),

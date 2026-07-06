@@ -10,7 +10,7 @@
   no-store headers are ignored (in-app webviews) because it is plain page JS.
   Source of truth = sw.js (always served no-cache, version-bumped each deploy). */
 (function(){try{
-  var FA_BUILD='326';
+  var FA_BUILD='327';
   var s=location.search;
   if(s.indexOf('vchk')>-1||s.indexOf('_v=')>-1){
     // Clean the ugly ?vchk= / ?_v= from the URL silently
@@ -7120,14 +7120,20 @@ function loadCustomIntoAssets(cvMap){
     const pos=ov[sym]||{quantity:0,avgCost:0};
     // If coverage data is available for this asset's ISIN, use its currency (overrides stored USD etc.)
     const isin=info.isin||sym;
-    const coverageCurrency=cvMap&&cvMap[isin]?.data?.quote?.currency;
-    const coveragePrice=cvMap&&cvMap[isin]?.data?.quote?.price;
-    const coverageHistory=cvMap&&cvMap[isin]?.data?.history; // ← get full history from coverage API
-    const coverageApiStatus=cvMap&&cvMap[isin]?.data?.coverage?.status; // ← trust API's OK/PARTIAL/MISSING
+    const _cov=cvMap&&cvMap[isin];
+    const coverageCurrency=_cov?.data?.quote?.currency;
+    const coveragePosPrice=_cov?.position?.currentPrice; // EUR-converted, autoritativo
+    const coverageQuotePrice=_cov?.data?.quote?.price;   // crudo en divisa nativa
+    // Si el quote no trae divisa, es un precio no fiable/mal escalado → usa el precio EUR de position
+    const _brokenQuote = coveragePosPrice>0 && !coverageCurrency;
+    const coveragePrice = _brokenQuote ? coveragePosPrice : coverageQuotePrice;
+    const _priceCcy = _brokenQuote ? 'EUR' : coverageCurrency;
+    const coverageHistory=_cov?.data?.history; // ← get full history from coverage API
+    const coverageApiStatus=_cov?.data?.coverage?.status; // ← trust API's OK/PARTIAL/MISSING
     // Enrich custom asset with coverage data: price, currency, history, AND coverage status from API
     const enrichedInfo={
       ...info,
-      ...(coverageCurrency&&{currency:coverageCurrency}),
+      ...(_priceCcy&&{currency:_priceCcy}),
       ...(coveragePrice>0&&{currentPrice:coveragePrice}),
       ...(coverageHistory?.length>1&&{history:normalizeHistory(coverageHistory)}),
       ...(coverageApiStatus&&{_apiCoverageStatus:coverageApiStatus}),
