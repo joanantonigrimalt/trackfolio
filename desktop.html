@@ -6,7 +6,7 @@
   (served no-cache, version-bumped each deploy). Works even where SW/no-store
   are ignored, because it is plain page JS. */
 (function(){try{
-  var FA_BUILD=window.FA_BUILD='314';
+  var FA_BUILD=window.FA_BUILD='315';
   var s=location.search;
   if(s.indexOf('vchk')>-1||s.indexOf('_v=')>-1){history.replaceState(null,'',location.pathname+(location.hash||''));return;}
   fetch('/sw.js?_='+Date.now(),{cache:'no-store'}).then(function(r){return r.text();}).then(function(t){
@@ -4661,8 +4661,8 @@ let currentModalIsin = null, txType = 'buy';
 let dataReady = false;
 
 const RANGE_DAYS = {'1W':7,'1M':30,'3M':91,'6M':183,'YTD':null,'1Y':365,'5Y':365*5};
-const TF_RANGES    = [['1W','1S'],['1M','1M'],['3M','3M'],['6M','6M'],['YTD','YTD'],['1Y','1A'],['5Y','5A']];
-const TF_RANGES_EN = [['1W','1W'],['1M','1M'],['3M','3M'],['6M','6M'],['YTD','YTD'],['1Y','1Y'],['5Y','5Y']];
+const TF_RANGES    = [['1D','1D'],['1W','1S'],['1M','1M'],['3M','3M'],['6M','6M'],['YTD','YTD'],['1Y','1A'],['5Y','5A']];
+const TF_RANGES_EN = [['1D','1D'],['1W','1W'],['1M','1M'],['3M','3M'],['6M','6M'],['YTD','YTD'],['1Y','1Y'],['5Y','5Y']];
 const MONTH_ES = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
 const MONTH_EN = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 const months = () => currentLang === 'es' ? MONTH_ES : MONTH_EN;
