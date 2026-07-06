@@ -6,7 +6,7 @@
   (served no-cache, version-bumped each deploy). Works even where SW/no-store
   are ignored, because it is plain page JS. */
 (function(){try{
-  var FA_BUILD=window.FA_BUILD='318';
+  var FA_BUILD=window.FA_BUILD='319';
   var s=location.search;
   if(s.indexOf('vchk')>-1||s.indexOf('_v=')>-1){history.replaceState(null,'',location.pathname+(location.hash||''));return;}
   fetch('/sw.js?_='+Date.now(),{cache:'no-store'}).then(function(r){return r.text();}).then(function(t){
@@ -10952,35 +10952,19 @@ async function _loadReferralScreen() {
   el.innerHTML = '<div class="ref-empty" style="padding:48px 0">Cargando datos…</div>';
 
   try {
-    // 1. Get or create referral code
-    let { data: codeRow, error: codeErr } = await _sb
-      .from('referral_codes')
-      .select('code')
-      .eq('user_id', _sbUser.id)
-      .maybeSingle();
-
-    if (!codeRow) {
-      const newCode = _genRefCode();
-      const { data: inserted, error: insErr } = await _sb
-        .from('referral_codes')
-        .insert({ user_id: _sbUser.id, code: newCode })
-        .select('code')
-        .single();
-      if (insErr) throw insErr;
-      codeRow = inserted;
+    // REST directo vía _comF (el query-builder _sb.from() se cuelga al refrescar token
+    // → la pantalla se quedaba en "Cargando datos…" para siempre)
+    // 1. Obtener o crear código de referido
+    const _codeRows = await _comF('GET','referral_codes','user_id=eq.'+encodeURIComponent(_sbUser.id)+'&select=code&limit=1');
+    let code = (Array.isArray(_codeRows)&&_codeRows[0]&&_codeRows[0].code) || null;
+    if (!code) {
+      code = _genRefCode();
+      await _comF('POST','referral_codes','',{ user_id: _sbUser.id, code });
     }
-
-    const code = codeRow.code;
     const refLink = `https://finasset.app/?ref=${code}`;
 
-    // 2. Load referral rows
-    const { data: refs, error: refsErr } = await _sb
-      .from('referrals')
-      .select('referred_id, subscribed, subscribed_at, created_at')
-      .eq('referrer_id', _sbUser.id)
-      .order('created_at', { ascending: false });
-
-    if (refsErr) throw refsErr;
+    // 2. Cargar referidos
+    const refs = await _comF('GET','referrals','referrer_id=eq.'+encodeURIComponent(_sbUser.id)+'&select=referred_id,subscribed,subscribed_at,created_at&order=created_at.desc') || [];
 
     const registered = refs ? refs.length : 0;
     const converted  = refs ? refs.filter(r => r.subscribed).length : 0;
@@ -11113,31 +11097,24 @@ async function _registerPendingReferral(userId) {
   if (!pendingCode || !_sb) return;
 
   try {
-    // Find the referrer by code
-    const { data: codeRow } = await _sb
-      .from('referral_codes')
-      .select('user_id')
-      .eq('code', pendingCode)
-      .maybeSingle();
+    // REST directo vía _comF (el query-builder _sb.from() se cuelga al refrescar token)
+    // Buscar al referente por su código
+    const _codeRows = await _comF('GET','referral_codes','code=eq.'+encodeURIComponent(pendingCode)+'&select=user_id&limit=1');
+    const codeRow = (Array.isArray(_codeRows)&&_codeRows[0]) || null;
 
     if (!codeRow || codeRow.user_id === userId) {
-      // Code not found or self-referral — clear and abort
+      // Código no encontrado o auto-referido — limpiar y abortar
       localStorage.removeItem('fa_pending_ref');
       return;
     }
 
-    // Check if this user was already referred
-    const { data: existing } = await _sb
-      .from('referrals')
-      .select('id')
-      .eq('referred_id', userId)
-      .maybeSingle();
+    // ¿Ya estaba referido este usuario?
+    const _existRows = await _comF('GET','referrals','referred_id=eq.'+encodeURIComponent(userId)+'&select=referred_id&limit=1');
+    if (Array.isArray(_existRows)&&_existRows[0]) { localStorage.removeItem('fa_pending_ref'); return; }
 
-    if (existing) { localStorage.removeItem('fa_pending_ref'); return; }
-
-    // Insert referral record
+    // Insertar registro de referido
     const email = _sbUser?.email || null;
-    await _sb.from('referrals').insert({
+    await _comF('POST','referrals','',{
       referrer_id: codeRow.user_id,
       referred_id: userId,
       referred_email: email,
