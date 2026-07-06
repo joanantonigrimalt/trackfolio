@@ -6,7 +6,7 @@
   (served no-cache, version-bumped each deploy). Works even where SW/no-store
   are ignored, because it is plain page JS. */
 (function(){try{
-  var FA_BUILD=window.FA_BUILD='315';
+  var FA_BUILD=window.FA_BUILD='316';
   var s=location.search;
   if(s.indexOf('vchk')>-1||s.indexOf('_v=')>-1){history.replaceState(null,'',location.pathname+(location.hash||''));return;}
   fetch('/sw.js?_='+Date.now(),{cache:'no-store'}).then(function(r){return r.text();}).then(function(t){
@@ -7342,7 +7342,8 @@ function openShareModal(){
 function _shareBase(){ return (_sb&&(_sb.supabaseUrl||_sb.restUrl))||(window.__SUPA_URL||''); }
 async function _shareTok(){
   let t=localStorage.getItem('fa_token')||(_sbUser&&_sbUser.access_token)||'';
-  try{ const s=await _sb.auth.getSession(); const f=s&&s.data&&s.data.session&&s.data.session.access_token; if(f){ t=f; localStorage.setItem('fa_token',f); } }catch(_){}
+  // getSession() puede colgarse en esta app: lo carreramos contra un timeout de 2.5s
+  try{ const s=await Promise.race([_sb.auth.getSession(), new Promise(res=>setTimeout(()=>res(null),2500))]); const f=s&&s.data&&s.data.session&&s.data.session.access_token; if(f){ t=f; localStorage.setItem('fa_token',f); } }catch(_){}
   return t||(_sb&&_sb.supabaseKey)||'';
 }
 async function _shareLoad(){
