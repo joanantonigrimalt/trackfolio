@@ -6,7 +6,7 @@
   (served no-cache, version-bumped each deploy). Works even where SW/no-store
   are ignored, because it is plain page JS. */
 (function(){try{
-  var FA_BUILD=window.FA_BUILD='336';
+  var FA_BUILD=window.FA_BUILD='337';
   var s=location.search;
   if(s.indexOf('vchk')>-1||s.indexOf('_v=')>-1){history.replaceState(null,'',location.pathname+(location.hash||''));return;}
   fetch('/sw.js?_='+Date.now(),{cache:'no-store'}).then(function(r){return r.text();}).then(function(t){
@@ -8760,7 +8760,17 @@ function renderAccountSection(){
       const b=document.getElementById('btnSyncCloud');b.textContent='…';
       await syncToCloud();await syncFromCloud();b.textContent='↑↓';
     };
-    document.getElementById('btnLogout').onclick=async()=>{await _sb.auth.signOut();renderAccountSection();};
+    document.getElementById('btnLogout').onclick=()=>{
+      // _sb.auth.signOut() puede colgarse → fire-and-forget + limpieza local manual + recarga
+      try{ _sb.auth.signOut().catch(()=>{}); }catch(_){}
+      try{
+        ['tf_positions','tf_custom_assets','tf_last_sync','tf_cloud_synced','fa_liquidity','_rawCustomAssets','fa_active_user_id','fa_token','fa_user'].forEach(k=>localStorage.removeItem(k));
+        // Borra la clave de sesión de supabase (sb-<ref>-auth-token) para que no se restaure al recargar
+        Object.keys(localStorage).forEach(k=>{ if(/sb-.*-auth-token/i.test(k)||(k.indexOf('supabase')>=0&&k.indexOf('auth')>=0)) localStorage.removeItem(k); });
+      }catch(_){}
+      _sbUser=null; try{ window._sbUser=null; }catch(_){}
+      location.reload();
+    };
     document.getElementById('btnEditProfile').onclick=()=>openProfileModal();
     if(typeof syncDeskUser==='function') syncDeskUser();
   }else{

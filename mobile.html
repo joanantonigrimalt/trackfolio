@@ -10,7 +10,7 @@
   no-store headers are ignored (in-app webviews) because it is plain page JS.
   Source of truth = sw.js (always served no-cache, version-bumped each deploy). */
 (function(){try{
-  var FA_BUILD='336';
+  var FA_BUILD='337';
   var s=location.search;
   if(s.indexOf('vchk')>-1||s.indexOf('_v=')>-1){
     // Clean the ugly ?vchk= / ?_v= from the URL silently
@@ -7767,8 +7767,11 @@ function renderAccountSection(){
     // Apply current plan badge immediately after rebuilding HTML
     if(typeof _updatePlanUI==='function') _updatePlanUI();
     document.getElementById('btnLogout').onclick=()=>{
-      ['tf_positions','tf_custom_assets','tf_last_sync','fa_liquidity','_rawCustomAssets','fa_active_user_id','fa_token','fa_user'].forEach(k=>localStorage.removeItem(k));
-      _sb.auth.signOut().catch(()=>{}); // fire-and-forget: no esperar red
+      ['tf_positions','tf_custom_assets','tf_last_sync','tf_cloud_synced','fa_liquidity','_rawCustomAssets','fa_active_user_id','fa_token','fa_user'].forEach(k=>localStorage.removeItem(k));
+      // Borra la clave de sesión de supabase (sb-<ref>-auth-token) para que no se restaure al recargar
+      try{ Object.keys(localStorage).forEach(k=>{ if(/sb-.*-auth-token/i.test(k)||(k.indexOf('supabase')>=0&&k.indexOf('auth')>=0)) localStorage.removeItem(k); }); }catch(_){}
+      try{ _sb.auth.signOut().catch(()=>{}); }catch(_){} // fire-and-forget: no esperar red
+      _sbUser=null; try{ window._sbUser=null; }catch(_){}
       closeSettings();
       renderAccountSection();
       showAuthScreen();
