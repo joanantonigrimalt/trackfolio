@@ -6,7 +6,7 @@
   (served no-cache, version-bumped each deploy). Works even where SW/no-store
   are ignored, because it is plain page JS. */
 (function(){try{
-  var FA_BUILD=window.FA_BUILD='338';
+  var FA_BUILD=window.FA_BUILD='339';
   var s=location.search;
   if(s.indexOf('vchk')>-1||s.indexOf('_v=')>-1){history.replaceState(null,'',location.pathname+(location.hash||''));return;}
   fetch('/sw.js?_='+Date.now(),{cache:'no-store'}).then(function(r){return r.text();}).then(function(t){
@@ -7895,9 +7895,13 @@ function renderAnalysisV2(){
 function renderHomeExtras(){
   const gEl=document.getElementById('homeGreeting');
   if(gEl){
-    const email=(_sbUser&&_sbUser.email)||'';
-    let nm=(email.split('@')[0]||'').replace(/[._-]+/g,' ').trim();
-    nm=nm?nm.charAt(0).toUpperCase()+nm.slice(1):(currentLang==='es'?'inversor':'investor');
+    const _mg=(_sbUser&&_sbUser.user_metadata)||{};
+    let nm=String(_mg.full_name||_mg.name||'').trim(); // preferir el nombre del perfil
+    if(!nm){
+      const email=(_sbUser&&_sbUser.email)||'';
+      nm=(email.split('@')[0]||'').replace(/[._-]+/g,' ').trim();
+      nm=nm?nm.charAt(0).toUpperCase()+nm.slice(1):(currentLang==='es'?'inversor':'investor');
+    }
     const h=new Date().getHours();
     const greet=currentLang==='es'?(h<12?'Buenos días':h<20?'Buenas tardes':'Buenas noches'):(h<12?'Good morning':h<20?'Good afternoon':'Good evening');
     gEl.textContent=`${greet}, ${nm} 👋`;
@@ -11204,11 +11208,18 @@ window._toggleUserMenu = function() {
   }
 };
 window._deskLogout = function() {
-  ['tf_positions','tf_custom_assets','tf_last_sync','fa_liquidity','_rawCustomAssets','fa_active_user_id','fa_token'].forEach(k=>localStorage.removeItem(k));
-  if (typeof _sb !== 'undefined' && _sb) _sb.auth.signOut().catch(()=>{});
+  try{ if (typeof _sb !== 'undefined' && _sb) _sb.auth.signOut().catch(()=>{}); }catch(_){}
+  try{
+    ['tf_positions','tf_custom_assets','tf_last_sync','tf_cloud_synced','fa_liquidity','_rawCustomAssets','fa_active_user_id','fa_token','fa_user'].forEach(k=>localStorage.removeItem(k));
+    // Borra la clave de sesión de supabase para que no se restaure la sesión
+    Object.keys(localStorage).forEach(k=>{ if(/sb-.*-auth-token/i.test(k)||(k.indexOf('supabase')>=0&&k.indexOf('auth')>=0)) localStorage.removeItem(k); });
+  }catch(_){}
+  try{ _sbUser=null; window._sbUser=null; }catch(_){}
+  try{ assets=[]; _rawSeedAssets=[]; dataReady=false; }catch(_){}
   const m = document.getElementById('deskUserMenu');
   if (m) m.style.display = 'none';
-  location.reload();
+  // Mostrar la pantalla de login (no recargar a la home en modo local)
+  if (typeof showAuthScreen === 'function') showAuthScreen(); else location.reload();
 };
 window._deskSetCcy = function(ccy) {
   if (typeof setDisplayCcy === 'function') setDisplayCcy(ccy);
