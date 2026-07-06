@@ -6,7 +6,7 @@
   (served no-cache, version-bumped each deploy). Works even where SW/no-store
   are ignored, because it is plain page JS. */
 (function(){try{
-  var FA_BUILD=window.FA_BUILD='333';
+  var FA_BUILD=window.FA_BUILD='334';
   var s=location.search;
   if(s.indexOf('vchk')>-1||s.indexOf('_v=')>-1){history.replaceState(null,'',location.pathname+(location.hash||''));return;}
   fetch('/sw.js?_='+Date.now(),{cache:'no-store'}).then(function(r){return r.text();}).then(function(t){
@@ -3860,6 +3860,10 @@ html,body{height:100%;overflow:hidden;font-family:-apple-system,BlinkMacSystemFo
   function LnCalcTAE(t,fee,c,m){ const cn=c-(fee||0); if(!cn||!m) return t; const cuo=LnCalcCuota(c,t,m); let tae=t/100; for(let i=0;i<50;i++){ const r=tae/12; if(r===0) break; const pv=cuo*(1-Math.pow(1+r,-m))/r; const dpv=cuo*(m*Math.pow(1+r,-m-1)/r-(1-Math.pow(1+r,-m))/(r*r)); const nt=tae-(pv-cn)/dpv; if(Math.abs(nt-tae)<1e-6){tae=nt;break;} tae=nt; } return (Math.pow(1+tae/12,12)-1)*100; }
   function LnBuildSchedule(c,t,m){ const r=t/100/12,cuo=LnCalcCuota(c,t,m); let s=c; const rows=[]; for(let i=1;i<=m;i++){ const intv=s*r,cap=cuo-intv; s=Math.max(0,s-cap); rows.push({mes:i,cuota:cuo,capital:cap,interes:intv,saldo:s}); } return rows; }
   function LnMonthsElapsed(fecha){ if(!fecha) return 0; try{ const d=new Date(fecha+'T00:00:00'); const now=new Date(); let m=(now.getFullYear()-d.getFullYear())*12+(now.getMonth()-d.getMonth()); return Math.max(0,m); }catch(_){ return 0; } }
+  // Valor actual del colateral pignorado (garantía real)
+  function LnColateralValue(l){ if(!l||!l.pignorada||!(l.colateral&&l.colateral.length)) return 0; return l.colateral.reduce((s,c)=>{ const live=(typeof assets!=='undefined')?assets.find(a=>a.isin===c.isin):null; const pa=(live&&live.currentPrice)||c.precioRef||0; return s+((c.titulos||0)*pa); },0); }
+  // Próximo pago = fecha inicio + (meses transcurridos + 1), formato DD-MM-YYYY
+  function LnNextPayment(fecha,elapsed){ if(!fecha) return '—'; try{ const d=new Date(fecha+'T00:00:00'); d.setMonth(d.getMonth()+(elapsed||0)+1); const dd=String(d.getDate()).padStart(2,'0'),mm=String(d.getMonth()+1).padStart(2,'0'); return dd+'-'+mm+'-'+d.getFullYear(); }catch(_){ return '—'; } }
   function eh(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 
   // ── Storage ───────────────────────────────────────────────
@@ -4159,11 +4163,31 @@ html,body{height:100%;overflow:hidden;font-family:-apple-system,BlinkMacSystemFo
         const tae=LnCalcTAE(l.tin,l.com,l.cap,l.meses);
         debt+=pending; monthly+=cuo; interest+=remInt; tinW+=l.tin*pending; tinB+=pending;
         const ico=l.kind?.includes('Hipoteca')?'🏠':l.kind==='Coche'?'🚗':l.kind==='Estudios'?'🎓':'⏱';
+        // ── Campos estructurados ──
+        const _usedPct=l.cap>0?(pending/l.cap*100):0;
+        const _intAnual=sched.slice(elapsed,elapsed+12).reduce((s,r)=>s+r.interes,0);
+        const _prox=LnNextPayment(l.fecha,elapsed);
+        const _garantia=LnColateralValue(l);
+        const _cob=(_garantia>0&&pending>0)?(_garantia/pending*100):null;
+        const _ltv=(_garantia>0&&pending>0)?(pending/_garantia*100):null;
+        const _cobCol=_cob==null?'':(_cob>=200?'var(--green)':_cob>=130?'#ca8a04':'var(--red)');
+        const _pl=[
+          ['Pendiente','−'+LnFmt(pending),'var(--red)'],
+          ['Total concedido',LnFmt(l.cap),''],
+          ['% usado',_usedPct.toFixed(0)+'%',''],
+          ['TIN',LnFmtPctPlain(l.tin),''],
+          ['Cuota',LnFmt(cuo)+' /mes',''],
+          ['Interés anual','≈ '+LnFmt(_intAnual),''],
+          ['Próx. pago',_prox,''],
+          ['Garantía',_garantia>0?LnFmt(_garantia):'—',''],
+          ['Cobertura',_cob!=null?_cob.toFixed(0)+'%':'—',_cobCol],
+          ['LTV',_ltv!=null?_ltv.toFixed(0)+'%':'—',''],
+          ['Entidad',eh(l.entidad||'—'),'']
+        ];
         return `<div class="loan-card">
           <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px"><div><span class="badge" style="background:var(--ga);color:var(--green);border:1px solid rgba(26,122,66,.2);font-size:9px;font-weight:700;padding:2px 7px;border-radius:5px">${(l.kind||'PRÉSTAMO').toUpperCase()}</span>${pignBadge}</div><div style="display:flex;gap:6px"><button class="btn-sm" onclick="LnEdit('${l.id}')">✏️ Editar</button><button class="btn-sm" onclick="LnDelete('${l.id}')" style="color:var(--red)">Eliminar</button></div></div>
           <div class="loan-card-hdr"><div class="loan-icon">${ico}</div><div class="loan-card-hdr-info"><h3>${eh(l.nombre)}</h3><p>${eh(l.entidad||'—')}</p></div></div>
-          <div class="loan-metrics"><div class="lm"><div class="lm-l">${l.pignorada&&l.ratioGarantia?'Garantía req.':'Garantía'}</div><div class="lm-v">${l.pignorada&&l.ratioGarantia?LnFmt(pending*(l.ratioGarantia||1.3)):LnFmt(l.cap)}</div></div><div class="lm"><div class="lm-l">Capital inicial</div><div class="lm-v">${LnFmt(l.cap)}</div></div><div class="lm"><div class="lm-l">Pendiente</div><div class="lm-v" style="${l.saldoPendiente!==undefined?'color:var(--gold)':''}">${LnFmt(pending)}</div></div><div class="lm"><div class="lm-l">TAE</div><div class="lm-v">${LnFmtPctPlain(tae)}</div></div></div>
-          <div class="cuota-row"><span class="cuota-label">Cuota mensual</span><span class="cuota-val">${LnFmt(cuo)} / mes</span></div>
+          <div class="loan-metrics">${_pl.map(([lb,vv,cc])=>`<div class="lm"><div class="lm-l">${lb}</div><div class="lm-v"${cc?` style="color:${cc}"`:''}>${vv}</div></div>`).join('')}</div>
           <div class="prog-label">Amortizado ${amortPct.toFixed(1)}% · ${elapsed} de ${l.meses} meses · ${Math.max(0,l.meses-elapsed)} restantes</div>
           <div class="sbar"><div class="sf" style="width:${Math.min(100,amortPct).toFixed(1)}%;background:var(--green)"></div></div>
           <div class="loan-footer"><div class="loan-footer-info">${l.fecha?'📅 '+l.fecha+' · ':''}${eh(l.entidad||'')}</div><button class="btn-sm" onclick="LnShowAmort('${l.id}')">Ver tabla</button></div>
@@ -4174,11 +4198,28 @@ html,body{height:100%;overflow:hidden;font-family:-apple-system,BlinkMacSystemFo
         const disp=Math.max(0,l.lim-l.disp),util=l.lim>0?(l.disp/l.lim*100):0;
         debt+=l.disp; monthly+=(per==='trimestral'?im/3:im); interest+=im*divisor; tinW+=l.tin*l.disp; tinB+=l.disp;
         const isRev=(l.kind||'').toLowerCase().includes('revolv');
+        // ── Campos estructurados (crédito) ──
+        const _cGar=LnColateralValue(l);
+        const _cCob=(_cGar>0&&l.disp>0)?(_cGar/l.disp*100):null;
+        const _cLtv=(_cGar>0&&l.disp>0)?(l.disp/_cGar*100):null;
+        const _cCobCol=_cCob==null?'':(_cCob>=200?'var(--green)':_cCob>=130?'#ca8a04':'var(--red)');
+        const _clp=[
+          ['Pendiente','−'+LnFmt(l.disp),'var(--red)'],
+          ['Total concedido',LnFmt(l.lim),''],
+          ['% usado',util.toFixed(0)+'%',''],
+          ['TIN',LnFmtPctPlain(l.tin),''],
+          ['Cuota',LnFmt(im)+(per==='trimestral'?' /trim.':' /mes'),'var(--gold)'],
+          ['Interés anual','≈ '+LnFmt(im*divisor),''],
+          ['Próx. pago','—',''],
+          ['Garantía',_cGar>0?LnFmt(_cGar):'—',''],
+          ['Cobertura',_cCob!=null?_cCob.toFixed(0)+'%':'—',_cCobCol],
+          ['LTV',_cLtv!=null?_cLtv.toFixed(0)+'%':'—',''],
+          ['Entidad',eh(l.entidad||'—'),'']
+        ];
         return `<div class="loan-card">
           <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px"><div><span class="badge" style="background:#fff8e1;color:var(--gold);border:1px solid rgba(154,111,0,.2);font-size:9px;font-weight:700;padding:2px 7px;border-radius:5px">${(l.kind||'CRÉDITO').toUpperCase()}</span>${pignBadge}</div><div style="display:flex;gap:6px"><button class="btn-sm" onclick="LnEdit('${l.id}')">✏️ Editar</button><button class="btn-sm" onclick="LnDelete('${l.id}')" style="color:var(--red)">Eliminar</button></div></div>
           <div class="loan-card-hdr"><div class="loan-icon">💳</div><div class="loan-card-hdr-info"><h3>${eh(l.nombre)}</h3><p>${eh(l.entidad||'—')}</p></div></div>
-          <div class="loan-metrics"><div class="lm"><div class="lm-l">Límite</div><div class="lm-v">${LnFmt(l.lim)}</div></div><div class="lm"><div class="lm-l">Dispuesto</div><div class="lm-v" style="color:var(--red)">${LnFmt(l.disp)}</div></div><div class="lm"><div class="lm-l">Disponible</div><div class="lm-v" style="color:var(--green)">${LnFmt(disp)}</div></div><div class="lm"><div class="lm-l">TIN</div><div class="lm-v">${LnFmtPctPlain(l.tin)}</div></div></div>
-          <div class="cuota-row"><span class="cuota-label">Intereses (solo intereses)</span><span class="cuota-val" style="color:var(--gold)">${LnFmt(im)}${per==='trimestral'?' / trim.':' / mes'}</span></div>
+          <div class="loan-metrics">${_clp.map(([lb,vv,cc])=>`<div class="lm"><div class="lm-l">${lb}</div><div class="lm-v"${cc?` style="color:${cc}"`:''}>${vv}</div></div>`).join('')}</div>
           <div class="prog-label">Utilización: ${util.toFixed(1)}%</div>
           <div class="sbar"><div class="sf" style="width:${Math.min(100,util).toFixed(1)}%;background:var(--gold)"></div></div>
           ${isRev?'<div class="alert-box">⚠️ <strong>Crédito revolving</strong> · El capital no se amortiza solo. Cancela el saldo cuanto antes para evitar intereses compuestos.</div>':''}

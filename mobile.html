@@ -10,7 +10,7 @@
   no-store headers are ignored (in-app webviews) because it is plain page JS.
   Source of truth = sw.js (always served no-cache, version-bumped each deploy). */
 (function(){try{
-  var FA_BUILD='333';
+  var FA_BUILD='334';
   var s=location.search;
   if(s.indexOf('vchk')>-1||s.indexOf('_v=')>-1){
     // Clean the ugly ?vchk= / ?_v= from the URL silently
@@ -3392,6 +3392,11 @@ table.an-corr-mtx{border-collapse:separate;border-spacing:4px}
   function LnCalcTAE(t,fee,c,m){ const cn=c-(fee||0); if(!cn||!m) return t; const cuo=LnCalcCuota(c,t,m); let tae=t/100; for(let i=0;i<50;i++){ const r=tae/12; if(r===0) break; const pv=cuo*(1-Math.pow(1+r,-m))/r; const dpv=cuo*(m*Math.pow(1+r,-m-1)/r-(1-Math.pow(1+r,-m))/(r*r)); const nt=tae-(pv-cn)/dpv; if(Math.abs(nt-tae)<1e-6){tae=nt;break;} tae=nt; } return (Math.pow(1+tae/12,12)-1)*100; }
   function LnBuildSchedule(c,t,m){ const r=t/100/12,cuo=LnCalcCuota(c,t,m); let s=c; const rows=[]; for(let i=1;i<=m;i++){ const intv=s*r,cap=cuo-intv; s=Math.max(0,s-cap); rows.push({mes:i,cuota:cuo,capital:cap,interes:intv,saldo:s}); } return rows; }
   function LnMonthsElapsed(fecha){ if(!fecha) return 0; try{ const d=new Date(fecha+'T00:00:00'); const now=new Date(); let m=(now.getFullYear()-d.getFullYear())*12+(now.getMonth()-d.getMonth()); return Math.max(0,m); }catch(_){ return 0; } }
+  function LnColateralValue(l){ if(!l||!l.pignorada||!(l.colateral&&l.colateral.length)) return 0; return l.colateral.reduce((s,c)=>{ const live=(typeof assets!=='undefined')?assets.find(a=>a.isin===c.isin):null; const pa=(live&&live.currentPrice)||c.precioRef||0; return s+((c.titulos||0)*pa); },0); }
+  function LnNextPayment(fecha,elapsed){ if(!fecha) return '—'; try{ const d=new Date(fecha+'T00:00:00'); d.setMonth(d.getMonth()+(elapsed||0)+1); const dd=String(d.getDate()).padStart(2,'0'),mm=String(d.getMonth()+1).padStart(2,'0'); return dd+'-'+mm+'-'+d.getFullYear(); }catch(_){ return '—'; } }
+  function _lnEsc(s){ return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+  function LnFmtPctPlain(n){ if(isNaN(n)||n==null) return '—'; return Number(n).toFixed(2)+'%'; }
+  function _lnGrid(arr){ return `<div style="display:grid;grid-template-columns:1fr 1fr;gap:7px;margin:8px 0">`+arr.map(function(f){ const lb=f[0],vv=f[1],cc=f[2]; return `<div style="background:var(--surf2);border-radius:9px;padding:7px 9px;min-width:0"><div style="font-size:9px;color:var(--muted2);text-transform:uppercase;letter-spacing:.03em;font-weight:600;margin-bottom:2px">${lb}</div><div style="font-size:13px;font-weight:800;overflow:hidden;text-overflow:ellipsis;white-space:nowrap${cc?';color:'+cc:''}">${vv}</div></div>`; }).join('')+`</div>`; }
 
   window.LnGetLoans=function(){ try{ const a=JSON.parse(localStorage.getItem('fa_loans')||'[]'); return Array.isArray(a)?a:[]; }catch(_){ return []; } };
   function LnSave(arr){ localStorage.setItem('fa_loans',JSON.stringify(arr)); _LnSaveToSB(arr); }
@@ -3459,10 +3464,25 @@ table.an-corr-mtx{border-collapse:separate;border-spacing:4px}
         debt+=pending; monthly+=cuo; interest+=remInt;
         const ico=l.kind==='Hipoteca'?'🏠':l.kind==='Coche'?'🚗':l.kind==='Estudios'?'🎓':'⏱';
         const pignBadge=l.pignorada?`<span style="background:#dcfce7;color:#15803d;font-size:9px;font-weight:800;padding:2px 7px;border-radius:5px;margin-left:4px">🔒 PIGN.</span>`:'';
+        // ── Campos estructurados ──
+        const _usedPct=l.cap>0?(pending/l.cap*100):0;
+        const _intAnual=sched.slice(elapsed,elapsed+12).reduce((s,r)=>s+r.interes,0);
+        const _prox=LnNextPayment(l.fecha,elapsed);
+        const _garantia=LnColateralValue(l);
+        const _cob=(_garantia>0&&pending>0)?(_garantia/pending*100):null;
+        const _ltv=(_garantia>0&&pending>0)?(pending/_garantia*100):null;
+        const _cobCol=_cob==null?'':(_cob>=200?'var(--green)':_cob>=130?'#ca8a04':'var(--red)');
+        const _pl=[
+          ['Pendiente','−'+LnFmt(pending),'var(--red)'],['Total concedido',LnFmt(l.cap),''],
+          ['% usado',_usedPct.toFixed(0)+'%',''],['TIN',LnFmtPctPlain(l.tin),''],
+          ['Cuota',LnFmt(cuo)+' /mes','var(--green)'],['Interés anual','≈ '+LnFmt(_intAnual),''],
+          ['Próx. pago',_prox,''],['Garantía',_garantia>0?LnFmt(_garantia):'—',''],
+          ['Cobertura',_cob!=null?_cob.toFixed(0)+'%':'—',_cobCol],['LTV',_ltv!=null?_ltv.toFixed(0)+'%':'—',''],
+          ['Entidad',_lnEsc(l.entidad||'—'),'']
+        ];
         return `<div class="ln-loan">
           <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:9px"><div style="display:flex;align-items:center;gap:8px"><span style="font-size:20px">${ico}</span><div><div style="font-size:14px;font-weight:800">${l.nombre}${pignBadge}</div><div style="font-size:11px;color:var(--muted2)">${l.entidad||'—'}</div></div></div><div style="display:flex;gap:6px"><button onclick="LnEdit('${l.id}')" style="background:none;border:none;color:var(--muted);font-size:11px;font-weight:700;cursor:pointer">✏️</button><button onclick="LnDelete('${l.id}')" style="background:none;border:none;color:var(--red);font-size:11px;font-weight:700;cursor:pointer">Eliminar</button></div></div>
-          <div style="margin-bottom:8px"><span style="font-size:20px;font-weight:800;${l.saldoPendiente!==undefined?'color:var(--gold)':''}">${LnFmt(pending)}</span><span style="font-size:12px;color:var(--muted);margin-left:5px">pendiente</span><span style="font-size:11px;color:var(--muted2);margin-left:4px">de ${LnFmt(l.cap)} garantía</span></div>
-          <div class="lm-row"><div class="lm-c"><div class="l">Cap. inicial</div><div class="v">${LnFmt(l.cap)}</div></div><div class="lm-c"><div class="l">Cuota / mes</div><div class="v" style="color:var(--green)">${LnFmt(cuo)}</div></div><div class="lm-c"><div class="l">TAE</div><div class="v">${LnFmtPct(tae)}</div></div></div>
+          ${_lnGrid(_pl)}
           <div class="sbar"><div class="sf" style="width:${Math.min(100,amortPct).toFixed(1)}%;background:var(--green)"></div></div>
           <div style="font-size:10px;color:var(--muted);margin-bottom:9px">${amortPct.toFixed(1)}% amortizado · ${Math.max(0,l.meses-elapsed)} meses restantes</div>
           <div style="display:flex;align-items:center;justify-content:space-between"><div style="font-size:11px;color:var(--muted2)">${l.fecha?'📅 '+l.fecha:''}</div><button onclick="LnShowAmort('${l.id}')" style="background:var(--surf2);border:1px solid var(--border);border-radius:8px;padding:5px 10px;font-size:11px;font-weight:600;color:var(--muted);cursor:pointer">Tabla →</button></div>
@@ -3474,10 +3494,22 @@ table.an-corr-mtx{border-collapse:separate;border-spacing:4px}
         debt+=l.disp; monthly+=(per==='trimestral'?im/3:im); interest+=im*divisor;
         const pignBadge=l.pignorada?`<span style="background:#dcfce7;color:#15803d;font-size:9px;font-weight:800;padding:2px 7px;border-radius:5px;margin-left:4px">🔒 PIGN.</span>`:'';
         const isRev=(l.kind||'').toLowerCase().includes('revolv');
+        // ── Campos estructurados (crédito) ──
+        const _cGar=LnColateralValue(l);
+        const _cCob=(_cGar>0&&l.disp>0)?(_cGar/l.disp*100):null;
+        const _cLtv=(_cGar>0&&l.disp>0)?(l.disp/_cGar*100):null;
+        const _cCobCol=_cCob==null?'':(_cCob>=200?'var(--green)':_cCob>=130?'#ca8a04':'var(--red)');
+        const _clp=[
+          ['Pendiente','−'+LnFmt(l.disp),'var(--red)'],['Total concedido',LnFmt(l.lim),''],
+          ['% usado',util.toFixed(0)+'%',''],['TIN',LnFmtPctPlain(l.tin),''],
+          ['Cuota',LnFmt(im)+(per==='trimestral'?' /trim.':' /mes'),'var(--gold)'],['Interés anual','≈ '+LnFmt(im*divisor),''],
+          ['Próx. pago','—',''],['Garantía',_cGar>0?LnFmt(_cGar):'—',''],
+          ['Cobertura',_cCob!=null?_cCob.toFixed(0)+'%':'—',_cCobCol],['LTV',_cLtv!=null?_cLtv.toFixed(0)+'%':'—',''],
+          ['Entidad',_lnEsc(l.entidad||'—'),'']
+        ];
         return `<div class="ln-loan">
           <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:9px"><div style="display:flex;align-items:center;gap:8px"><span style="font-size:20px">💳</span><div><div style="font-size:14px;font-weight:800">${l.nombre}${pignBadge}</div><div style="font-size:11px;color:var(--muted2)">${l.entidad||'—'}</div></div></div><div style="display:flex;gap:6px"><button onclick="LnEdit('${l.id}')" style="background:none;border:none;color:var(--muted);font-size:11px;font-weight:700;cursor:pointer">✏️</button><button onclick="LnDelete('${l.id}')" style="background:none;border:none;color:var(--red);font-size:11px;font-weight:700;cursor:pointer">Eliminar</button></div></div>
-          <div style="margin-bottom:8px"><span style="font-size:18px;font-weight:800">${LnFmt(l.disp)}</span><span style="font-size:11px;color:var(--muted);margin-left:4px">dispuesto</span><span style="font-size:11px;color:var(--muted2);margin-left:4px">de ${LnFmt(l.lim)}</span><span style="font-size:11px;font-weight:700;color:var(--green);margin-left:6px">${LnFmt(disp)} disp.</span></div>
-          <div class="lm-row"><div class="lm-c"><div class="l">TIN</div><div class="v" style="color:var(--red)">${LnFmtPct(l.tin)}</div></div><div class="lm-c"><div class="l">Intereses${per==='trimestral'?' / trim.':' / mes'}</div><div class="v" style="color:var(--gold)">${LnFmt(im)}</div></div></div>
+          ${_lnGrid(_clp)}
           <div class="sbar"><div class="sf" style="width:${Math.min(100,util).toFixed(1)}%;background:var(--gold)"></div></div>
           <div style="font-size:10px;color:var(--muted);margin-bottom:4px">Utilización: ${util.toFixed(1)}%${l.fecha?' · 📅 '+l.fecha:''}</div>
           ${isRev?'<div class="alert-box">⚠️ <strong>Revolving</strong> — Amortiza capital para evitar intereses compuestos.</div>':''}
