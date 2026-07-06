@@ -6,3 +6,7 @@ node_modules
 .env*.local
 
 .vercel
+
+backup.sql
+supabase/backup.dump
+
