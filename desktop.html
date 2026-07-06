@@ -6,7 +6,7 @@
   (served no-cache, version-bumped each deploy). Works even where SW/no-store
   are ignored, because it is plain page JS. */
 (function(){try{
-  var FA_BUILD=window.FA_BUILD='325';
+  var FA_BUILD=window.FA_BUILD='326';
   var s=location.search;
   if(s.indexOf('vchk')>-1||s.indexOf('_v=')>-1){history.replaceState(null,'',location.pathname+(location.hash||''));return;}
   fetch('/sw.js?_='+Date.now(),{cache:'no-store'}).then(function(r){return r.text();}).then(function(t){
@@ -9114,7 +9114,7 @@ async function signInWithGoogle() {
   _gTxts.forEach(t=>{t.textContent='...';});
   try {
     const { error } = await _sb.auth.signInWithOAuth({
-      provider: 'google',
+      provider: 'custom:auth0',
       options: { redirectTo: window.location.origin + '/desktop' }
     });
     if (error) throw error;
