@@ -13,5 +13,7 @@ export default function handler() {
     SUPABASE_SERVICE_ROLE_KEY_present: !!process.env.SUPABASE_SERVICE_ROLE_KEY,
     ANTHROPIC_API_KEY_present: !!process.env.ANTHROPIC_API_KEY,
     runtime: 'edge',
+    VERCEL_ENV: process.env.VERCEL_ENV || null,
+    commit: (process.env.VERCEL_GIT_COMMIT_SHA || '').slice(0, 7),
   }, null, 2), { headers: { 'content-type': 'application/json', 'cache-control': 'no-store' } });
 }
