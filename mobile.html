@@ -10,7 +10,7 @@
   no-store headers are ignored (in-app webviews) because it is plain page JS.
   Source of truth = sw.js (always served no-cache, version-bumped each deploy). */
 (function(){try{
-  var FA_BUILD='331';
+  var FA_BUILD='332';
   var s=location.search;
   if(s.indexOf('vchk')>-1||s.indexOf('_v=')>-1){
     // Clean the ugly ?vchk= / ?_v= from the URL silently
@@ -3592,7 +3592,7 @@ table.an-corr-mtx{border-collapse:separate;border-spacing:4px}
   window.MiLoad=function(force){
     var MI_API='/api/myinvestor/catalog?v=284';
     var cached=localStorage.getItem('mi_cache_283'); var cachedAt=parseInt(localStorage.getItem('mi_cache_283_at')||'0');
-    if(!force && cached && (Date.now()-cachedAt)<7*24*3600*1000){
+    if(!force && cached && (Date.now()-cachedAt)<24*3600*1000){ // 1 día: refresca rentabilidades semanales sin lag
       try{_miMData=JSON.parse(cached);}catch(_){}
       if(_miMData.length>0){
         var upd=localStorage.getItem('mi_cache_283_updated');

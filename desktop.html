@@ -6,7 +6,7 @@
   (served no-cache, version-bumped each deploy). Works even where SW/no-store
   are ignored, because it is plain page JS. */
 (function(){try{
-  var FA_BUILD=window.FA_BUILD='331';
+  var FA_BUILD=window.FA_BUILD='332';
   var s=location.search;
   if(s.indexOf('vchk')>-1||s.indexOf('_v=')>-1){history.replaceState(null,'',location.pathname+(location.hash||''));return;}
   fetch('/sw.js?_='+Date.now(),{cache:'no-store'}).then(function(r){return r.text();}).then(function(t){
@@ -4385,7 +4385,7 @@ html,body{height:100%;overflow:hidden;font-family:-apple-system,BlinkMacSystemFo
     var MI_API='/api/myinvestor/catalog?v=284';
     // Check cache (7 days). Also skip cache if it's empty (0 items — failed previous load)
     var cached=localStorage.getItem('mi_cache_283'); var cachedAt=parseInt(localStorage.getItem('mi_cache_283_at')||'0');
-    if(!force && cached && (Date.now()-cachedAt)<7*24*3600*1000){
+    if(!force && cached && (Date.now()-cachedAt)<24*3600*1000){ // 1 día: refresca rentabilidades semanales sin lag
       try{_miData=JSON.parse(cached);}catch(_){}
       if(_miData.length>0){
         // Restore last update display from cache
