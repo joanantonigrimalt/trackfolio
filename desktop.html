@@ -6,7 +6,7 @@
   (served no-cache, version-bumped each deploy). Works even where SW/no-store
   are ignored, because it is plain page JS. */
 (function(){try{
-  var FA_BUILD=window.FA_BUILD='328';
+  var FA_BUILD=window.FA_BUILD='329';
   var s=location.search;
   if(s.indexOf('vchk')>-1||s.indexOf('_v=')>-1){history.replaceState(null,'',location.pathname+(location.hash||''));return;}
   fetch('/sw.js?_='+Date.now(),{cache:'no-store'}).then(function(r){return r.text();}).then(function(t){
@@ -8676,6 +8676,7 @@ async function syncToCloud(){
       if(!r.ok)throw new Error('HTTP '+r.status+(body?' '+body.slice(0,80):''));
     }
     localStorage.setItem('tf_last_sync',new Date().toISOString());
+    localStorage.setItem('tf_cloud_synced',full.updated_at); // versión de nube que acabamos de escribir
     renderAccountSection();
   }catch(e){
     console.warn('[sync↑]',e.message);
@@ -8808,6 +8809,9 @@ async function syncFromCloud(){
     const cloudTs=new Date(data.updated_at).getTime();
     const localTs=new Date(localStorage.getItem('tf_last_sync')||0).getTime();
     const localEmpty=!Object.keys(getOverrides()).length&&!Object.keys(getCustomAssets()).length;
+    // Detección inmune al desfase de relojes: ¿la nube tiene una versión distinta a la última aplicada?
+    const _lastCloud=localStorage.getItem('tf_cloud_synced')||'';
+    const cloudChanged=_lastCloud&&data.updated_at&&data.updated_at!==_lastCloud;
     // Defensive: handle both object (server-parsed) and string (raw TEXT) forms
     const _ov = typeof data.overrides === 'string' ? JSON.parse(data.overrides || '{}') : (data.overrides || {});
     const _ca = typeof data.custom_assets === 'string' ? JSON.parse(data.custom_assets || '{}') : (data.custom_assets || {});
@@ -8816,7 +8820,7 @@ async function syncFromCloud(){
     const _mergedCa={..._localCa,..._ca};
     const _caChanged=Object.keys(_mergedCa).length!==Object.keys(_localCa).length||JSON.stringify(_mergedCa)!==JSON.stringify(_localCa);
     if(_caChanged)localStorage.setItem('tf_custom_assets',JSON.stringify(_mergedCa));
-    if(cloudTs>localTs||localEmpty){
+    if(cloudTs>localTs||localEmpty||cloudChanged){
       // Write directly to localStorage without triggering _debouncedSync
       localStorage.setItem('tf_positions', JSON.stringify(_ov));
       if(data.liquidity)localStorage.setItem('fa_liquidity',JSON.stringify(data.liquidity));
@@ -8825,7 +8829,7 @@ async function syncFromCloud(){
       Object.keys(_ovMig).forEach(k=>{if(_ovMig[k]&&!_ovMig[k].costCurrency){_ovMig[k].costCurrency='EUR';_migrated=true;}});
       if(_migrated)localStorage.setItem('tf_positions',JSON.stringify(_ovMig));
     }
-    if(cloudTs>localTs||localEmpty||_caChanged){
+    if(cloudTs>localTs||localEmpty||_caChanged||cloudChanged){
       // Fetch coverage for any cloud asset ISINs not yet in _cvMap (added from cloud after boot)
       const _allCustIsins=Object.values(_mergedCa).map(ca=>ca.isin||ca.symbol).filter(Boolean);
       const _newIsins=_allCustIsins.filter(isin=>!_cvMap[isin]);
@@ -8837,6 +8841,7 @@ async function syncFromCloud(){
       render();renderLiquidity();
     }
     localStorage.setItem('tf_last_sync',new Date().toISOString());
+    if(data.updated_at)localStorage.setItem('tf_cloud_synced',data.updated_at); // versión de nube ya aplicada
     renderAccountSection();
   }catch(e){
     console.warn('[sync↓]',e.message);
