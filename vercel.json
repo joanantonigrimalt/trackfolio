@@ -10,6 +10,9 @@
     { "source": "/api/fund/profile", "destination": "/api/etf/profile" },
     { "source": "/api/auth/lookup-username", "destination": "/api/auth/config" },
     { "source": "/api/dividends/detail", "destination": "/api/dividends/history?mode=detail" },
+    { "source": "/api/myinvestor/catalog", "destination": "/api/myinvestor/data?mode=catalog" },
+    { "source": "/api/myinvestor/returns", "destination": "/api/myinvestor/data?mode=returns" },
+    { "source": "/api/ter/fetch", "destination": "/api/etf/profile?mode=ter" },
     { "source": "/p/(.*)", "destination": "/p.html" }
   ],
   "headers": [

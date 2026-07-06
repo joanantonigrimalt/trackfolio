@@ -11,8 +11,11 @@ const { setupApi, validateIsins } = require('../../lib/security');
 const portfolioSeed = require('../../portfolio-seed.json');
 const { fetchETFProfile } = require('../../lib/extraetf');
 const { fetchFundProfile } = require('../../lib/fundProfile');
+const _ter = require('../../lib/ter-fetch');
 
 module.exports = async (req, res) => {
+  // Merged endpoint: /api/ter/fetch → /api/etf/profile?mode=ter (Hobby 12-fn limit)
+  if (req.query && req.query.mode === 'ter') return _ter(req, res);
   if (!setupApi(req, res, { maxRequests: 30 })) return;
 
   const rawIsins = String(req.query?.isin || req.query?.isins || '');
