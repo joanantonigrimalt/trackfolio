@@ -10,7 +10,7 @@
   no-store headers are ignored (in-app webviews) because it is plain page JS.
   Source of truth = sw.js (always served no-cache, version-bumped each deploy). */
 (function(){try{
-  var FA_BUILD='312';
+  var FA_BUILD='313';
   var s=location.search;
   if(s.indexOf('vchk')>-1||s.indexOf('_v=')>-1){
     // Clean the ugly ?vchk= / ?_v= from the URL silently
@@ -6556,10 +6556,15 @@ function openShareModal(){
 async function _shareLoad(){
   const body=document.getElementById('shareBody'); if(!body) return;
   try{
-    const { data } = await _sb.from('portfolio_shares').select('token,hide_amounts').eq('user_id',_sbUser.id).limit(1).maybeSingle();
-    if(data && data.token) _shareRenderActive(data.token, !!data.hide_amounts);
+    const tok=await _freshTok();
+    const ctrl=new AbortController(); const to=setTimeout(()=>ctrl.abort(),8000);
+    const r=await fetch(_sb.supabaseUrl+'/rest/v1/portfolio_shares?user_id=eq.'+encodeURIComponent(_sbUser.id)+'&select=token,hide_amounts&limit=1',{ headers:{apikey:_sb.supabaseKey,Authorization:'Bearer '+tok}, signal:ctrl.signal });
+    clearTimeout(to);
+    if(!r.ok){ body.innerHTML='<div style="color:#b91c1c">Falta la tabla en Supabase. Ejecuta la migración <b>portfolio_shares</b> (SQL Editor).</div>'; return; }
+    const rows=await r.json();
+    if(Array.isArray(rows)&&rows[0]&&rows[0].token) _shareRenderActive(rows[0].token, !!rows[0].hide_amounts);
     else _shareRenderEmpty();
-  }catch(e){ body.innerHTML='<div style="color:#b91c1c">No se pudo cargar. ¿Ejecutaste la migración de Supabase?</div>'; }
+  }catch(e){ body.innerHTML='<div style="color:#b91c1c">No se pudo cargar'+(e&&e.name==='AbortError'?' (tiempo agotado)':'')+'. Reintenta.</div>'; }
 }
 function _shareRenderEmpty(){
   const body=document.getElementById('shareBody'); if(!body) return;
@@ -6581,15 +6586,16 @@ async function _shareCreate(){
   try{
     const token=(crypto.randomUUID?crypto.randomUUID():(String(Date.now())+Math.random())).replace(/[-.]/g,'');
     const name=(_sbUser.user_metadata&&_sbUser.user_metadata.full_name)||((_sbUser.email||'').split('@')[0])||'Inversor';
-    const { error } = await _sb.from('portfolio_shares').upsert({ token, user_id:_sbUser.id, display_name:name, hide_amounts:false }, { onConflict:'user_id' });
-    if(error) throw error;
+    const tok=await _freshTok();
+    const r=await fetch(_sb.supabaseUrl+'/rest/v1/portfolio_shares?on_conflict=user_id',{ method:'POST', headers:{apikey:_sb.supabaseKey,Authorization:'Bearer '+tok,'Content-Type':'application/json','Prefer':'resolution=merge-duplicates,return=minimal'}, body:JSON.stringify({ token, user_id:_sbUser.id, display_name:name, hide_amounts:false }) });
+    if(!r.ok) throw new Error('HTTP '+r.status);
     _shareRenderActive(token, false);
   }catch(e){ const b=document.getElementById('shareBody'); if(b) b.innerHTML='<div style="color:#b91c1c">Error al crear el enlace.</div>'; }
 }
-async function _shareToggleHide(hide){ try{ await _sb.from('portfolio_shares').update({ hide_amounts:!!hide }).eq('user_id',_sbUser.id); }catch(e){} }
+async function _shareToggleHide(hide){ try{ const tok=await _freshTok(); await fetch(_sb.supabaseUrl+'/rest/v1/portfolio_shares?user_id=eq.'+encodeURIComponent(_sbUser.id),{ method:'PATCH', headers:{apikey:_sb.supabaseKey,Authorization:'Bearer '+tok,'Content-Type':'application/json','Prefer':'return=minimal'}, body:JSON.stringify({ hide_amounts:!!hide }) }); }catch(e){} }
 async function _shareRevoke(){
   if(!confirm(currentLang==='es'?'¿Revocar el enlace? Dejará de funcionar.':'Revoke the link?')) return;
-  try{ await _sb.from('portfolio_shares').delete().eq('user_id',_sbUser.id); }catch(e){}
+  try{ const tok=await _freshTok(); await fetch(_sb.supabaseUrl+'/rest/v1/portfolio_shares?user_id=eq.'+encodeURIComponent(_sbUser.id),{ method:'DELETE', headers:{apikey:_sb.supabaseKey,Authorization:'Bearer '+tok} }); }catch(e){}
   _shareRenderEmpty();
 }
 function _shareCopy(){
