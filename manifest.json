@@ -2,7 +2,7 @@
   "name": "Finasset – Gestión de Cartera",
   "short_name": "Finasset",
   "description": "Gestiona y analiza tu cartera de inversiones: acciones, ETFs, fondos y dividendos en tiempo real.",
-  "start_url": "/",
+  "start_url": "/mobile",
   "scope": "/",
   "display": "standalone",
   "orientation": "portrait-primary",
