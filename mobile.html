@@ -10,7 +10,7 @@
   no-store headers are ignored (in-app webviews) because it is plain page JS.
   Source of truth = sw.js (always served no-cache, version-bumped each deploy). */
 (function(){try{
-  var FA_BUILD='339';
+  var FA_BUILD='340';
   var s=location.search;
   if(s.indexOf('vchk')>-1||s.indexOf('_v=')>-1){
     // Clean the ugly ?vchk= / ?_v= from the URL silently
@@ -7676,6 +7676,7 @@ async function initSupabase(){
       _sbUser=session?.user||null;
       renderAccountSection();
       if(event==='SIGNED_IN'){
+        _cloudPulled=false; // nueva sesión: no subir hasta bajar la nube (evita borrar la cartera)
         if(session?.access_token)localStorage.setItem('fa_token',session.access_token);
         // Returning from Google OAuth (or any sign-in) while a login/cover screen is showing → enter the app
         if(document.querySelector('.cover-screen.cs-active')){try{localStorage.setItem('fa_ob_done','1');closeAuthModal&&closeAuthModal();enterMainApp();}catch(_){}}
@@ -7696,6 +7697,7 @@ async function initSupabase(){
       }
       if(event==='PASSWORD_RECOVERY'){setTimeout(()=>{openAuthModal();_setAuthMode('resetpass');},300);}
       if(event==='SIGNED_OUT'){
+        _cloudPulled=false; // al salir, bloquear subidas hasta que la próxima sesión baje la nube
         _stopPriceRefreshLoop();
         _stopRealtimeSync();
         // Clear ALL user-specific data on logout — prevents next user seeing stale portfolio
@@ -7893,8 +7895,12 @@ function _stopPriceRefreshLoop(){
   if(_priceRefreshTimer){clearInterval(_priceRefreshTimer);_priceRefreshTimer=null;}
 }
 
+let _cloudPulled=false; // ¿hemos leído la nube al menos una vez esta sesión?
 async function syncToCloud(){
   if(!_sb||!_sbUser)return;
+  // ⚠ No subir un estado VACÍO antes de haber bajado la nube: evita que un push vacío (tras login)
+  // borre la cartera. Un push con datos reales siempre se permite (no puede borrar nada).
+  if(!_cloudPulled && !Object.keys(getOverrides()).length && !Object.keys(getCustomAssets()).length){ return; }
   try{
     const payload={user_id:_sbUser.id,overrides:getOverrides(),custom_assets:getCustomAssets(),liquidity:getLiquidity(),updated_at:new Date().toISOString()};
     const _url=_sb.supabaseUrl+'/rest/v1/user_positions?on_conflict=user_id';
@@ -7969,6 +7975,7 @@ async function syncFromCloud(){
     // 404 / 406 (PGRST116 = no rows) means new user — push local data up
     if(!_r.ok&&_r.status!==406&&_r.status!==404){throw new Error('HTTP '+_r.status);}
     const data=(_r.ok&&_r.status!==204)?await _r.json().catch(()=>null):null;
+    _cloudPulled=true; // ya hemos leído la nube esta sesión → a partir de aquí es seguro subir
     if(!data){
       // No cloud row yet — only push if we have real local data (prevents empty device from overwriting Supabase)
       const _hasLocal=Object.keys(getOverrides()).length>0||Object.keys(getCustomAssets()).length>0;

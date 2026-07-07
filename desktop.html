@@ -6,7 +6,7 @@
   (served no-cache, version-bumped each deploy). Works even where SW/no-store
   are ignored, because it is plain page JS. */
 (function(){try{
-  var FA_BUILD=window.FA_BUILD='339';
+  var FA_BUILD=window.FA_BUILD='340';
   var s=location.search;
   if(s.indexOf('vchk')>-1||s.indexOf('_v=')>-1){history.replaceState(null,'',location.pathname+(location.hash||''));return;}
   fetch('/sw.js?_='+Date.now(),{cache:'no-store'}).then(function(r){return r.text();}).then(function(t){
@@ -8703,6 +8703,7 @@ async function initSupabase(){
       // Keep plan/badge correct on every session event (TOKEN_REFRESHED, INITIAL_SESSION, USER_UPDATED…)
       if(_sbUser && event!=='SIGNED_IN') loadUserPlan().catch(()=>{});
       if(event==='SIGNED_IN'){
+        _cloudPulled=false; // nueva sesión: no subir hasta bajar la nube (evita borrar la cartera)
         if(session?.access_token)localStorage.setItem('fa_token',session.access_token);
         // Returning from Google OAuth while a login/cover screen is showing → enter the app
         if(document.querySelector('.cover-screen.cs-active')){try{localStorage.setItem('fa_ob_done','1');if(typeof closeAuthModal==='function')closeAuthModal();enterMainApp();}catch(_){}}
@@ -8711,6 +8712,7 @@ async function initSupabase(){
         _startRealtimeSync();
       }
       if(event==='SIGNED_OUT'){
+        _cloudPulled=false; // al salir, bloquear subidas hasta que la próxima sesión baje la nube
         _stopPriceRefreshLoop();
         _stopRealtimeSync();
         // Clear ALL user-specific data on logout — prevents next user seeing stale portfolio
@@ -8787,8 +8789,13 @@ function renderAccountSection(){
   }
 }
 
+let _cloudPulled=false; // ¿hemos leído la nube al menos una vez esta sesión?
 async function syncToCloud(){
   if(!_sb||!_sbUser)return;
+  // ⚠ No subir un estado VACÍO antes de haber bajado la nube al menos una vez esta sesión:
+  // evita que un push vacío (justo tras login, antes de restaurar) borre la cartera en la nube.
+  // Un push con datos reales siempre se permite (no puede borrar nada).
+  if(!_cloudPulled && !Object.keys(getOverrides()).length && !Object.keys(getCustomAssets()).length){ return; }
   try{
     // REST directo: el query-builder _sb.from().upsert() se cuelga cuando supabase-js
     // intenta refrescar un token expirado, y el borrado nunca llegaba a la nube.
@@ -8934,6 +8941,7 @@ async function syncFromCloud(){
     if(!_r.ok)throw new Error('HTTP '+_r.status);
     const _rows=await _r.json();
     const data=(Array.isArray(_rows)&&_rows[0])?_rows[0]:null;
+    _cloudPulled=true; // ya hemos leído la nube esta sesión → a partir de aquí es seguro subir
     if(!data){
       // No cloud row yet — only push if we have real local data (prevents empty desktop session from overwriting Supabase)
       const _hasLocal=Object.keys(getOverrides()).length>0||Object.keys(getCustomAssets()).length>0;
