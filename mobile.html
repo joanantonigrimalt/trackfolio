@@ -10,7 +10,7 @@
   no-store headers are ignored (in-app webviews) because it is plain page JS.
   Source of truth = sw.js (always served no-cache, version-bumped each deploy). */
 (function(){try{
-  var FA_BUILD='340';
+  var FA_BUILD='341';
   var s=location.search;
   if(s.indexOf('vchk')>-1||s.indexOf('_v=')>-1){
     // Clean the ugly ?vchk= / ?_v= from the URL silently
@@ -8767,6 +8767,7 @@ async function enterDemo(){
     _rawSeedAssets=_buildDemo({});
     assets=_rawSeedAssets.slice();
     dataReady=true;
+    _pricesLive=true; // demo: los precios del seed son válidos → mostrar valor total (no "Actualizando…")
     fetchGlobalFxRates().then(()=>render()).catch(()=>render());
     // Background: load live prices + history
     const isinList=seed.positions.map(p=>p.isin).join(',');

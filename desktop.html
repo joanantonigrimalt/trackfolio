@@ -6,7 +6,7 @@
   (served no-cache, version-bumped each deploy). Works even where SW/no-store
   are ignored, because it is plain page JS. */
 (function(){try{
-  var FA_BUILD=window.FA_BUILD='340';
+  var FA_BUILD=window.FA_BUILD='341';
   var s=location.search;
   if(s.indexOf('vchk')>-1||s.indexOf('_v=')>-1){history.replaceState(null,'',location.pathname+(location.hash||''));return;}
   fetch('/sw.js?_='+Date.now(),{cache:'no-store'}).then(function(r){return r.text();}).then(function(t){
@@ -9666,6 +9666,7 @@ async function enterDemo(){
     _rawSeedAssets=_buildDemo({});
     assets=_rawSeedAssets.slice();
     dataReady=true;
+    _pricesLive=true; // demo: los precios del seed son válidos → mostrar valor total (no "Actualizando…")
     fetchGlobalFxRates().then(()=>render()).catch(()=>render());
     // Background: load live prices + history
     const isinList=seed.positions.map(p=>p.isin).join(',');
