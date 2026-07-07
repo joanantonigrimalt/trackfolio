@@ -11,3 +11,18 @@ backup.sql
 supabase/backup.dump
 
 .claude/launch.json
+
+# --- Android TWA build (Bubblewrap) — NO subir al repo ---
+*.keystore
+android.keystore
+*.aab
+*.apk
+/app/
+/gradle/
+gradlew
+gradlew.bat
+settings.gradle
+build.gradle
+gradle.properties
+hs_err_pid*.log
+twa-manifest.json.bak
