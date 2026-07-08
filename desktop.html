@@ -6,7 +6,7 @@
   (served no-cache, version-bumped each deploy). Works even where SW/no-store
   are ignored, because it is plain page JS. */
 (function(){try{
-  var FA_BUILD=window.FA_BUILD='346';
+  var FA_BUILD=window.FA_BUILD='347';
   var s=location.search;
   if(s.indexOf('vchk')>-1||s.indexOf('_v=')>-1){history.replaceState(null,'',location.pathname+(location.hash||''));return;}
   fetch('/sw.js?_='+Date.now(),{cache:'no-store'}).then(function(r){return r.text();}).then(function(t){
@@ -8892,15 +8892,18 @@ async function _bgRefreshPrices(){
   try{
     const isins=[...new Set(assets.filter(a=>a.isin&&a.isin.length>8).map(a=>a.isin))];
     if(!isins.length)return;
+    // Usa la respuesta VIVA (refresh=1) directamente por lotes. El guardado a Supabase es
+    // fire-and-forget (Vercel puede matar la lambda antes de persistir), así que NO re-leemos
+    // la caché después — leerla devolvía datos rancios (p.ej. NAV de fondos de hace meses).
     const batchSize=5;
+    const _collected=[];
     for(let i=0;i<isins.length;i+=batchSize){
       const chunk=isins.slice(i,i+batchSize);
-      await fetch('/api/portfolio/coverage?isin='+encodeURIComponent(chunk.join(','))+'&refresh=1').catch(()=>{});
+      const cj=await getJson('/api/portfolio/coverage?isin='+encodeURIComponent(chunk.join(','))+'&refresh=1',12000).catch(()=>null);
+      if(cj?.results?.length)_collected.push(...cj.results);
     }
-    // Re-fetch coverage WITHOUT refresh=1 — Supabase was just updated by the batched refresh above,
-    // so reading cache now gives today's data without risking provider timeouts on a bulk call.
-    const freshCov=await getJson('/api/portfolio/coverage?isin='+encodeURIComponent(isins.join(',')),12000).catch(()=>null);
-    if(freshCov?.results?.length>0){
+    const freshCov={results:_collected};
+    if(freshCov.results.length>0){
       freshCov.results.forEach(e=>{
         _cvMap[e.isin]=e;
         // Update history in assets array so charts immediately show fresh data
