@@ -2,7 +2,7 @@
 // Strategy: Cache-First for static assets, Network-First for API calls
 // Provides offline shell + background sync for critical data
 
-const CACHE_VERSION = 'finasset-v342';
+const CACHE_VERSION = 'finasset-v343';
 const STATIC_CACHE  = `${CACHE_VERSION}-static`;
 const DATA_CACHE    = `${CACHE_VERSION}-data`;
 
@@ -20,7 +20,6 @@ const STATIC_ASSETS = [
 // API routes to cache with Network-First strategy (short TTL)
 const API_CACHE_ROUTES = [
   '/api/portfolio/intraday',
-  '/api/portfolio/real-history',
   '/api/dividends/history',
   '/api/etf/profile',
 ];
@@ -171,10 +170,15 @@ self.addEventListener('sync', event => {
 });
 
 async function syncPortfolio() {
+  // Revalida en segundo plano las rutas de datos realmente existentes (Network-First).
   try {
     const cache = await caches.open(DATA_CACHE);
-    const response = await fetch('/api/portfolio/real-history');
-    if (response.ok) cache.put('/api/portfolio/real-history', response);
+    await Promise.all(API_CACHE_ROUTES.map(async route => {
+      try {
+        const response = await fetch(route);
+        if (response.ok) await cache.put(route, response.clone());
+      } catch (_) {}
+    }));
   } catch (_) {}
 }
 

@@ -6,7 +6,7 @@
   (served no-cache, version-bumped each deploy). Works even where SW/no-store
   are ignored, because it is plain page JS. */
 (function(){try{
-  var FA_BUILD=window.FA_BUILD='342';
+  var FA_BUILD=window.FA_BUILD='343';
   var s=location.search;
   if(s.indexOf('vchk')>-1||s.indexOf('_v=')>-1){history.replaceState(null,'',location.pathname+(location.hash||''));return;}
   fetch('/sw.js?_='+Date.now(),{cache:'no-store'}).then(function(r){return r.text();}).then(function(t){
@@ -4711,7 +4711,13 @@ const _rawLang = localStorage.getItem('tf_lang') || 'es';
 const _rawCcy  = localStorage.getItem('tf_display_ccy') || 'EUR';
 let currentLang = _VALID_LANGS.has(_rawLang) ? _rawLang : 'es';
 let _displayCcy = _VALID_CCYS.has(_rawCcy)   ? _rawCcy  : 'EUR';
-let _fxRates = { EUR: 1, USD: 1.09, GBP: 0.86, CHF: 1.06 }; // EUR→X rates, refreshed at boot
+// EUR→X rates, refreshed at boot desde /api/fx/rates (mismos valores de fallback que el servidor).
+let _fxRates = { EUR: 1, USD: 1.08, GBP: 0.85, CHF: 0.94, JPY: 168, CAD: 1.47, AUD: 1.63, SEK: 11.3, NOK: 11.5, DKK: 7.46, PLN: 4.3, CNY: 7.8, HKD: 8.5, SGD: 1.46, NZD: 1.78, MXN: 19.8, BRL: 5.9, ZAR: 19.6, TRY: 38, INR: 92, KRW: 1470, CZK: 25.2, HUF: 395, RON: 4.97, ILS: 4.0 };
+// #8: breadcrumbs de errores — hace visibles los fallos que de otro modo se tragarían en silencio.
+window._faErrors = window._faErrors || [];
+function _faWarn(tag, e){ try{ const m=(e&&e.message)||String(e||''); window._faErrors.push({t:Date.now(),tag,m}); if(window._faErrors.length>50)window._faErrors.shift(); console.warn('[fa:'+tag+']', m); }catch(_){} }
+window.addEventListener('error', ev=>_faWarn('window.error', ev.error||ev.message));
+window.addEventListener('unhandledrejection', ev=>_faWarn('unhandledrejection', ev.reason));
 const t = k => I18N[currentLang][k] || I18N.es[k] || k;
 
 function applyTranslations() {
@@ -5541,6 +5547,7 @@ function removePosition(){
   const ov=getOverrides();delete ov[currentModalIsin];saveOverrides(ov);
   if(a?.isCustom){
     const ca=getCustomAssets();delete ca[currentModalIsin];saveCustomAssets(ca);
+    recordTombstone(currentModalIsin); // propaga el borrado a otros dispositivos
     const idx=_rawSeedAssets.findIndex(x=>x.isin===currentModalIsin);
     if(idx>-1)_rawSeedAssets.splice(idx,1);
   }
@@ -7972,8 +7979,8 @@ async function boot(){
   if (!seed.positions || !seed.positions.length) {
     const cn = document.getElementById('chartNote');
     if (cn) cn.innerHTML = currentLang==='es'
-      ? '&#128202; Tu cartera está vacía. Pulsa <strong>+ Nueva posición</strong> para añadir tu primer activo.'
-      : '&#128202; Your portfolio is empty. Click <strong>+ New position</strong> to add your first asset.';
+      ? '&#128202; Tu cartera está vacía. Pulsa <strong>+ Nueva posición</strong> para añadir tu primer activo, o impórtala desde <strong>MyInvestor</strong> (catálogo o CSV).'
+      : '&#128202; Your portfolio is empty. Click <strong>+ New position</strong> to add your first asset, or import it from <strong>MyInvestor</strong> (catalog or CSV).';
     if(_sbUser) await syncFromCloud().catch(()=>{});
     loadCustomIntoAssets(); dataReady=true; render();
     return;
@@ -8128,7 +8135,29 @@ document.querySelectorAll('.langBtn').forEach(btn=>btn.addEventListener('click',
 
 // ========== Custom Assets (localStorage) ==========
 function getCustomAssets(){try{const o=JSON.parse(localStorage.getItem('tf_custom_assets')||'{}');return o!==null&&typeof o==='object'&&!Array.isArray(o)?o:{};}catch{return {};}}
-function saveCustomAssets(o){localStorage.setItem('tf_custom_assets',JSON.stringify(o));_debouncedSync();}
+// ── Tombstones: registran BORRADOS para que se propaguen entre dispositivos ──
+// (el merge de custom_assets es aditivo; sin tombstones un activo borrado reaparecía desde la nube)
+function getTombstones(){try{const o=JSON.parse(localStorage.getItem('tf_deleted')||'{}');return o&&typeof o==='object'&&!Array.isArray(o)?o:{};}catch{return {};}}
+function saveTombstones(o){localStorage.setItem('tf_deleted',JSON.stringify(o||{}));}
+function recordTombstone(isin){if(!isin)return;const t=getTombstones();t[isin]=new Date().toISOString();saveTombstones(t);}
+function mergeTombstones(a,b){const m={...(a||{})};Object.keys(b||{}).forEach(k=>{if(!m[k]||new Date(b[k])>new Date(m[k]))m[k]=b[k];});return m;}
+function saveCustomAssets(o){
+  // Sella _uts (marca temporal de última edición) en los activos nuevos/cambiados → permite LWW en el merge.
+  try{
+    const prev=getCustomAssets(),now=new Date().toISOString(),t=getTombstones();let tChg=false;
+    Object.keys(o||{}).forEach(k=>{
+      const it=o[k];
+      if(it&&typeof it==='object'){
+        const cur=JSON.stringify({...it,_uts:0});
+        const old=prev[k]?JSON.stringify({...prev[k],_uts:0}):null;
+        if(!prev[k]||cur!==old||!it._uts)it._uts=now;
+      }
+      if(t[k]){delete t[k];tChg=true;} // presente ⇒ no borrado: limpia su tombstone
+    });
+    if(tChg)saveTombstones(t);
+  }catch(_){}
+  localStorage.setItem('tf_custom_assets',JSON.stringify(o));_debouncedSync();
+}
 // Quita el sufijo de mercado de un ISIN (p.ej. IE00B43VDT70.SG → IE00B43VDT70). Un ISIN válido son 12 caracteres.
 function cleanIsin(s){ const m=String(s||'').match(/^([A-Z]{2}[A-Z0-9]{10})\.[A-Za-z0-9]+$/i); return m?m[1].toUpperCase():String(s||''); }
 // Migra activos guardados con ISIN sufijado (.SG, .MI, .L…) al ISIN limpio → arregla histórico/categoría/precio
@@ -8805,16 +8834,18 @@ async function syncToCloud(){
       const r=await fetch(base+'/rest/v1/user_positions?on_conflict=user_id',{method:'POST',headers:{apikey:_sb.supabaseKey,Authorization:'Bearer '+tok,'Content-Type':'application/json','Prefer':'resolution=merge-duplicates,return=minimal'},body:JSON.stringify(payload),signal:ctrl.signal});
       clearTimeout(to); return r;
     };
-    const full={user_id:_sbUser.id,overrides:getOverrides(),custom_assets:getCustomAssets(),liquidity:getLiquidity(),updated_at:new Date().toISOString()};
-    let r=await _post(full);
-    if(!r.ok){
+    const full={user_id:_sbUser.id,overrides:getOverrides(),custom_assets:getCustomAssets(),liquidity:getLiquidity(),deleted_assets:getTombstones(),updated_at:new Date().toISOString()};
+    // No pisar la liquidez de la nube con un objeto vacío antes de haber bajado la nube.
+    if(!_cloudPulled && (!full.liquidity || !Object.keys(full.liquidity).length)) delete full.liquidity;
+    const _essential={user_id:1,overrides:1,custom_assets:1,updated_at:1};
+    let payload={...full}, r=await _post(payload), tries=0;
+    while(!r.ok && tries<4){
       const body=await r.text().catch(()=>'');
-      // Fallback: la columna liquidity puede no existir todavía → reintenta sin ella
-      if(/liquidit/i.test(body)){
-        const{user_id,overrides,custom_assets,updated_at}=full;
-        r=await _post({user_id,overrides,custom_assets,updated_at});
-      }
-      if(!r.ok)throw new Error('HTTP '+r.status+(body?' '+body.slice(0,80):''));
+      // Fallback: una columna opcional (liquidity, deleted_assets) puede no existir aún → quítala y reintenta.
+      const m=body.match(/Could not find the '([^']+)' column/)||(/liquidit/i.test(body)?[null,'liquidity']:null);
+      const col=m&&m[1];
+      if(col&&(col in payload)&&!_essential[col]){ delete payload[col]; r=await _post(payload); tries++; continue; }
+      throw new Error('HTTP '+r.status+(body?' '+body.slice(0,80):''));
     }
     localStorage.setItem('tf_last_sync',new Date().toISOString());
     localStorage.setItem('tf_cloud_synced',full.updated_at); // versión de nube que acabamos de escribir
@@ -8935,9 +8966,14 @@ async function syncFromCloud(){
   try{
     // REST directo (el query-builder _sb.from() se cuelga al refrescar token)
     const _base=_shareBase(), _tok=await _shareTok();
-    const _ctrl=new AbortController(); const _to=setTimeout(()=>_ctrl.abort(),8000);
-    const _r=await fetch(_base+'/rest/v1/user_positions?user_id=eq.'+encodeURIComponent(_sbUser.id)+'&select=overrides,custom_assets,liquidity,updated_at&limit=1',{headers:{apikey:_sb.supabaseKey,Authorization:'Bearer '+_tok},signal:_ctrl.signal});
-    clearTimeout(_to);
+    const _sel=async(cols)=>{
+      const _ctrl=new AbortController(); const _to=setTimeout(()=>_ctrl.abort(),8000);
+      const rr=await fetch(_base+'/rest/v1/user_positions?user_id=eq.'+encodeURIComponent(_sbUser.id)+'&select='+cols+'&limit=1',{headers:{apikey:_sb.supabaseKey,Authorization:'Bearer '+_tok},signal:_ctrl.signal});
+      clearTimeout(_to); return rr;
+    };
+    let _r=await _sel('overrides,custom_assets,liquidity,deleted_assets,updated_at');
+    // Fallback: si deleted_assets aún no existe (migración pendiente), reintenta sin esa columna.
+    if(!_r.ok){ const _b=await _r.text().catch(()=>''); if(/deleted_assets/i.test(_b))_r=await _sel('overrides,custom_assets,liquidity,updated_at'); }
     if(!_r.ok)throw new Error('HTTP '+_r.status);
     const _rows=await _r.json();
     const data=(Array.isArray(_rows)&&_rows[0])?_rows[0]:null;
@@ -8957,10 +8993,21 @@ async function syncFromCloud(){
     // Defensive: handle both object (server-parsed) and string (raw TEXT) forms
     const _ov = typeof data.overrides === 'string' ? JSON.parse(data.overrides || '{}') : (data.overrides || {});
     const _ca = typeof data.custom_assets === 'string' ? JSON.parse(data.custom_assets || '{}') : (data.custom_assets || {});
-    // Custom assets: ALWAYS merge from cloud (additive). Cloud adds to local — never loses assets added on any device.
+    // Custom assets: merge LWW por _uts + tombstones (un borrado en cualquier dispositivo se respeta salvo re-alta posterior).
     const _localCa=getCustomAssets();
-    const _mergedCa={..._localCa,..._ca};
-    const _caChanged=Object.keys(_mergedCa).length!==Object.keys(_localCa).length||JSON.stringify(_mergedCa)!==JSON.stringify(_localCa);
+    const _cloudTomb = typeof data.deleted_assets==='string' ? (()=>{try{return JSON.parse(data.deleted_assets||'{}');}catch{return {};}})() : (data.deleted_assets||{});
+    const _tomb=mergeTombstones(getTombstones(),_cloudTomb);
+    const _mergedCa={};
+    new Set([...Object.keys(_localCa),...Object.keys(_ca)]).forEach(k=>{
+      const lo=_localCa[k],cl=_ca[k];
+      const pick = (lo&&cl) ? (new Date(cl._uts||0)>new Date(lo._uts||0)?cl:lo) : (lo||cl);
+      const tt=_tomb[k];
+      if(tt && (!pick._uts || new Date(tt)>=new Date(pick._uts))) return; // borrado gana
+      _mergedCa[k]=pick;
+    });
+    Object.keys(_tomb).forEach(k=>{ if(_mergedCa[k]) delete _tomb[k]; }); // el activo sobrevive → poda su tombstone
+    saveTombstones(_tomb);
+    const _caChanged=JSON.stringify(_mergedCa)!==JSON.stringify(_localCa);
     if(_caChanged)localStorage.setItem('tf_custom_assets',JSON.stringify(_mergedCa));
     if(cloudTs>localTs||localEmpty||cloudChanged){
       // Write directly to localStorage without triggering _debouncedSync
@@ -10875,7 +10922,7 @@ function _insCard(r) {
   const shares  = Number(r.securitiesTransacted)||0;
   const price   = Number(r.price)||0;
   const value   = shares * price;
-  const sharesStr = shares ? shares.toLocaleString('es-ES') : '—';
+  const sharesStr = shares ? shares.toLocaleString(currentLang==='es'?'es-ES':'en-GB') : '—';
   const priceStr  = price  ? '$'+price.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2}) : '—';
   const valueStr  = value > 500 ? _fmtMoney(value) : '';
   const date    = ((r.transactionDate||r.date||'')+'').slice(0,10);
@@ -11417,10 +11464,14 @@ async function _registerPendingReferral(userId) {
   if (!pendingCode || !_sb) return;
 
   try {
-    // REST directo vía _comF (el query-builder _sb.from() se cuelga al refrescar token)
-    // Buscar al referente por su código
-    const _codeRows = await _comF('GET','referral_codes','code=eq.'+encodeURIComponent(pendingCode)+'&select=user_id&limit=1');
-    const codeRow = (Array.isArray(_codeRows)&&_codeRows[0]) || null;
+    // Resolver code → referrer_id vía RPC SECURITY DEFINER (no expone toda la tabla referral_codes).
+    let _refUserId = null;
+    try {
+      const _tok = localStorage.getItem('fa_token') || (_sbUser&&_sbUser.access_token) || _sb.supabaseKey;
+      const _rr = await fetch(_sb.supabaseUrl+'/rest/v1/rpc/resolve_referral_code',{method:'POST',headers:{apikey:_sb.supabaseKey,'Authorization':'Bearer '+_tok,'Content-Type':'application/json'},body:JSON.stringify({p_code:pendingCode})});
+      if (_rr.ok) { const _v = await _rr.json().catch(()=>null); _refUserId = (typeof _v==='string') ? _v : (_v && _v.user_id) || null; }
+    } catch(_) {}
+    const codeRow = _refUserId ? { user_id: _refUserId } : null;
 
     if (!codeRow || codeRow.user_id === userId) {
       // Código no encontrado o auto-referido — limpiar y abortar
@@ -11586,9 +11637,9 @@ function _comRenderPost(p) {
 
   return `<div class="com-post" data-id="${p.id}">
     <div class="com-post-hd">
-      <div class="com-post-av" style="background:linear-gradient(135deg,${colors[colorIdx]})" onclick="_comShowProfile('${p.user_id}','${_comEsc(p.display_name)}')">${initials}</div>
+      <div class="com-post-av" style="background:linear-gradient(135deg,${colors[colorIdx]})" onclick="_comShowProfile('${_comJsAttr(p.user_id)}','${_comJsAttr(p.display_name)}')">${initials}</div>
       <div class="com-post-meta">
-        <div class="com-post-name" onclick="_comShowProfile('${p.user_id}','${_comEsc(p.display_name)}')">${_comEsc(p.display_name)}</div>
+        <div class="com-post-name" onclick="_comShowProfile('${_comJsAttr(p.user_id)}','${_comJsAttr(p.display_name)}')">${_comEsc(p.display_name)}</div>
         <div class="com-post-handle">@${(p.display_name||'').toLowerCase().replace(/\s+/,'')}</div>
       </div>
       <div class="com-post-time">${timeAgo}</div>
@@ -11904,7 +11955,7 @@ async function _comLoadTopMembers() {
     if (!sorted.length) { el.innerHTML = '<div style="font-size:12px;color:#4a6b55">'+(currentLang==='es'?'Aún no hay miembros activos':'No active members yet')+'</div>'; return; }
     const colors = ['#1a7a43,#2ecc71','#1a4a6a,#3498db','#4a3a1a,#d4af37','#6a1a4a,#c39bd3'];
     el.innerHTML = sorted.map(([uid, u], i) => `
-      <div class="com-top-user" onclick="_comShowProfile('${uid}','${_comEsc(u.name)}')">
+      <div class="com-top-user" onclick="_comShowProfile('${_comJsAttr(uid)}','${_comJsAttr(u.name)}')">
         <div class="com-top-user-av" style="background:linear-gradient(135deg,${colors[i%colors.length]})">${(u.name||'?').slice(0,2).toUpperCase()}</div>
         <div><div class="com-top-user-name">${_comEsc(u.name)}</div><div class="com-top-user-handle">${u.posts} posts</div></div>
         <div class="com-top-user-gain com-chg-pos">♥ ${u.likes}</div>
@@ -11924,6 +11975,18 @@ function _comTimeAgo(ts) {
 
 function _comEsc(str) {
   return String(str||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+}
+// Seguro dentro de un literal JS entre comillas simples, a su vez dentro de un atributo HTML entre comillas dobles.
+// Escapa primero para JS (\, ') y luego para HTML — evita XSS almacenado vía nombre de perfil en onclick.
+function _comJsAttr(str) {
+  return String(str||'')
+    .replace(/\\/g,'\\\\')
+    .replace(/'/g,"\\'")
+    .replace(/[\r\n\t]/g,' ')
+    .replace(/&/g,'&amp;')
+    .replace(/</g,'&lt;')
+    .replace(/>/g,'&gt;')
+    .replace(/"/g,'&quot;');
 }
 
 // ── Alert sheet (legacy mobile sheet reused for asset-detail alerts) ──────────

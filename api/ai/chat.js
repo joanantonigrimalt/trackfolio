@@ -18,6 +18,7 @@ const TEMPERATURE  = 0.3;
 const ALLOWED_ROLES   = new Set(['user', 'assistant']);
 const MAX_CONTENT_LEN = 4000;
 const MAX_MESSAGES    = 20;
+const PRO_HARD_CAP    = 1500;  // tope duro de coste para Pro (la UI lo muestra como "ilimitado")
 
 // ── Lightweight in-edge rate limit (per IP) — cost-abuse backstop ─────────
 const RL_MAX = 15;            // requests per IP per window
@@ -206,6 +207,40 @@ export default async function handler(req) {
   const model = plan === 'pro' ? MODEL_PRO : MODEL_FREE;
   const oaMessages = [{ role: 'system', content: buildSystemPrompt(ctx) }, ...turns];
 
+  // ── Reserva ATÓMICA de cuota antes de llamar a OpenAI ──────────────────────
+  // Un único UPDATE ... WHERE used < limit (con bloqueo de fila) evita que peticiones
+  // concurrentes se salten el límite. Pro tiene un tope duro de coste (PRO_HARD_CAP).
+  // Si la RPC aún no existe (migración pendiente), se cae al comportamiento anterior.
+  const effLimit = plan === 'pro' ? PRO_HARD_CAP : limit;
+  const _bump = async (delta) => {
+    try {
+      const rr = await fetch(`${sbUrl}/rest/v1/rpc/bump_ai_usage`, {
+        method: 'POST',
+        headers: { apikey: svcKey, Authorization: `Bearer ${svcKey}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify({ p_user: user.id, p_month: nowMonth, p_limit: effLimit, p_delta: delta }),
+      });
+      if (!rr.ok) return { ok: false, missing: rr.status === 404 };
+      const v = await rr.json().catch(() => undefined);
+      return { ok: true, value: (v === null || v === undefined) ? null : Number(v) };
+    } catch { return { ok: false, missing: false }; }
+  };
+  let _atomic = false, newUsed = used + 1;
+  const _res = await _bump(1);
+  if (_res.ok) {
+    _atomic = true;
+    if (_res.value === null) {
+      // Límite alcanzado (o tope de coste Pro) — no se ha consumido nada.
+      return json({
+        error: plan === 'pro'
+          ? 'Has alcanzado el límite de seguridad mensual de Vera. Escríbenos si necesitas más.'
+          : `Has alcanzado tu límite mensual de mensajes de Vera (${limit}). Mejora a Premium para conversaciones ilimitadas.`,
+        code: 'quota',
+      }, 402);
+    }
+    newUsed = _res.value;
+  }
+  // Si !_res.ok se usa el conteo no atómico (fallback): la comprobación previa de cuota ya aplicó.
+
   // ── Call OpenAI with streaming ─────────────────────────────────────────────
   let oaRes;
   try {
@@ -215,18 +250,18 @@ export default async function handler(req) {
       body: JSON.stringify({ model, messages: oaMessages, max_tokens: MAX_TOKENS, temperature: TEMPERATURE, stream: true }),
     });
   } catch {
+    if (_atomic) _bump(-1); // reembolsar: la llamada no llegó a realizarse
     return json({ error: 'Error de red al conectar con OpenAI.' }, 502);
   }
 
   if (!oaRes.ok) {
+    if (_atomic) _bump(-1); // reembolsar: OpenAI devolvió error
     let errMsg = `Error de OpenAI: ${oaRes.status}`;
     try { const eb = await oaRes.json(); if (eb?.error?.message) errMsg = eb.error.message; } catch {}
     return json({ error: errMsg }, oaRes.status);
   }
 
-  // Persist the incremented usage (fire-and-forget). Only counts on a
-  // successful OpenAI response, so failed calls don't burn quota.
-  const newUsed = used + 1;
+  // La cuota ya se reservó atómicamente arriba (o se contará vía metadata en modo fallback).
   const newCredits = { used: newUsed, limit, remaining: limit < 0 ? -1 : Math.max(0, limit - newUsed), month: nowMonth };
   const persistUsage = () => {
     try {
@@ -271,7 +306,7 @@ export default async function handler(req) {
       // Emit updated credits then DONE
       await writer.write(encoder.encode(`data: ${JSON.stringify({ credits: newCredits })}\n\n`));
       await writer.write(encoder.encode('data: [DONE]\n\n'));
-      if (gotText) persistUsage();
+      if (gotText) persistUsage(); else if (_atomic) _bump(-1); // sin texto → reembolsar la reserva
     } catch {
       try { await writer.write(encoder.encode(`data: ${JSON.stringify({ error: 'Stream interrupted' })}\n\n`)); } catch {}
     } finally {

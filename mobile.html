@@ -10,7 +10,7 @@
   no-store headers are ignored (in-app webviews) because it is plain page JS.
   Source of truth = sw.js (always served no-cache, version-bumped each deploy). */
 (function(){try{
-  var FA_BUILD='342';
+  var FA_BUILD='343';
   var s=location.search;
   if(s.indexOf('vchk')>-1||s.indexOf('_v=')>-1){
     // Clean the ugly ?vchk= / ?_v= from the URL silently
@@ -1522,7 +1522,7 @@ table.an-corr-mtx{border-collapse:separate;border-spacing:4px}
     <span id="summaryGainPct"></span><span id="summaryAssetCount"></span>
   </div>
   <div id="brokerFilterBar"></div>
-  <div class="card"><div class="sectionTitle" data-i18n="positions">Posiciones</div><div id="list"></div></div>
+  <div class="card"><div class="sectionTitle" style="display:flex;align-items:center;justify-content:space-between;gap:8px"><span data-i18n="positions">Posiciones</span><select class="posSortSel" aria-label="Ordenar posiciones" onchange="_mSetPosSort(this.value)" style="font:inherit;font-size:11px;font-weight:600;color:#15803d;background:transparent;border:1px solid #cfe0d5;border-radius:8px;padding:3px 6px"></select></div><div id="list"></div></div>
   <div class="card" id="homeLiqCard" style="display:none">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
       <div class="sectionTitle" style="margin-bottom:0">💰 Liquidez</div>
@@ -1589,7 +1589,7 @@ table.an-corr-mtx{border-collapse:separate;border-spacing:4px}
     <span class="lt-text">Efectivo, cuentas de ahorro, depósitos…</span>
     <span class="lt-pill">+ Liquidez</span>
   </div>
-  <div class="card"><div class="sectionTitle" data-i18n="positions">Posiciones</div><div id="portfolioList"></div></div>
+  <div class="card"><div class="sectionTitle" style="display:flex;align-items:center;justify-content:space-between;gap:8px"><span data-i18n="positions">Posiciones</span><select class="posSortSel" aria-label="Ordenar posiciones" onchange="_mSetPosSort(this.value)" style="font:inherit;font-size:11px;font-weight:600;color:#15803d;background:transparent;border:1px solid #cfe0d5;border-radius:8px;padding:3px 6px"></select></div><div id="portfolioList"></div></div>
   <div class="card" id="portfolioLiqCard" style="display:none">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
       <div class="sectionTitle" style="margin-bottom:0">💰 Liquidez</div>
@@ -2386,6 +2386,7 @@ table.an-corr-mtx{border-collapse:separate;border-spacing:4px}
   <div class="adNav">
     <button class="backBtn" id="btnAssetBack">‹</button>
     <div class="adNavTitle" id="adNavTitle">Activo</div>
+    <button id="btnAssetAlert" aria-label="Crear alerta de precio" title="Alerta de precio" onclick="if(selectedAsset)openAlertSheet(selectedAsset.isin)" style="margin-left:auto;background:transparent;border:none;font-size:20px;line-height:1;cursor:pointer;padding:6px;color:#15803d;-webkit-tap-highlight-color:transparent">🔔</button>
   </div>
   <div class="card adHeroCard">
     <div class="adHeroTop">
@@ -3777,23 +3778,23 @@ table.an-corr-mtx{border-collapse:separate;border-spacing:4px}
 </script>
 
 <!-- TAB BAR -->
-<div class="tab" id="mainTabBar">
+<nav class="tab" id="mainTabBar" role="navigation" aria-label="Navegación principal">
   <div class="tab-row tab-row-extra" id="tabExtraRow">
     <div style="flex:1"></div>
     <div style="flex:1"></div>
-    <button data-screen="transacciones" onclick="closeExtraTabRow()"><b>↕</b><span>Transac.</span></button>
-    <button data-screen="prestamos" onclick="closeExtraTabRow()"><b>⏱</b><span>Préstamos</span></button>
-    <button data-screen="impuestos" onclick="closeExtraTabRow()"><b>◫</b><span>Impuestos</span></button>
+    <button data-screen="transacciones" onclick="closeExtraTabRow()"><b aria-hidden="true">↕</b><span data-i18n="tabTransactions">Transac.</span></button>
+    <button data-screen="prestamos" onclick="closeExtraTabRow()"><b aria-hidden="true">⏱</b><span data-i18n="tabLoans">Préstamos</span></button>
+    <button data-screen="impuestos" onclick="closeExtraTabRow()"><b aria-hidden="true">◫</b><span data-i18n="tabTax">Impuestos</span></button>
   </div>
   <div class="tab-row tab-row-main">
-    <button class="active" data-screen="home"><b>⌂</b><span data-i18n="tabHome">Inicio</span></button>
-    <button data-screen="analysis"><b>◈</b><span data-i18n="tabAnalysis">Análisis</span></button>
-    <button data-screen="comunidad"><b>❖</b><span>Foro</span></button>
-    <button data-screen="myinvestor"><b>◐</b><span>MY</span></button>
-    <button data-screen="dividends"><b>◎</b><span>Divid.</span></button>
-    <button class="tab-more-btn" id="tabMoreBtn" onclick="toggleExtraTabRow(event)"><b>⊞</b><span>Más</span></button>
+    <button class="active" data-screen="home"><b aria-hidden="true">⌂</b><span data-i18n="tabHome">Inicio</span></button>
+    <button data-screen="analysis"><b aria-hidden="true">◈</b><span data-i18n="tabAnalysis">Análisis</span></button>
+    <button data-screen="comunidad"><b aria-hidden="true">❖</b><span data-i18n="tabForum">Foro</span></button>
+    <button data-screen="myinvestor"><b aria-hidden="true">◐</b><span data-i18n="tabMy">MyInvestor</span></button>
+    <button data-screen="dividends"><b aria-hidden="true">◎</b><span data-i18n="tabDivShort">Divid.</span></button>
+    <button class="tab-more-btn" id="tabMoreBtn" onclick="toggleExtraTabRow(event)"><b aria-hidden="true">⊞</b><span data-i18n="tabMore">Más</span></button>
   </div>
-</div>
+</nav>
 
 
 <!-- Demo mode banner -->
@@ -3811,6 +3812,7 @@ const I18N = {
     chartNoData:'Histórico insuficiente para construir una curva.',
     sumInvested:'Capital invertido',sumGain:'Ganancia acumulada',myPortfolio:'Mi cartera',
     tabHome:'Inicio',tabPortfolio:'Cartera',tabAnalysis:'Análisis',tabDividends:'Dividendos',tabIA:'IA',
+    tabForum:'Foro',tabMy:'MY',tabDivShort:'Divid.',tabTransactions:'Transac.',tabLoans:'Préstamos',tabTax:'Impuestos',tabMore:'Más',
     navDividends:'Dividendos',navTax:'Fiscal',add:'Añadir',account:'Cuenta',
     portfolioSub:'Detalle completo de posiciones',positions:'Posiciones',
     analysisSub:'Salud, distribución y rendimiento',healthScore:'Score de salud',distribution:'Distribución por tipo',performance:'Rentabilidad por activo',vsWorld:'Portfolio vs MSCI World',
@@ -3832,6 +3834,7 @@ const I18N = {
     chartNoData:'Insufficient history to build a chart.',
     sumInvested:'Invested capital',sumGain:'Accumulated gain',myPortfolio:'My portfolio',
     tabHome:'Home',tabPortfolio:'Portfolio',tabAnalysis:'Analysis',tabDividends:'Dividends',tabIA:'AI',tabFinX:'FinX',
+    tabForum:'Forum',tabMy:'MY',tabDivShort:'Div.',tabTransactions:'Transactions',tabLoans:'Loans',tabTax:'Taxes',tabMore:'More',
     navDividends:'Dividends',navTax:'Tax',add:'Add',account:'Account',
     portfolioSub:'Full position details',positions:'Positions',
     analysisSub:'Health, distribution & performance',healthScore:'Health score',distribution:'Distribution by type',performance:'Performance by asset',vsWorld:'Portfolio vs MSCI World',
@@ -3855,7 +3858,13 @@ const _rawLang = localStorage.getItem('tf_lang') || 'es';
 const _rawCcy  = localStorage.getItem('tf_display_ccy') || 'EUR';
 let currentLang = _VALID_LANGS.has(_rawLang) ? _rawLang : 'es';
 let _displayCcy = _VALID_CCYS.has(_rawCcy)   ? _rawCcy  : 'EUR';
-let _fxRates = { EUR: 1, USD: 1.09, GBP: 0.86, CHF: 1.06 }; // EUR→X rates, refreshed at boot
+// EUR→X rates, refreshed at boot desde /api/fx/rates (mismos valores de fallback que el servidor).
+let _fxRates = { EUR: 1, USD: 1.08, GBP: 0.85, CHF: 0.94, JPY: 168, CAD: 1.47, AUD: 1.63, SEK: 11.3, NOK: 11.5, DKK: 7.46, PLN: 4.3, CNY: 7.8, HKD: 8.5, SGD: 1.46, NZD: 1.78, MXN: 19.8, BRL: 5.9, ZAR: 19.6, TRY: 38, INR: 92, KRW: 1470, CZK: 25.2, HUF: 395, RON: 4.97, ILS: 4.0 };
+// #8: breadcrumbs de errores — hace visibles los fallos que de otro modo se tragarían en silencio.
+window._faErrors = window._faErrors || [];
+function _faWarn(tag, e){ try{ const m=(e&&e.message)||String(e||''); window._faErrors.push({t:Date.now(),tag,m}); if(window._faErrors.length>50)window._faErrors.shift(); console.warn('[fa:'+tag+']', m); }catch(_){} }
+window.addEventListener('error', ev=>_faWarn('window.error', ev.error||ev.message));
+window.addEventListener('unhandledrejection', ev=>_faWarn('unhandledrejection', ev.reason));
 let _pricesLive = false; // true once fresh coverage (not cache) has been loaded
 let _cvMap = {}; // global coverage map — shared between boot, sync, and loadCustomIntoAssets
 const t = k => I18N[currentLang][k] || I18N.es[k] || k;
@@ -4751,6 +4760,7 @@ function removePosition(){
   const ov=getOverrides();delete ov[currentModalIsin];saveOverrides(ov);
   if(a?.isCustom){
     const ca=getCustomAssets();delete ca[currentModalIsin];saveCustomAssets(ca);
+    recordTombstone(currentModalIsin); // propaga el borrado a otros dispositivos
     const idx=_rawSeedAssets.findIndex(x=>x.isin===currentModalIsin);
     if(idx>-1)_rawSeedAssets.splice(idx,1);
   }
@@ -6584,21 +6594,44 @@ function renderBrokerFilter(){
     btn.onclick=()=>{_activeBrokerFilter=btn.dataset.bf||null;renderBrokerFilter();renderLists();if(typeof renderChart==='function')renderChart();};
   });
 }
+// ── Orden configurable de Posiciones (paridad con la tabla ordenable de escritorio) ──
+let _mPosSort = (()=>{try{return localStorage.getItem('fa_pos_sort')||'value';}catch(_){return 'value';}})();
+function _mSetPosSort(v){ _mPosSort=v; try{localStorage.setItem('fa_pos_sort',v);}catch(_){} renderLists(); }
+function _mSortCmp(a,b){
+  const av=toDisplay(a.value,assetCcy(a)),ai=toDisplay(a.invested,costCcy(a));
+  const bv=toDisplay(b.value,assetCcy(b)),bi=toDisplay(b.invested,costCcy(b));
+  switch(_mPosSort){
+    case 'gainPct': return ((bv-bi)/(bi||1))-((av-ai)/(ai||1))||0;
+    case 'name':    return String(a.name||'').localeCompare(String(b.name||''));
+    case 'day':     return ((getDayPct(b)??-Infinity)-(getDayPct(a)??-Infinity))||0;
+    default:        { const d=bv-av; return isNaN(d)?0:d; } // 'value'
+  }
+}
+function _fillPosSortSelects(){
+  const isEs=currentLang==='es';
+  const opts=[['value',isEs?'Valor':'Value'],['gainPct',isEs?'Rentabilidad':'Return'],['day',isEs?'Hoy':'Today'],['name',isEs?'Nombre':'Name']];
+  document.querySelectorAll('.posSortSel').forEach(sel=>{
+    sel.innerHTML=opts.map(([v,l])=>`<option value="${v}"${v===_mPosSort?' selected':''}>${l}</option>`).join('');
+    sel.value=_mPosSort;
+  });
+}
 function renderLists(){
+  _fillPosSortSelects();
   renderBrokerFilter();
   if(_sbUser && assets.length===0){
     const isEs=currentLang==='es';
     const emptyHtml=`<div style="padding:40px 20px;text-align:center">
       <div style="font-size:48px;margin-bottom:14px">📊</div>
       <div style="font-size:17px;font-weight:800;color:#142018;margin-bottom:8px">${isEs?'Tu cartera está vacía':'Your portfolio is empty'}</div>
-      <div style="font-size:13px;color:#8fa090;line-height:1.6;margin-bottom:24px">${isEs?'Busca un ETF, fondo o acción por nombre o ISIN y añade tu primera posición.':'Search for an ETF, fund or stock by name or ISIN and add your first position.'}</div>
+      <div style="font-size:13px;color:#8fa090;line-height:1.6;margin-bottom:24px">${isEs?'Añade tu primera posición manualmente, o impórtala en segundos desde MyInvestor (catálogo o CSV).':'Add your first position manually, or import it in seconds from MyInvestor (catalog or CSV).'}</div>
       <button onclick="openSearch()" style="display:inline-flex;align-items:center;gap:8px;padding:14px 28px;border-radius:30px;border:none;background:#15803d;color:#fff;font:inherit;font-size:15px;font-weight:700;cursor:pointer;box-shadow:0 4px 18px rgba(21,128,61,.32);-webkit-tap-highlight-color:transparent">＋ ${isEs?'Añadir primer activo':'Add first asset'}</button>
+      <div style="margin-top:14px"><button onclick="showScreen('myinvestor')" style="display:inline-flex;align-items:center;gap:6px;padding:11px 22px;border-radius:26px;border:1px solid #cfe0d5;background:transparent;color:#15803d;font:inherit;font-size:14px;font-weight:700;cursor:pointer;-webkit-tap-highlight-color:transparent">◐ ${isEs?'Importar de MyInvestor':'Import from MyInvestor'}</button></div>
     </div>`;
     document.getElementById('list').innerHTML=emptyHtml;
     document.getElementById('portfolioList').innerHTML=emptyHtml;
     return;
   }
-  const html=[...assets].filter(a=>a.quantity>0&&(_activeBrokerFilter===null||a.broker===_activeBrokerFilter)).sort((a,b)=>{const d=toDisplay(b.value,assetCcy(b))-toDisplay(a.value,assetCcy(a));return isNaN(d)?0:d;}).map(a=>{
+  const html=[...assets].filter(a=>a.quantity>0&&(_activeBrokerFilter===null||a.broker===_activeBrokerFilter)).sort(_mSortCmp).map(a=>{
     const _av=toDisplay(a.value,assetCcy(a)),_ai=toDisplay(a.invested,costCcy(a)),_ag=_av-_ai,_agp=_ai>0?(_ag/_ai)*100:a.gainPct;
     const dp=getDayPct(a);
     const dayHtml=dp!=null&&_pricesLive
@@ -7173,7 +7206,25 @@ document.querySelectorAll('.langBtn').forEach(btn=>btn.addEventListener('click',
 
 // ========== Custom Assets (localStorage) ==========
 function getCustomAssets(){try{const o=JSON.parse(localStorage.getItem('tf_custom_assets')||'{}');return o!==null&&typeof o==='object'&&!Array.isArray(o)?o:{};}catch{return {};}}
-function saveCustomAssets(o){localStorage.setItem('tf_custom_assets',JSON.stringify(o));try{localStorage.setItem('tf_last_sync',new Date().toISOString());}catch(_){}_debouncedSync();}
+// ── Tombstones: propagan BORRADOS entre dispositivos (el merge de custom_assets es aditivo) ──
+function getTombstones(){try{const o=JSON.parse(localStorage.getItem('tf_deleted')||'{}');return o&&typeof o==='object'&&!Array.isArray(o)?o:{};}catch{return {};}}
+function saveTombstones(o){localStorage.setItem('tf_deleted',JSON.stringify(o||{}));}
+function recordTombstone(isin){if(!isin)return;const t=getTombstones();t[isin]=new Date().toISOString();saveTombstones(t);}
+function mergeTombstones(a,b){const m={...(a||{})};Object.keys(b||{}).forEach(k=>{if(!m[k]||new Date(b[k])>new Date(m[k]))m[k]=b[k];});return m;}
+function saveCustomAssets(o){
+  try{
+    const prev=getCustomAssets(),now=new Date().toISOString(),t=getTombstones();let tChg=false;
+    Object.keys(o||{}).forEach(k=>{
+      const it=o[k];
+      if(it&&typeof it==='object'){
+        const cur=JSON.stringify({...it,_uts:0}),old=prev[k]?JSON.stringify({...prev[k],_uts:0}):null;
+        if(!prev[k]||cur!==old||!it._uts)it._uts=now;
+      }
+      if(t[k]){delete t[k];tChg=true;}
+    });
+    if(tChg)saveTombstones(t);
+  }catch(_){}
+  localStorage.setItem('tf_custom_assets',JSON.stringify(o));try{localStorage.setItem('tf_last_sync',new Date().toISOString());}catch(_){}_debouncedSync();}
 // Quita el sufijo de mercado de un ISIN (p.ej. IE00B43VDT70.SG → IE00B43VDT70). Un ISIN válido son 12 caracteres.
 function cleanIsin(s){ const m=String(s||'').match(/^([A-Z]{2}[A-Z0-9]{10})\.[A-Za-z0-9]+$/i); return m?m[1].toUpperCase():String(s||''); }
 function _migrateIsinSuffixes(){
@@ -7802,13 +7853,21 @@ async function _syncWithToken(){
     const _base=cfg.supabaseUrl+'/rest/v1/user_positions';
     const _hdrs={'apikey':cfg.supabaseAnonKey,'Authorization':'Bearer '+tok,'Content-Type':'application/json','Accept':'application/json'};
     // Fetch user's cloud row
-    const r=await fetch(`${_base}?user_id=eq.${uid}&select=overrides,custom_assets,liquidity,updated_at`,{headers:_hdrs});
+    // Escritura tolerante: quita columnas opcionales (liquidity, deleted_assets) si aún no existen.
+    const _essential={user_id:1,overrides:1,custom_assets:1,updated_at:1};
+    const _write=async(method,body,extraUrl='')=>{
+      let b={...body},tries=0,rr=await fetch(`${_base}${extraUrl}`,{method,headers:{..._hdrs,'Prefer':method==='POST'?'resolution=merge-duplicates':'return=minimal'},body:JSON.stringify(b)});
+      while(!rr.ok&&tries<4){const t=await rr.text().catch(()=>'');const m=t.match(/Could not find the '([^']+)' column/)||(/liquidit/i.test(t)?[null,'liquidity']:null);const col=m&&m[1];if(col&&(col in b)&&!_essential[col]){delete b[col];rr=await fetch(`${_base}${extraUrl}`,{method,headers:{..._hdrs,'Prefer':method==='POST'?'resolution=merge-duplicates':'return=minimal'},body:JSON.stringify(b)});tries++;continue;}break;}
+      return rr;
+    };
+    let r=await fetch(`${_base}?user_id=eq.${uid}&select=overrides,custom_assets,liquidity,deleted_assets,updated_at`,{headers:_hdrs});
+    if(!r.ok){const _b=await r.text().catch(()=>'');if(/deleted_assets/i.test(_b))r=await fetch(`${_base}?user_id=eq.${uid}&select=overrides,custom_assets,liquidity,updated_at`,{headers:_hdrs});}
     if(!r.ok){console.warn('[token-sync] fetch failed',r.status);return;}
     const rows=await r.json();
     if(!rows.length){
       // No cloud row — push everything local to Supabase
-      const payload={user_id:uid,overrides:getOverrides(),custom_assets:getCustomAssets(),liquidity:getLiquidity(),updated_at:new Date().toISOString()};
-      await fetch(`${_base}`,{method:'POST',headers:{..._hdrs,'Prefer':'resolution=merge-duplicates'},body:JSON.stringify(payload)});
+      const payload={user_id:uid,overrides:getOverrides(),custom_assets:getCustomAssets(),liquidity:getLiquidity(),deleted_assets:getTombstones(),updated_at:new Date().toISOString()};
+      await _write('POST',payload);
       localStorage.setItem('tf_last_sync',new Date().toISOString());
       return;
     }
@@ -7817,16 +7876,27 @@ async function _syncWithToken(){
     const localTs=new Date(localStorage.getItem('tf_last_sync')||0).getTime();
     const _ov=typeof data.overrides==='string'?JSON.parse(data.overrides||'{}'):(data.overrides||{});
     const _ca=typeof data.custom_assets==='string'?JSON.parse(data.custom_assets||'{}'):(data.custom_assets||{});
-    // Custom assets: always merge from cloud (additive)
+    // Custom assets: merge LWW por _uts + tombstones
     const _localCa=getCustomAssets();
-    const _mergedCa={..._localCa,..._ca};
+    const _cloudTomb=typeof data.deleted_assets==='string'?(()=>{try{return JSON.parse(data.deleted_assets||'{}');}catch{return {};}})():(data.deleted_assets||{});
+    const _tomb=mergeTombstones(getTombstones(),_cloudTomb);
+    const _mergedCa={};
+    new Set([...Object.keys(_localCa),...Object.keys(_ca)]).forEach(k=>{
+      const lo=_localCa[k],cl=_ca[k];
+      const pick=(lo&&cl)?(new Date(cl._uts||0)>new Date(lo._uts||0)?cl:lo):(lo||cl);
+      const tt=_tomb[k];
+      if(tt && (!pick._uts || new Date(tt)>=new Date(pick._uts))) return;
+      _mergedCa[k]=pick;
+    });
+    Object.keys(_tomb).forEach(k=>{ if(_mergedCa[k]) delete _tomb[k]; });
+    saveTombstones(_tomb);
     const _caChanged=JSON.stringify(_mergedCa)!==JSON.stringify(_localCa);
     if(_caChanged)localStorage.setItem('tf_custom_assets',JSON.stringify(_mergedCa));
-    // If local has assets cloud doesn't → push merged back up
-    const _localHadMore=Object.keys(_localCa).some(k=>!_ca[k]);
+    // Si local tiene activos/borrados que la nube no → empuja el estado fusionado.
+    const _localHadMore=Object.keys(_localCa).some(k=>!_ca[k])||Object.keys(_tomb).length>0;
     if(_localHadMore){
-      const patchPayload={user_id:uid,custom_assets:_mergedCa,updated_at:new Date().toISOString()};
-      await fetch(`${_base}?user_id=eq.${uid}`,{method:'PATCH',headers:{..._hdrs,'Prefer':'return=minimal'},body:JSON.stringify(patchPayload)});
+      const patchPayload={user_id:uid,custom_assets:_mergedCa,deleted_assets:_tomb,updated_at:new Date().toISOString()};
+      await _write('PATCH',patchPayload,`?user_id=eq.${uid}`);
     }
     // Overrides: apply only when cloud is newer or local is empty
     const _localEmpty=!Object.keys(getOverrides()).length&&!Object.keys(_localCa).length;
@@ -7903,26 +7973,26 @@ async function syncToCloud(){
   // borre la cartera. Un push con datos reales siempre se permite (no puede borrar nada).
   if(!_cloudPulled && !Object.keys(getOverrides()).length && !Object.keys(getCustomAssets()).length){ return; }
   try{
-    const payload={user_id:_sbUser.id,overrides:getOverrides(),custom_assets:getCustomAssets(),liquidity:getLiquidity(),updated_at:new Date().toISOString()};
+    const payload={user_id:_sbUser.id,overrides:getOverrides(),custom_assets:getCustomAssets(),liquidity:getLiquidity(),deleted_assets:getTombstones(),updated_at:new Date().toISOString()};
+    // No pisar la liquidez de la nube con un objeto vacío antes de haber bajado la nube.
+    if(!_cloudPulled && (!payload.liquidity || !Object.keys(payload.liquidity).length)) delete payload.liquidity;
+    const _updatedAt=payload.updated_at;
     const _url=_sb.supabaseUrl+'/rest/v1/user_positions?on_conflict=user_id';
     const _tok=_comGetTok();
     const _hdrs={'apikey':_sb.supabaseKey,'Authorization':'Bearer '+_tok,'Content-Type':'application/json','Prefer':'resolution=merge-duplicates,return=minimal'};
-    const ctrl=new AbortController();const _tid=setTimeout(()=>ctrl.abort(),10000);
-    let r=await fetch(_url,{method:'POST',headers:_hdrs,body:JSON.stringify(payload),signal:ctrl.signal});
-    clearTimeout(_tid);
-    // Fallback: if liquidity column doesn't exist yet, sync without it
-    if(!r.ok&&r.status===400){
+    const _essential={user_id:1,overrides:1,custom_assets:1,updated_at:1};
+    const _post=async(body)=>{const ctrl=new AbortController();const _tid=setTimeout(()=>ctrl.abort(),10000);const rr=await fetch(_url,{method:'POST',headers:_hdrs,body:JSON.stringify(body),signal:ctrl.signal});clearTimeout(_tid);return rr;};
+    let r=await _post(payload), tries=0;
+    // Fallback: una columna opcional (liquidity, deleted_assets) puede no existir aún → quítala y reintenta.
+    while(!r.ok && tries<4){
       const t=await r.text().catch(()=>'');
-      if(t.includes('liquidity')){
-        const{user_id,overrides,custom_assets,updated_at}=payload;
-        const ctrl2=new AbortController();const _tid2=setTimeout(()=>ctrl2.abort(),10000);
-        r=await fetch(_url,{method:'POST',headers:_hdrs,body:JSON.stringify({user_id,overrides,custom_assets,updated_at}),signal:ctrl2.signal});
-        clearTimeout(_tid2);
-      }
+      const m=t.match(/Could not find the '([^']+)' column/)||(/liquidit/i.test(t)?[null,'liquidity']:null);
+      const col=m&&m[1];
+      if(col&&(col in payload)&&!_essential[col]){ delete payload[col]; r=await _post(payload); tries++; continue; }
+      throw new Error('HTTP '+r.status+(t?': '+t.slice(0,100):''));
     }
-    if(!r.ok){const t=await r.text().catch(()=>'');throw new Error('HTTP '+r.status+(t?': '+t.slice(0,100):''));}
     localStorage.setItem('tf_last_sync',new Date().toISOString());
-    localStorage.setItem('tf_cloud_synced',payload.updated_at); // versión de nube que acabamos de escribir (para no re-aplicarla)
+    localStorage.setItem('tf_cloud_synced',_updatedAt); // versión de nube que acabamos de escribir (para no re-aplicarla)
     renderAccountSection();
   }catch(e){
     console.warn('[sync↑]',e.message);
@@ -7969,10 +8039,15 @@ async function syncFromCloud(){
   localStorage.setItem('fa_active_user_id', _sbUser.id);
   try{
     const _tok=_comGetTok();
-    const _url=_sb.supabaseUrl+'/rest/v1/user_positions?user_id=eq.'+encodeURIComponent(_sbUser.id)+'&select=overrides,custom_assets,liquidity,updated_at';
-    const ctrl=new AbortController();const _tid=setTimeout(()=>ctrl.abort(),10000);
-    const _r=await fetch(_url,{headers:{'apikey':_sb.supabaseKey,'Authorization':'Bearer '+_tok,'Accept':'application/vnd.pgrst.object+json'},signal:ctrl.signal});
-    clearTimeout(_tid);
+    const _sel=async(cols)=>{
+      const _u=_sb.supabaseUrl+'/rest/v1/user_positions?user_id=eq.'+encodeURIComponent(_sbUser.id)+'&select='+cols;
+      const ctrl=new AbortController();const _tid=setTimeout(()=>ctrl.abort(),10000);
+      const rr=await fetch(_u,{headers:{'apikey':_sb.supabaseKey,'Authorization':'Bearer '+_tok,'Accept':'application/vnd.pgrst.object+json'},signal:ctrl.signal});
+      clearTimeout(_tid); return rr;
+    };
+    let _r=await _sel('overrides,custom_assets,liquidity,deleted_assets,updated_at');
+    // Fallback: si deleted_assets aún no existe (migración pendiente), reintenta sin esa columna.
+    if(!_r.ok&&_r.status!==406&&_r.status!==404){ const _b=await _r.text().catch(()=>''); if(/deleted_assets/i.test(_b))_r=await _sel('overrides,custom_assets,liquidity,updated_at'); }
     // 404 / 406 (PGRST116 = no rows) means new user — push local data up
     if(!_r.ok&&_r.status!==406&&_r.status!==404){throw new Error('HTTP '+_r.status);}
     const data=(_r.ok&&_r.status!==204)?await _r.json().catch(()=>null):null;
@@ -7992,12 +8067,24 @@ async function syncFromCloud(){
     // Defensive: handle both object (server-parsed) and string (raw TEXT) forms
     const _ov = typeof data.overrides === 'string' ? JSON.parse(data.overrides || '{}') : (data.overrides || {});
     const _ca = typeof data.custom_assets === 'string' ? JSON.parse(data.custom_assets || '{}') : (data.custom_assets || {});
-    // Custom assets: ALWAYS merge from cloud (additive). Cloud adds to local — never loses assets added on any device.
+    // Custom assets: merge LWW por _uts + tombstones (un borrado en cualquier dispositivo se respeta salvo re-alta posterior).
     const _localCa=getCustomAssets();
-    const _mergedCa={..._localCa,..._ca};
-    const _caChanged=Object.keys(_mergedCa).length!==Object.keys(_localCa).length||JSON.stringify(_mergedCa)!==JSON.stringify(_localCa);
+    const _cloudTomb = typeof data.deleted_assets==='string' ? (()=>{try{return JSON.parse(data.deleted_assets||'{}');}catch{return {};}})() : (data.deleted_assets||{});
+    const _tomb=mergeTombstones(getTombstones(),_cloudTomb);
+    const _mergedCa={};
+    new Set([...Object.keys(_localCa),...Object.keys(_ca)]).forEach(k=>{
+      const lo=_localCa[k],cl=_ca[k];
+      const pick=(lo&&cl)?(new Date(cl._uts||0)>new Date(lo._uts||0)?cl:lo):(lo||cl);
+      const tt=_tomb[k];
+      if(tt && (!pick._uts || new Date(tt)>=new Date(pick._uts))) return; // borrado gana
+      _mergedCa[k]=pick;
+    });
+    Object.keys(_tomb).forEach(k=>{ if(_mergedCa[k]) delete _tomb[k]; });
+    saveTombstones(_tomb);
+    const _caChanged=JSON.stringify(_mergedCa)!==JSON.stringify(_localCa);
     if(_caChanged)localStorage.setItem('tf_custom_assets',JSON.stringify(_mergedCa));
-    const _localHadMore=Object.keys(_localCa).some(k=>!_ca[k]);
+    // Si local tiene activos que la nube no (o tenemos borrados pendientes) → empuja el estado fusionado.
+    const _localHadMore=Object.keys(_localCa).some(k=>!_ca[k])||Object.keys(_tomb).length>0;
     if(_localHadMore)syncToCloud().catch(()=>{});
     if(cloudTs>localTs||localEmpty||cloudChanged){
       localStorage.setItem('tf_positions', JSON.stringify(_ov));
@@ -10336,9 +10423,9 @@ function _comRenderPost(p) {
 
   return `<div class="com-post" data-id="${p.id}">
     <div class="com-post-hd">
-      <div class="com-post-av" style="background:linear-gradient(135deg,${colors[colorIdx]})" onclick="_comShowProfile('${p.user_id}','${_comEsc(p.display_name)}')">${initials}</div>
+      <div class="com-post-av" style="background:linear-gradient(135deg,${colors[colorIdx]})" onclick="_comShowProfile('${_comJsAttr(p.user_id)}','${_comJsAttr(p.display_name)}')">${initials}</div>
       <div class="com-post-meta">
-        <div class="com-post-name" onclick="_comShowProfile('${p.user_id}','${_comEsc(p.display_name)}')">${_comEsc(p.display_name)}</div>
+        <div class="com-post-name" onclick="_comShowProfile('${_comJsAttr(p.user_id)}','${_comJsAttr(p.display_name)}')">${_comEsc(p.display_name)}</div>
         <div class="com-post-handle">@${(p.display_name||'').toLowerCase().replace(/\s+/,'')}</div>
       </div>
       <div class="com-post-time">${timeAgo}</div>
@@ -10667,7 +10754,7 @@ async function _comLoadTopMembers() {
     if (!sorted.length) { el.innerHTML = `<div style="font-size:12px;color:#4a6b55">${currentLang==='es'?'Aún no hay miembros activos':'No active members yet'}</div>`; return; }
     const colors = ['#1a7a43,#2ecc71','#1a4a6a,#3498db','#4a3a1a,#d4af37','#6a1a4a,#c39bd3'];
     el.innerHTML = sorted.map(([uid, u], i) => `
-      <div class="com-top-user" onclick="_comShowProfile('${uid}','${_comEsc(u.name)}')">
+      <div class="com-top-user" onclick="_comShowProfile('${_comJsAttr(uid)}','${_comJsAttr(u.name)}')">
         <div class="com-top-user-av" style="background:linear-gradient(135deg,${colors[i%colors.length]})">${(u.name||'?').slice(0,2).toUpperCase()}</div>
         <div><div class="com-top-user-name">${_comEsc(u.name)}</div><div class="com-top-user-handle">${u.posts} posts</div></div>
         <div class="com-top-user-gain com-chg-pos">♥ ${u.likes}</div>
@@ -10687,6 +10774,18 @@ function _comTimeAgo(ts) {
 
 function _comEsc(str) {
   return String(str||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+}
+// Seguro dentro de un literal JS entre comillas simples, a su vez dentro de un atributo HTML entre comillas dobles.
+// Escapa primero para JS (\, ') y luego para HTML — evita XSS almacenado vía nombre de perfil en onclick.
+function _comJsAttr(str) {
+  return String(str||'')
+    .replace(/\\/g,'\\\\')
+    .replace(/'/g,"\\'")
+    .replace(/[\r\n\t]/g,' ')
+    .replace(/&/g,'&amp;')
+    .replace(/</g,'&lt;')
+    .replace(/>/g,'&gt;')
+    .replace(/"/g,'&quot;');
 }
 
 </script>
