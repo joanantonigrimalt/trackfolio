@@ -6,7 +6,7 @@
   (served no-cache, version-bumped each deploy). Works even where SW/no-store
   are ignored, because it is plain page JS. */
 (function(){try{
-  var FA_BUILD=window.FA_BUILD='345';
+  var FA_BUILD=window.FA_BUILD='346';
   var s=location.search;
   if(s.indexOf('vchk')>-1||s.indexOf('_v=')>-1){history.replaceState(null,'',location.pathname+(location.hash||''));return;}
   fetch('/sw.js?_='+Date.now(),{cache:'no-store'}).then(function(r){return r.text();}).then(function(t){
@@ -8911,31 +8911,56 @@ async function _bgRefreshPrices(){
           a.provider=e.data.provider||a.provider;
         }
       });
-      // API structure: price is nested at data.quote.price (native CCY) or position.currentPrice (EUR)
+      // Precio: data.quote.price (divisa nativa) / último cierre para fondos / position.currentPrice (EUR, solo seed)
       assets.forEach(a=>{
         const cv=_cvMap[a.isin];
         if(!cv)return;
-        // position.currentPrice is already EUR-converted by the API
-        const priceEur=cv.position?.currentPrice;
-        if(priceEur!=null&&priceEur>0){
-          a.currentPrice=priceEur;
-          a.value=priceEur*(a.quantity||a._rawQty||0);
-          const inv=(a.buyPrice||a._rawBuyPrice||0)*(a.quantity||a._rawQty||0);
-          a.gain=a.value-inv;
-          a.gainPct=inv>0?a.gain/inv*100:0;
-        }
         const q=cv.data?.quote||{};
+        if(a.isCustom){
+          // Activos del usuario: NO existe cv.position (solo la tiene la cartera demo/seed).
+          // Fondos → NAV = último cierre del histórico (fiable; el quote intradía de fondos no lo es).
+          const _hist=a.history;
+          const _lastClose=(_hist&&_hist.length>1)?Number(_hist[_hist.length-1].close):null;
+          const _isFund=(a.mapping&&a.mapping.type==='fund')||(typeof assetType==='function'&&assetType(a)==='fund');
+          let px=null;
+          if(_isFund&&_lastClose>0)px=_lastClose;
+          else if(q.price>0)px=Number(q.price);
+          else if(_lastClose>0)px=_lastClose;
+          if(px>0){
+            const qty=(a.quantity||a._rawQty||0);
+            a.currentPrice=px;a.value=px*qty;
+            const inv=(a.buyPrice||a._rawBuyPrice||0)*qty;
+            a.gain=a.value-inv;a.gainPct=inv>0?a.gain/inv*100:0;
+          }
+        }else{
+          const priceEur=cv.position?.currentPrice; // ya convertido a EUR por la API
+          if(priceEur!=null&&priceEur>0){
+            a.currentPrice=priceEur;
+            a.value=priceEur*(a.quantity||a._rawQty||0);
+            const inv=(a.buyPrice||a._rawBuyPrice||0)*(a.quantity||a._rawQty||0);
+            a.gain=a.value-inv;
+            a.gainPct=inv>0?a.gain/inv*100:0;
+          }
+        }
         if(q.changePercent1d!=null)a.changePercent1d=q.changePercent1d;
         if(q.change1d!=null)a.change1d=q.change1d;
         if(q.marketCap!=null)a.marketCap=q.marketCap;
       });
-      // If asset detail is currently open, refresh selectedAsset history + re-render chart
+      // If asset detail is currently open, refresh selectedAsset (price + history) and re-render
       if(selectedAsset&&document.getElementById('screen-asset')?.classList.contains('active')){
         const freshAsset=assets.find(a=>a.isin===selectedAsset.isin);
-        if(freshAsset&&freshAsset.history?.length>1){
-          selectedAsset.history=freshAsset.history;
-          selectedAsset.hasRealHistory=true;
-          selectedAsset.provider=freshAsset.provider;
+        if(freshAsset){
+          selectedAsset.currentPrice=freshAsset.currentPrice;
+          selectedAsset.value=freshAsset.value;
+          selectedAsset.gain=freshAsset.gain;
+          selectedAsset.gainPct=freshAsset.gainPct;
+          if(freshAsset.history?.length>1){
+            selectedAsset.history=freshAsset.history;
+            selectedAsset.hasRealHistory=true;
+            selectedAsset.provider=freshAsset.provider;
+          }
+          // Actualiza el precio del encabezado sin reabrir (no resetea el marco temporal del gráfico).
+          try{const _pe=document.getElementById('adPrice');if(_pe&&typeof fc==='function')_pe.textContent=fc(selectedAsset.currentPrice,assetCcy(selectedAsset));}catch(_){}
           try{renderAssetChart();}catch(_){}
         }
       }

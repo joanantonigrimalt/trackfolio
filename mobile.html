@@ -10,7 +10,7 @@
   no-store headers are ignored (in-app webviews) because it is plain page JS.
   Source of truth = sw.js (always served no-cache, version-bumped each deploy). */
 (function(){try{
-  var FA_BUILD='345';
+  var FA_BUILD='346';
   var s=location.search;
   if(s.indexOf('vchk')>-1||s.indexOf('_v=')>-1){
     // Clean the ugly ?vchk= / ?_v= from the URL silently
@@ -7934,24 +7934,51 @@ async function _bgRefreshPrices(){
     const freshCov=await getJson('/api/portfolio/coverage?isin='+encodeURIComponent(isins.join(','))+'&refresh=1',12000).catch(()=>null);
     if(freshCov?.results?.length>0){
       // buildAssets is local to boot() — cannot call it here. Merge fresh prices directly into assets.
-      // API structure: price nested at data.quote.price (native CCY) or position.currentPrice (EUR)
-      freshCov.results.forEach(e=>{ _cvMap[e.isin]=e; });
+      freshCov.results.forEach(e=>{
+        _cvMap[e.isin]=e;
+        // Actualiza el histórico (para gráfico y "último cierre" frescos)
+        const a=assets.find(x=>x.isin===e.isin);
+        if(a&&e.data?.history?.length>1){ a.history=normalizeHistory(e.data.history); a.hasRealHistory=true; a.provider=e.data.provider||a.provider; }
+      });
       assets.forEach(a=>{
         const cv=_cvMap[a.isin];
         if(!cv)return;
-        const priceEur=cv.position?.currentPrice;
-        if(priceEur!=null&&priceEur>0){
-          a.currentPrice=priceEur;
-          a.value=priceEur*(a.quantity||a._rawQty||0);
-          const inv=(a.buyPrice||a._rawBuyPrice||0)*(a.quantity||a._rawQty||0);
-          a.gain=a.value-inv;
-          a.gainPct=inv>0?a.gain/inv*100:0;
-        }
         const q=cv.data?.quote||{};
+        if(a.isCustom){
+          // Activos del usuario: NO existe cv.position (solo la tiene la cartera demo/seed).
+          // Fondos → NAV = último cierre del histórico (fiable; el quote intradía de fondos no lo es).
+          const _hist=a.history;
+          const _lastClose=(_hist&&_hist.length>1)?Number(_hist[_hist.length-1].close):null;
+          const _isFund=(a.mapping&&a.mapping.type==='fund')||(typeof assetType==='function'&&assetType(a)==='fund');
+          let px=null;
+          if(_isFund&&_lastClose>0)px=_lastClose;
+          else if(q.price>0)px=Number(q.price);
+          else if(_lastClose>0)px=_lastClose;
+          if(px>0){
+            const qty=(a.quantity||a._rawQty||0);
+            a.currentPrice=px;a.value=px*qty;
+            const inv=(a.buyPrice||a._rawBuyPrice||0)*qty;
+            a.gain=a.value-inv;a.gainPct=inv>0?a.gain/inv*100:0;
+          }
+        }else{
+          const priceEur=cv.position?.currentPrice;
+          if(priceEur!=null&&priceEur>0){
+            a.currentPrice=priceEur;
+            a.value=priceEur*(a.quantity||a._rawQty||0);
+            const inv=(a.buyPrice||a._rawBuyPrice||0)*(a.quantity||a._rawQty||0);
+            a.gain=a.value-inv;
+            a.gainPct=inv>0?a.gain/inv*100:0;
+          }
+        }
         if(q.changePercent1d!=null)a.changePercent1d=q.changePercent1d;
         if(q.change1d!=null)a.change1d=q.change1d;
         if(q.marketCap!=null)a.marketCap=q.marketCap;
       });
+      // Sincroniza el activo abierto en detalle (precio + historial) sin resetear el gráfico
+      if(selectedAsset){
+        const fa=assets.find(x=>x.isin===selectedAsset.isin);
+        if(fa){ selectedAsset.currentPrice=fa.currentPrice;selectedAsset.value=fa.value;selectedAsset.gain=fa.gain;selectedAsset.gainPct=fa.gainPct;selectedAsset.history=fa.history;selectedAsset.hasRealHistory=fa.hasRealHistory; }
+      }
       _recordValueSnapshot();
       render();_rerenderActive();
     }
