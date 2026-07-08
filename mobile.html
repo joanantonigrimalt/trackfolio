@@ -10,7 +10,7 @@
   no-store headers are ignored (in-app webviews) because it is plain page JS.
   Source of truth = sw.js (always served no-cache, version-bumped each deploy). */
 (function(){try{
-  var FA_BUILD='341';
+  var FA_BUILD='342';
   var s=location.search;
   if(s.indexOf('vchk')>-1||s.indexOf('_v=')>-1){
     // Clean the ugly ?vchk= / ?_v= from the URL silently
@@ -7320,10 +7320,11 @@ function updateFxHint() {
   hint.textContent = (cost > 0 && rate > 0) ? `= ${(cost * rate).toFixed(4)} ${_addAssetCcy}` : '';
 }
 function showSearchResults(){
-  document.getElementById('addAssetForm').style.display='none';
-  document.getElementById('searchResultsList').style.display='';
-  document.getElementById('searchHint').style.display='';
-  document.getElementById('searchTopBar').style.display='';
+  // Accesos protegidos: searchTopBar no existe en móvil → antes reventaba closeSearch()
+  const _af=document.getElementById('addAssetForm'); if(_af)_af.style.display='none';
+  const _rl=document.getElementById('searchResultsList'); if(_rl)_rl.style.display='';
+  const _sh=document.getElementById('searchHint'); if(_sh)_sh.style.display='';
+  const _stb=document.getElementById('searchTopBar'); if(_stb)_stb.style.display='';
   // Show cash shortcut if search box is empty
   const _sc=document.getElementById('searchCashShortcut');
   const _q=(document.getElementById('searchInput')||{}).value||'';
