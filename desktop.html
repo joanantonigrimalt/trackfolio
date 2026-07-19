@@ -6,7 +6,7 @@
   (served no-cache, version-bumped each deploy). Works even where SW/no-store
   are ignored, because it is plain page JS. */
 (function(){try{
-  var FA_BUILD=window.FA_BUILD='348';
+  var FA_BUILD=window.FA_BUILD='349';
   var s=location.search;
   if(s.indexOf('vchk')>-1||s.indexOf('_v=')>-1){history.replaceState(null,'',location.pathname+(location.hash||''));return;}
   fetch('/sw.js?_='+Date.now(),{cache:'no-store'}).then(function(r){return r.text();}).then(function(t){
@@ -5023,39 +5023,23 @@ async function renderChart(){
 }
 
 // ========== Asset Detail ==========
-function showAssetDetail(asset,from){
-  selectedAsset=asset;prevScreen=from||'home';assetRange='1Y';
-  // Background: single-ISIN refresh so chart shows today's prices (fires and updates chart when done)
-  if(asset.isin&&asset.isin.length>4){
-    setTimeout(async()=>{
-      try{
-        const fr=await getJson('/api/portfolio/coverage?isin='+encodeURIComponent(asset.isin)+'&refresh=1',12000);
-        const e=(fr?.results||[])[0];
-        if(e&&e.data?.history?.length>1&&selectedAsset?.isin===asset.isin){
-          _cvMap[e.isin]=e;
-          selectedAsset.history=normalizeHistory(e.data.history);
-          selectedAsset.hasRealHistory=true;
-          selectedAsset.provider=e.data.provider||selectedAsset.provider;
-          // Update price too — prefer EUR position price cuando el quote no trae divisa (precio crudo no fiable)
-          const _qc=e.data?.quote?.currency;
-          const lp=(!_qc&&e.position?.currentPrice>0)?e.position.currentPrice:(e.data?.quote?.price??e.data?.quote?.close);
-          if(lp&&Number.isFinite(lp)&&lp>0){selectedAsset.currentPrice=lp;if(!_qc&&e.position?.currentPrice>0)selectedAsset.customCurrency='EUR';}
-          if(document.getElementById('screen-asset')?.classList.contains('active')){
-            try{renderAssetChart();}catch(_){}
-          }
-        }
-      }catch(_){}
-    },300);
-  }
+// Renderiza el precio del encabezado, la insignia de ganancia y la tarjeta "Mi posición".
+// Recalcula value/gain/gainPct a partir de currentPrice para que NUNCA se desincronicen
+// (bug: un refresco de precio actualizaba currentPrice pero dejaba value con el precio viejo,
+//  mostrando pérdida aunque el precio actual superara al precio medio).
+function renderAssetHeroMetrics(asset){
+  if(!asset)return;
   const isEs=currentLang==='es';
-  document.getElementById('adNavTitle').textContent=asset.fullName||asset.name;
-
-  // ISIN + type label in subheader
   const _tp=assetType(asset);
   const _tpLabel={etf:'ETF',fund:isEs?'Fondo':'Fund',etc:'ETC',stock:isEs?'Acción':'Stock'}[_tp]||'';
-  const _isinDisplay = asset.isin && asset.isin.length > 6 ? asset.isin : (asset.symbol||asset.isin||'');
-  document.getElementById('adIsin').textContent=_isinDisplay+(_tpLabel?' · '+_tpLabel:'');
-
+  // Mantén las cifras derivadas coherentes con currentPrice (en divisa nativa del activo).
+  if(Number.isFinite(asset.currentPrice)&&Number.isFinite(asset.quantity)){
+    const _bp=Number.isFinite(asset.buyPrice)?asset.buyPrice:0;
+    asset.value=asset.quantity*asset.currentPrice;
+    asset.invested=asset.quantity*_bp;
+    asset.gain=asset.value-asset.invested;
+    asset.gainPct=_bp>0?((asset.currentPrice-_bp)/_bp)*100:0;
+  }
   // Hero price + gain badge — price in native asset currency, gains in display currency
   const _aCcyHero=assetCcy(asset);
   const _cCcyHero=costCcy(asset);
@@ -5115,6 +5099,46 @@ function showAssetDetail(asset,from){
       {l:isEs?'Precio actual':'Current price',     v:fc(asset.currentPrice,_aCcy),                   c:''},
     ].map(m=>`<div class="adMetricBox"><div class="aml">${m.l}</div><div class="amv ${m.c}">${m.v}</div></div>`).join('');
   }
+}
+function showAssetDetail(asset,from){
+  selectedAsset=asset;prevScreen=from||'home';assetRange='1Y';
+  // Background: single-ISIN refresh so chart shows today's prices (fires and updates chart when done)
+  if(asset.isin&&asset.isin.length>4){
+    setTimeout(async()=>{
+      try{
+        const fr=await getJson('/api/portfolio/coverage?isin='+encodeURIComponent(asset.isin)+'&refresh=1',12000);
+        const e=(fr?.results||[])[0];
+        if(e&&e.data?.history?.length>1&&selectedAsset?.isin===asset.isin){
+          _cvMap[e.isin]=e;
+          selectedAsset.history=normalizeHistory(e.data.history);
+          selectedAsset.hasRealHistory=true;
+          selectedAsset.provider=e.data.provider||selectedAsset.provider;
+          // Update price too — prefer EUR position price cuando el quote no trae divisa (precio crudo no fiable)
+          const _qc=e.data?.quote?.currency;
+          const lp=(!_qc&&e.position?.currentPrice>0)?e.position.currentPrice:(e.data?.quote?.price??e.data?.quote?.close);
+          if(lp&&Number.isFinite(lp)&&lp>0){selectedAsset.currentPrice=lp;if(!_qc&&e.position?.currentPrice>0)selectedAsset.customCurrency='EUR';}
+          if(document.getElementById('screen-asset')?.classList.contains('active')){
+            // Re-renderiza precio, insignia y tarjeta de posición: recalcula value/gain con el
+            // precio nuevo para que no quede desincronizado (pérdida falsa con precio > medio).
+            try{renderAssetHeroMetrics(selectedAsset);}catch(_){}
+            try{renderAssetChart();}catch(_){}
+          }
+        }
+      }catch(_){}
+    },300);
+  }
+  const isEs=currentLang==='es';
+  document.getElementById('adNavTitle').textContent=asset.fullName||asset.name;
+
+  // ISIN + type label in subheader
+  const _tp=assetType(asset);
+  const _tpLabel={etf:'ETF',fund:isEs?'Fondo':'Fund',etc:'ETC',stock:isEs?'Acción':'Stock'}[_tp]||'';
+  const _isinDisplay = asset.isin && asset.isin.length > 6 ? asset.isin : (asset.symbol||asset.isin||'');
+  document.getElementById('adIsin').textContent=_isinDisplay+(_tpLabel?' · '+_tpLabel:'');
+
+  // Hero price + gain badge + tarjeta "Mi posición" (recalcula value/gain desde currentPrice)
+  renderAssetHeroMetrics(asset);
+  const hasPos=asset.quantity>0;
 
   // Dividend income row (from cache if already loaded)
   _refreshAssetDivRow(asset.isin);
@@ -8962,8 +8986,10 @@ async function _bgRefreshPrices(){
             selectedAsset.hasRealHistory=true;
             selectedAsset.provider=freshAsset.provider;
           }
-          // Actualiza el precio del encabezado sin reabrir (no resetea el marco temporal del gráfico).
-          try{const _pe=document.getElementById('adPrice');if(_pe&&typeof fc==='function')_pe.textContent=fc(selectedAsset.currentPrice,assetCcy(selectedAsset));}catch(_){}
+          // Re-renderiza encabezado + tarjeta de posición con el precio fresco (sin reabrir ni
+          // resetear el marco temporal del gráfico). Antes solo se actualizaba el precio del
+          // encabezado y la tarjeta "Mi posición" quedaba con value/ganancia del precio viejo.
+          try{if(typeof renderAssetHeroMetrics==='function')renderAssetHeroMetrics(selectedAsset);}catch(_){}
           try{renderAssetChart();}catch(_){}
         }
       }
