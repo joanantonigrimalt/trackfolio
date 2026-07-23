@@ -2,18 +2,18 @@
   "owner": "Grigom",
   "currency": "EUR",
   "positions": [
-    { "isin": "IE00BYX5NK04", "name": "Fidelity MSCI World Index Fund USD P Acc", "shortName": "MSCI World", "quantity": 2742, "buyPrice": 9.17, "currentPrice": 11.22, "broker": "MyInvestor" },
-    { "isin": "IE00BZ4D7648", "name": "Polar Capital Global Technology R EUR", "shortName": "Polar Capital Tech", "quantity": 134, "buyPrice": 72.18, "currentPrice": 72.84, "broker": "MyInvestor" },
-    { "isin": "IE000QAZP7L2", "name": "iShares Emerging Markets Index Fund (IE) S Acc EUR", "shortName": "MSCI EM IMI", "quantity": 641, "buyPrice": 13.18, "currentPrice": 14.46, "broker": "MyInvestor" },
-    { "isin": "ES0146309002", "name": "Horos Value Internacional FI", "shortName": "Horos Intl", "quantity": 34, "buyPrice": 205.96, "currentPrice": 213.25, "broker": "MyInvestor" },
-    { "isin": "IE00B42LF923", "name": "Vanguard Global Small Cap INS US", "shortName": "Vanguard Small Cap", "quantity": 12, "buyPrice": 438.86, "currentPrice": 452.16, "broker": "MyInvestor" },
-    { "isin": "LU0084617165", "name": "Robeco Asia-Pacific Equities D EUR", "shortName": "Robeco Asia", "quantity": 15, "buyPrice": 320.66, "currentPrice": 350.15, "broker": "MyInvestor" },
-    { "isin": "ES0146311008", "name": "Horos Value Iberia FI", "shortName": "Horos Iberia", "quantity": 28, "buyPrice": 177.19, "currentPrice": 195.84, "broker": "MyInvestor" },
-    { "isin": "ES0112611001", "name": "Azvalor Internacional FI", "shortName": "AzValor Intl", "quantity": 15, "buyPrice": 337.52, "currentPrice": 330.24, "broker": "MyInvestor" },
-    { "isin": "IE00B4ND3602", "name": "iShares Physical Gold ETC", "shortName": "Oro físico (IGLN)", "quantity": 70, "buyPrice": 59.78, "currentPrice": 69.12, "broker": "MyInvestor" },
-    { "isin": "IE00B43VDT70", "name": "Invesco Physical Silver ETC", "shortName": "Invesco Silver", "quantity": 80, "buyPrice": 61.82, "currentPrice": 48.83, "broker": "MyInvestor" },
-    { "isin": "IE00BYX5P602", "name": "Fidelity MSCI World Index Fund EUR P Acc (Hedged)", "shortName": "Fidelity EUR Hedged", "quantity": 288, "buyPrice": 10.81, "currentPrice": 11.61, "broker": "MyInvestor" },
-    { "isin": "ES0119199018", "name": "Cobas Internacional FI Clase D", "shortName": "Cobas Internacional", "quantity": 10, "buyPrice": 302.84, "currentPrice": 295.88, "broker": "MyInvestor" },
-    { "isin": "LU1598719752", "name": "Cobas LUX SICAV - Cobas International Fund-P Acc EUR", "shortName": "Cobas Lux", "quantity": 12, "buyPrice": 166.22, "currentPrice": 175.86, "broker": "MyInvestor" }
+    { "isin": "IE00BYX5NK04", "name": "Fidelity MSCI World Index Fund USD P Acc", "shortName": "MSCI World", "quantity": 2742, "buyPrice": 9.17, "currentPrice": 11.43, "broker": "MyInvestor" },
+    { "isin": "IE00BZ4D7648", "name": "Polar Capital Global Technology R EUR", "shortName": "Polar Capital Tech", "quantity": 134, "buyPrice": 72.18, "currentPrice": 65.27, "broker": "MyInvestor" },
+    { "isin": "IE000QAZP7L2", "name": "iShares Emerging Markets Index Fund (IE) S Acc EUR", "shortName": "MSCI EM IMI", "quantity": 641, "buyPrice": 13.18, "currentPrice": 13.61, "broker": "MyInvestor" },
+    { "isin": "ES0146309002", "name": "Horos Value Internacional FI", "shortName": "Horos Intl", "quantity": 34, "buyPrice": 205.96, "currentPrice": 217.14, "broker": "MyInvestor" },
+    { "isin": "IE00B42LF923", "name": "Vanguard Global Small Cap INS US", "shortName": "Vanguard Small Cap", "quantity": 12, "buyPrice": 438.86, "currentPrice": 447.02, "broker": "MyInvestor" },
+    { "isin": "LU0084617165", "name": "Robeco Asia-Pacific Equities D EUR", "shortName": "Robeco Asia", "quantity": 15, "buyPrice": 320.66, "currentPrice": 346.06, "broker": "MyInvestor" },
+    { "isin": "ES0146311008", "name": "Horos Value Iberia FI", "shortName": "Horos Iberia", "quantity": 28, "buyPrice": 177.19, "currentPrice": 195.83, "broker": "MyInvestor" },
+    { "isin": "ES0112611001", "name": "Azvalor Internacional FI", "shortName": "AzValor Intl", "quantity": 15, "buyPrice": 337.52, "currentPrice": 340.71, "broker": "MyInvestor" },
+    { "isin": "IE00B4ND3602", "name": "iShares Physical Gold ETC", "shortName": "Oro físico (IGLN)", "quantity": 70, "buyPrice": 59.78, "currentPrice": 69.54, "broker": "MyInvestor" },
+    { "isin": "IE00B43VDT70", "name": "Invesco Physical Silver ETC", "shortName": "Invesco Silver", "quantity": 80, "buyPrice": 61.82, "currentPrice": 49.12, "broker": "MyInvestor" },
+    { "isin": "IE00BYX5P602", "name": "Fidelity MSCI World Index Fund EUR P Acc (Hedged)", "shortName": "Fidelity EUR Hedged", "quantity": 288, "buyPrice": 10.81, "currentPrice": 11.82, "broker": "MyInvestor" },
+    { "isin": "ES0119199018", "name": "Cobas Internacional FI Clase D", "shortName": "Cobas Internacional", "quantity": 10, "buyPrice": 302.84, "currentPrice": 304.2, "broker": "MyInvestor" },
+    { "isin": "LU1598719752", "name": "Cobas LUX SICAV - Cobas International Fund-P Acc EUR", "shortName": "Cobas Lux", "quantity": 12, "buyPrice": 166.22, "currentPrice": 179.84, "broker": "MyInvestor" }
   ]
 }

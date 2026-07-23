@@ -6,7 +6,7 @@
   (served no-cache, version-bumped each deploy). Works even where SW/no-store
   are ignored, because it is plain page JS. */
 (function(){try{
-  var FA_BUILD=window.FA_BUILD='349';
+  var FA_BUILD=window.FA_BUILD='350';
   var s=location.search;
   if(s.indexOf('vchk')>-1||s.indexOf('_v=')>-1){history.replaceState(null,'',location.pathname+(location.hash||''));return;}
   fetch('/sw.js?_='+Date.now(),{cache:'no-store'}).then(function(r){return r.text();}).then(function(t){
@@ -4828,6 +4828,22 @@ function toEur(amount,ccy){ if(!ccy||ccy==='EUR')return amount; if(ccy==='GBp'||
 function toDisplay(amount,fromCcy){ return toEur(amount,fromCcy)*(_fxRates[_displayCcy]||1); }
 // fd() — convert fromCcy → _displayCcy and format
 function fd(n,fromCcy){ return fe(toDisplay(Number.isFinite(n)?n:0,fromCcy)); }
+// coverageEurPrice() — precio VIVO de una entrada de coverage, ya convertido a EUR.
+// Toma el precio del quote en su divisa nativa (o la nativeCurrency del catálogo si la caché no la
+// trae) y lo pasa a EUR. Devuelve un número EUR, o null si no hay precio de mercado fiable.
+// Centraliza la conversión para que boot/demo/refresco NO diverjan: el bug de "los precios no
+// coinciden" venía de rutas que se quedaban con el precio ESTÁTICO del seed en lugar de éste.
+function coverageEurPrice(entry,mapping){
+  const isSupabaseCache=entry?.data?.provider==='supabase_cache';
+  const q=entry?.data?.quote||{};
+  // Caché rancia (último dato de hace semanas/meses): NO la uses como precio actual — que la ruta
+  // caiga al precio del seed (mantenido al día) o al refresco vivo. Evita el "ningún precio coincide".
+  if(isSupabaseCache&&q.stale)return null;
+  const raw=q.price??q.close;
+  const ccy=q.currency||(!isSupabaseCache?mapping?.nativeCurrency:null)||null;
+  if(!(Number.isFinite(raw)&&raw>0&&ccy))return null;
+  return toEur(raw,ccy); // toEur normaliza GBp/GBX (pence) y divisas extranjeras
+}
 // fetchGlobalFxRates() — fetch live EUR→X rates at boot (localStorage cached 1h)
 async function fetchGlobalFxRates(){
   try{
@@ -8027,16 +8043,10 @@ async function boot(){
       const adjCcy=_isGBp?'GBP':priceCurrency;
       const adjHistory=_isGBp&&history.length?history.map(p=>({...p,close:p.close/100})):history;
       const adjBuyPrice=_isGBp?buyPrice/100:buyPrice;
-      // Use live price from coverage API when we have a valid price AND known currency → convert to EUR.
-      // Fall back to seed price (always in EUR) when no trusted currency available.
-      const _rawLive=entry.data?.quote?.price??entry.data?.quote?.close;
-      let currentPrice;
-      if(_rawLive&&Number.isFinite(_rawLive)&&_rawLive>0&&priceCurrency){
-        const _pAdj=_isGBp?_rawLive/100:_rawLive;
-        currentPrice=adjCcy&&adjCcy!=='EUR'?toEur(_pAdj,adjCcy):_pAdj;
-      }else{
-        currentPrice=seedPrice; // seed prices are pre-converted EUR (authoritative fallback)
-      }
+      // Precio de mercado (divisa nativa → EUR) vía helper compartido (ignora caché rancia).
+      // Fallback al precio del seed (siempre EUR, mantenido al día) cuando no hay quote fiable.
+      const _liveEur=coverageEurPrice(entry,mapping);
+      const currentPrice=(_liveEur!=null&&_liveEur>0)?_liveEur:seedPrice;
       const gain=quantity*(currentPrice-adjBuyPrice);
       // NOTE: currentPrice and value are always stored in EUR (converted by toEur above).
       // customCurrency is therefore 'EUR' so toDisplay(value,'EUR')=value (no double-conversion).
@@ -8960,11 +8970,24 @@ async function _bgRefreshPrices(){
             a.gain=a.value-inv;a.gainPct=inv>0?a.gain/inv*100:0;
           }
         }else{
-          const priceEur=cv.position?.currentPrice; // ya convertido a EUR por la API
-          if(priceEur!=null&&priceEur>0){
-            a.currentPrice=priceEur;
-            a.value=priceEur*(a.quantity||a._rawQty||0);
-            const inv=(a.buyPrice||a._rawBuyPrice||0)*(a.quantity||a._rawQty||0);
+          // Activos del seed (cartera modelo / posiciones del usuario sobre ISINs del seed).
+          // BUG previo: se usaba cv.position.currentPrice, que es el precio ESTÁTICO del seed
+          // (getSeedPosition) — NO el precio de mercado. Por eso los precios nunca se actualizaban
+          // y "no coincidían". Ahora se usa el quote VIVO (refresh=1) convertido a EUR; como fallback,
+          // el último cierre del histórico (también a EUR con su divisa nativa).
+          let px=coverageEurPrice(cv,a.mapping);
+          if(px==null){
+            const _hist=a.history;const _lastClose=(_hist&&_hist.length>1)?Number(_hist[_hist.length-1].close):null;
+            if(_lastClose>0){
+              const _nc=(cv.data?.quote?.currency)||a._nativeCurrency||a.mapping?.nativeCurrency||'EUR';
+              px=(_nc&&_nc!=='EUR')?toEur(_lastClose,_nc):_lastClose;
+            }
+          }
+          if(px!=null&&px>0){
+            const qty=(a.quantity||a._rawQty||0);
+            a.currentPrice=px;
+            a.value=px*qty;
+            const inv=(a.buyPrice||a._rawBuyPrice||0)*qty;
             a.gain=a.value-inv;
             a.gainPct=inv>0?a.gain/inv*100:0;
           }
@@ -9751,17 +9774,20 @@ async function enterDemo(){
     function _buildDemo(cvMap){
       return seed.positions.filter(p=>Number(p.quantity)>0).map(pos=>{
         const entry=cvMap[pos.isin]||{},mapping=entry.mapping||null;
-        const _rawPrice=Number(entry.data?.quote?.price||entry.data?.quote?.close||pos.currentPrice)||0;
-        const buyPrice=Number(pos.buyPrice)||0,quantity=Number(pos.quantity)||0;
+        const seedPrice=Number(pos.currentPrice)||0,buyPrice=Number(pos.buyPrice)||0,quantity=Number(pos.quantity)||0;
         const history=normalizeHistory(entry.data?.history||[]);
-        const _demoCcy=entry.data?.quote?.currency||null;
-        const _demoGBp=_demoCcy==='GBp'||_demoCcy==='GBX';
-        const currentPrice=_demoGBp?_rawPrice/100:_rawPrice;
-        const adjBuyPrice=_demoGBp?buyPrice/100:buyPrice;
-        const adjCcy=_demoGBp?'GBP':_demoCcy;
-        const adjHistory=_demoGBp&&history.length?history.map(p=>({...p,close:p.close/100})):history;
+        const isSupabaseCache=entry.data?.provider==='supabase_cache';
+        const quoteCurrency=entry.data?.quote?.currency||null;
+        const priceCurrency=quoteCurrency||(!isSupabaseCache?mapping?.nativeCurrency:null)||null;
+        const _isGBp=priceCurrency==='GBp'||priceCurrency==='GBX';
+        const adjHistory=_isGBp&&history.length?history.map(p=>({...p,close:p.close/100})):history;
+        // Precio de mercado (divisa nativa → EUR). Si no hay quote fiable, precio estático del seed (ya en EUR).
+        // Igual que buildAssets: todo se normaliza a EUR (customCurrency='EUR') para mostrar € en toda la cartera.
+        const _liveEur=coverageEurPrice(entry,mapping);
+        const currentPrice=(_liveEur!=null&&_liveEur>0)?_liveEur:seedPrice;
+        const adjBuyPrice=buyPrice; // el coste del seed ya está en EUR
         const gain=quantity*(currentPrice-adjBuyPrice);
-        return{isin:pos.isin,name:pos.shortName||pos.name||pos.isin,fullName:pos.name||pos.isin,quantity,buyPrice:adjBuyPrice,currentPrice,invested:quantity*adjBuyPrice,value:quantity*currentPrice,gain,gainPct:adjBuyPrice?((currentPrice-adjBuyPrice)/adjBuyPrice)*100:0,mapping,provider:entry.data?.provider||null,coverageStatus:entry.data?.coverage?.status||'MISSING',coverage:entry.data?.coverage||{status:'MISSING'},history:adjHistory,hasRealHistory:adjHistory.length>1,_rawQty:quantity,_rawBuyPrice:adjBuyPrice,customCurrency:adjCcy,costCurrency:_demoGBp?'GBP':null};
+        return{isin:pos.isin,name:pos.shortName||pos.name||mapping?.name||pos.isin,fullName:pos.name||mapping?.name||pos.isin,quantity,buyPrice:adjBuyPrice,currentPrice,invested:quantity*adjBuyPrice,value:quantity*currentPrice,gain,gainPct:adjBuyPrice?((currentPrice-adjBuyPrice)/adjBuyPrice)*100:0,mapping,provider:entry.data?.provider||null,coverageStatus:entry.data?.coverage?.status||'MISSING',coverage:entry.data?.coverage||{status:'MISSING'},history:adjHistory,hasRealHistory:adjHistory.length>1,_rawQty:quantity,_rawBuyPrice:adjBuyPrice,customCurrency:'EUR',_nativeCurrency:(_isGBp?'GBP':priceCurrency)||'EUR',costCurrency:null};
       });
     }
     _rawSeedAssets=_buildDemo({});
@@ -9769,9 +9795,10 @@ async function enterDemo(){
     dataReady=true;
     _pricesLive=true; // demo: los precios del seed son válidos → mostrar valor total (no "Actualizando…")
     fetchGlobalFxRates().then(()=>render()).catch(()=>render());
-    // Background: load live prices + history
+    // Background: precios de mercado FRESCOS + histórico. refresh=1 evita servir la caché rancia
+    // de Supabase (NAV de hace meses) que hacía que "ningún precio coincidiera".
     const isinList=seed.positions.map(p=>p.isin).join(',');
-    getJson('/api/portfolio/coverage?isin='+encodeURIComponent(isinList),9500)
+    getJson('/api/portfolio/coverage?isin='+encodeURIComponent(isinList)+'&refresh=1',12000)
       .then(cov=>{
         _rawSeedAssets=_buildDemo(Object.fromEntries((cov.results||[]).map(e=>[e.isin,e])));
         assets=_rawSeedAssets.slice();

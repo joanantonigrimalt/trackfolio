@@ -13,6 +13,7 @@ const portfolioSeed = require('../../portfolio-seed.json');
 const portfolioProviders = require('../../portfolio-providers.json');
 const { resolveAssetData } = require('../../lib/providers');
 const { getCache, setCache } = require('../../lib/cache');
+const { toEur } = require('../../lib/fx');
 
 const LIVE_TTL = 900; // 15 min
 
@@ -38,21 +39,33 @@ module.exports = async (req, res) => {
       portfolioSeed.positions.map(async (position) => {
         const provider = portfolioProviders.assets.find(a => a.isin === position.isin) || null;
 
-        let currentPrice = position.currentPrice;
+        let currentPrice = position.currentPrice; // seed price: siempre en EUR
         let priceSource = 'seed';
+        let nativePrice = null;
+        let nativeCurrency = null;
 
         if (live) {
           try {
-            const resolved = await resolveAssetData(position.isin);
+            // live=1 debe ser VIVO: skipCache evita reutilizar una entrada de L1/Supabase marcada
+            // como rancia (compartida con el endpoint de coverage) y servirla como precio "en vivo".
+            const resolved = await resolveAssetData(position.isin, { skipCache: true });
             const livePrice = resolved.data?.quote?.price ?? resolved.data?.quote?.close;
             if (livePrice && Number.isFinite(livePrice) && livePrice > 0) {
-              currentPrice = livePrice;
-              priceSource = resolved.data?.provider || 'live';
+              // El quote viene en divisa nativa (USD/GBp/…). Conviértelo a EUR — antes se devolvía
+              // el precio nativo sin convertir, así que un fondo en USD llegaba como si fuera EUR.
+              const ccy = resolved.data?.quote?.currency || provider?.nativeCurrency || 'EUR';
+              const eur = await toEur(livePrice, ccy);
+              if (eur && Number.isFinite(eur) && eur > 0) {
+                currentPrice = Number(eur.toFixed(4)); // EUR
+                priceSource = resolved.data?.provider || 'live';
+                nativePrice = livePrice;
+                nativeCurrency = ccy;
+              }
             }
-          } catch (_) { /* keep seed price */ }
+          } catch (_) { /* keep seed price (EUR) */ }
         }
 
-        return { ...position, currentPrice, priceSource, provider };
+        return { ...position, currentPrice, priceSource, nativePrice, nativeCurrency, provider };
       })
     );
 
