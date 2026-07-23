@@ -83,5 +83,8 @@
   ],
   "crons": [
     { "path": "/api/cron/refresh-prices", "schedule": "0 6 * * *" }
-  ]
+  ],
+  "functions": {
+    "api/cron/refresh-prices.js": { "maxDuration": 60 }
+  }
 }
