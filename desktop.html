@@ -6,7 +6,7 @@
   (served no-cache, version-bumped each deploy). Works even where SW/no-store
   are ignored, because it is plain page JS. */
 (function(){try{
-  var FA_BUILD=window.FA_BUILD='350';
+  var FA_BUILD=window.FA_BUILD='351';
   var s=location.search;
   if(s.indexOf('vchk')>-1||s.indexOf('_v=')>-1){history.replaceState(null,'',location.pathname+(location.hash||''));return;}
   fetch('/sw.js?_='+Date.now(),{cache:'no-store'}).then(function(r){return r.text();}).then(function(t){
@@ -5068,9 +5068,12 @@ function renderAssetHeroMetrics(asset){
   const badge=document.getElementById('adGainBadge');
   const dp=getDayPct(asset);
   let dayGain=null;
-  if(dp!=null&&asset.hasRealHistory&&asset.history?.length>=2&&asset.quantity>0){
-    const last=asset.history[asset.history.length-1]?.close??0,prev=asset.history[asset.history.length-2]?.close??0;
-    dayGain=toDisplay(asset.quantity*(last-prev),_aCcyHero);
+  if(dp!=null&&isFinite(dp)&&asset.quantity>0){
+    // Cálculo seguro en divisa: aplica el % del día al valor EN EUR. NO reconstruir desde los
+    // cierres del histórico (en divisa nativa): con customCurrency='EUR' se tratarían como EUR
+    // y darían una pérdida diaria falsa en activos USD.
+    const _vNow=toDisplay(asset.value,_aCcyHero);
+    if(isFinite(_vNow)) dayGain=_vNow-_vNow/(1+dp/100);
   }
   const _gp=parseFloat(_gpHero.toFixed(2));
   const _g=Math.round(_gHero*100)/100;
@@ -5658,7 +5661,7 @@ function _anRenderSummary(){
   const isEs=currentLang==='es';
   // Today's change
   let todayGain=null,todayPct=null;
-  {let prev=0,has=false;assets.forEach(a=>{const dp=getDayPct(a);if(dp!=null&&a.history&&a.history.length>=2){prev+=toDisplay(a.quantity*(a.history[a.history.length-2].close??0),assetCcy(a));has=true;}else prev+=toDisplay(a.value,assetCcy(a));});
+  {let prev=0,has=false;assets.forEach(a=>{const dp=getDayPct(a);const v=toDisplay(a.value,assetCcy(a));if(dp!=null&&isFinite(dp)){prev+=v/(1+dp/100);has=true;}else prev+=v;});
   if(has&&prev>0){todayGain=total-prev;todayPct=(todayGain/prev)*100;}}
   const elVal=document.getElementById('anSumValue'),elDB=document.getElementById('anSumDayBadge');
   const elDG=document.getElementById('anSumDayGain'),elInv=document.getElementById('anSumInvested');
